@@ -21,6 +21,9 @@ import {
   Help,
   Password,
   WavingHand,
+  BusinessCenter,
+  AutoStories,
+  Article,
 } from "@mui/icons-material";
 import { mainProviderContext } from "context/MainProviderContext";
 import { DRAWER_WIDTH, DrawerHeader } from "./Layout";
@@ -32,7 +35,14 @@ interface MenuItem {
   icon: React.ReactElement;
   url: string;
   access?: string[];
-  menuChildren?: MenuItem[];
+  menuChildren?: ChildMenuItem[];
+}
+interface ChildMenuItem {
+  title: string;
+  // icon: React.ReactElement;
+  url: string;
+  access?: string[];
+  menuChildren?: ChildMenuItem[];
 }
 
 interface RenderMenuProps extends MenuItem {
@@ -99,23 +109,80 @@ const MENU_ITEMS: MenuItem[] = [
     access: ["city-showmenu"],
     menuChildren: [
       {
-        icon: <Password />,
+        
         title: "مدیریت کاربران",
         url: "password",
         access: ["administrator","city-showmenu"],
       },
       {
-        icon: <ManageAccounts />,
         title: "مدیریت اعضا",
         url: "member",
         access: ["administrator"],
       },
       {
-        icon: <WavingHand />,
         title: "خوش آمدید",
         url: "/welcome",
         access: ["member", "administrator","city-showmenu"],
       },
+    ],
+  },
+  {
+    icon: <BusinessCenter />,
+    title: "موسسات و اعضاء",
+    url: "/institutions",
+    access: ["city-showmenu"],
+    menuChildren: [
+      {
+        title: "اطلاعات موسسات",
+        url: "information",
+        access: ["administrator","city-showmenu"],
+      },
+      {
+        title: "مشخصات اشخاص",
+        url: "personnels",
+        access: ["administrator","city-showmenu"],
+      },
+      {
+        title: "آزمون رتبه بندی",
+        url: "rating-test",
+        access: ["administrator","city-showmenu"],
+      },
+      {
+        title: "متقاضیان آزمون",
+        url: "exam-applicants",
+        access: ["administrator","city-showmenu"],
+      },
+      {
+        title: "حق عضویت جامعه",
+        url: "membership-fee",
+        access: ["administrator","city-showmenu"],
+      },
+      {
+        title: "قرارداد های منعقده موسسه",
+        url: "contracts-concluded-by-institution",
+        access: ["administrator","city-showmenu"],
+      },
+    ],
+  },
+  {
+    icon: <AutoStories />,
+    title: "گزارشات",
+    url: "projects",
+    access: ["city-showmenu"],
+    menuChildren: [
+      {
+        title: "داشبورد",
+        url: "dashboard",
+        access: ["administrator","city-showmenu"],
+      },
+    ],
+  },
+  {
+    icon: <Article />,
+    title: "اطلاعات پایه",
+    url: "projects",
+    access: ["city-showmenu"],
+    menuChildren: [
     ],
   },
   {
@@ -219,7 +286,7 @@ const RenderMenuWithChild: React.FC<RenderMenuWithChildProps> = ({
   const [expanded, setExpanded] = useState(false);
 
   const isChildActive = menuChildren?.some(
-    (child) => location.pathname === child.url
+    (child) => location.pathname === `${url}/${child.url}`
   );
 
   const handleToggle = (event: React.SyntheticEvent) => {
@@ -280,11 +347,14 @@ const RenderMenuWithChild: React.FC<RenderMenuWithChildProps> = ({
       </Box>
 
       <Collapse in={open && expanded} timeout="auto" unmountOnExit>
-        <Box sx={{ pl: 2 }}>
+      {/**
+       * @description menu item sizing 
+       * */ }
+        <Box sx={{ pl: 4 ,pr:1}}>
           {menuChildren?.map((child) => (
             <NavLink
-              key={child.url}
-              to={child.url}
+              key={`${url}/${child.url}`}
+              to={`${url}/${child.url}`}
               style={{ textDecoration: "none" }}
             >
               {({ isActive }) => (
@@ -321,7 +391,7 @@ const RenderMenuWithChild: React.FC<RenderMenuWithChildProps> = ({
                     },
                   }}
                 >
-                  <MenuIcon icon={child.icon} isActive={isActive} />
+                  {/* <MenuIcon icon={child.icon} isActive={isActive} /> */}
                   <Typography
                     sx={{
                       fontWeight: isActive ? 600 : 400,
