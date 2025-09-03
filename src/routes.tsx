@@ -32,6 +32,15 @@ const AppRoutes: React.FC = () => {
           <Route index path="admin" element={<Admin />} />
           <Route path="password" element={<Password />} />
         </Route>
+        <Route path="institutions">
+          <Route path="information" element={<Welcome />} />
+          <Route path="personnels" element={<Welcome />} />
+          <Route path="rating-test" element={<Welcome />} />
+          <Route path="exam-applicants" element={<Welcome />} />
+          <Route path="membership-fee" element={<Welcome />} />
+          <Route path="contracts-concluded-by-institution" element={<Welcome />} />
+        </Route>
+
         <Route path="/" element={<Welcome />} />
         <Route path="contract" element={<RemoveContract />} />
       </Route>
