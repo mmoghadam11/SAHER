@@ -1,5 +1,5 @@
 import React from "react";
-import { DataGrid, DataGridProps, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid, DataGridProps, GridPaginationModel, GridToolbar } from "@mui/x-data-grid";
 import { Grid } from "@mui/material";
 import { IQueryFilter } from "types/types";
 
@@ -58,19 +58,20 @@ const TavanaDataGrid = (props: Props) => {
                 sortDir: sort[0]?.sort ?? undefined,
               }));
             },
-            onPaginationModelChange: (pagination) => {
+            onPaginationModelChange: (pagination: GridPaginationModel) => {
               setFilters((filters) => ({
                 ...filters,
-                pageSize: pagination?.pageSize,
-                currentPage: pagination?.page+1,
+                size  : pagination?.pageSize,
+                page: pagination?.page+1,
               }));
             },
             paginationMode: "server",
             paginationModel: {
-              page: filters?.currentPage ? (filters?.currentPage-1) : 0,
-              pageSize: filters?.pageSize || 10,
+              page: filters?.page ? (filters?.page-1) : 0,
+              pageSize: filters?.size || 10,
             },
-            rowCount: filters?.count,
+            // rowCount: filters?.count,
+            rowCount: filters?.totalElements,
           })}
           {...props}
           slots={{
