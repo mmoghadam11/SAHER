@@ -8,12 +8,22 @@ export interface ISelectableItem<T> {
 export type TCrudType = "CREATE" | "VIEW" | "EDIT";
 
 // export interface IQueryParamFilter<T> extends T {}
+// export interface IQueryParamFilter<T> extends T {
+//   sortBy?: string; //keyof T;`${keyof T},${SortOrderEnum}`
+//   sortDir?: GridSortDirection;
+//   pageSize?: number;
+//   currentPage?: number;
+//   count?: number;
+// }
 export interface IQueryParamFilter<T> extends T {
   sortBy?: string; //keyof T;`${keyof T},${SortOrderEnum}`
   sortDir?: GridSortDirection;
-  pageSize?: number;
-  currentPage?: number;
-  count?: number;
+  /**@description pageSize */
+  size?: number;
+  /**@description currentPage */
+  page?: number;
+  /**@description count */
+  totalElements?: number;
 }
 
 export interface IBaseData {
@@ -26,9 +36,15 @@ export interface IBaseData {
 export interface IQueryFilter {
   sortBy?: string;
   sortDir?: GridSortDirection;
-  pageSize?: number;
-  currentPage?: number;
-  count?: number;
+  // pageSize?: number;
+  // currentPage?: number;
+  // count?: number;
+  /**@description pageSize */
+  size?: number;
+  /**@description currentPage */
+  page?: number;
+  /**@description count */
+  totalElements?: number;
 }
 
 export type PageableApiResponseDataType<ResponseType = any> = {
