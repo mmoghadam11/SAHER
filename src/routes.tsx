@@ -1,11 +1,5 @@
 import React, { useContext } from "react";
-import {
-  Navigate,
-  Outlet,
-  Route,
-  Routes,
-  useNavigate,
-} from "react-router-dom";
+import { Navigate, Outlet, Route, Routes, useNavigate } from "react-router-dom";
 import { useAuth } from "hooks/useAuth";
 import Layout from "components/layout/Layout";
 import LogoutPage from "./domains/logout/pages/Logout";
@@ -19,6 +13,9 @@ import ContactNumberAuth from "domains/Authentication/ContactNumberAuth";
 import NotFound from "components/errorPages/notFound/NotFound";
 import { Typography } from "@mui/material";
 import Welcome from "domains/welcome/Welcome";
+import Towns from "domains/basic-data/Towns";
+import PublicData from "domains/basic-data/PublicData/PublicData";
+import States from "domains/basic-data/PublicData/components/States";
 
 const AppRoutes: React.FC = () => {
   const auth = useAuth();
@@ -28,27 +25,46 @@ const AppRoutes: React.FC = () => {
     <Routes>
       <Route element={<ProtectedRoute />}>
         <Route element={<AdminRoute />}>
-          <Route index path="contactNumberAuthentication" element={<ContactNumberAuth />} />
+          <Route
+            index
+            path="contactNumberAuthentication"
+            element={<ContactNumberAuth />}
+          />
           <Route index path="admin" element={<Admin />} />
           <Route path="password" element={<Password />} />
         </Route>
-        <Route path="institutions">
-          <Route path="information" element={<Welcome />} />
-          <Route path="personnels" element={<Welcome />} />
-          <Route path="rating-test" element={<Welcome />} />
-          <Route path="exam-applicants" element={<Welcome />} />
-          <Route path="membership-fee" element={<Welcome />} />
-          <Route path="contracts-concluded-by-institution" element={<Welcome />} />
+        <Route element={<UserRoute />}>
+          <Route path="institutions">
+            <Route path="information" element={<Welcome />} />
+            <Route path="personnels" element={<Welcome />} />
+            <Route path="rating-test" element={<Welcome />} />
+            <Route path="exam-applicants" element={<Welcome />} />
+            <Route path="membership-fee" element={<Welcome />} />
+            <Route
+              path="contracts-concluded-by-institution"
+              element={<Welcome />}
+            />
+          </Route>
+          <Route path="basic-data">
+            <Route path="towns" element={<Towns />} />
+            <Route path="states" element={<Welcome />} />
+            <Route path="public-data" >
+              <Route index element={<PublicData />} />
+              <Route path=":id/:typeName" element={<States />} />
+            </Route>
+          </Route>
+          <Route path="/" element={<Welcome />} />
         </Route>
 
-        <Route path="/" element={<Welcome />} />
         <Route path="contract" element={<RemoveContract />} />
       </Route>
 
-
       <Route path="welcome" element={<Welcome />} />
       <Route path="logout" element={<LogoutPage />} />
-      <Route path="login" element={isUserLoggedIn ? <Navigate to="/" /> : <Login />} />
+      <Route
+        path="login"
+        element={isUserLoggedIn ? <Navigate to="/" /> : <Login />}
+      />
       <Route path="404" element={<NotFound />} />
       <Route path="*" element={<Navigate to="login" />} />
     </Routes>
@@ -104,6 +120,9 @@ const AdminRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
   return <Navigate to="/" replace />;
 };
+const UserRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
+  return <Layout>{children ?? <Outlet />}</Layout>;
+};
 
 const RemoveContract: React.FC = () => {
   const auth = useAuth();
@@ -111,7 +130,23 @@ const RemoveContract: React.FC = () => {
 
   React.useEffect(() => {
     if (auth?.isContractSet()) {
-      auth.setContract("", "", "", "", "", "", "", "", null, null, null, false, false, false, "");
+      auth.setContract(
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        null,
+        null,
+        null,
+        false,
+        false,
+        false,
+        ""
+      );
     }
   }, [auth]);
 

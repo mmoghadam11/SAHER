@@ -105,7 +105,7 @@ const MENU_ITEMS: MenuItem[] = [
   {
     icon: <ManageAccounts />,
     title: "مدیریت سیستم",
-    url: "projects",
+    url: "/managment",
     access: ["city-showmenu"],
     menuChildren: [
       {
@@ -121,7 +121,7 @@ const MENU_ITEMS: MenuItem[] = [
       },
       {
         title: "خوش آمدید",
-        url: "/welcome",
+        url: "welcome",
         access: ["member", "administrator","city-showmenu"],
       },
     ],
@@ -138,7 +138,8 @@ const MENU_ITEMS: MenuItem[] = [
         access: ["administrator","city-showmenu"],
       },
       {
-        title: "مشخصات اشخاص",
+        // title: "مشخصات اشخاص",
+        title: "کارکنان موسسان",
         url: "personnels",
         access: ["administrator","city-showmenu"],
       },
@@ -167,7 +168,7 @@ const MENU_ITEMS: MenuItem[] = [
   {
     icon: <AutoStories />,
     title: "گزارشات",
-    url: "projects",
+    url: "/projects",
     access: ["city-showmenu"],
     menuChildren: [
       {
@@ -180,9 +181,24 @@ const MENU_ITEMS: MenuItem[] = [
   {
     icon: <Article />,
     title: "اطلاعات پایه",
-    url: "projects",
+    url: "/basic-data",
     access: ["city-showmenu"],
     menuChildren: [
+      {
+        title: "شهر",
+        url: "towns",
+        access: ["administrator","city-showmenu"],
+      },
+      {
+        title: "استان",
+        url: "states",
+        access: ["administrator","city-showmenu"],
+      },
+      {
+        title: "اطلاعات مشترک",
+        url: "public-data",
+        access: ["administrator","city-showmenu"],
+      },
     ],
   },
   {
