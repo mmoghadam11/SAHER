@@ -14,34 +14,30 @@ interface Props {
   children: React.ReactNode;
 }
 
-let localToken =
-  "";
+let localToken = "";
 
 export const AuthContext = React.createContext<TAuthContext | null>(null);
 
 const AuthProvider: React.FC<Props> = ({ children }) => {
   const snackbar = useSnackbar();
   const [token, setToken] = useSessionStorage("token");
-  const [userInfo, setUserInfo] = useLocalStorage<ILoggedInUser>(
-    "userInfo", 
-    { 
-      firstName: "", 
-      lastName: "",
-      fatherName: "",
-      nationalCode: "",
-      projectKey: "",
-      previous_price: "",
-      betaja_price: "",
-      h_price: "",
-      confirmChoiceDate: null,
-      member_id: null, 
-      contract_number: null,
-      master: false,
-      confirmSelection: false,
-      finalityOrder: false,
-      systemStep: ""
-    }
-  );
+  const [userInfo, setUserInfo] = useLocalStorage<ILoggedInUser>("userInfo", {
+    firstName: "",
+    lastName: "",
+    fatherName: "",
+    nationalCode: "",
+    projectKey: "",
+    previous_price: "",
+    betaja_price: "",
+    h_price: "",
+    confirmChoiceDate: null,
+    member_id: null,
+    contract_number: null,
+    master: false,
+    confirmSelection: false,
+    finalityOrder: false,
+    systemStep: "",
+  });
   // const [userAccess, setUserAccess] = useLocalStorage<any>("userAccess", []);
 
   const [isRefreshingToken, setIsRefreshingToken] = useState(false);
@@ -59,36 +55,41 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
     localStorage.setItem("refreshToken", refresh_token);
   }
 
-  function refreshToken(){
-    let ref = localStorage.getItem("refreshToken")
-    if(!!ref){
-      axios.post(process.env.REACT_APP_API_URL + `/api/auth/refresh-token?refreshToken=${ref}`, {})
-      .then(res=> res.data)
-      .then(res=>{
-        storeToken(res?.token)
-        storeRefreshToken(res?.token)
-        setContract(
-          "",
-          "",
-          "",
-          "",
-          "",
-          "",
-          "",
-          "",
-          null,
-          null,
-          null,
-          false,
-          false,
-          false,
-          ""
+  function refreshToken() {
+    let ref = localStorage.getItem("refreshToken");
+    if (!!ref) {
+      axios
+        .post(
+          process.env.REACT_APP_API_URL +
+            `/api/auth/refresh-token?refreshToken=${ref}`,
+          {}
         )
-        window.location.pathname = "/";
-      })
-      .catch(() => {
-        logout()
-      })
+        .then((res) => res.data)
+        .then((res) => {
+          storeToken(res?.token);
+          storeRefreshToken(res?.token);
+          setContract(
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            null,
+            null,
+            null,
+            false,
+            false,
+            false,
+            ""
+          );
+          window.location.pathname = "/";
+        })
+        .catch(() => {
+          logout();
+        });
     }
   }
 
@@ -144,12 +145,11 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
 
           //update token
           return api(originalRequest);
-        } catch (e) {
-        }
+        } catch (e) {}
       }
 
       return Promise.reject(error);
-    },
+    }
   );
 
   //TODO: stop multiple refresh token request
@@ -183,10 +183,15 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
   };
   // -------------
 
-  const serverCall = async ({ entity, method, data = { test: 1 } }: TServerCall) => {
+  const serverCall = async ({
+    entity,
+    method,
+    data = { test: 1 },
+  }: TServerCall) => {
     try {
+      const apiUrl = process.env.REACT_APP_API_URL || 'http://192.168.100.95:8086/api/v1/';
       let requestOptions = {
-        url: convertArabicCharToPersian(entity),
+        url: convertArabicCharToPersian( apiUrl + entity),
         method,
         headers: {
           Authorization: "Bearer " + (localToken || token),
@@ -205,13 +210,17 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
         throw new Error(`خطا در انجام عملیات - ${response?.statusText}`);
       }
     } catch (e: any) {
-      if (e?.response?.status === 401){
-        clearUserInfo()
+      if (e?.response?.status === 401) {
+        clearUserInfo();
       }
-      throw (e.response || new Error(`خطا در انجام عملیات`));
+      throw e.response || new Error(`خطا در انجام عملیات`);
     }
   };
-  const serverCallV2 = async ({ entity, method, data = { test: 1 } }: TServerCall) => {
+  const serverCallV2 = async ({
+    entity,
+    method,
+    data = { test: 1 },
+  }: TServerCall) => {
     try {
       let requestOptions = {
         url: convertArabicCharToPersian(entity),
@@ -235,11 +244,12 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
     }
   };
 
+  //OLD LOGOUT
   // async function logout() {
   //   try {
   //     serverCall({
-  //       entity: process.env.REACT_APP_API_URL + "/api/v1/auth/logout", 
-  //       method: "post", 
+  //       entity: process.env.REACT_APP_API_URL + "/api/v1/auth/logout",
+  //       method: "post",
   //       data: null
   //     })
   //     clearUserInfo();
@@ -248,34 +258,49 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
   //   }
   // }
   async function logout() {
-  try {
-    // ارسال درخواست logout اما بدون انتظار برای پاسخ
-    serverCall({
-      entity: process.env.REACT_APP_API_URL + "/api/v1/auth/logout", 
-      method: "post", 
-      data: null
-    }).catch(error => {
-      // فقط خطا را لاگ کنید ولی کاربر را خارج کنید
-      console.error("Logout API error:", error);
-    });
-    
-    // بلافاصله کاربر را خارج کنید 
-    clearUserInfo();
-    
-  } catch (error) {
-    // در هر صورت کاربر را خارج کنید
-    console.error("Error in logout process:", error);
-    clearUserInfo();
-  }
-}
+    try {
+      // ارسال درخواست logout اما بدون انتظار برای پاسخ
+      serverCall({
+        entity: "auth/logout",
+        method: "post",
+        data: null,
+      }).catch((error) => {
+        // فقط خطا را لاگ کنید ولی کاربر را خارج کنید
+        console.error("Logout API error:", error);
+      });
 
-  function setContract(firstName:any, lastName:any, fatherName:any, nationalCode:any,projectKey:any,previous_price:any, betaja_price:any, h_price:any, confirmChoiceDate: any, member_id: any, contract_number: any, master?: boolean, confirmSelection?: boolean, finalityOrder?: boolean, systemStep?: string) {
+      // بلافاصله کاربر را خارج کنید
+      clearUserInfo();
+    } catch (error) {
+      // در هر صورت کاربر را خارج کنید
+      console.error("Error in logout process:", error);
+      clearUserInfo();
+    }
+  }
+
+  function setContract(
+    firstName: any,
+    lastName: any,
+    fatherName: any,
+    nationalCode: any,
+    projectKey: any,
+    previous_price: any,
+    betaja_price: any,
+    h_price: any,
+    confirmChoiceDate: any,
+    member_id: any,
+    contract_number: any,
+    master?: boolean,
+    confirmSelection?: boolean,
+    finalityOrder?: boolean,
+    systemStep?: string
+  ) {
     setUserInfo({
       firstName: firstName,
       lastName: lastName,
       fatherName: fatherName,
       nationalCode: nationalCode,
-      projectKey : projectKey,
+      projectKey: projectKey,
       previous_price: previous_price,
       betaja_price: betaja_price,
       h_price: h_price,
@@ -285,45 +310,46 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
       master: master ?? false,
       confirmSelection: confirmSelection ?? false,
       finalityOrder: finalityOrder ?? false,
-      systemStep: systemStep ?? ""
+      systemStep: systemStep ?? "",
     });
-    
   }
 
   function isContractSet() {
-    return userInfo?.contract_number && userInfo?.member_id
+    return userInfo?.contract_number && userInfo?.member_id;
   }
 
   function clearUserInfo() {
     setToken(null);
-    localStorage.removeItem('username');
-    localStorage.removeItem('permission');
-    localStorage.removeItem('accessMenu');
-    localStorage.removeItem('refreshToken');
+    localStorage.removeItem("username");
+    localStorage.removeItem("permission");
+    localStorage.removeItem("accessMenu");
+    localStorage.removeItem("refreshToken");
+    // پاک کردن تمام sessionStorage
+    // sessionStorage.clear();
     setUserInfo({
-      firstName: "", 
+      firstName: "",
       lastName: "",
       fatherName: "",
       nationalCode: "",
-      projectKey:"",
+      projectKey: "",
       previous_price: "",
       betaja_price: "",
       h_price: "",
       confirmChoiceDate: null,
-      member_id: null, 
+      member_id: null,
       contract_number: null,
       master: false,
       confirmSelection: false,
       finalityOrder: false,
-      systemStep: ""
+      systemStep: "",
     });
     localToken = "";
     window.location.href = `/login`;
   }
 
   const getRequest = async ({
-                              queryKey,
-                            }: {
+    queryKey,
+  }: {
     queryKey: string | number | boolean | Array<number | boolean | string>;
   }) => {
     let tempEntity = queryKey;
@@ -338,8 +364,8 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
     }
   };
   const getRequestV2 = async ({
-                                queryKey,
-                              }: {
+    queryKey,
+  }: {
     queryKey: string | number | boolean | Array<number | boolean | string>;
   }) => {
     let tempEntity = queryKey;
@@ -356,22 +382,24 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{
-        token,
-        storeToken,
-        serverCall,
-        getRequest,
-        serverCallV2,
-        getRequestV2,
-        isUserLoggedIn: !!token,
-        logout,
-        userInfo,
-        setUserInfo,
-        setContract,
-        isContractSet,
-        storeRefreshToken,
-        refreshToken,
-      } as any}
+      value={
+        {
+          token,
+          storeToken,
+          serverCall,
+          getRequest,
+          serverCallV2,
+          getRequestV2,
+          isUserLoggedIn: !!token,
+          logout,
+          userInfo,
+          setUserInfo,
+          setContract,
+          isContractSet,
+          storeRefreshToken,
+          refreshToken,
+        } as any
+      }
     >
       {children}
     </AuthContext.Provider>

@@ -118,7 +118,7 @@ const Login = () => {
     };
 
     fetch(
-      process.env.REACT_APP_API_URL + "/api/v1/auth/authenticate",
+      process.env.REACT_APP_API_URL + "auth/authenticate",
       requestOptions
     )
       .then((response) => {
@@ -252,7 +252,7 @@ const Login = () => {
     setLockSendBtn(true);
     fetch(
       process.env.REACT_APP_API_URL +
-      `/api/auth/password-ignore?userName=${username}`,
+      `auth/password-ignore?userName=${username}`,
       requestOptions
     )
       .then((response) => {

@@ -8,7 +8,7 @@ import { Typography } from "@mui/material";
 
 function Welcome() {
     const Auth = useAuth();
-    return<Layout><Typography>خوش آمدید</Typography></Layout>;
+    return<Typography>خوش آمدید</Typography>;
 }
 
 export default Welcome;
