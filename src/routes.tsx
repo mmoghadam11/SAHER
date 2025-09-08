@@ -15,7 +15,7 @@ import { Typography } from "@mui/material";
 import Welcome from "domains/welcome/Welcome";
 import Towns from "domains/basic-data/Towns";
 import PublicData from "domains/basic-data/PublicData/PublicData";
-import States from "domains/basic-data/PublicData/components/States";
+import States from "domains/basic-data/PublicData/pages/CommonData";
 
 const AppRoutes: React.FC = () => {
   const auth = useAuth();
