@@ -7,17 +7,19 @@ type Props = {
   icon?: React.ReactElement;
   name: string;
   url?: string;
+  onClick?:any;
+  sx?:any
 };
 
-const CreateNewItem: React.FC<Props> = ({ icon, name, url }) => {
+const CreateNewItem: React.FC<Props> = ({ icon, name, url,onClick,sx}) => {
   const navigate = useNavigate();
   return (
     <Button
       variant="contained"
       endIcon={icon || <AddCircleIcon />}
-      onClick={() => navigate(url || "new")}
+      onClick={() => {onClick ? onClick() : navigate(url || "new");}}
       color="info"
-      sx={{ minWidth: "100px", mb: 2 }}
+      sx={{ ...sx,minWidth: "100px", mb: 2 }}
     >
       ایجاد {name} جدید
     </Button>

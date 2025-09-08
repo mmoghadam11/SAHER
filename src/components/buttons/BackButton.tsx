@@ -5,16 +5,17 @@ import ReplyIcon from "@mui/icons-material/Reply";
 type Props = {
   onBack: () => void;
   text?: string;
+  sx?:any
 };
 
-const BackButton: React.FC<Props> = ({ onBack, text = "بازگشت" }) => {
+const BackButton: React.FC<Props> = ({ onBack, text = "بازگشت",sx }) => {
   return (
     <Button
       variant="outlined"
       onClick={() => onBack()}
       endIcon={<ReplyIcon />}
       color="warning"
-      sx={{ minWidth: "150px", mb: 2 }}
+      sx={{ ...sx,minWidth: "150px", mb: 2 }}
     >
       بازگشت
     </Button>
