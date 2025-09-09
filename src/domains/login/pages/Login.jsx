@@ -391,8 +391,8 @@ const Login = () => {
       <Grid container item md={4} xs={11} sm={8} spacing={3} alignContent="center">
         <Paper elevation={3} sx={{p:5,m:1}} >
           <Grid item xs={12} textAlign="center">
-            <Typography variant="h5">سامانه جامع</Typography>
-            <Typography variant="h6" color="#023e8a">جامعه حسابداران رسمی ایران</Typography>
+            <Typography variant="h6" fontSize={"large"}>سامانه اطلاعات</Typography>
+            <Typography variant="h5" color="#023e8a">حسابداران رسمی</Typography>
           </Grid>
 
           <Grid item xs={12} className="login__wrapper">
