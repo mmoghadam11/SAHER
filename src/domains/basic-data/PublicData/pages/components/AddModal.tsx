@@ -1,4 +1,4 @@
-import { AddCircle } from "@mui/icons-material";
+import { AddCircle, ChangeCircle } from "@mui/icons-material";
 import {
   Dialog,
   DialogTitle,
@@ -14,11 +14,12 @@ import { useMutation } from "@tanstack/react-query";
 import RenderFormInput from "components/render/formInputs/RenderFormInput";
 import { useAuth } from "hooks/useAuth";
 import { useSnackbar } from "hooks/useSnackbar";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 
 interface FormData {
+  id?: any;
   value: string;
   key: string;
   typeId?: string;
@@ -37,9 +38,17 @@ type Props = {
   refetch: () => void;
   addModalFlag: boolean;
   setAddModalFlag: React.Dispatch<React.SetStateAction<boolean>>;
+  editeData: any;
+  setEditeData: React.Dispatch<React.SetStateAction<any>>;
 };
 
-const AddModal = ({ addModalFlag, setAddModalFlag, refetch }: Props) => {
+const AddModal = ({
+  addModalFlag,
+  setAddModalFlag,
+  refetch,
+  editeData,
+  setEditeData,
+}: Props) => {
   const { id, typeName } = useParams();
   const Auth = useAuth();
   const snackbar = useSnackbar();
@@ -55,12 +64,16 @@ const AddModal = ({ addModalFlag, setAddModalFlag, refetch }: Props) => {
     reset,
   } = useForm<FormData>();
 
-  const [formData, setFormData] = useState<FormData>({
-    value: "",
-    key: "",
-    typeId: id,
-    typeName: typeName,
-  });
+  const [formData, setFormData] = useState<FormData>(
+    !!editeData
+      ? editeData
+      : {
+          value: "",
+          key: "",
+          typeId: id,
+          typeName: typeName,
+        }
+  );
 
   const formItems: FormItem[] = [
     {
@@ -92,6 +105,19 @@ const AddModal = ({ addModalFlag, setAddModalFlag, refetch }: Props) => {
     },
   ];
 
+  useEffect(() => {
+    if (editeData !== null) {
+      setFormData(editeData);
+      reset({
+        value: editeData.value || "",
+        key: editeData.key || "",
+        typeId: editeData.typeId || id,
+        typeName: editeData.typeName || typeName,
+        id: editeData.id,
+      });
+    } 
+  }, [editeData,addModalFlag]);
+
   const handleClose = () => {
     setAddModalFlag(false);
     reset();
@@ -101,6 +127,7 @@ const AddModal = ({ addModalFlag, setAddModalFlag, refetch }: Props) => {
       typeId: id,
       typeName: typeName,
     });
+    setTimeout(()=>setEditeData(null), 500);
   };
 
   const handleInputChange = (fieldName: keyof FormData, value: string) => {
@@ -113,15 +140,20 @@ const AddModal = ({ addModalFlag, setAddModalFlag, refetch }: Props) => {
   const onSubmit = (data: FormData) => {
     mutate(
       {
-        entity: `common-data/add`,
-        method: "post",
+        entity: `common-data/${!!editeData ? "update" : "add"}`,
+        method: !!editeData ? "put" : "post",
         data: formData,
       },
       {
         onSuccess: (res: any) => {
-          snackbar(`ایجاد ${typeName} جدید با موفقیت انجام شد`, "success");
+          if (!!editeData)
+            snackbar(
+              `به روز رسانی ${typeName} انتخاب شده با موفقیت انجام شد`,
+              "success"
+            );
+          else snackbar(`ایجاد ${typeName} جدید با موفقیت انجام شد`, "success");
           refetch();
-          handleClose();
+          //   handleClose();
         },
         onError: () => {
           snackbar("خطا در انجام عملیات", "error");
@@ -131,10 +163,12 @@ const AddModal = ({ addModalFlag, setAddModalFlag, refetch }: Props) => {
   };
 
   return (
-    <Dialog open={addModalFlag} onClose={handleClose} maxWidth="md" fullWidth>
+    <Dialog open={addModalFlag} onClose={handleClose}  fullWidth>
       <DialogTitle>
         <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography variant="h6">ایجاد {typeName} جدید</Typography>
+          <Typography variant="h6">
+            {editeData ? `ویرایش ${typeName} انتخاب شده` : `ایجاد ${typeName} جدید`}
+          </Typography>
           <IconButton onClick={handleClose} size="small">
             <Close />
           </IconButton>
@@ -168,15 +202,17 @@ const AddModal = ({ addModalFlag, setAddModalFlag, refetch }: Props) => {
 
             <Grid item xs={12} display="flex" justifyContent="flex-end" mt={2}>
               <Button variant="outlined" onClick={handleClose} sx={{ mr: 2 }}>
-                انصراف
+                بازگشت
               </Button>
               <Button
                 variant="contained"
-                startIcon={<AddCircle />}
+                startIcon={!!editeData?<ChangeCircle/>:<AddCircle />}
                 type="submit"
                 disabled={isLoading}
               >
-                {isLoading ? "در حال ایجاد..." : "ایجاد"}
+                {isLoading 
+                  ? (!!editeData ? "در حال به روز رسانی..." : "در حال ایجاد...")
+                  : (!!editeData ? "به روز رسانی" : "ایجاد")}
               </Button>
             </Grid>
           </Grid>
