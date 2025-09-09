@@ -14,7 +14,7 @@ import {
   Checkbox,
 } from "@mui/material";
 import ErrorHandler from "components/errorHandler/ErrorHandler";
-import React from "react";
+import React, { forwardRef } from "react";
 import { IRenderFormInput, TOption } from "types/render";
 import CustomDatePicker from "../datePicker/CustomDatePicker";
 import PasswordInput from "./PasswordInput";
@@ -26,7 +26,7 @@ import persian_fa from "react-date-object/locales/persian_fa";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 
 
-const RenderFormInput: React.FC<IRenderFormInput> = (props) => {
+const RenderFormInput: React.FC<IRenderFormInput> = forwardRef ((props,ref) => {
   const { name, label, errors, elementProps={}, controllerField , onChange , value ,defaultValue,placeholder ,Defaultfont=false} = props;
   if (props.inputType === "text") {
     return (
@@ -37,6 +37,7 @@ const RenderFormInput: React.FC<IRenderFormInput> = (props) => {
         helperText={errors?.[name]?.message}
         {...controllerField}
         {...elementProps}
+        inputRef={ref}
         fullWidth
         size="small"
         inputProps={{style:!Defaultfont? {fontSize: 16}:null}} // font size of input text
@@ -136,42 +137,88 @@ const RenderFormInput: React.FC<IRenderFormInput> = (props) => {
       
     );
   }
+  // if (props.inputType === "autocomplete") {
+  //   let { options, status, refetch } = props;
+  //   if (status === "loading") return <LoadingState label={label} />;
+  //   if (status === "error" && refetch) return <ErrorState label={label} refetch={refetch} />;
+  //   return (
+  //     <Autocomplete
+  //       {...controllerField}
+  //       {...elementProps}
+  //       options={options}
+  //       //@ts-ignore
+  //       getOptionLabel={(option: TOption) => {
+  //         if (typeof option !== "object") {
+  //           let result = options.find((op: TOption) => op?.value === option);
+  //           return result?.title || "";
+  //         }
+  //         return option?.title || "";
+  //       }}
+  //       filterOptions={(ops, state) => {
+  //         //@ts-ignore
+  //         let temp = ops?.filter((op: TOption) => op?.title?.includes(state?.inputValue));
+  //         return temp;
+  //       }}
+  //       value={controllerField?.value}
+  //       renderInput={(params) => (
+  //         <TextField
+  //           {...params}
+  //           variant="outlined"
+  //           label={label}
+  //           error={Boolean(errors?.[name]?.message)}
+  //           helperText={errors?.[name]?.message}
+  //           size="small"
+  //         />
+  //       )}
+  //     />
+  //   );
+  // }
   if (props.inputType === "autocomplete") {
-    let { options, status, refetch } = props;
-    if (status === "loading") return <LoadingState label={label} />;
-    if (status === "error" && refetch) return <ErrorState label={label} refetch={refetch} />;
-    return (
-      <Autocomplete
-        {...controllerField}
-        {...elementProps}
-        options={options}
+  let { options, status, refetch, customOnChange, externalValue } = props;
+  if (status === "loading") return <LoadingState label={label} />;
+  if (status === "error" && refetch) return <ErrorState label={label} refetch={refetch} />;
+  
+  return (
+    <Autocomplete
+      ref={ref}
+      {...controllerField}
+      {...elementProps}
+      options={options}
+      //@ts-ignore
+      getOptionLabel={(option: TOption) => {
+        if (typeof option !== "object") {
+          let result = options.find((op: TOption) => op?.value === option);
+          return result?.title || "";
+        }
+        return option?.title || "";
+      }}
+      filterOptions={(ops, state) => {
         //@ts-ignore
-        getOptionLabel={(option: TOption) => {
-          if (typeof option !== "object") {
-            let result = options.find((op: TOption) => op?.value === option);
-            return result?.title || "";
-          }
-          return option?.title || "";
-        }}
-        filterOptions={(ops, state) => {
-          //@ts-ignore
-          let temp = ops?.filter((op: TOption) => op?.title?.includes(state?.inputValue));
-          return temp;
-        }}
-        value={controllerField?.value}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            variant="outlined"
-            label={label}
-            error={Boolean(errors?.[name]?.message)}
-            helperText={errors?.[name]?.message}
-            size="small"
-          />
-        )}
-      />
-    );
-  }
+        let temp = ops?.filter((op: TOption) => op?.title?.includes(state?.inputValue));
+        return temp;
+      }}
+      value={externalValue !== undefined ? externalValue : controllerField?.value}
+      onChange={(event, newValue, reason) => {
+        // Call custom onChange if provided
+        if (customOnChange) {
+          customOnChange(event, newValue, reason);
+        }
+        // Also call react-hook-form's onChange
+        controllerField.onChange(newValue);
+      }}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          variant="outlined"
+          label={label}
+          error={Boolean(errors?.[name]?.message)}
+          helperText={errors?.[name]?.message}
+          size="medium"
+        />
+      )}
+    />
+  );
+}
 
   if (props.inputType === "select") {
     let { options, status, refetch } = props;
@@ -181,6 +228,7 @@ const RenderFormInput: React.FC<IRenderFormInput> = (props) => {
       <FormControl fullWidth>
         <InputLabel id={`select-input-${name}`}>{label}</InputLabel>
         <Select
+          ref={ref}
           labelId={`select-input-${name}`}
           label={label}
           {...controllerField}
@@ -236,7 +284,7 @@ const RenderFormInput: React.FC<IRenderFormInput> = (props) => {
   // }
 
   return <h1>not supported type</h1>;
-};
+});
 
 export default RenderFormInput;
 
