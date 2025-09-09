@@ -15,7 +15,8 @@ import { Typography } from "@mui/material";
 import Welcome from "domains/welcome/Welcome";
 import Towns from "domains/basic-data/Towns";
 import PublicData from "domains/basic-data/PublicData/PublicData";
-import States from "domains/basic-data/PublicData/pages/CommonData";
+import CommonData from "domains/basic-data/PublicData/pages/CommonData";
+import TownShipGrid from "domains/basic-data/TownShip/TownShipGrid";
 
 const AppRoutes: React.FC = () => {
   const auth = useAuth();
@@ -47,10 +48,10 @@ const AppRoutes: React.FC = () => {
           </Route>
           <Route path="basic-data">
             <Route path="towns" element={<Towns />} />
-            <Route path="states" element={<Welcome />} />
+            <Route path="township" element={<TownShipGrid />} />
             <Route path="public-data" >
               <Route index element={<PublicData />} />
-              <Route path=":id/:typeName" element={<States />} />
+              <Route path=":id/:typeName" element={<CommonData />} />
             </Route>
           </Route>
           <Route path="/" element={<Welcome />} />

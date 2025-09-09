@@ -185,13 +185,13 @@ const MENU_ITEMS: MenuItem[] = [
     access: ["city-showmenu"],
     menuChildren: [
       {
-        title: "شهر",
-        url: "towns",
+        title: "شهرستان",
+        url: "township",
         access: ["administrator","city-showmenu"],
       },
       {
-        title: "استان",
-        url: "states",
+        title: "شهر",
+        url: "city",
         access: ["administrator","city-showmenu"],
       },
       {
