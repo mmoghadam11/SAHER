@@ -127,7 +127,8 @@ const AddModal = ({
       typeId: id,
       typeName: typeName,
     });
-    setTimeout(()=>setEditeData(null), 500);
+    setEditeData(null)
+    // setTimeout(()=>, 200);
   };
 
   const handleInputChange = (fieldName: keyof FormData, value: string) => {
