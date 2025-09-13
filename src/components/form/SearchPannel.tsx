@@ -162,7 +162,7 @@ function SearchPannel<T extends Record<string, any>>({
               </Grid>
             ))}
           </Grid>
-          <Grid item md={3} display={"flex"} justifyContent={"flex-end"}>
+          <Grid item md={3} display={"flex"} justifyContent={"flex-end"} alignItems={"center"}>
             {/* <Button
               endIcon={<RestartAlt />}
               variant="outlined"
