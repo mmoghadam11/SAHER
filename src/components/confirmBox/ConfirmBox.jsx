@@ -5,7 +5,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 export default function ConfirmBox({ open, title, message, handleClose, handleSubmit }) {
   return (
-    <Dialog sx={{ minWidth: "400px", minHeight: "200pdx" }} open={open}>
+    <Dialog sx={{ minWidth: "400px", minHeight: "200pdx" }} open={open} onClose={handleClose}> 
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <DialogContentText>{message}</DialogContentText>
