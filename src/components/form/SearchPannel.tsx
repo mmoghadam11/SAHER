@@ -1,5 +1,5 @@
-import { Search } from "@mui/icons-material";
-import { Grid, Paper, Button } from "@mui/material";
+import { RestartAlt, Search } from "@mui/icons-material";
+import { Grid, Paper, Button, Autocomplete, TextField, Fab, Tooltip } from "@mui/material";
 import RenderFormInput from "components/render/formInputs/RenderFormInput";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -21,8 +21,33 @@ function SearchPannel<T extends Record<string, any>>({
     handleSubmit,
     formState: { errors },
     control,
+    setValue, 
+    reset 
   } = useForm();
 
+  const handleReset = () => {
+    // ایجاد فیلترها به صورت داینامیک بر اساس searchItems
+    const resetData: any = {};
+    
+    searchItems.forEach((item) => {
+      if (searchData[item.name] !== undefined) {
+        resetData[item.name] = "";
+        
+        // همچنین مقدار react-hook-form را هم reset کنید
+        if (item.inputType === "autocomplete") {
+          setValue(item.name, null); // برای autocomplete مقدار null قرار دهید
+        } else {
+          setValue(item.name, ""); // برای سایر فیلدها string خالی
+        }
+      }
+    });
+
+    setSearchData(resetData)
+    setFilters((prev: any) => ({
+      ...prev,
+      ...resetData,
+    }));
+  };
   const handleSearch = () => {
     // ایجاد فیلترها به صورت داینامیک بر اساس searchItems
     const newFilters: Record<string, any> = {};
@@ -39,14 +64,15 @@ function SearchPannel<T extends Record<string, any>>({
     }));
   };
   return (
-    <Grid
-      item
-      md={11}
-      sm={11}
-      xs={12}
-    >
-      <Paper elevation={3} sx={{ p: 3, mt: 1, mb: 2 ,width:"100%"}}>
-        <Grid item container md={12} justifyContent={"space-between"} spacing={3}>
+    <Grid item md={11} sm={11} xs={12}>
+      <Paper elevation={3} sx={{ p: 3, mt: 1, mb: 2, width: "100%" }}>
+        <Grid
+          item
+          container
+          md={12}
+          justifyContent={"space-between"}
+          spacing={3}
+        >
           <Grid item container md={9} spacing={2}>
             {searchItems.map((item, itemKey) => (
               <Grid
@@ -58,47 +84,119 @@ function SearchPannel<T extends Record<string, any>>({
                 <Controller
                   name={item.name}
                   control={control}
-                  render={({ field }) => {
-                    return (
-                      <RenderFormInput
-                        controllerField={field}
-                        errors={errors}
-                        {...item}
-                        {...field}
-                        onChange={(e: any) => {
-                          // if (!isNaN(e.target.value))
-                          //   searchData[item.name](e.target.value);
+                  render={({ field, fieldState }) => {
+                    if (item.inputType === "text")
+                      return (
+                        <RenderFormInput
+                          controllerField={field}
+                          errors={errors}
+                          {...item}
+                          {...field}
+                          onChange={(e: any) => {
+                            // if (!isNaN(e.target.value))
+                            //   searchData[item.name](e.target.value);
 
-                          setSearchData((prev: any) => ({
-                            ...prev,
-                            [item.name]: e.target.value,
-                          }));
-                        }}
-                        value={(searchData as any)[item.name] ?? ""}
-                        placeholder={`جستجو بر اساس ${item.label}`}
-                      />
-                    );
+                            setSearchData((prev: any) => ({
+                              ...prev,
+                              [item.name]: e.target.value,
+                            }));
+                          }}
+                          value={(searchData as any)[item.name] ?? ""}
+                          placeholder={`جستجو بر اساس ${item.label}`}
+                        />
+                      );
+                    else if (item.inputType === "autocomplete")
+                      return (
+                        <Autocomplete
+                          ref={field.ref}
+                          id={item.name}
+                          onChange={(
+                            event: any,
+                            newValue: any,
+                            reason: string
+                          ) => {
+                            field.onChange(newValue); // تغییرات را به react-hook-form گزارش دهید
+                            if (reason === "clear") {
+                              // وقتی کاربر دکمه clear را می‌زند
+                              setSearchData((prev: any) => ({
+                                ...prev,
+                                [item.name]: "",
+                              }));
+                            }
+                            else if (newValue?.id) {
+                              setSearchData((prev: any) => ({
+                                ...prev,
+                                [item.name]: newValue.id ?? "",
+                                // provinceName: newValue.name,
+                              }));
+                            }
+                          }}
+                          value={field.value || null} // استفاده از value از react-hook-form
+                          renderOption={(props: any, option: any) => (
+                            <li {...props} key={option.id}>
+                              {option.name}
+                            </li>
+                          )}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label={item.label}
+                              error={fieldState.invalid} // اضافه کردن error
+                              helperText={fieldState.error?.message} // اضافه کردن helperText
+                            />
+                          )}
+                          clearOnBlur
+                          options={item.options?.map((item: any) => ({
+                            id: item.id,
+                            name: item.value,
+                          }))}
+                          getOptionLabel={(option: any) => option.name || ""}
+                          isOptionEqualToValue={(option: any, value: any) => {
+                            return option.id === value?.id;
+                          }}
+                        />
+                      );
+                    else return <></>;
                   }}
                 />
               </Grid>
             ))}
           </Grid>
           <Grid item md={3} display={"flex"} justifyContent={"flex-end"}>
+            {/* <Button
+              endIcon={<RestartAlt />}
+              variant="outlined"
+              sx={{ height: "100%",mr:1 }}
+              onClick={handleReset}
+            >
+              ریست
+            </Button>
             <Button
               endIcon={<Search />}
               variant="contained"
               sx={{ height: "100%" }}
-              onClick={() => {
-                // setFilters((prev: any) => ({
-                //   ...prev,
-                //   name: searchData?.typeName,
-                //   className: searchData?.className,
-                // }));
-                handleSearch();
-              }}
+              onClick={handleSearch}
             >
               جستجو
-            </Button>
+            </Button> */}
+            <Tooltip title="بازنمایی">
+            <Fab
+              sx={{mr:1 }}
+              size="small"
+              onClick={handleReset}
+            >
+              <RestartAlt fontSize="small"/>
+            </Fab>
+            </Tooltip>
+            <Tooltip title="جستجو">
+            <Fab
+            color="primary"
+              size="small"
+              onClick={handleSearch}
+            >
+              <Search fontSize="small"/>
+            </Fab>
+            </Tooltip>
           </Grid>
         </Grid>
       </Paper>
