@@ -125,7 +125,7 @@ const CityGrid = (props: Props) => {
       size: { md: 4 },
     },
     {
-      name: "provinceID", 
+      name: "provinceId", 
       inputType: "autocomplete",
       label: "استان",
       size: { md: 4 },
