@@ -20,7 +20,14 @@ import { useMutation } from "@tanstack/react-query";
 import { useAuth } from "hooks/useAuth";
 import { useSnackbar } from "hooks/useSnackbar";
 import { membershipInfoItems } from "./forms/MembershipInfo";
-import { basicInfoItems } from "./forms/BasicInfo";
+import { getBasicInfoItems } from "./forms/BasicInfo";
+import { financialInfoItems } from "./forms/financialInfoItems";
+import { contactInfoItems } from "./forms/contactInfoItems";
+import { ceoInfoItems } from "./forms/ceoInfoItems ";
+import { boardInfoItems } from "./forms/boardInfoItems ";
+import { ratingInfoItems } from "./forms/ratingInfoItems";
+import { specialInfoItems } from "./forms/specialInfoItems";
+import FancyTicketDivider from "components/FancyTicketDivider";
 // import MembershipInfo from './MembershipInfo';
 // import FinancialInfo from './FinancialInfo';
 // import ContactInfo from './ContactInfo';
@@ -46,6 +53,7 @@ export default function FormSteps(): JSX.Element {
     control,
     formState: { errors },
     reset,
+    setValue
   } = useForm<any>();
   const Auth = useAuth();
   const snackbar = useSnackbar();
@@ -84,47 +92,35 @@ export default function FormSteps(): JSX.Element {
   const formSteps: FormStep[] = [
     {
       name: "اطلاعات پایه موسسه",
-      formItems: basicInfoItems
+      formItems: getBasicInfoItems(setValue)
     },
     {
       name: "اطلاعات عضویت و پروانه",
-      formItems: membershipInfoItems,
+      formItems: membershipInfoItems(setValue),
     },
     {
       name: "اطلاعات مالی و اداری",
-      formItems: [
-        // آیتم‌های مربوط به این مرحله را اینجا قرار دهید
-      ],
+      formItems: financialInfoItems(setValue)
     },
     {
       name: "اطلاعات تماس",
-      formItems: [
-        // آیتم‌های مربوط به این مرحله را اینجا قرار دهید
-      ],
+      formItems: contactInfoItems(setValue)
     },
     {
       name: "اطلاعات مدیرعامل",
-      formItems: [
-        // آیتم‌های مربوط به این مرحله را اینجا قرار دهید
-      ],
+      formItems: ceoInfoItems(setValue)
     },
     {
       name: "اطلاعات هیئت مدیره",
-      formItems: [
-        // آیتم‌های مربوط به این مرحله را اینجا قرار دهید
-      ],
+      formItems: boardInfoItems(setValue)
     },
     {
       name: "رتبه‌بندی و کنترل",
-      formItems: [
-        // آیتم‌های مربوط به این مرحله را اینجا قرار دهید
-      ],
+      formItems: ratingInfoItems(setValue)
     },
     {
       name: "اطلاعات تخصصی",
-      formItems: [
-        // آیتم‌های مربوط به این مرحله را اینجا قرار دهید
-      ],
+      formItems: specialInfoItems(setValue)
     },
     // به همین ترتیب برای مراحل دیگر
   ];
@@ -136,6 +132,7 @@ export default function FormSteps(): JSX.Element {
   };
 
   const onSubmit = (data: FormData) => {
+    console.log("lastForm=>",data)
     // mutate(
     //   {
     //     entity: `township/${!!editeData ? "update" : "add"}`,
@@ -161,19 +158,21 @@ export default function FormSteps(): JSX.Element {
   };
   return (
     <Grid container justifyContent={"center"}>
-      <Grid item md={11}></Grid>
-      <Grid md={11} item>
-        <Paper elevation={3} sx={{ p: 3, mt: 3, width: "100%" }}>
+      <Grid md={10.5} sm={11.5} xs={12} item>
+        <Paper elevation={3} sx={{ p: 5, mt: 3, width: "100%" }}>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <Grid container spacing={3}>
-              <Grid item md={11} display={"flex"}>
+            <Grid container spacing={4}>
+              <Grid item md={11} display={"flex"} mb={1}>
                 <Inventory fontSize="large" />
-                <Typography variant="h5">فرم اطلاعات موسسات</Typography>
+                <Typography variant="h5" >فرم اطلاعات موسسات</Typography>
               </Grid>
               {formSteps.map((stepItem, stepIndex) => (
-                <Grid item container md={12} spacing={1}>
+                <Grid item container md={12} spacing={2} key={stepIndex}>
+                  <Grid item md={12} width={"100vw"}>
+                  <FancyTicketDivider/>
+                  </Grid>
                   <Grid item md={12}>
-                    <Typography variant="h6">{steps[stepIndex]}</Typography>
+                    <Typography variant="h6" fontSize={"large"}>{steps[stepIndex]}</Typography>
                   </Grid>
                   {stepItem?.formItems?.map((item) => (
                     <Grid item xs={12} md={item.size.md} key={item.name}>
@@ -208,7 +207,7 @@ export default function FormSteps(): JSX.Element {
                 justifyContent="flex-end"
                 mt={2}
               >
-                <Button variant="contained" startIcon={<Check />} type="submit">
+                <Button sx={{minWidth:"25%"}} variant="contained" startIcon={<Check />} type="submit">
                   ثبت
                 </Button>
               </Grid>
