@@ -64,6 +64,7 @@ const RenderFormInput: React.FC<IRenderFormInput> = forwardRef ((props,ref) => {
     const { setValue, watch,format} = props;
     return (
       <CustomDatePicker
+        ref={ref}
         name={name}
         label={label}
         setDay={(day) => setValue(name, day)}
@@ -233,6 +234,7 @@ const RenderFormInput: React.FC<IRenderFormInput> = forwardRef ((props,ref) => {
           label={label}
           {...controllerField}
           {...elementProps}
+          value={controllerField.value || ''}
           error={Boolean(errors?.[name]?.message)}
           size="small"
         >

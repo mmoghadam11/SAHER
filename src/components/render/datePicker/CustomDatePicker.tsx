@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import { IBaseInput } from "types/render";
 import { Box, TextField, FormHelperText } from "@mui/material";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
@@ -14,10 +14,12 @@ type Props = {
   disabled?: boolean;
 } & IBaseInput<"date">;
 
-const CustomDatePicker: React.FC<Props> = ({ value, setDay, label, disabled = false, error, name }) => {
+const CustomDatePicker: React.FC<Props> = forwardRef((props,ref) => {
+  const { value, setDay, label, disabled = false, error, name }=props
   if (disabled) {
     return (
       <TextField
+        inputRef={ref}
         label={label}
         value={typeof value === "string" ? value : "convertDayToString(value)"}
         disabled
@@ -95,7 +97,7 @@ const CustomDatePicker: React.FC<Props> = ({ value, setDay, label, disabled = fa
       {error && <FormHelperText error={true}>{error}</FormHelperText>}
     </Box>
   );
-};
+});
 
 export default CustomDatePicker;
 
