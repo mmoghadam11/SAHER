@@ -12,10 +12,19 @@ type Props = {
   setDay: (value: string) => void;
   error?: string;
   disabled?: boolean;
+  onChange?: (value: any) => void;
 } & IBaseInput<"date">;
 
-const CustomDatePicker: React.FC<Props> = forwardRef((props,ref) => {
-  const { value, setDay, label, disabled = false, error, name }=props
+const CustomDatePicker: React.FC<Props> = forwardRef((props, ref) => {
+  const {
+    value,
+    setDay,
+    label,
+    disabled = false,
+    error,
+    name,
+    onChange,
+  } = props;
   if (disabled) {
     return (
       <TextField
@@ -76,7 +85,12 @@ const CustomDatePicker: React.FC<Props> = forwardRef((props,ref) => {
           containerClassName="date-input"
           onChange={(date) => {
             let temp = date?.valueOf();
-            if (!temp) return false;
+            // if (!temp) return false;
+            if (!temp) {
+              setDay("");
+              if (onChange) onChange("");
+              return false;
+            }
             //@ts-ignore
             let isoDate = new Date(temp);
             //@ts-ignore
@@ -84,14 +98,27 @@ const CustomDatePicker: React.FC<Props> = forwardRef((props,ref) => {
 
             //@ts-ignore
             setDay(temp);
+            if (onChange) onChange(temp); // فراخوانی onChange برای react-hook-form
           }}
           value={value}
-          style={{ height: "100%", minWidth: "100px", borderRadius: "4px 0px 0px 4px", margin: "0px", width: "100%" }}
+          style={{
+            height: "100%",
+            minWidth: "100px",
+            borderRadius: "4px 0px 0px 4px",
+            margin: "0px",
+            width: "100%",
+          }}
           placeholder="انتخاب تاریخ ..."
           name={name}
         />
         {value && (
-          <HighlightOffIcon onClick={() => setDay("")} sx={{ ml: -3, color: (theme) => theme.palette.grey[600] }} />
+          <HighlightOffIcon
+            onClick={() => {
+              setDay("");
+              if (onChange) onChange("");
+            }}
+            sx={{ ml: -3, color: (theme) => theme.palette.grey[600] }}
+          />
         )}
       </Box>
       {error && <FormHelperText error={true}>{error}</FormHelperText>}

@@ -25,9 +25,19 @@ import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 
-
-const RenderFormInput: React.FC<IRenderFormInput> = forwardRef ((props,ref) => {
-  const { name, label, errors, elementProps={}, controllerField , onChange , value ,defaultValue,placeholder ,Defaultfont=false} = props;
+const RenderFormInput: React.FC<IRenderFormInput> = forwardRef((props, ref) => {
+  const {
+    name,
+    label,
+    errors,
+    elementProps = {},
+    controllerField,
+    onChange,
+    value,
+    defaultValue,
+    placeholder,
+    Defaultfont = false,
+  } = props;
   if (props.inputType === "text") {
     return (
       <TextField
@@ -40,8 +50,8 @@ const RenderFormInput: React.FC<IRenderFormInput> = forwardRef ((props,ref) => {
         inputRef={ref}
         fullWidth
         size="small"
-        inputProps={{style:!Defaultfont? {fontSize: 16}:null}} // font size of input text
-        InputLabelProps={{style: !Defaultfont? {fontSize: 16} :null }}
+        inputProps={{ style: !Defaultfont ? { fontSize: 16 } : null }} // font size of input text
+        InputLabelProps={{ style: !Defaultfont ? { fontSize: 16 } : null }}
         onChange={onChange}
         value={value}
         defaultValue={defaultValue}
@@ -61,81 +71,87 @@ const RenderFormInput: React.FC<IRenderFormInput> = forwardRef ((props,ref) => {
     );
   }
   if (props.inputType === "date") {
-    const { setValue, watch,format} = props;
+    const { setValue, watch, format } = props;
     return (
       <CustomDatePicker
         ref={ref}
         name={name}
         label={label}
-        setDay={(day) => setValue(name, day)}
+        setDay={(day) => {
+          setValue(name, day);
+          // همچنین مقدار را به react-hook-form گزارش دهید
+          if (controllerField.onChange) {
+            controllerField.onChange(day);
+          }
+        }}
         // value={watch(name)}
-        value={elementProps.value}
+        value={controllerField.value || elementProps.value}
         format={format}
         {...elementProps}
         {...controllerField}
         error={errors?.[name]?.message}
+        onChange={controllerField.onChange}
       />
-    //   <Box sx={{ width: "100%" }}>
-    //   <Box
-    //     className="date-field"
-    //     sx={{
-    //       position: "relative",
-    //       display: "flex",
-    //       height: "40px",
-    //       alignItems: "center",
-    //       borderRadius: "4px",
-    //       width: "100%",
+      //   <Box sx={{ width: "100%" }}>
+      //   <Box
+      //     className="date-field"
+      //     sx={{
+      //       position: "relative",
+      //       display: "flex",
+      //       height: "40px",
+      //       alignItems: "center",
+      //       borderRadius: "4px",
+      //       width: "100%",
 
-    //       // border: (theme) => `1px solid ${theme.palette.grey[400]}`,
-    //       // ":hover": {
-    //       //   border: (theme) => `1px solid ${theme.palette.grey[700]}`,
-    //       // },
-    //       // ":focus": {
-    //       //   border: (theme) => `1px solid ${theme.palette.grey[700]}`,
-    //       // },
-    //     }}
-    //   >
-    //     <Box
-    //       onClick={() => {
-    //         let element = document.getElementsByName(name);
-    //         element?.[0].focus();
-    //       }}
-    //       component="legend"
-    //       fontSize={12}
-    //       sx={{
-    //         paddingLeft: 0.5,
-    //         height: "100%",
-    //         borderRadius: "4px 0px 0px 4px",
-    //         backgroundColor: (theme) => theme.palette.grey[300],
-    //         display: "flex",
-    //         alignItems: "center",
-    //         // mr: 2,
-    //         px: 1,
-    //       }}
-    //     >
-    //       {label}
-    //     </Box>
-    //     <DatePicker
-    //       calendar={persian}
-    //       locale={persian_fa}
-    //       calendarPosition="bottom-right"
-    //       containerClassName="date-input"
-    //       // format={format}
-    //       {...elementProps}
-    //       {...controllerField}
-    //       onChange={(e)=>console.log("DATE",e?.getValue)}
-    //       value={value}
-    //       style={{ height: "100%", minWidth: "100px", borderRadius: "4px 0px 0px 4px", margin: "0px", width: "100%" }}
-    //       placeholder="انتخاب تاریخ ..."
-    //       name={name}
-    //     />
-    //     {value && (
-    //       <HighlightOffIcon onClick={() => setDay("")} sx={{ ml: -3, color: (theme) => theme.palette.grey[600] }} />
-    //     )}
-    //   </Box>
-    //   {/* {error && <FormHelperText error={true}>{error}</FormHelperText>} */}
-    // </Box>
-      
+      //       // border: (theme) => `1px solid ${theme.palette.grey[400]}`,
+      //       // ":hover": {
+      //       //   border: (theme) => `1px solid ${theme.palette.grey[700]}`,
+      //       // },
+      //       // ":focus": {
+      //       //   border: (theme) => `1px solid ${theme.palette.grey[700]}`,
+      //       // },
+      //     }}
+      //   >
+      //     <Box
+      //       onClick={() => {
+      //         let element = document.getElementsByName(name);
+      //         element?.[0].focus();
+      //       }}
+      //       component="legend"
+      //       fontSize={12}
+      //       sx={{
+      //         paddingLeft: 0.5,
+      //         height: "100%",
+      //         borderRadius: "4px 0px 0px 4px",
+      //         backgroundColor: (theme) => theme.palette.grey[300],
+      //         display: "flex",
+      //         alignItems: "center",
+      //         // mr: 2,
+      //         px: 1,
+      //       }}
+      //     >
+      //       {label}
+      //     </Box>
+      //     <DatePicker
+      //       calendar={persian}
+      //       locale={persian_fa}
+      //       calendarPosition="bottom-right"
+      //       containerClassName="date-input"
+      //       // format={format}
+      //       {...elementProps}
+      //       {...controllerField}
+      //       onChange={(e)=>console.log("DATE",e?.getValue)}
+      //       value={value}
+      //       style={{ height: "100%", minWidth: "100px", borderRadius: "4px 0px 0px 4px", margin: "0px", width: "100%" }}
+      //       placeholder="انتخاب تاریخ ..."
+      //       name={name}
+      //     />
+      //     {value && (
+      //       <HighlightOffIcon onClick={() => setDay("")} sx={{ ml: -3, color: (theme) => theme.palette.grey[600] }} />
+      //     )}
+      //   </Box>
+      //   {/* {error && <FormHelperText error={true}>{error}</FormHelperText>} */}
+      // </Box>
     );
   }
   // if (props.inputType === "autocomplete") {
@@ -175,56 +191,62 @@ const RenderFormInput: React.FC<IRenderFormInput> = forwardRef ((props,ref) => {
   //   );
   // }
   if (props.inputType === "autocomplete") {
-  let { options, status, refetch, customOnChange, externalValue } = props;
-  if (status === "loading") return <LoadingState label={label} />;
-  if (status === "error" && refetch) return <ErrorState label={label} refetch={refetch} />;
-  
-  return (
-    <Autocomplete
-      ref={ref}
-      {...controllerField}
-      {...elementProps}
-      options={options}
-      //@ts-ignore
-      getOptionLabel={(option: TOption) => {
-        if (typeof option !== "object") {
-          let result = options.find((op: TOption) => op?.value === option);
-          return result?.title || "";
-        }
-        return option?.title || "";
-      }}
-      filterOptions={(ops, state) => {
+    let { options, status, refetch, customOnChange, externalValue } = props;
+    if (status === "loading") return <LoadingState label={label} />;
+    if (status === "error" && refetch)
+      return <ErrorState label={label} refetch={refetch} />;
+
+    return (
+      <Autocomplete
+        ref={ref}
+        {...controllerField}
+        {...elementProps}
+        options={options}
         //@ts-ignore
-        let temp = ops?.filter((op: TOption) => op?.title?.includes(state?.inputValue));
-        return temp;
-      }}
-      value={externalValue !== undefined ? externalValue : controllerField?.value}
-      onChange={(event, newValue, reason) => {
-        // Call custom onChange if provided
-        if (customOnChange) {
-          customOnChange(event, newValue, reason);
+        getOptionLabel={(option: TOption) => {
+          if (typeof option !== "object") {
+            let result = options.find((op: TOption) => op?.value === option);
+            return result?.title || "";
+          }
+          return option?.title || "";
+        }}
+        filterOptions={(ops, state) => {
+          //@ts-ignore
+          let temp = ops?.filter((op: TOption) =>
+            op?.title?.includes(state?.inputValue)
+          );
+          return temp;
+        }}
+        value={
+          externalValue !== undefined ? externalValue : controllerField?.value
         }
-        // Also call react-hook-form's onChange
-        controllerField.onChange(newValue);
-      }}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          variant="outlined"
-          label={label}
-          error={Boolean(errors?.[name]?.message)}
-          helperText={errors?.[name]?.message}
-          size="medium"
-        />
-      )}
-    />
-  );
-}
+        onChange={(event, newValue, reason) => {
+          // Call custom onChange if provided
+          if (customOnChange) {
+            customOnChange(event, newValue, reason);
+          }
+          // Also call react-hook-form's onChange
+          controllerField.onChange(newValue);
+        }}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            variant="outlined"
+            label={label}
+            error={Boolean(errors?.[name]?.message)}
+            helperText={errors?.[name]?.message}
+            size="medium"
+          />
+        )}
+      />
+    );
+  }
 
   if (props.inputType === "select") {
     let { options, status, refetch } = props;
     if (status === "loading") return <LoadingState label={label} />;
-    if (status === "error" && refetch) return <ErrorState label={label} refetch={refetch} />;
+    if (status === "error" && refetch)
+      return <ErrorState label={label} refetch={refetch} />;
     return (
       <FormControl fullWidth>
         <InputLabel id={`select-input-${name}`}>{label}</InputLabel>
@@ -234,26 +256,31 @@ const RenderFormInput: React.FC<IRenderFormInput> = forwardRef ((props,ref) => {
           label={label}
           {...controllerField}
           {...elementProps}
-          value={controllerField.value || ''}
+          value={controllerField.value || ""}
           error={Boolean(errors?.[name]?.message)}
           size="small"
         >
           {options?.map((option: TOption) => (
-            <MenuItem key={`${name}-select-item-${option.value}`} value={option.value}>
+            <MenuItem
+              key={`${name}-select-item-${option.value}`}
+              value={option.value}
+            >
               {option.title}
             </MenuItem>
           ))}
         </Select>
-        {Boolean(errors?.[name]?.message) && <FormHelperText error={true}>{errors?.[name]?.message}</FormHelperText>}
+        {Boolean(errors?.[name]?.message) && (
+          <FormHelperText error={true}>
+            {errors?.[name]?.message}
+          </FormHelperText>
+        )}
       </FormControl>
     );
   }
   if (props.inputType === "titleDivider") {
     return (
       <Box width="100%">
-        <Typography>
-          {label}
-        </Typography>
+        <Typography>{label}</Typography>
       </Box>
     );
   }
@@ -263,17 +290,29 @@ const RenderFormInput: React.FC<IRenderFormInput> = forwardRef ((props,ref) => {
   //   return <SelectCity label={label} name={name} setValue={setValue} disabled={disabled} cityId={cityId} />;
   // }
   if (props.inputType === "checkbox") {
-    const { disabled = false, onClick= ()=>{} } = elementProps;
+    const { disabled = false, onClick = () => {} } = elementProps;
     return (
       <FormGroup>
         <FormControlLabel
-          control={<Checkbox name={name} size="small" disabled={disabled} checked={controllerField.value} onChange={controllerField.onChange} />}
+          control={
+            <Checkbox
+              name={name}
+              size="small"
+              disabled={disabled}
+              checked={controllerField.value}
+              onChange={controllerField.onChange}
+            />
+          }
           label={<Typography variant="body2">{label}</Typography>}
           onClick={onClick}
           {...controllerField}
           {...elementProps}
         />
-        {Boolean(errors?.[name]?.message) && <FormHelperText error={true}>{errors?.[name]?.message}</FormHelperText>}
+        {Boolean(errors?.[name]?.message) && (
+          <FormHelperText error={true}>
+            {errors?.[name]?.message}
+          </FormHelperText>
+        )}
       </FormGroup>
     );
   }
@@ -300,6 +339,11 @@ export const LoadingState: React.FC<{ label?: string }> = ({ label }) => {
     </Box>
   );
 };
-const ErrorState: React.FC<{ label?: string; refetch: () => void }> = ({ label, refetch }) => {
-  return <ErrorHandler onRefetch={refetch} errorText={`خطا در دریاف ${label} ها`} />;
+const ErrorState: React.FC<{ label?: string; refetch: () => void }> = ({
+  label,
+  refetch,
+}) => {
+  return (
+    <ErrorHandler onRefetch={refetch} errorText={`خطا در دریاف ${label} ها`} />
+  );
 };
