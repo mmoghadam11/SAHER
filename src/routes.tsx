@@ -19,6 +19,7 @@ import CommonData from "domains/basic-data/PublicData/pages/CommonData";
 import TownShipGrid from "domains/basic-data/TownShip/TownShipGrid";
 import CityGrid from "domains/basic-data/CityController/CityGrid";
 import FormSteps from "domains/Institute/FormSteps";
+import InstititeGrid from "domains/Institute/InstititeGrid";
 
 const AppRoutes: React.FC = () => {
   const auth = useAuth();
@@ -38,7 +39,10 @@ const AppRoutes: React.FC = () => {
         </Route>
         <Route element={<UserRoute />}>
           <Route path="institutions">
-            <Route path="information" element={<FormSteps />} />
+            <Route path="information">
+              <Route index element={<InstititeGrid/>} />
+              <Route path="new" element={<FormSteps />} />
+            </Route>
             <Route path="personnels" element={<Welcome />} />
             <Route path="rating-test" element={<Welcome />} />
             <Route path="exam-applicants" element={<Welcome />} />
@@ -52,7 +56,7 @@ const AppRoutes: React.FC = () => {
             <Route path="towns" element={<Towns />} />
             <Route path="township" element={<TownShipGrid />} />
             <Route path="city" element={<CityGrid />} />
-            <Route path="public-data" >
+            <Route path="public-data">
               <Route index element={<PublicData />} />
               <Route path=":id/:typeName" element={<CommonData />} />
             </Route>
