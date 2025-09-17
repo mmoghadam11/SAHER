@@ -16,7 +16,7 @@ import { FullInstituteType } from "types/institute";
 // کامپوننت‌های مربوط به هر دسته اطلاعات
 import { Check, Inventory } from "@mui/icons-material";
 import RenderFormInput from "components/render/formInputs/RenderFormInput";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAuth } from "hooks/useAuth";
 import { useSnackbar } from "hooks/useSnackbar";
 import { membershipInfoItems } from "./forms/MembershipInfo";
@@ -28,6 +28,8 @@ import { boardInfoItems } from "./forms/boardInfoItems ";
 import { ratingInfoItems } from "./forms/ratingInfoItems";
 import { specialInfoItems } from "./forms/specialInfoItems";
 import FancyTicketDivider from "components/FancyTicketDivider";
+import BackButton from "components/buttons/BackButton";
+import { useNavigate } from "react-router-dom";
 // import MembershipInfo from './MembershipInfo';
 // import FinancialInfo from './FinancialInfo';
 // import ContactInfo from './ContactInfo';
@@ -53,14 +55,39 @@ export default function FormSteps(): JSX.Element {
     control,
     formState: { errors },
     reset,
-    setValue
+    setValue,
   } = useForm<any>();
   const Auth = useAuth();
   const snackbar = useSnackbar();
   const { mutate, isLoading } = useMutation({
     mutationFn: Auth?.serverCall,
   });
-
+  const {
+      data: cityOptions,
+      status: cityOptions_status,
+      refetch: cityOptions_refetch,
+    } = useQuery<any>({
+      // queryKey: [process.env.REACT_APP_API_URL + `/api/unit-allocations${paramsSerializer(filters)}`],
+      // queryKey: [`/api/v1/common-type/find-all${paramsSerializer(filters)}`],
+      queryKey: [`city/search-all`],
+      queryFn: Auth?.getRequest,
+      select: (res: any) => {
+        return res?.data;
+      },
+    } as any);
+  const {
+      data: ownerOptions,
+      status: ownerOptions_status,
+      refetch: ownerOptions_refetch,
+    } = useQuery<any>({
+      // queryKey: [process.env.REACT_APP_API_URL + `/api/unit-allocations${paramsSerializer(filters)}`],
+      // queryKey: [`/api/v1/common-type/find-all${paramsSerializer(filters)}`],
+      queryKey: [`common-data/search?size=10&page=1&typeId=15`],
+      queryFn: Auth?.getRequest,
+      select: (res: any) => {
+        return res?.data;
+      },
+    } as any);
   const [formData, setFormData] = useState<{
     [K in keyof FullInstituteType]: string;
   }>({} as { [K in keyof FullInstituteType]: string });
@@ -92,7 +119,7 @@ export default function FormSteps(): JSX.Element {
   const formSteps: FormStep[] = [
     {
       name: "اطلاعات پایه موسسه",
-      formItems: getBasicInfoItems(setValue)
+      formItems: getBasicInfoItems(setValue,cityOptions),
     },
     {
       name: "اطلاعات عضویت و پروانه",
@@ -100,27 +127,27 @@ export default function FormSteps(): JSX.Element {
     },
     {
       name: "اطلاعات مالی و اداری",
-      formItems: financialInfoItems(setValue)
+      formItems: financialInfoItems(setValue,ownerOptions),
     },
     {
       name: "اطلاعات تماس",
-      formItems: contactInfoItems(setValue)
+      formItems: contactInfoItems(setValue),
     },
     {
       name: "اطلاعات مدیرعامل",
-      formItems: ceoInfoItems(setValue)
+      formItems: ceoInfoItems(setValue),
     },
-    {
-      name: "اطلاعات هیئت مدیره",
-      formItems: boardInfoItems(setValue)
-    },
+    // {
+    //   name: "اطلاعات هیئت مدیره",
+    //   formItems: boardInfoItems(setValue)
+    // },
     {
       name: "رتبه‌بندی و کنترل",
-      formItems: ratingInfoItems(setValue)
+      formItems: ratingInfoItems(setValue),
     },
     {
       name: "اطلاعات تخصصی",
-      formItems: specialInfoItems(setValue)
+      formItems: specialInfoItems(setValue),
     },
     // به همین ترتیب برای مراحل دیگر
   ];
@@ -131,48 +158,61 @@ export default function FormSteps(): JSX.Element {
     }));
   };
 
-  const onSubmit = (data: FormData) => {
-    console.log("lastForm=>",data)
-    // mutate(
-    //   {
-    //     entity: `township/${!!editeData ? "update" : "add"}`,
-    //     method: !!editeData ? "put" : "post",
-    //     data: formData,
-    //   },
-    //   {
-    //     onSuccess: (res: any) => {
-    //       if (!!editeData)
-    //         snackbar(
-    //           `به روز رسانی شهرستان انتخاب شده با موفقیت انجام شد`,
-    //           "success"
-    //         );
-    //       else snackbar(`ایجاد شهرستان جدید با موفقیت انجام شد`, "success");
-    //       refetch();
-    //       //   handleClose();
-    //     },
-    //     onError: () => {
-    //       snackbar("خطا در انجام عملیات", "error");
-    //     },
-    //   }
-    // );
+  const onSubmit = (data: FullInstituteType) => {
+    console.log("lastForm=>", data);
+    mutate(
+      {
+        // entity: `firm/${!!editeData ? "update" : "add"}`,
+        entity: `firm/save`,
+        // method: !!editeData ? "put" : "post",
+        method:  "post",
+        data: {
+          ...data,
+          registerPlaceId:data?.registerPlaceId?.value
+        },
+      },
+      {
+        onSuccess: (res: any) => {
+          console.log("res=>",res)
+          // if (!!editeData)
+          //   snackbar(
+          //     `به روز رسانی موسسه انتخاب شده با موفقیت انجام شد`,
+          //     "success"
+          //   );
+          // else 
+            snackbar(`ایجاد موسسه جدید با موفقیت انجام شد`, "success");
+          // refetch();
+          //   handleClose();
+        },
+        onError: () => {
+          snackbar("خطا در انجام عملیات", "error");
+        },
+      }
+    );
   };
+  const navigate=useNavigate();
   return (
     <Grid container justifyContent={"center"}>
       <Grid md={10.5} sm={11.5} xs={12} item>
         <Paper elevation={3} sx={{ p: 5, mt: 3, width: "100%" }}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={4}>
-              <Grid item md={11} display={"flex"} mb={1}>
-                <Inventory fontSize="large" />
-                <Typography variant="h5" >فرم اطلاعات موسسات</Typography>
+              <Grid item md={12} display={"flex"} justifyContent={"space-between"} mb={1}>
+                <Grid item display={"flex"}>
+                  <Inventory fontSize="large" />
+                  <Typography variant="h5">فرم اطلاعات موسسات</Typography>
+                </Grid>
+                <BackButton onBack={()=>navigate(-1)}/>
               </Grid>
               {formSteps.map((stepItem, stepIndex) => (
                 <Grid item container md={12} spacing={2} key={stepIndex}>
                   <Grid item md={12} width={"100vw"}>
-                  <FancyTicketDivider/>
+                    <FancyTicketDivider />
                   </Grid>
                   <Grid item md={12}>
-                    <Typography variant="h6" fontSize={"large"}>{steps[stepIndex]}</Typography>
+                    <Typography variant="h6" fontSize={"large"}>
+                      {stepItem?.name}
+                    </Typography>
                   </Grid>
                   {stepItem?.formItems?.map((item) => (
                     <Grid item xs={12} md={item.size.md} key={item.name}>
@@ -207,7 +247,12 @@ export default function FormSteps(): JSX.Element {
                 justifyContent="flex-end"
                 mt={2}
               >
-                <Button sx={{minWidth:"25%"}} variant="contained" startIcon={<Check />} type="submit">
+                <Button
+                  sx={{ minWidth: "25%" }}
+                  variant="contained"
+                  startIcon={<Check />}
+                  type="submit"
+                >
                   ثبت
                 </Button>
               </Grid>

@@ -12,7 +12,7 @@ interface FormItem {
 
 export const contactInfoItems = (setValue: (name: any, val: any) => void): FormItem[] => [
   {
-    name: "phone",
+    name: "officePhoneNo",
     inputType: "text",
     label: "تلفن",
     size: { md: 4 },
@@ -25,7 +25,7 @@ export const contactInfoItems = (setValue: (name: any, val: any) => void): FormI
     },
   },
   {
-    name: "fax",
+    name: "officeFaxNo",
     inputType: "text",
     label: "نمابر",
     size: { md: 4 },
@@ -37,7 +37,7 @@ export const contactInfoItems = (setValue: (name: any, val: any) => void): FormI
     },
   },
   {
-    name: "email",
+    name: "officeEmail",
     inputType: "text",
     label: "ایمیل",
     size: { md: 4 },
@@ -50,7 +50,7 @@ export const contactInfoItems = (setValue: (name: any, val: any) => void): FormI
     },
   },
   {
-    name: "website",
+    name: "officeWebSite",
     inputType: "text",
     label: "وب‌سایت",
     size: { md: 4 },
@@ -62,3 +62,55 @@ export const contactInfoItems = (setValue: (name: any, val: any) => void): FormI
     },
   },
 ];
+// export const contactInfoItems = (setValue: (name: any, val: any) => void): FormItem[] => [
+//   {
+//     name: "phone",
+//     inputType: "text",
+//     label: "تلفن",
+//     size: { md: 4 },
+//     rules: { 
+//       required: "تلفن الزامی است",
+//       pattern: {
+//         value: /^[0-9]{8,11}$/,
+//         message: "شماره تلفن باید بین 8 تا 11 رقم باشد"
+//       }
+//     },
+//   },
+//   {
+//     name: "fax",
+//     inputType: "text",
+//     label: "نمابر",
+//     size: { md: 4 },
+//     rules: { 
+//       pattern: {
+//         value: /^[0-9]{8,11}$/,
+//         message: "شماره نمابر باید بین 8 تا 11 رقم باشد"
+//       }
+//     },
+//   },
+//   {
+//     name: "email",
+//     inputType: "text",
+//     label: "ایمیل",
+//     size: { md: 4 },
+//     rules: { 
+//       required: "ایمیل الزامی است",
+//       pattern: {
+//         value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+//         message: "فرمت ایمیل نامعتبر است"
+//       }
+//     },
+//   },
+//   {
+//     name: "website",
+//     inputType: "text",
+//     label: "وب‌سایت",
+//     size: { md: 4 },
+//     rules: { 
+//       pattern: {
+//         value: /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,4})([/\w .-]*)*\/?$/,
+//         message: "فرمت وب‌سایت نامعتبر است"
+//       }
+//     },
+//   },
+// ];
