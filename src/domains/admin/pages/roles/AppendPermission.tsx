@@ -105,7 +105,7 @@ const AppendPermission = ({
     console.log("lastData=", data);
     mutate(
       {
-        entity: `user/modify-Permissions?userId=${editeData?.id}`,
+        entity: `role/modify-permission?id=${editeData?.id}`,
         method: "post",
         data: [...data.Permissions],
       },
@@ -113,7 +113,7 @@ const AppendPermission = ({
         onSuccess: (res: any) => {
           if (!!editeData)
             snackbar(
-              `به روز رسانی کاربر با مجوز های انتخاب شده با موفقیت انجام شد`,
+              `به روز رسانی نقش با مجوز های انتخاب شده با موفقیت انجام شد`,
               "success"
             );
           else snackbar(`ایجاد مجوز جدید با موفقیت انجام شد`, "success");
