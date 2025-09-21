@@ -29,7 +29,7 @@ import { ratingInfoItems } from "./forms/ratingInfoItems";
 import { specialInfoItems } from "./forms/specialInfoItems";
 import FancyTicketDivider from "components/FancyTicketDivider";
 import BackButton from "components/buttons/BackButton";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 // import MembershipInfo from './MembershipInfo';
 // import FinancialInfo from './FinancialInfo';
 // import ContactInfo from './ContactInfo';
@@ -50,6 +50,7 @@ const steps: string[] = [
 ];
 
 export default function FormSteps(): JSX.Element {
+  const {id}=useParams()
   const {
     handleSubmit,
     control,
@@ -162,10 +163,10 @@ export default function FormSteps(): JSX.Element {
     console.log("lastForm=>", data);
     mutate(
       {
-        // entity: `firm/${!!editeData ? "update" : "add"}`,
-        entity: `firm/save`,
-        // method: !!editeData ? "put" : "post",
-        method:  "post",
+        entity: `firm/${id!=="new" ? "update" : "add"}`,
+        // entity: `firm/save`,
+        method: id!=="new" ? "put" : "post",
+        // method:  "post",
         data: {
           ...data,
           registerPlaceId:data?.registerPlaceId?.value
@@ -174,12 +175,12 @@ export default function FormSteps(): JSX.Element {
       {
         onSuccess: (res: any) => {
           console.log("res=>",res)
-          // if (!!editeData)
-          //   snackbar(
-          //     `به روز رسانی موسسه انتخاب شده با موفقیت انجام شد`,
-          //     "success"
-          //   );
-          // else 
+          if (id!=="new")
+            snackbar(
+              `به روز رسانی موسسه انتخاب شده با موفقیت انجام شد`,
+              "success"
+            );
+          else 
             snackbar(`ایجاد موسسه جدید با موفقیت انجام شد`, "success");
           // refetch();
           //   handleClose();
