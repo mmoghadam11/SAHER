@@ -122,7 +122,7 @@ const VerticalTable: React.FC<VerticalTableProps> = ({
 
   // مدیریت تغییر صفحه
   const handleChangePage = (event: unknown, newPage: number) => {
-    setFilters({ ...filters, page: newPage });
+    setFilters({ ...filters, page: newPage+1 });
   };
 
   // مدیریت تغییر اندازه صفحه
