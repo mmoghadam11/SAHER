@@ -146,7 +146,7 @@ const AppendRole = ({
       <DialogContent>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={3} mt={1}>
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={12}>
               <Controller
                 name="roles"
                 control={control}

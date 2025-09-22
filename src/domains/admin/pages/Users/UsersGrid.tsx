@@ -1,6 +1,6 @@
-import { Close, ManageAccounts, Verified } from "@mui/icons-material";
+import { Close, Key, ManageAccounts, Verified } from "@mui/icons-material";
 import { Box, Chip, Grid, Typography } from "@mui/material";
-import { GridColDef } from "@mui/x-data-grid";
+import { GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import BackButton from "components/buttons/BackButton";
 import CreateNewItem from "components/buttons/CreateNewItem";
@@ -17,6 +17,8 @@ import ConfirmBox from "components/confirmBox/ConfirmBox";
 import VerticalTable from "components/dataGrid/VerticalTable";
 import { isMobile } from "react-device-detect";
 import AppendRole from "./components/AppendRole";
+import AppendFirm from "./components/AppendFirm";
+import SearchPannel from "components/form/SearchPannel";
 
 type Props = {};
 
@@ -74,6 +76,9 @@ const UsersGrid = (props: Props) => {
       renderCell: ({ row }: { row: any }) => {
         return (
           <TableActions
+            onEdit={() => {
+              navigate(`${row.id}`, { state: { userData: row } });
+            }}
             onAdd={{
               title: "افزودن نقش",
               function: () => {
@@ -81,8 +86,13 @@ const UsersGrid = (props: Props) => {
                 setAppendRoleFlag(true);
               },
             }}
-            onEdit={() => {
-              navigate(`${row.id}`, { state: { userData: row } });
+            onManage={{
+              title: "افزودن دسترسی",
+              icon:<Key color="secondary"/>,
+              function: () => {
+                setEditeData(row);
+                setAppendFirmFlag(true);
+              },
             }}
             onDelete={() => {
               setDeleteData(row);
@@ -126,6 +136,7 @@ const UsersGrid = (props: Props) => {
   };
   const [editeData, setEditeData] = useState<editeObjectType | null>(null);
   const [appendRoleFlag, setAppendRoleFlag] = useState(false);
+  const [appendFirmFlag, setAppendFirmFlag] = useState(false);
   const [deleteData, setDeleteData] = useState<any>(null);
   const [deleteFlag, setDeleteFlag] = useState(false);
   const [searchData, setSearchData] = useState({
@@ -184,12 +195,12 @@ const UsersGrid = (props: Props) => {
           <BackButton onBack={() => navigate(-1)} />
         </Box>
       </Grid>
-      {/* <SearchPannel<SearchData>
+      <SearchPannel<SearchData>
         searchItems={searchItems}
         searchData={searchData}
         setSearchData={setSearchData}
         setFilters={setFilters}
-      /> */}
+      />
       <Grid item md={11} sm={11} xs={12}>
         {StatesData_status === "success" ? (
           isMobile ? (
@@ -207,8 +218,16 @@ const UsersGrid = (props: Props) => {
               filters={filters}
               setFilters={setFilters}
               rowCount={StatesData?.totalElements}
+              // rowHeight={25}
+              getRowHeight={() => "auto"}
               autoHeight
               hideToolbar
+              // slots={{ toolbar: GridToolbar }}
+              // slotProps={{
+              //   toolbar: {
+              //     csvOptions: { disableToolbarButton: true },
+              //   },
+              // }}
             />
           )
         ) : null}
@@ -217,6 +236,13 @@ const UsersGrid = (props: Props) => {
         refetch={StatesData_refetch}
         appendRoleFlag={appendRoleFlag}
         setAppendRoleFlag={setAppendRoleFlag}
+        editeData={editeData}
+        setEditeData={setEditeData}
+      />
+      <AppendFirm
+        refetch={StatesData_refetch}
+        appendFirmFlag={appendFirmFlag}
+        setAppendFirmFlag={setAppendFirmFlag}
         editeData={editeData}
         setEditeData={setEditeData}
       />
