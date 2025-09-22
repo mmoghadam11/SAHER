@@ -1,9 +1,9 @@
 import React from "react";
-import { Box, IconButton, Tooltip } from "@mui/material";
+import { Box, Grid, IconButton, Tooltip } from "@mui/material";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
-import { AddCircleOutline } from "@mui/icons-material";
+import { AddCircleOutline, ManageAccountsOutlined } from "@mui/icons-material";
 
 type Props = {
   onEdit?: (record: any) => void;
@@ -13,40 +13,68 @@ type Props = {
     function: (record: any) => void;
     title: string;
   };
+  onManage?: {
+    function: (record: any) => void;
+    title: string;
+    icon?: any;
+  };
 };
 
-const TableActions: React.FC<Props> = ({ onEdit, onDelete, onView, onAdd }) => {
+const TableActions: React.FC<Props> = ({
+  onEdit,
+  onDelete,
+  onView,
+  onAdd,
+  onManage,
+}) => {
   return (
-    <Box>
+    <Grid container justifyContent="center">
       {onView && (
-        <Tooltip title="مشاهده">
-          <IconButton onClick={onView} color="primary">
-            <VisibilityOutlinedIcon />
-          </IconButton>
-        </Tooltip>
-      )}
-      {onAdd && (
-        <Tooltip title={onAdd.title}>
-          <IconButton onClick={onAdd.function} color="primary">
-            <AddCircleOutline />
-          </IconButton>
-        </Tooltip>
+        <Grid item>
+          <Tooltip title="مشاهده">
+            <IconButton onClick={onView} color="primary">
+              <VisibilityOutlinedIcon />
+            </IconButton>
+          </Tooltip>
+        </Grid>
       )}
       {onEdit && (
-        <Tooltip title="ویرایش">
-          <IconButton onClick={onEdit} color="info">
-            <EditOutlinedIcon />
-          </IconButton>
-        </Tooltip>
+        <Grid item>
+          <Tooltip title="ویرایش">
+            <IconButton onClick={onEdit} color="info">
+              <EditOutlinedIcon />
+            </IconButton>
+          </Tooltip>
+        </Grid>
+      )}
+      {onAdd && (
+        <Grid item>
+          <Tooltip title={onAdd.title}>
+            <IconButton onClick={onAdd.function} color="primary">
+              <AddCircleOutline />
+            </IconButton>
+          </Tooltip>
+        </Grid>
+      )}
+      {onManage && (
+        <Grid item>
+          <Tooltip title={onManage.title}>
+            <IconButton onClick={onManage.function} color="primary">
+              {onManage?.icon || <ManageAccountsOutlined />}
+            </IconButton>
+          </Tooltip>
+        </Grid>
       )}
       {onDelete && (
-        <Tooltip title="حذف">
-          <IconButton onClick={onDelete} color="error">
-            <DeleteOutlineOutlinedIcon />
-          </IconButton>
-        </Tooltip>
+        <Grid item>
+          <Tooltip title="حذف">
+            <IconButton onClick={onDelete} color="error">
+              <DeleteOutlineOutlinedIcon />
+            </IconButton>
+          </Tooltip>
+        </Grid>
       )}
-    </Box>
+    </Grid>
   );
 };
 
