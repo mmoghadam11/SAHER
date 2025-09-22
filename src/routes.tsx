@@ -20,6 +20,10 @@ import TownShipGrid from "domains/basic-data/TownShip/TownShipGrid";
 import CityGrid from "domains/basic-data/CityController/CityGrid";
 import FormSteps from "domains/Institute/FormSteps";
 import InstititeGrid from "domains/Institute/InstititeGrid";
+import UsersGrid from "domains/admin/pages/Users/UsersGrid";
+import AddUser from "domains/admin/pages/Users/AddUser";
+import RolesGrid from "domains/admin/pages/roles/RolesGrid";
+import PermissionGrid from "domains/admin/pages/permissions/PermissionGrid";
 
 const AppRoutes: React.FC = () => {
   const auth = useAuth();
@@ -38,10 +42,22 @@ const AppRoutes: React.FC = () => {
           <Route path="password" element={<Password />} />
         </Route>
         <Route element={<UserRoute />}>
+          <Route path="management">
+            <Route path="users">
+              <Route index element={<UsersGrid/>} />
+              <Route path=":id" element={<AddUser />} />
+            </Route>
+            <Route path="roles">
+              <Route index element={<RolesGrid/>} />
+            </Route>
+            <Route path="permissions">
+              <Route index element={<PermissionGrid/>} />
+            </Route>
+          </Route>
           <Route path="institutions">
             <Route path="information">
               <Route index element={<InstititeGrid/>} />
-              <Route path="new" element={<FormSteps />} />
+              <Route path=":id" element={<FormSteps />} />
             </Route>
             <Route path="personnels" element={<Welcome />} />
             <Route path="rating-test" element={<Welcome />} />

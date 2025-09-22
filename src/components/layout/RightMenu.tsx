@@ -105,23 +105,28 @@ const MENU_ITEMS: MenuItem[] = [
   {
     icon: <ManageAccounts />,
     title: "مدیریت سیستم",
-    url: "/managment",
+    url: "/management",
     access: ["city-showmenu"],
     menuChildren: [
       {
         
-        title: "مدیریت کاربران",
-        url: "password",
+        title: "کاربران",
+        url: "users",
         access: ["administrator","city-showmenu"],
       },
       {
-        title: "مدیریت اعضا",
+        title: "اعضا",
         url: "member",
         access: ["administrator"],
       },
       {
-        title: "خوش آمدید",
-        url: "welcome",
+        title: "نقش",
+        url: "roles",
+        access: ["member", "administrator","city-showmenu"],
+      },
+      {
+        title: "مجوز",
+        url: "permissions",
         access: ["member", "administrator","city-showmenu"],
       },
     ],
