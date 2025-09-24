@@ -1,42 +1,35 @@
-import React, { forwardRef } from "react";
-import { IBaseInput } from "types/render";
+import React, { forwardRef, useEffect } from "react";
+import { IBaseInput, IRenderFormInput } from "types/render";
 import { Box, TextField, FormHelperText } from "@mui/material";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import DatePicker from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import "./CustomDatePicker.css";
+import moment from "jalali-moment";
 
 type Props = {
   value: string | null;
   setDay: (value: string) => void;
   error?: string;
   disabled?: boolean;
-  onChange?: (value: any) => void;
 } & IBaseInput<"date">;
 
-const CustomDatePicker: React.FC<Props> = forwardRef((props, ref) => {
-  const {
-    value,
-    setDay,
-    label,
-    disabled = false,
-    error,
-    name,
-    onChange,
-  } = props;
+const CustomDatePicker: React.FC<IRenderFormInput> = forwardRef( ({ value, setDay, label, disabled = false, error, name },ref) => {
   if (disabled) {
     return (
       <TextField
-        inputRef={ref}
         label={label}
-        value={typeof value === "string" ? value : "convertDayToString(value)"}
+        // value={typeof value === "string" ? value : "convertDayToString(value)"}
+        value={typeof value === "string" ?   moment(new Date(value)).format("jYYYY/jMM/jDD") : "convertDayToString(value)"}
         disabled
         fullWidth
         size="small"
       />
     );
   }
+  // console.log("DatePiker=>",value)
+  // console.log("DatePiker-jalali",moment(new Date(value)).format("jYYYY/jMM/jDD"))
   return (
     <Box sx={{ width: "100%" }}>
       <Box
@@ -85,12 +78,7 @@ const CustomDatePicker: React.FC<Props> = forwardRef((props, ref) => {
           containerClassName="date-input"
           onChange={(date) => {
             let temp = date?.valueOf();
-            // if (!temp) return false;
-            if (!temp) {
-              setDay("");
-              if (onChange) onChange("");
-              return false;
-            }
+            if (!temp) return false;
             //@ts-ignore
             let isoDate = new Date(temp);
             //@ts-ignore
@@ -98,27 +86,16 @@ const CustomDatePicker: React.FC<Props> = forwardRef((props, ref) => {
 
             //@ts-ignore
             setDay(temp);
-            if (onChange) onChange(temp); // فراخوانی onChange برای react-hook-form
           }}
-          value={value}
-          style={{
-            height: "100%",
-            minWidth: "100px",
-            borderRadius: "4px 0px 0px 4px",
-            margin: "0px",
-            width: "100%",
-          }}
+          // لعنت بر این یک خط لعنتی
+          // value={typeof value === "string" ? value !==""?new Date(value).toISOString():value:value}
+          value={!!value?new Date(value).toISOString():value}
+          style={{ height: "100%", minWidth: "100px", borderRadius: "4px 0px 0px 4px", margin: "0px", width: "100%" }}
           placeholder="انتخاب تاریخ ..."
           name={name}
         />
         {value && (
-          <HighlightOffIcon
-            onClick={() => {
-              setDay("");
-              if (onChange) onChange("");
-            }}
-            sx={{ ml: -3, color: (theme) => theme.palette.grey[600] }}
-          />
+          <HighlightOffIcon onClick={() => setDay("")} sx={{ ml: -3, color: (theme) => theme.palette.grey[600] }} />
         )}
       </Box>
       {error && <FormHelperText error={true}>{error}</FormHelperText>}

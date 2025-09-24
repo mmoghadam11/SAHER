@@ -24,6 +24,7 @@ import DatePicker from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import moment from "jalali-moment";
 
 const RenderFormInput: React.FC<IRenderFormInput> = forwardRef((props, ref) => {
   const {
@@ -72,12 +73,14 @@ const RenderFormInput: React.FC<IRenderFormInput> = forwardRef((props, ref) => {
   }
   if (props.inputType === "date") {
     const { setValue, watch, format } = props;
+    // console.log("elementProps",elementProps.value)
+    // console.log("jalali",moment(new Date(elementProps.value)).format("jYYYY/jMM/jDD"))
     return (
       <CustomDatePicker
         ref={ref}
         name={name}
         label={label}
-        setDay={(day) => {
+        setDay={(day:any) => {
           setValue(name, day);
           // همچنین مقدار را به react-hook-form گزارش دهید
           if (controllerField.onChange) {
@@ -85,8 +88,9 @@ const RenderFormInput: React.FC<IRenderFormInput> = forwardRef((props, ref) => {
           }
         }}
         // value={watch(name)}
-        value={controllerField.value || elementProps.value}
+        disabled={ elementProps?.disabled}
         format={format}
+        value={ elementProps.value}
         {...elementProps}
         {...controllerField}
         error={errors?.[name]?.message}
@@ -217,10 +221,11 @@ const RenderFormInput: React.FC<IRenderFormInput> = forwardRef((props, ref) => {
           );
           return temp;
         }}
-        value={
-          externalValue !== undefined ? externalValue : controllerField?.value
-        }
-        onChange={(event, newValue, reason) => {
+        // value={
+        //   externalValue !== undefined ? externalValue : controllerField?.value
+        // }
+         value={controllerField?.value || null}
+        onChange={(event, newValue:any, reason) => {
           // Call custom onChange if provided
           if (customOnChange) {
             customOnChange(event, newValue, reason);
@@ -238,6 +243,12 @@ const RenderFormInput: React.FC<IRenderFormInput> = forwardRef((props, ref) => {
             size="medium"
           />
         )}
+        isOptionEqualToValue={(option:any, value:any) => {
+        // اگر value هنوز تنظیم نشده (null/undefined)، false برگردان
+        if (!value) return false;
+        // مقایسه شناسه‌های منحصر به فرد
+        return option.value === value.value;
+      }}
       />
     );
   }
@@ -247,6 +258,7 @@ const RenderFormInput: React.FC<IRenderFormInput> = forwardRef((props, ref) => {
     if (status === "loading") return <LoadingState label={label} />;
     if (status === "error" && refetch)
       return <ErrorState label={label} refetch={refetch} />;
+    
     return (
       <FormControl fullWidth>
         <InputLabel id={`select-input-${name}`}>{label}</InputLabel>
@@ -256,7 +268,7 @@ const RenderFormInput: React.FC<IRenderFormInput> = forwardRef((props, ref) => {
           label={label}
           {...controllerField}
           {...elementProps}
-          value={controllerField.value || ""}
+          value={controllerField.value===false?"false":controllerField.value || ""}
           error={Boolean(errors?.[name]?.message)}
           size="small"
         >
