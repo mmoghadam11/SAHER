@@ -26,7 +26,7 @@ export const membershipInfoItems= (setValue: (name:any,val: any) => void): FormI
     rules: { required: "تاریخ عضویت الزامی است" },
     elementProps: {
       setDay: (value: any) => {
-        setValue("membershipDate",value)
+        setValue("memberShipDate",value)
             },
       value: "", // مقدار اولیه
     },

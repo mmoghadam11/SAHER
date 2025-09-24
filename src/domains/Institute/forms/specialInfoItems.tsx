@@ -10,7 +10,7 @@ interface FormItem {
   elementProps?: any;
 }
 
-export const specialInfoItems = (setValue: (name: any, val: any) => void): FormItem[] => [
+export const specialInfoItems = (setValue: (name: any, val: any) => void,relOptions:any): FormItem[] => [
   {
     name: "burseTrustee",
     inputType: "select",
@@ -104,14 +104,27 @@ export const specialInfoItems = (setValue: (name: any, val: any) => void): FormI
     },
   },
   {
-    name: "relationshipTypeName",
-    inputType: "text",
-    label: "نوع ارتباط با جامعه",
-    size: { md: 3 },
-    rules: { 
-      required: "نوع ارتباط با جامعه الزامی است"
+      name: "cdRelationshipTypeId", // تغییر نام فیلد به province
+      inputType: "autocomplete", // تغییر به autocomplete
+      label: "نوع ارتباط با جامعه",
+      size: { md: 3 },
+      options: relOptions?.content?.map((item:any)=>({value:item?.id,title:item?.value}))??[{value:0,title:""}],
+      rules: {
+        required: "نوع ارتباط با جامعه الزامی است",
+      },
+      elementProps: {
+        // اضافه کردن propsهای خاص برای Autocomplete
+        renderOption: (props: any, option: any) => (
+          <li {...props} key={option.value}>
+            {option.title}
+          </li>
+        ),
+        isOptionEqualToValue: (option: any, value: any) => {
+          return option.value === value?.value;
+        },
+        getOptionLabel: (option: any) => option.title || "",
+      },
     },
-  },
   {
     name: "auditorName",
     inputType: "text",

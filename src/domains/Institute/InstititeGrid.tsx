@@ -1,4 +1,4 @@
-import { Article, Search } from "@mui/icons-material";
+import { Article, Search, Settings } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -76,10 +76,16 @@ const InstititeGrid = (props: Props) => {
             onEdit={() => {
               setEditeData(row);
               setAddModalFlag(true);
+              navigate(`${row.id}`,{state: {firmData: row} })
             }}
             onDelete={() => {
               setDeleteData(row);
               setDeleteFlag(true);
+            }}
+            onManage={{
+              title:"جزئیات موسسه",
+              function:()=>{navigate(`details/${row.id}`,{state: {firmData: row} })},
+              icon:<Settings/>
             }}
           />
         );

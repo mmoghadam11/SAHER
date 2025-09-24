@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Stepper,
   Step,
@@ -29,7 +29,7 @@ import { ratingInfoItems } from "./forms/ratingInfoItems";
 import { specialInfoItems } from "./forms/specialInfoItems";
 import FancyTicketDivider from "components/FancyTicketDivider";
 import BackButton from "components/buttons/BackButton";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 // import MembershipInfo from './MembershipInfo';
 // import FinancialInfo from './FinancialInfo';
 // import ContactInfo from './ContactInfo';
@@ -50,48 +50,62 @@ const steps: string[] = [
 ];
 
 export default function FormSteps(): JSX.Element {
-  const {id}=useParams()
+  const { id } = useParams();
+  const { state } = useLocation();
   const {
     handleSubmit,
     control,
     formState: { errors },
     reset,
     setValue,
+    getValues,
   } = useForm<any>();
   const Auth = useAuth();
   const snackbar = useSnackbar();
   const { mutate, isLoading } = useMutation({
     mutationFn: Auth?.serverCall,
   });
+
   const {
-      data: cityOptions,
-      status: cityOptions_status,
-      refetch: cityOptions_refetch,
-    } = useQuery<any>({
-      // queryKey: [process.env.REACT_APP_API_URL + `/api/unit-allocations${paramsSerializer(filters)}`],
-      // queryKey: [`/api/v1/common-type/find-all${paramsSerializer(filters)}`],
-      queryKey: [`city/search-all`],
-      queryFn: Auth?.getRequest,
-      select: (res: any) => {
-        return res?.data;
-      },
-    } as any);
+    data: cityOptions,
+    status: cityOptions_status,
+    refetch: cityOptions_refetch,
+  } = useQuery<any>({
+    // queryKey: [process.env.REACT_APP_API_URL + `/api/unit-allocations${paramsSerializer(filters)}`],
+    // queryKey: [`/api/v1/common-type/find-all${paramsSerializer(filters)}`],
+    queryKey: [`city/search-all`],
+    queryFn: Auth?.getRequest,
+    select: (res: any) => {
+      return res?.data;
+    },
+  } as any);
   const {
-      data: ownerOptions,
-      status: ownerOptions_status,
-      refetch: ownerOptions_refetch,
-    } = useQuery<any>({
-      // queryKey: [process.env.REACT_APP_API_URL + `/api/unit-allocations${paramsSerializer(filters)}`],
-      // queryKey: [`/api/v1/common-type/find-all${paramsSerializer(filters)}`],
-      queryKey: [`common-data/search?size=10&page=1&typeId=15`],
-      queryFn: Auth?.getRequest,
-      select: (res: any) => {
-        return res?.data;
-      },
-    } as any);
-  const [formData, setFormData] = useState<{
-    [K in keyof FullInstituteType]: string;
-  }>({} as { [K in keyof FullInstituteType]: string });
+    data: relOptions,
+    status: relOptions_status,
+    refetch: relOptions_refetch,
+  } = useQuery<any>({
+    queryKey: [`common-data/search?size=10&page=1&typeId=16`],
+    queryFn: Auth?.getRequest,
+    select: (res: any) => {
+      return res?.data;
+    },
+  } as any);
+  const {
+    data: ownerOptions,
+    status: ownerOptions_status,
+    refetch: ownerOptions_refetch,
+  } = useQuery<any>({
+    // queryKey: [process.env.REACT_APP_API_URL + `/api/unit-allocations${paramsSerializer(filters)}`],
+    // queryKey: [`/api/v1/common-type/find-all${paramsSerializer(filters)}`],
+    queryKey: [`common-data/search?size=10&page=1&typeId=15`],
+    queryFn: Auth?.getRequest,
+    select: (res: any) => {
+      return res?.data;
+    },
+  } as any);
+  // const [formData, setFormData] = useState<{
+  //   [K in keyof FullInstituteType]: string;
+  // }>({} as { [K in keyof FullInstituteType]: string });
   interface FormData {
     id?: any;
     name: string;
@@ -120,7 +134,7 @@ export default function FormSteps(): JSX.Element {
   const formSteps: FormStep[] = [
     {
       name: "اطلاعات پایه موسسه",
-      formItems: getBasicInfoItems(setValue,cityOptions),
+      formItems: getBasicInfoItems(setValue, cityOptions),
     },
     {
       name: "اطلاعات عضویت و پروانه",
@@ -128,7 +142,7 @@ export default function FormSteps(): JSX.Element {
     },
     {
       name: "اطلاعات مالی و اداری",
-      formItems: financialInfoItems(setValue,ownerOptions),
+      formItems: financialInfoItems(setValue, ownerOptions),
     },
     {
       name: "اطلاعات تماس",
@@ -148,62 +162,129 @@ export default function FormSteps(): JSX.Element {
     },
     {
       name: "اطلاعات تخصصی",
-      formItems: specialInfoItems(setValue),
+      formItems: specialInfoItems(setValue, relOptions),
     },
     // به همین ترتیب برای مراحل دیگر
   ];
-  const handleInputChange = (fieldName: any, value: string) => {
-    setFormData((prev: any) => ({
-      ...prev,
-      [fieldName]: value,
-    }));
-  };
+  // const handleInputChange = (fieldName: any, value: string) => {
+  //   setFormData((prev: any) => ({
+  //     ...prev,
+  //     [fieldName]: value,
+  //   }));
+  // };
 
   const onSubmit = (data: FullInstituteType) => {
     console.log("lastForm=>", data);
     mutate(
       {
-        entity: `firm/${id!=="new" ? "update" : "add"}`,
+        entity: `firm/${id !== "new" ? "update" : "save"}`,
         // entity: `firm/save`,
-        method: id!=="new" ? "put" : "post",
+        method: id !== "new" ? "put" : "post",
         // method:  "post",
         data: {
           ...data,
-          registerPlaceId:data?.registerPlaceId?.value
+          cdRegisterPlaceId: data?.cdRegisterPlaceId?.value,
+          cdRelationshipTypeId: data?.cdRelationshipTypeId?.value,
         },
       },
       {
         onSuccess: (res: any) => {
-          console.log("res=>",res)
-          if (id!=="new")
+          console.log("res=>", res);
+          if (id !== "new")
             snackbar(
               `به روز رسانی موسسه انتخاب شده با موفقیت انجام شد`,
               "success"
             );
-          else 
-            snackbar(`ایجاد موسسه جدید با موفقیت انجام شد`, "success");
+          else snackbar(`ایجاد موسسه جدید با موفقیت انجام شد`, "success");
           // refetch();
           //   handleClose();
         },
-        onError: () => {
-          snackbar("خطا در انجام عملیات", "error");
+        onError: (err: any) => {
+          console.log("ErrorRes=>", err);
+          // snackbar("خطا در انجام عملیات", "error");
+         
+          // پیام کلی
+          const mainMessage = err?.data?.message || "خطایی رخ داده است";
+          // ارورهای جزئی توی data.errors
+          const errors = err?.data?.errors ? Object.values(err?.data.errors) : [];
+          // همه پیام‌ها رو یکی کن
+          const finalMessage = [...errors].join(" - ");
+          // enqueueSnackbar(finalMessage, { variant: "error" });
+          snackbar(mainMessage+": ", "error");
+          snackbar(finalMessage, "error");
+          // snackbar(err.data.message, "error");
+          // snackbar(res.data.errors, "error");
         },
       }
     );
   };
-  const navigate=useNavigate();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (state?.firmData) {
+      const registerPlaceObject = cityOptions?.find(
+        (city: any) => city.id === state.firmData.cdRegisterPlaceId
+      );
+
+      // پیدا کردن آبجکت کامل نوع ارتباط بر اساس ID
+      const relationshipTypeObject = relOptions?.content?.find(
+        (rel: any) => rel.id === state.firmData.cdRelationshipTypeId
+      );
+      console.log("registerPlaceObject", {
+        value: registerPlaceObject?.id,
+        title: registerPlaceObject?.name,
+      });
+      console.log("relationshipTypeObject", {
+        value: registerPlaceObject?.id,
+        title: registerPlaceObject?.value,
+      });
+
+      // ساختن کپی اصلاح شده
+      const cleanedFirmData = Object.fromEntries(
+        Object.entries(state.firmData).map(([key, value]) => {
+          if (value === false) {
+            return [key, "false"]; // تغییر false به استرینگ
+          }
+          return [key, value];
+        })
+      );
+
+      reset({
+        ...cleanedFirmData,
+        cdRegisterPlaceId: {
+          value: registerPlaceObject?.id,
+          title: registerPlaceObject?.name,
+        },
+        cdRelationshipTypeId: {
+          value: relationshipTypeObject?.id,
+          title: relationshipTypeObject?.value,
+        },
+      });
+    }
+  }, [state, cityOptions, relOptions, reset]);
+  // useEffect(() => {
+  //   snackbar("1","error")
+  //   snackbar("2","error")
+  //   snackbar("3","info")
+  // }, [])
+  
   return (
     <Grid container justifyContent={"center"}>
       <Grid md={10.5} sm={11.5} xs={12} item>
         <Paper elevation={3} sx={{ p: 5, mt: 3, width: "100%" }}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={4}>
-              <Grid item md={12} display={"flex"} justifyContent={"space-between"} mb={1}>
+              <Grid
+                item
+                md={12}
+                display={"flex"}
+                justifyContent={"space-between"}
+                mb={1}
+              >
                 <Grid item display={"flex"}>
                   <Inventory fontSize="large" />
                   <Typography variant="h5">فرم اطلاعات موسسات</Typography>
                 </Grid>
-                <BackButton onBack={()=>navigate(-1)}/>
+                <BackButton onBack={() => navigate(-1)} />
               </Grid>
               {formSteps.map((stepItem, stepIndex) => (
                 <Grid item container md={12} spacing={2} key={stepIndex}>
@@ -226,11 +307,12 @@ export default function FormSteps(): JSX.Element {
                             controllerField={field}
                             errors={errors}
                             {...item}
-                            value={formData[item.name]}
+                            // value={formData[item.name]}
+                            value={getValues()[item.name] ?? ""}
                             onChange={(
                               e: React.ChangeEvent<HTMLInputElement>
                             ) => {
-                              handleInputChange(item.name, e.target.value);
+                              // handleInputChange(item.name, e.target.value);
                               field.onChange(e);
                             }}
                           />
