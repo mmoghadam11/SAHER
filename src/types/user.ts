@@ -31,19 +31,23 @@ export interface ISelectedUser {
 }
 
 export interface ILoggedInUser {
-  firstName: string;
-  lastName: string;
-  fatherName: string;
-  nationalCode: string;
-  projectKey :string;
-  previous_price: string;
-  betaja_price: string;
-  h_price: string;
-  confirmChoiceDate : string | null;
-  member_id: string | null;
-  contract_number: string | null;
-  master: boolean;
-  confirmSelection?: boolean;
-  finalityOrder?: boolean;
-  systemStep: string;
+  firstname: string;
+  lastname: string;
 }
+// export interface ILoggedInUser {
+//   firstName: string;
+//   lastName: string;
+//   fatherName: string;
+//   nationalCode: string;
+//   projectKey :string;
+//   previous_price: string;
+//   betaja_price: string;
+//   h_price: string;
+//   confirmChoiceDate : string | null;
+//   member_id: string | null;
+//   contract_number: string | null;
+//   master: boolean;
+//   confirmSelection?: boolean;
+//   finalityOrder?: boolean;
+//   systemStep: string;
+// }

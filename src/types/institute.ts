@@ -14,7 +14,7 @@ export interface FullInstituteType {
   // registrationLocation: string;
 
   // establishmentDate: string;
-  registerPlaceId:any;
+  cdRegisterPlaceId:any;
   status: string;
 
   /**@description اطلاعات عضویت و پروانه */
@@ -102,7 +102,8 @@ export interface FullInstituteType {
   courtAccountsTrustee: string;
   moneyLaunderingCombatingManagerName: string;
   moneyLaunderingCombatingManagerNationalcode: string;
-  relationshipTypeName: string;
+  // relationshipTypeName: string;
+  cdRelationshipTypeId: any;
   auditorName: string;
   officialNewspaperMergeDate: string;
   mergingInstitutionName: string;
