@@ -135,23 +135,23 @@ const MENU_ITEMS: MenuItem[] = [
     icon: <BusinessCenter />,
     title: "موسسات و اعضاء",
     url: "/institutions",
-    access: ["city-showmenu"],
+    access: ["city-showmenu","township-showmenu"],
     menuChildren: [
       {
         title: "اطلاعات موسسات",
         url: "information",
-        access: ["administrator","city-showmenu"],
+        access: ["administrator","city-showmenu","township-showmenu"],
       },
       {
         // title: "مشخصات اشخاص",
         title: "کارکنان موسسان",
         url: "personnels",
-        access: ["administrator","city-showmenu"],
+        access: ["administrator","city-showmenu","township-showmenu"],
       },
       {
         title: "آزمون رتبه بندی",
         url: "rating-test",
-        access: ["administrator","city-showmenu"],
+        access: ["administrator","city-showmenu","township-showmenu"],
       },
       {
         title: "متقاضیان آزمون",

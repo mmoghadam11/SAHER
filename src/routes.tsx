@@ -24,6 +24,7 @@ import UsersGrid from "domains/admin/pages/Users/UsersGrid";
 import AddUser from "domains/admin/pages/Users/AddUser";
 import RolesGrid from "domains/admin/pages/roles/RolesGrid";
 import PermissionGrid from "domains/admin/pages/permissions/PermissionGrid";
+import DetaileTabs from "domains/Institute/setting/DetaileTabs";
 
 const AppRoutes: React.FC = () => {
   const auth = useAuth();
@@ -57,6 +58,9 @@ const AppRoutes: React.FC = () => {
           <Route path="institutions">
             <Route path="information">
               <Route index element={<InstititeGrid/>} />
+              <Route path="details/:id">
+                <Route index element={<DetaileTabs />} />
+              </Route>
               <Route path=":id" element={<FormSteps />} />
             </Route>
             <Route path="personnels" element={<Welcome />} />
