@@ -197,6 +197,7 @@ const InstititeGrid = (props: Props) => {
             filters={filters}
             setFilters={setFilters}
             rowCount={StatesData?.totalElements}
+            getRowHeight={() => "auto"}
             autoHeight
             hideToolbar
           />
