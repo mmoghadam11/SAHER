@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 // import "./Login.css";
 import Footer from "../component/Footer";
 import {
+  Box,
   Button,
   FormControl,
   Grid,
@@ -24,12 +25,12 @@ import { isMobile } from "react-device-detect";
 const getValidationSchema = (mode) => {
   return Yup.object().shape({
     username: Yup.string().when([], {
-      is: () => mode === 'LOGIN' || mode === 'FORGOT_PASSWORD',
+      is: () => mode === "LOGIN" || mode === "FORGOT_PASSWORD",
       then: (schema) => schema.required("نام کاربری را وارد نمایید"),
       otherwise: (schema) => schema.notRequired(),
     }),
     password: Yup.string().when([], {
-      is: () => mode === 'LOGIN',
+      is: () => mode === "LOGIN",
       then: (schema) => schema.required("رمز عبور را وارد نمایید"),
       otherwise: (schema) => schema.notRequired(),
     }),
@@ -39,14 +40,19 @@ const getValidationSchema = (mode) => {
     //   otherwise: (schema) => schema.notRequired(),
     // }),
     newPassword: Yup.string().when([], {
-      is: () => mode === 'CHANGE_PASSWORD',
+      is: () => mode === "CHANGE_PASSWORD",
       then: (schema) => schema.required("رمز عبور جدید را وارد نمایید"),
       otherwise: (schema) => schema.notRequired(),
     }),
     repeatPassword: Yup.string().when([], {
-      is: () => mode === 'CHANGE_PASSWORD',
-      then: (schema) => schema.required("تکرار رمز عبور را وارد نمایید")
-        .oneOf([Yup.ref('newPassword'), null], 'رمزهای عبور باید یکسان باشند'),
+      is: () => mode === "CHANGE_PASSWORD",
+      then: (schema) =>
+        schema
+          .required("تکرار رمز عبور را وارد نمایید")
+          .oneOf(
+            [Yup.ref("newPassword"), null],
+            "رمزهای عبور باید یکسان باشند"
+          ),
       otherwise: (schema) => schema.notRequired(),
     }),
   });
@@ -56,7 +62,7 @@ const Login = () => {
   const { storeToken, setContract, storeRefreshToken } = useAuth();
   const { setNotification } = useErrorHandler();
 
-  const [formMode, setFormMode] = useState('LOGIN'); // 'LOGIN', 'FORGOT_PASSWORD', 'CHANGE_PASSWORD'
+  const [formMode, setFormMode] = useState("LOGIN"); // 'LOGIN', 'FORGOT_PASSWORD', 'CHANGE_PASSWORD'
   const [showPassword, setShowPassword] = useState(false);
   const [lockSendBtn, setLockSendBtn] = useState(false);
   const [captchaImage, setCaptchaImage] = useState();
@@ -79,7 +85,7 @@ const Login = () => {
       captcha: "",
       newPassword: "",
       repeatPassword: "",
-    }
+    },
   });
 
   useEffect(() => {
@@ -117,10 +123,7 @@ const Login = () => {
       }),
     };
 
-    fetch(
-      process.env.REACT_APP_API_URL + "auth/authenticate",
-      requestOptions
-    )
+    fetch(process.env.REACT_APP_API_URL + "auth/authenticate", requestOptions)
       .then((response) => {
         if (response.status == 200) {
           setNotification(200, "ورود موفق", "success");
@@ -150,9 +153,15 @@ const Login = () => {
           // window.localStorage.setItem("keycloak", result.access_token);
           storeToken(result.access_token);
           storeRefreshToken(result?.refresh_token);
-          localStorage.setItem('username', result.username);
-          localStorage.setItem('permission', JSON.stringify(result.permission || []));
-          localStorage.setItem('accessMenu', JSON.stringify(result.accessMenu || []));
+          localStorage.setItem("username", result.username);
+          localStorage.setItem(
+            "permission",
+            JSON.stringify(result.permission || [])
+          );
+          localStorage.setItem(
+            "accessMenu",
+            JSON.stringify(result.accessMenu || [])
+          );
           // setContract(
           //   "",
           //   "",
@@ -173,7 +182,7 @@ const Login = () => {
           // window.location.pathname = "/welcome";
         }
       })
-      .catch((error) => { })
+      .catch((error) => {})
       .finally(() => setRefreshCount(refreshCount + 1));
   };
 
@@ -252,7 +261,7 @@ const Login = () => {
     setLockSendBtn(true);
     fetch(
       process.env.REACT_APP_API_URL +
-      `auth/password-ignore?userName=${username}`,
+        `auth/password-ignore?userName=${username}`,
       requestOptions
     )
       .then((response) => {
@@ -279,10 +288,10 @@ const Login = () => {
 
   const handleFormSubmit = (data) => {
     switch (formMode) {
-      case 'LOGIN':
+      case "LOGIN":
         login(data.username, data.password);
         break;
-      case 'FORGOT_PASSWORD':
+      case "FORGOT_PASSWORD":
         forgotPass(data.username);
         break;
       // case 'CHANGE_PASSWORD':
@@ -295,47 +304,78 @@ const Login = () => {
 
   const renderFormFields = () => {
     switch (formMode) {
-      case 'LOGIN':
+      case "LOGIN":
         return (
           <Grid container item spacing={2} justifyContent="center">
             <Grid item xs={11}>
-              <Controller name="username" control={control} render={({ field }) => (
-                <TextField {...field} label="نام کاربری" fullWidth error={!!errors.username} helperText={errors.username?.message} />
-              )}
+              <Controller
+                name="username"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label="نام کاربری"
+                    fullWidth
+                    error={!!errors.username}
+                    helperText={errors.username?.message}
+                  />
+                )}
               />
             </Grid>
             <Grid item xs={11}>
-              <Controller name="password" control={control} render={({ field }) => (
-                <TextField {...field} type={showPassword ? "text" : "password"} label="رمز عبور" fullWidth error={!!errors.password} helperText={errors.password?.message} InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  )
-                }}
-                />
-              )}
+              <Controller
+                name="password"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    type={showPassword ? "text" : "password"}
+                    label="رمز عبور"
+                    fullWidth
+                    error={!!errors.password}
+                    helperText={errors.password?.message}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={() => setShowPassword(!showPassword)}
+                            edge="end"
+                          >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                )}
               />
             </Grid>
             {/* The captcha section from your original code can be added here if you uncomment it in the schema */}
           </Grid>
         );
 
-      case 'FORGOT_PASSWORD':
+      case "FORGOT_PASSWORD":
         return (
           <Grid container item spacing={2} justifyContent="center">
             <Grid item xs={11}>
-              <Controller name="username" control={control} render={({ field }) => (
-                <TextField {...field} label="نام کاربری" fullWidth error={!!errors.username} helperText={errors.username?.message} />
-              )}
+              <Controller
+                name="username"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label="نام کاربری"
+                    fullWidth
+                    error={!!errors.username}
+                    helperText={errors.username?.message}
+                  />
+                )}
               />
             </Grid>
           </Grid>
         );
 
-      case 'CHANGE_PASSWORD':
+      case "CHANGE_PASSWORD":
         return (
           <Grid container item spacing={2} justifyContent="center">
             <Grid item xs={11}>
@@ -343,23 +383,43 @@ const Login = () => {
                 name="newPassword"
                 control={control}
                 render={({ field }) => (
-                  <TextField {...field} type={showPassword ? "text" : "password"} label="رمز عبور جدید" fullWidth error={!!errors.newPassword} helperText={errors.newPassword?.message} InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                          {showPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    )
-                  }}
+                  <TextField
+                    {...field}
+                    type={showPassword ? "text" : "password"}
+                    label="رمز عبور جدید"
+                    fullWidth
+                    error={!!errors.newPassword}
+                    helperText={errors.newPassword?.message}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={() => setShowPassword(!showPassword)}
+                            edge="end"
+                          >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
                   />
                 )}
               />
             </Grid>
             <Grid item xs={11}>
-              <Controller name="repeatPassword" control={control} render={({ field }) => (
-                <TextField {...field} type="password" label="تکرار رمز عبور" fullWidth error={!!errors.repeatPassword} helperText={errors.repeatPassword?.message} />
-              )}
+              <Controller
+                name="repeatPassword"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    type="password"
+                    label="تکرار رمز عبور"
+                    fullWidth
+                    error={!!errors.repeatPassword}
+                    helperText={errors.repeatPassword?.message}
+                  />
+                )}
               />
             </Grid>
           </Grid>
@@ -372,32 +432,75 @@ const Login = () => {
 
   const getFormTitle = () => {
     switch (formMode) {
-      case 'FORGOT_PASSWORD': return 'فراموشی رمز عبور';
-      case 'CHANGE_PASSWORD': return 'انتخاب رمز عبور جدید';
-      default: return null;
+      case "FORGOT_PASSWORD":
+        return "فراموشی رمز عبور";
+      case "CHANGE_PASSWORD":
+        return "انتخاب رمز عبور جدید";
+      default:
+        return null;
     }
   };
 
   const getSubmitButtonText = () => {
     switch (formMode) {
-      case 'FORGOT_PASSWORD': return 'پیامک رمز عبور';
-      case 'CHANGE_PASSWORD': return 'ثبت رمز جدید';
-      default: return 'ورود';
+      case "FORGOT_PASSWORD":
+        return "پیامک رمز عبور";
+      case "CHANGE_PASSWORD":
+        return "ثبت رمز جدید";
+      default:
+        return "ورود";
     }
   };
 
   return (
-    <Grid container justifyContent={{ xs: "center", md: 'right' }} alignItems="center" sx={{ minHeight: "100vh" }}>
-      <Grid container item md={4} xs={11} sm={8} spacing={3} alignContent="center">
-        <Paper elevation={3} sx={{p:5,m:1}} >
+    <Grid
+      container
+      justifyContent={{ xs: "center", md: "right" }}
+      alignItems="center"
+      sx={{ minHeight: "100vh" }}
+    >
+      <Grid
+        container
+        item
+        md={4}
+        xs={11}
+        sm={8}
+        spacing={3}
+        alignContent="center"
+      >
+        <Paper elevation={3} sx={{ p: 5, m: 1 }}>
           <Grid item xs={12} textAlign="center">
-            <Typography variant="h6" fontSize={"large"}>سامانه اطلاعات</Typography>
-            <Typography variant="h5" color="#023e8a">حسابداران رسمی</Typography>
+            <Typography variant="h6" fontSize={"large"}>
+              سامانه اطلاعات
+            </Typography>
+            <Typography variant="h5" color="#023e8a">
+              حسابداران رسمی
+            </Typography>
+            <Box
+              height={"20vh"}
+              sx={{
+                my:1,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <img
+                src="/assets/images/IACPA.Main_Logo.png"
+                alt="center"
+                style={{
+                  width: "40%",
+                  height: "auto",
+                  maxHeight: "100%",
+                  objectFit: "contain",
+                }}
+              />
+            </Box>
           </Grid>
 
           <Grid item xs={12} className="login__wrapper">
             <form onSubmit={handleSubmit(handleFormSubmit)}>
-              <FormControl fullWidth >
+              <FormControl fullWidth>
                 <Grid container spacing={2} justifyContent="center">
                   {getFormTitle() && (
                     <Grid item xs={12} textAlign="center">
@@ -408,18 +511,23 @@ const Login = () => {
                   {renderFormFields()}
 
                   <Grid item xs={11}>
-                    <Button type="submit" variant="contained" fullWidth disabled={lockSendBtn}>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      fullWidth
+                      disabled={lockSendBtn}
+                    >
                       {getSubmitButtonText()}
                     </Button>
                   </Grid>
 
                   <Grid item xs={12} textAlign="center">
-                    {formMode !== 'LOGIN' ? (
-                      <Button onClick={() => setFormMode('LOGIN')}>
+                    {formMode !== "LOGIN" ? (
+                      <Button onClick={() => setFormMode("LOGIN")}>
                         بازگشت به صفحه ورود
                       </Button>
                     ) : (
-                      <Button onClick={() => setFormMode('FORGOT_PASSWORD')}>
+                      <Button onClick={() => setFormMode("FORGOT_PASSWORD")}>
                         رمز عبور خود را فراموش کرده اید؟
                       </Button>
                     )}
@@ -429,12 +537,16 @@ const Login = () => {
             </form>
           </Grid>
         </Paper>
-
       </Grid>
 
       {!isMobile && (
-        <Grid item md={6.5} sx={{ display: { xs: 'none', md: 'block' } }}>
-          <img src="/assets/images/login.jpg" alt="center" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        <Grid item md={6.5} sx={{ display: { xs: "none", md: "block" } }}>
+          {/* newlogin + P:7 */}
+          <img
+            src="/assets/images/login.jpg"
+            alt="center"
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
         </Grid>
       )}
 
