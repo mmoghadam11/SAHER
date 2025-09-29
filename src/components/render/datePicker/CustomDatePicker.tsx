@@ -90,7 +90,7 @@ const CustomDatePicker: React.FC<IRenderFormInput> = forwardRef( ({ value, setDa
           // لعنت بر این یک خط لعنتی
           // value={typeof value === "string" ? value !==""?new Date(value).toISOString():value:value}
           value={!!value?new Date(value).toISOString():value}
-          style={{ height: "100%", minWidth: "100px", borderRadius: "4px 0px 0px 4px", margin: "0px", width: "100%" }}
+          style={{ height: "100%", minWidth: "100px", borderRadius: "4px 0px 0px 4px", margin: "0px", width: "100%", fontFamily: `Vazirmatn` }}
           placeholder="انتخاب تاریخ ..."
           name={name}
         />
