@@ -15,7 +15,7 @@ export default function ConfirmBox({ open, title, message, handleClose, handleSu
           onClick={handleSubmit}
           variant="contained"
           endIcon={<CheckIcon />}
-          color="success"
+          color="primary"
           sx={{ mx: 2, width: "150px" }}
           autoFocus
         >
