@@ -70,10 +70,10 @@ const DirectorGrid = ({ setActiveTab }: Props) => {
               setEditeData(row);
               setAddModalFlag(true)
             }}
-            // onDelete={() => {
-            //   setDeleteData(row);
-            //   setDeleteFlag(true);
-            // }}
+            onDelete={() => {
+              setDeleteData(row);
+              setDeleteFlag(true);
+            }}
           />
         );
       },
@@ -219,7 +219,7 @@ const DirectorGrid = ({ setActiveTab }: Props) => {
         editeData={editeData}
         setEditeData={setEditeData}
       />
-      {/* <ConfirmBox
+      <ConfirmBox
         open={deleteFlag}
         handleClose={() => {
           setDeleteFlag(false);
@@ -228,7 +228,7 @@ const DirectorGrid = ({ setActiveTab }: Props) => {
         handleSubmit={() =>
           mutate(
             {
-              entity: `user/delete/${deleteData?.id}`,
+              entity: `firm-director/remove/${deleteData?.id}`,
               method: "delete",
             },
             {
@@ -242,9 +242,9 @@ const DirectorGrid = ({ setActiveTab }: Props) => {
             }
           )
         }
-        message={`آیا از حذف ${deleteData?.firstname} ${deleteData?.lastname} مطمین میباشید؟`}
+        message={`آیا از حذف ${deleteData?.firstName} ${deleteData?.lastName} مطمعین میباشید؟`}
         title={"درخواست حذف!"}
-      /> */}
+      />
     </Grid>
   );
 };

@@ -13,17 +13,17 @@ import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import paramsSerializer from "services/paramsSerializer";
 import { PAGINATION_DEFAULT_VALUE } from "shared/paginationValue";
-import ConfirmBox from "components/confirmBox/ConfirmBox";
 import VerticalTable from "components/dataGrid/VerticalTable";
 import { isMobile } from "react-device-detect";
-import SearchPannel from "components/form/SearchPannel";
-import AddEduInfo from "./AddEduInfo";
+import AddContiniuingEdu from "./AddContiniuingEdu";
+import moment from "jalali-moment";
+import ConfirmBox from "components/confirmBox/ConfirmBox";
 
 type Props = {
   setActiveTab: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const EduInfoGrid = ({ setActiveTab }: Props) => {
+const ContinuingEducationGrid = ({ setActiveTab }: Props) => {
   const { id } = useParams();
   const Auth = useAuth();
   const snackbar = useSnackbar();
@@ -39,14 +39,13 @@ const EduInfoGrid = ({ setActiveTab }: Props) => {
   const [filters, setFilters] = useState<any>({
     ...PAGINATION_DEFAULT_VALUE,
     firm: id,
-    termName:""
   });
   const {
     data: StatesData,
     status: StatesData_status,
     refetch: StatesData_refetch,
   } = useQuery<any>({
-    queryKey: [`firm-edu-controller/search${paramsSerializer(filters)}`],
+    queryKey: [`firm-prof-edu/find-by-firm${paramsSerializer(filters)}`],
     queryFn: Auth?.getRequest,
     select: (res: any) => {
       return res?.data;
@@ -54,9 +53,17 @@ const EduInfoGrid = ({ setActiveTab }: Props) => {
     enabled: true,
   } as any);
   const columns: GridColDef[] = [
-    { field: "termName", headerName: "نام ترم", flex: 1 },
-    { field: "applicatorName", headerName: "درخواست کننده", flex: 1 },
-    { field: "hour_count", headerName: "مقدار ساعت", flex: 1 },
+    { field: "auditingFirmName", headerName: "نام موسسه ", flex: 1 },
+    { field: "cdTermNameValue", headerName: "نام دوره آموزشی", flex: 1 },
+    { field: "cdEducationTypeValue", headerName: "نوع آموزش", flex: 1 },
+    { field: "termDuration", headerName: "مدت زمان ترم آموزشی(روز)", flex: 1 },
+    { field: "certificateDate", headerName: "تاریخ گواهی نامه", flex: 1,
+      renderCell: ({ row }: { row: any }) => {
+              return (
+                <Typography>{moment(new Date(row?.certificateDate)).format("jYYYY/jMM/jDD")}</Typography>
+              );
+            },
+     },
     {
       headerName: "عملیات",
       field: "action",
@@ -80,30 +87,7 @@ const EduInfoGrid = ({ setActiveTab }: Props) => {
       },
     },
   ];
-  interface SearchData {
-    name: string;
-    code: string;
-  }
-  type searchType = {
-    name: string;
-    inputType: string;
-    label: string;
-    size: any;
-  };
-  const searchItems: searchType[] = [
-    {
-      name: "name",
-      inputType: "text",
-      label: "نام کاربر",
-      size: { md: 4 },
-    },
-    // {
-    //   name: "code",
-    //   inputType: "text",
-    //   label: "کد کاربر",
-    //   size: { md: 4 },
-    // },
-  ];
+  
   type editeObjectType = {
     id: number;
     value: string;
@@ -124,29 +108,6 @@ const EduInfoGrid = ({ setActiveTab }: Props) => {
     console.log(filters);
   }, [filters]);
 
-  function searching() {
-    mutate(
-      {
-        entity: `/api/v1/common-data/search`,
-        method: "post",
-        //   data:
-      },
-      {
-        onSuccess: (res: any) => {
-          if (res?.status == 200 && res?.data) {
-            snackbar(
-              "واحد های انتخابی با موفقیت به لیست شما افزوده شد.",
-              "success"
-            );
-            // navigate('/unitselection', { state: {from: "add-unit", noBack: noBack} })
-          } else snackbar("خطا در افزودن واحد ها به لیست", "error");
-        },
-        onError: (err) => {
-          snackbar("خطا در افزودن واحد ها به لیست", "error");
-        },
-      }
-    );
-  }
   return (
     <Grid container item md={12} justifyContent="center">
       <Grid
@@ -161,12 +122,12 @@ const EduInfoGrid = ({ setActiveTab }: Props) => {
       >
         <Box display={"flex"}>
           <Toc fontSize="large" />
-          <Typography variant="h5">لیست اطلاعات آموزشی</Typography>
+          <Typography variant="h5">لیست سوابق مستمر آموزشی</Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"}>
           <CreateNewItem
             sx={{ mr: 2 }}
-            name="اطلاعات آموزشی"
+            name="سوابق مستمر آموزشی"
             // onClick={() => navigate("new")}
             onClick={() => {
               // navigate("new")
@@ -176,12 +137,7 @@ const EduInfoGrid = ({ setActiveTab }: Props) => {
           />
         </Box>
       </Grid>
-      {/* <SearchPannel<SearchData>
-        searchItems={searchItems}
-        searchData={searchData}
-        setSearchData={setSearchData}
-        setFilters={setFilters}
-      /> */}
+      
       <Grid item md={11} sm={11} xs={12} >
         {StatesData_status === "success" ? (
           isMobile ? (
@@ -199,7 +155,6 @@ const EduInfoGrid = ({ setActiveTab }: Props) => {
               filters={filters}
               setFilters={setFilters}
               rowCount={StatesData?.totalElements}
-              // rowHeight={25}
               getRowHeight={() => "auto"}
               autoHeight
               hideToolbar
@@ -213,7 +168,7 @@ const EduInfoGrid = ({ setActiveTab }: Props) => {
           )
         ) : <Typography variant="body1">اطلاعاتی برای نمایش موجود نمیباشد</Typography>}
       </Grid>
-      <AddEduInfo
+      <AddContiniuingEdu
         refetch={StatesData_refetch}
         addModalFlag={addModalFlag}
         setAddModalFlag={setAddModalFlag}
@@ -229,7 +184,7 @@ const EduInfoGrid = ({ setActiveTab }: Props) => {
         handleSubmit={() =>
           mutate(
             {
-              entity: `firm-edu-controller/remove/${deleteData?.id}`,
+              entity: `firm-prof-edu/remove/${deleteData?.id}`,
               method: "delete",
             },
             {
@@ -243,11 +198,11 @@ const EduInfoGrid = ({ setActiveTab }: Props) => {
             }
           )
         }
-        message={`آیا از حذف ${deleteData?.termName} مطمین میباشید؟`}
+        message={`آیا از حذف ${deleteData?.cdTermNameValue} مطمعین میباشید؟`}
         title={"درخواست حذف!"}
       />
     </Grid>
   );
 };
 
-export default EduInfoGrid
+export default ContinuingEducationGrid

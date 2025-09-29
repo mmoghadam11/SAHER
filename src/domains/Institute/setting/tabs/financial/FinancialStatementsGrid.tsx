@@ -17,13 +17,14 @@ import ConfirmBox from "components/confirmBox/ConfirmBox";
 import VerticalTable from "components/dataGrid/VerticalTable";
 import { isMobile } from "react-device-detect";
 import SearchPannel from "components/form/SearchPannel";
-import AddEduInfo from "./AddEduInfo";
+import AddFinancial from "./AddFinancial";
+import moment from "jalali-moment";
 
 type Props = {
   setActiveTab: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const EduInfoGrid = ({ setActiveTab }: Props) => {
+const FinancialStatementsGrid = ({ setActiveTab }: Props) => {
   const { id } = useParams();
   const Auth = useAuth();
   const snackbar = useSnackbar();
@@ -39,14 +40,14 @@ const EduInfoGrid = ({ setActiveTab }: Props) => {
   const [filters, setFilters] = useState<any>({
     ...PAGINATION_DEFAULT_VALUE,
     firm: id,
-    termName:""
+    year: "",
   });
   const {
     data: StatesData,
     status: StatesData_status,
     refetch: StatesData_refetch,
   } = useQuery<any>({
-    queryKey: [`firm-edu-controller/search${paramsSerializer(filters)}`],
+    queryKey: [`firm-financial-statement/search${paramsSerializer(filters)}`],
     queryFn: Auth?.getRequest,
     select: (res: any) => {
       return res?.data;
@@ -54,9 +55,18 @@ const EduInfoGrid = ({ setActiveTab }: Props) => {
     enabled: true,
   } as any);
   const columns: GridColDef[] = [
-    { field: "termName", headerName: "نام ترم", flex: 1 },
-    { field: "applicatorName", headerName: "درخواست کننده", flex: 1 },
-    { field: "hour_count", headerName: "مقدار ساعت", flex: 1 },
+    { field: "signatoryName", headerName: "امضا کننده", flex: 1 },
+    {
+      field: "boardApprovalDate",
+      headerName: "تاریخ تصویب هیئت مدیره",
+      flex: 1,
+      renderCell: ({ row }: { row: any }) => {
+        return (
+          <Typography>{moment(new Date(row?.boardApprovalDate)).format("jYYYY/jMM/jDD")}</Typography>
+        );
+      },
+    },
+    { field: "fiscalYear", headerName: "سال مالی", flex: 1 },
     {
       headerName: "عملیات",
       field: "action",
@@ -69,7 +79,7 @@ const EduInfoGrid = ({ setActiveTab }: Props) => {
             onEdit={() => {
               // navigate(`${row.id}`, { state: { userData: row } });
               setEditeData(row);
-              setAddModalFlag(true)
+              setAddModalFlag(true);
             }}
             onDelete={() => {
               setDeleteData(row);
@@ -161,17 +171,17 @@ const EduInfoGrid = ({ setActiveTab }: Props) => {
       >
         <Box display={"flex"}>
           <Toc fontSize="large" />
-          <Typography variant="h5">لیست اطلاعات آموزشی</Typography>
+          <Typography variant="h5">لیست صورتحساب مالی</Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"}>
           <CreateNewItem
             sx={{ mr: 2 }}
-            name="اطلاعات آموزشی"
+            name="صورتحساب مالی"
             // onClick={() => navigate("new")}
             onClick={() => {
               // navigate("new")
               // setActiveTab(1);
-              setAddModalFlag(true)
+              setAddModalFlag(true);
             }}
           />
         </Box>
@@ -182,7 +192,7 @@ const EduInfoGrid = ({ setActiveTab }: Props) => {
         setSearchData={setSearchData}
         setFilters={setFilters}
       /> */}
-      <Grid item md={11} sm={11} xs={12} >
+      <Grid item md={11} sm={11} xs={12}>
         {StatesData_status === "success" ? (
           isMobile ? (
             <VerticalTable
@@ -211,9 +221,13 @@ const EduInfoGrid = ({ setActiveTab }: Props) => {
               // }}
             />
           )
-        ) : <Typography variant="body1">اطلاعاتی برای نمایش موجود نمیباشد</Typography>}
+        ) : (
+          <Typography variant="body1">
+            اطلاعاتی برای نمایش موجود نمیباشد
+          </Typography>
+        )}
       </Grid>
-      <AddEduInfo
+      <AddFinancial
         refetch={StatesData_refetch}
         addModalFlag={addModalFlag}
         setAddModalFlag={setAddModalFlag}
@@ -229,7 +243,7 @@ const EduInfoGrid = ({ setActiveTab }: Props) => {
         handleSubmit={() =>
           mutate(
             {
-              entity: `firm-edu-controller/remove/${deleteData?.id}`,
+              entity: `firm-financial-statement/remove/${deleteData?.id}`,
               method: "delete",
             },
             {
@@ -243,11 +257,11 @@ const EduInfoGrid = ({ setActiveTab }: Props) => {
             }
           )
         }
-        message={`آیا از حذف ${deleteData?.termName} مطمین میباشید؟`}
+        message={`آیا از حذف ${deleteData?.signatoryName} مطمعین میباشید؟`}
         title={"درخواست حذف!"}
       />
     </Grid>
   );
 };
 
-export default EduInfoGrid
+export default FinancialStatementsGrid;
