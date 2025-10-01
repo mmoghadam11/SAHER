@@ -7,7 +7,7 @@ export const ProfessionalFormItems = (
   {
     name: "dang",
     inputType: "text",
-    label: "دانگ",
+    label: "درصد سهم الشرکه شریک",
     size: { md: 4 },
     rules: { 
       pattern: {
