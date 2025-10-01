@@ -11,6 +11,7 @@ export interface FormItem {
   options?: any[];
   elementProps?: any;
   placeholder?:string;
+  storeValueAs?:string;
 }
 
 export const DirectorItems = (

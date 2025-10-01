@@ -74,7 +74,7 @@ const Navbar: React.FC<Props> = ({ open, hideRightMenu, handleDrawerOpen }) => {
         }}
       >
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }} className="account-menu">
-          {
+          {/* {
             Auth?.userInfo?.member_id ?
             (<Button
               className="account-menu-btn"
@@ -87,7 +87,7 @@ const Navbar: React.FC<Props> = ({ open, hideRightMenu, handleDrawerOpen }) => {
             >
               پروفایل
             </Button>) : null
-          }
+          } */}
           <Box className="account-menu-btn" sx={{ display: "flex", alignItems: "center" }}>
             <Typography variant="button">روشنایی</Typography>
             <MaterialUISwitch
@@ -224,8 +224,8 @@ const Navbar: React.FC<Props> = ({ open, hideRightMenu, handleDrawerOpen }) => {
             {
               isMobile ? null :
               <>
-                <Typography variant="body2" color="inherit" fontWeight={600}>
-                  {Auth?.userInfo?.firstName + " " + Auth?.userInfo?.lastName}
+                <Typography variant="caption" color="inherit" fontWeight={600}>
+                  {Auth?.userInfo?.firstName + " " + Auth?.userInfo?.lastName+" "+"عزیز"}
                 </Typography>
                 <Typography variant="caption" margin={"5px"}>خوش آمدید!</Typography>
               </>

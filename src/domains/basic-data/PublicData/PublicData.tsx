@@ -1,7 +1,8 @@
-import { Article, Search } from "@mui/icons-material";
+import { Article, Search, Settings } from "@mui/icons-material";
 import { Box, Button, Grid, Paper, Typography } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import CreateNewItem from "components/buttons/CreateNewItem";
 import TavanaDataGrid from "components/dataGrid/TavanaDataGrid";
 import SearchPannel from "components/form/SearchPannel";
 import RenderFormInput from "components/render/formInputs/RenderFormInput";
@@ -13,6 +14,8 @@ import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import paramsSerializer from "services/paramsSerializer";
 import { PAGINATION_DEFAULT_VALUE } from "shared/paginationValue";
+import AddPublicData from "./pages/components/AddPublicData";
+import ConfirmBox from "components/confirmBox/ConfirmBox";
 
 type Props = {};
 
@@ -32,6 +35,10 @@ const PublicData = (props: Props) => {
     ...PAGINATION_DEFAULT_VALUE,
     name: "",
   });
+  const [addModalFlag, setAddModalFlag] = useState(false);
+  const [deleteFlag, setDeleteFlag] = useState(false);
+  const [editeData, setEditeData] = useState(null);
+  const [deleteData, setDeleteData] = useState<any>(null);
   const {
     data: basicData,
     status: basicData_status,
@@ -61,8 +68,19 @@ const PublicData = (props: Props) => {
       renderCell: ({ row }: { row: any }) => {
         return (
           <TableActions
+            onManage={{
+              icon: <Settings color="primary" />,
+              function: () => {
+                navigate(`${row.id}/${row.typeName}`);
+              },
+            }}
             onEdit={() => {
-              navigate(`${row.id}/${row.typeName}`);
+              setEditeData(row);
+              setAddModalFlag(true);
+            }}
+            onDelete={() => {
+              setDeleteData(row);
+              setDeleteFlag(true);
             }}
           />
         );
@@ -126,9 +144,24 @@ const PublicData = (props: Props) => {
   }
   return (
     <Grid container justifyContent="center">
-      <Grid item md={11} sm={11} xs={12} display={"flex"} m={2}>
-        <Article fontSize="large" />
-        <Typography variant="h5">اطلاعات پایه</Typography>
+      <Grid
+        item
+        md={11}
+        sm={11}
+        xs={12}
+        display={"flex"}
+        justifyContent={"space-between"}
+        m={2}
+      >
+        <Box display={"flex"}>
+          <Article fontSize="large" />
+          <Typography variant="h5">اطلاعات پایه</Typography>
+        </Box>
+        <CreateNewItem
+          sx={{ mr: 2 }}
+          name="اطلاعات پایه"
+          onClick={() => setAddModalFlag(true)}
+        />
       </Grid>
       <SearchPannel<SearchData>
         searchItems={searchItems}
@@ -144,11 +177,45 @@ const PublicData = (props: Props) => {
             filters={filters}
             setFilters={setFilters}
             rowCount={basicData?.totalElements}
+            getRowHeight={() => "auto"}
             autoHeight
             hideToolbar
           />
         ) : null}
       </Grid>
+      <AddPublicData
+        refetch={basicData_refetch}
+        addModalFlag={addModalFlag}
+        setAddModalFlag={setAddModalFlag}
+        editeData={editeData}
+        setEditeData={setEditeData}
+      />
+      <ConfirmBox
+        open={deleteFlag}
+        handleClose={() => {
+          setDeleteFlag(false);
+          setDeleteData(null);
+        }}
+        handleSubmit={() =>
+          mutate(
+            {
+              entity: `common-type/delete/${deleteData?.id}`,
+              method: "delete",
+            },
+            {
+              onSuccess: (res: any) => {
+                snackbar(`کاربر انتخاب شده با موفقیت حذف شد`, "success");
+                basicData_refetch();
+              },
+              onError: () => {
+                snackbar("خطا در حذف ", "error");
+              },
+            }
+          )
+        }
+        message={`آیا از حذف ${deleteData?.typeName}-${deleteData?.className} مطمعین میباشید؟`}
+        title={"درخواست حذف!"}
+      />
     </Grid>
   );
 };

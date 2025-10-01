@@ -80,7 +80,7 @@ const RenderFormInput: React.FC<IRenderFormInput> = forwardRef((props, ref) => {
         ref={ref}
         name={name}
         label={label}
-        setDay={(day:any) => {
+        setDay={(day: any) => {
           setValue(name, day);
           // همچنین مقدار را به react-hook-form گزارش دهید
           if (controllerField.onChange) {
@@ -88,9 +88,9 @@ const RenderFormInput: React.FC<IRenderFormInput> = forwardRef((props, ref) => {
           }
         }}
         // value={watch(name)}
-        disabled={ elementProps?.disabled}
+        disabled={elementProps?.disabled}
         format={format}
-        value={ elementProps.value}
+        value={elementProps.value}
         {...elementProps}
         {...controllerField}
         error={errors?.[name]?.message}
@@ -195,11 +195,33 @@ const RenderFormInput: React.FC<IRenderFormInput> = forwardRef((props, ref) => {
   //   );
   // }
   if (props.inputType === "autocomplete") {
-    let { options, status, refetch, customOnChange, externalValue } = props;
+    let {
+      options,
+      status,
+      refetch,
+      customOnChange,
+      externalValue,
+      storeValueAs = "object",
+    } = props;
     if (status === "loading") return <LoadingState label={label} />;
     if (status === "error" && refetch)
       return <ErrorState label={label} refetch={refetch} />;
 
+    // const getDisplayValue = () => {
+    //   const currentValue = controllerField.value;
+
+    //   if (
+    //     storeValueAs === "id" &&
+    //     (typeof currentValue === "number" || typeof currentValue === "string")
+    //   ) {
+    //     return (
+    //       options?.find((option: TOption) => option.value === currentValue) ||
+    //       null
+    //     );
+    //   }
+
+    //   return currentValue || null;
+    // };
     return (
       <Autocomplete
         ref={ref}
@@ -224,14 +246,18 @@ const RenderFormInput: React.FC<IRenderFormInput> = forwardRef((props, ref) => {
         // value={
         //   externalValue !== undefined ? externalValue : controllerField?.value
         // }
-         value={controllerField?.value || null}
-        onChange={(event, newValue:any, reason) => {
+        value={controllerField?.value || null}
+        onChange={(event, newValue: any, reason) => {
+          let valueToStore = newValue;
+          if (storeValueAs === "id") {
+            valueToStore = newValue ? newValue.value : null;
+          }
           // Call custom onChange if provided
           if (customOnChange) {
             customOnChange(event, newValue, reason);
           }
           // Also call react-hook-form's onChange
-          controllerField.onChange(newValue);
+          controllerField.onChange(valueToStore);
         }}
         renderInput={(params) => (
           <TextField
@@ -243,12 +269,12 @@ const RenderFormInput: React.FC<IRenderFormInput> = forwardRef((props, ref) => {
             size="medium"
           />
         )}
-        isOptionEqualToValue={(option:any, value:any) => {
-        // اگر value هنوز تنظیم نشده (null/undefined)، false برگردان
-        if (!value) return false;
-        // مقایسه شناسه‌های منحصر به فرد
-        return option.value === value.value;
-      }}
+        isOptionEqualToValue={(option: any, value: any) => {
+          // اگر value هنوز تنظیم نشده (null/undefined)، false برگردان
+          if (!value) return false;
+          // مقایسه شناسه‌های منحصر به فرد
+          return option.value === value.value;
+        }}
       />
     );
   }
@@ -258,7 +284,7 @@ const RenderFormInput: React.FC<IRenderFormInput> = forwardRef((props, ref) => {
     if (status === "loading") return <LoadingState label={label} />;
     if (status === "error" && refetch)
       return <ErrorState label={label} refetch={refetch} />;
-    
+
     return (
       <FormControl fullWidth>
         <InputLabel id={`select-input-${name}`}>{label}</InputLabel>
@@ -268,7 +294,11 @@ const RenderFormInput: React.FC<IRenderFormInput> = forwardRef((props, ref) => {
           label={label}
           {...controllerField}
           {...elementProps}
-          value={controllerField.value===false?"false":controllerField.value || ""}
+          value={
+            controllerField.value === false
+              ? "false"
+              : controllerField.value || ""
+          }
           error={Boolean(errors?.[name]?.message)}
           size="small"
         >
@@ -303,6 +333,12 @@ const RenderFormInput: React.FC<IRenderFormInput> = forwardRef((props, ref) => {
   // }
   if (props.inputType === "checkbox") {
     const { disabled = false, onClick = () => {} } = elementProps;
+    let val =
+      controllerField.value === "false"
+        ? false
+        : controllerField.value === "true"
+        ? true
+        : controllerField.value;
     return (
       <FormGroup>
         <FormControlLabel
@@ -311,13 +347,19 @@ const RenderFormInput: React.FC<IRenderFormInput> = forwardRef((props, ref) => {
               name={name}
               size="small"
               disabled={disabled}
-              checked={controllerField.value}
-              onChange={controllerField.onChange}
+              // defaultChecked={val}
+              checked={val}
+              onChange={(e) => {
+                controllerField.onChange(e.target.checked);
+              }}
+              // onChange={controllerField.onChange}
+              onBlur={controllerField.onBlur}
+              ref={controllerField.ref}
             />
           }
           label={<Typography variant="body2">{label}</Typography>}
           onClick={onClick}
-          {...controllerField}
+          // {...controllerField}
           {...elementProps}
         />
         {Boolean(errors?.[name]?.message) && (

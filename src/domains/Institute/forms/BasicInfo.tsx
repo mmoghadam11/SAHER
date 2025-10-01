@@ -95,18 +95,6 @@ export const getBasicInfoItems = (
       rules: {
         required: "انتخاب شهر الزامی است",
       },
-      elementProps: {
-        // اضافه کردن propsهای خاص برای Autocomplete
-        renderOption: (props: any, option: any) => (
-          <li {...props} key={option.value}>
-            {option.title}
-          </li>
-        ),
-        isOptionEqualToValue: (option: any, value: any) => {
-          return option.value === value?.value;
-        },
-        getOptionLabel: (option: any) => option.title || "",
-      },
     },
   ];
  

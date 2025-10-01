@@ -31,8 +31,8 @@ export interface ISelectedUser {
 }
 
 export interface ILoggedInUser {
-  firstname: string;
-  lastname: string;
+  firstName: string;
+  lastName: string;
 }
 // export interface ILoggedInUser {
 //   firstName: string;

@@ -56,13 +56,13 @@ const CustomDatePicker: React.FC<IRenderFormInput> = forwardRef( ({ value, setDa
             let element = document.getElementsByName(name);
             element?.[0].focus();
           }}
-          component="legend"
+          // component="legend"
           fontSize={12}
           sx={{
             paddingLeft: 0.5,
             height: "100%",
             borderRadius: "4px 0px 0px 4px",
-            backgroundColor: (theme) => theme.palette.grey[300],
+            backgroundColor: (theme) => theme.palette.mode === "dark"?theme.palette.grey[400]:theme.palette.grey[300],
             display: "flex",
             alignItems: "center",
             // mr: 2,
@@ -90,7 +90,7 @@ const CustomDatePicker: React.FC<IRenderFormInput> = forwardRef( ({ value, setDa
           // لعنت بر این یک خط لعنتی
           // value={typeof value === "string" ? value !==""?new Date(value).toISOString():value:value}
           value={!!value?new Date(value).toISOString():value}
-          style={{ height: "100%", minWidth: "100px", borderRadius: "4px 0px 0px 4px", margin: "0px", width: "100%", fontFamily: `Vazirmatn` }}
+          style={{ height: "100%", minWidth: "100px", borderRadius: "4px 0px 0px 4px", margin: "0px", width: "100%", fontFamily: `Vazirmatn`}}
           placeholder="انتخاب تاریخ ..."
           name={name}
         />

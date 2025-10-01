@@ -11,11 +11,11 @@ type Props = {
   onView?: (record: any) => void;
   onAdd?: {
     function: (record: any) => void;
-    title: string;
+    title?: string;
   };
   onManage?: {
     function: (record: any) => void;
-    title: string;
+    title?: string;
     icon?: any;
   };
 };
@@ -49,7 +49,7 @@ const TableActions: React.FC<Props> = ({
       )}
       {onAdd && (
         <Grid item>
-          <Tooltip title={onAdd.title}>
+          <Tooltip title={onAdd.title??"افزودن"}>
             <IconButton onClick={onAdd.function} color="primary">
               <AddCircleOutline />
             </IconButton>
@@ -58,7 +58,7 @@ const TableActions: React.FC<Props> = ({
       )}
       {onManage && (
         <Grid item>
-          <Tooltip title={onManage.title}>
+          <Tooltip title={onManage.title??"جزئیات"}>
             <IconButton onClick={onManage.function} color="primary">
               {onManage?.icon || <ManageAccountsOutlined />}
             </IconButton>

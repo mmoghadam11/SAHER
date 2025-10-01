@@ -268,7 +268,7 @@ const FirmContractGrid = ({ setActiveTab }: Props) => {
             }
           )
         }
-        message={`آیا از حذف قرارداد ${deleteData?.cdContractTypeName} واقع در تاریخ ${moment(deleteData?.contractPreparationDate).format("jYYYY/jMM/jDD")} مطمین میباشید؟`}
+        message={`آیا از حذف قرارداد ${deleteData?.cdContractTypeName} واقع در تاریخ ${moment(deleteData?.contractPreparationDate).format("jYYYY/jMM/jDD")} مطمعین میباشید؟`}
         title={"درخواست حذف!"}
       />
     </Grid>

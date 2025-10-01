@@ -225,7 +225,7 @@ const TownShipGrid = (props: Props) => {
             }
           )
         }
-        message={`آیا از حذف ${deleteData?.name} واقع در استان ${deleteData?.provinceName} مطمین میباشید؟`}
+        message={`آیا از حذف ${deleteData?.name} واقع در استان ${deleteData?.provinceName} مطمعین میباشید؟`}
         title={"درخواست حذف!"}
       />
     </Grid>

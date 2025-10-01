@@ -25,6 +25,10 @@ import AddUser from "domains/admin/pages/Users/AddUser";
 import RolesGrid from "domains/admin/pages/roles/RolesGrid";
 import PermissionGrid from "domains/admin/pages/permissions/PermissionGrid";
 import DetaileTabs from "domains/Institute/setting/DetaileTabs";
+import MemberShipGrid from "domains/memberShip/MemberShipGrid";
+import AddMembership from "domains/memberShip/AddMembership";
+import WorkgroupGrid from "domains/workgroup/WorkgroupGrid";
+import AddWorkgroup from "domains/workgroup/AddWorkgroup";
 
 const AppRoutes: React.FC = () => {
   const auth = useAuth();
@@ -63,7 +67,14 @@ const AppRoutes: React.FC = () => {
               </Route>
               <Route path=":id" element={<FormSteps />} />
             </Route>
-            <Route path="personnels" element={<Welcome />} />
+            <Route path="personnels" >
+              <Route index element={<MemberShipGrid/>} />
+              <Route path=":id" element={<AddMembership />} />
+            </Route>
+            <Route path="workgroup" >
+              <Route index element={<WorkgroupGrid/>} />
+              <Route path=":id" element={<AddWorkgroup/>} />
+            </Route>
             <Route path="rating-test" element={<Welcome />} />
             <Route path="exam-applicants" element={<Welcome />} />
             <Route path="membership-fee" element={<Welcome />} />

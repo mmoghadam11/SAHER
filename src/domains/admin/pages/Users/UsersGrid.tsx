@@ -269,7 +269,7 @@ const UsersGrid = (props: Props) => {
             }
           )
         }
-        message={`آیا از حذف ${deleteData?.firstname} ${deleteData?.lastname} مطمین میباشید؟`}
+        message={`آیا از حذف ${deleteData?.firstname} ${deleteData?.lastname} مطمعین میباشید؟`}
         title={"درخواست حذف!"}
       />
     </Grid>

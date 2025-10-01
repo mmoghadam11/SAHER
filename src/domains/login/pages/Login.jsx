@@ -162,23 +162,10 @@ const Login = () => {
             "accessMenu",
             JSON.stringify(result.accessMenu || [])
           );
-          // setContract(
-          //   "",
-          //   "",
-          //   "",
-          //   "",
-          //   "",
-          //   "",
-          //   "",
-          //   "",
-          //   null,
-          //   null,
-          //   null,
-          //   false,
-          //   false,
-          //   false,
-          //   ""
-          // );
+          setContract(
+            result.firstName,
+            result.lastName,
+          );
           // window.location.pathname = "/welcome";
         }
       })
@@ -457,7 +444,7 @@ const Login = () => {
       container
       justifyContent={{ xs: "center", md: "right" }}
       alignItems="center"
-      sx={{ minHeight: "100vh" }}
+      sx={{ minHeight: "100vh", backgroundColor: "" }}
     >
       <Grid
         container
@@ -479,7 +466,7 @@ const Login = () => {
             <Box
               height={"20vh"}
               sx={{
-                my:1,
+                my: 1,
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
@@ -540,10 +527,12 @@ const Login = () => {
       </Grid>
 
       {!isMobile && (
-        <Grid item md={6.5} sx={{ display: { xs: "none", md: "block" } }}>
+        <Grid item md={6.5} sx={{ display: { xs: "none", md: "block" }
+        // , p: 7
+         }}>
           {/* newlogin + P:7 */}
           <img
-            src="/assets/images/login.jpg"
+            src="/assets/images/newLogo4.png"
             alt="center"
             style={{ width: "100%", height: "100%", objectFit: "cover" }}
           />

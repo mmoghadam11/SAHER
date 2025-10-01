@@ -149,6 +149,11 @@ const MENU_ITEMS: MenuItem[] = [
         access: ["administrator","city-showmenu","township-showmenu"],
       },
       {
+        title: "کارگروه جامعه",
+        url: "workgroup",
+        access: ["administrator","city-showmenu","township-showmenu"],
+      },
+      {
         title: "آزمون رتبه بندی",
         url: "rating-test",
         access: ["administrator","city-showmenu","township-showmenu"],

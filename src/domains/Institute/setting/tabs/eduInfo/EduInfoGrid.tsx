@@ -243,7 +243,7 @@ const EduInfoGrid = ({ setActiveTab }: Props) => {
             }
           )
         }
-        message={`آیا از حذف ${deleteData?.termName} مطمین میباشید؟`}
+        message={`آیا از حذف ${deleteData?.termName} مطمعین میباشید؟`}
         title={"درخواست حذف!"}
       />
     </Grid>

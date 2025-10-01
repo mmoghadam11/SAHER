@@ -24,19 +24,19 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
   const [userInfo, setUserInfo] = useLocalStorage<ILoggedInUser>("userInfo", {
     firstName: "",
     lastName: "",
-    fatherName: "",
-    nationalCode: "",
-    projectKey: "",
-    previous_price: "",
-    betaja_price: "",
-    h_price: "",
-    confirmChoiceDate: null,
-    member_id: null,
-    contract_number: null,
-    master: false,
-    confirmSelection: false,
-    finalityOrder: false,
-    systemStep: "",
+    // fatherName: "",
+    // nationalCode: "",
+    // projectKey: "",
+    // previous_price: "",
+    // betaja_price: "",
+    // h_price: "",
+    // confirmChoiceDate: null,
+    // member_id: null,
+    // contract_number: null,
+    // master: false,
+    // confirmSelection: false,
+    // finalityOrder: false,
+    // systemStep: "",
   });
   // const [userAccess, setUserAccess] = useLocalStorage<any>("userAccess", []);
 
@@ -71,19 +71,19 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
           setContract(
             "",
             "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            null,
-            null,
-            null,
-            false,
-            false,
-            false,
-            ""
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // "",
+            // null,
+            // null,
+            // null,
+            // false,
+            // false,
+            // false,
+            // ""
           );
           window.location.pathname = "/";
         })
@@ -281,42 +281,42 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
   function setContract(
     firstName: any,
     lastName: any,
-    fatherName: any,
-    nationalCode: any,
-    projectKey: any,
-    previous_price: any,
-    betaja_price: any,
-    h_price: any,
-    confirmChoiceDate: any,
-    member_id: any,
-    contract_number: any,
-    master?: boolean,
-    confirmSelection?: boolean,
-    finalityOrder?: boolean,
-    systemStep?: string
+    // fatherName: any,
+    // nationalCode: any,
+    // projectKey: any,
+    // previous_price: any,
+    // betaja_price: any,
+    // h_price: any,
+    // confirmChoiceDate: any,
+    // member_id: any,
+    // contract_number: any,
+    // master?: boolean,
+    // confirmSelection?: boolean,
+    // finalityOrder?: boolean,
+    // systemStep?: string
   ) {
     setUserInfo({
       firstName: firstName,
       lastName: lastName,
-      fatherName: fatherName,
-      nationalCode: nationalCode,
-      projectKey: projectKey,
-      previous_price: previous_price,
-      betaja_price: betaja_price,
-      h_price: h_price,
-      confirmChoiceDate: confirmChoiceDate,
-      contract_number: contract_number,
-      member_id: member_id,
-      master: master ?? false,
-      confirmSelection: confirmSelection ?? false,
-      finalityOrder: finalityOrder ?? false,
-      systemStep: systemStep ?? "",
+      // fatherName: fatherName,
+      // nationalCode: nationalCode,
+      // projectKey: projectKey,
+      // previous_price: previous_price,
+      // betaja_price: betaja_price,
+      // h_price: h_price,
+      // confirmChoiceDate: confirmChoiceDate,
+      // contract_number: contract_number,
+      // member_id: member_id,
+      // master: master ?? false,
+      // confirmSelection: confirmSelection ?? false,
+      // finalityOrder: finalityOrder ?? false,
+      // systemStep: systemStep ?? "",
     });
   }
 
-  function isContractSet() {
-    return userInfo?.contract_number && userInfo?.member_id;
-  }
+  // function isContractSet() {
+  //   return userInfo?.contract_number && userInfo?.member_id;
+  // }
 
   function clearUserInfo() {
     setToken(null);
@@ -329,19 +329,19 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
     setUserInfo({
       firstName: "",
       lastName: "",
-      fatherName: "",
-      nationalCode: "",
-      projectKey: "",
-      previous_price: "",
-      betaja_price: "",
-      h_price: "",
-      confirmChoiceDate: null,
-      member_id: null,
-      contract_number: null,
-      master: false,
-      confirmSelection: false,
-      finalityOrder: false,
-      systemStep: "",
+      // fatherName: "",
+      // nationalCode: "",
+      // projectKey: "",
+      // previous_price: "",
+      // betaja_price: "",
+      // h_price: "",
+      // confirmChoiceDate: null,
+      // member_id: null,
+      // contract_number: null,
+      // master: false,
+      // confirmSelection: false,
+      // finalityOrder: false,
+      // systemStep: "",
     });
     localToken = "";
     window.location.href = `/login`;
@@ -395,7 +395,7 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
           userInfo,
           setUserInfo,
           setContract,
-          isContractSet,
+          // isContractSet,
           storeRefreshToken,
           refreshToken,
         } as any
