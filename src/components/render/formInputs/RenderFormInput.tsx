@@ -272,8 +272,8 @@ const RenderFormInput: React.FC<IRenderFormInput> = forwardRef((props, ref) => {
         isOptionEqualToValue={(option: any, value: any) => {
           // اگر value هنوز تنظیم نشده (null/undefined)، false برگردان
           if (!value) return false;
-          // مقایسه شناسه‌های منحصر به فرد
-          return option.value === value.value;
+          if (storeValueAs === "object") return option.value === value.value;
+          else return option.value === value;
         }}
       />
     );
