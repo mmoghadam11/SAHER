@@ -153,7 +153,7 @@ const AddEduInfo = ({
       {
         onSuccess: (res: any) => {
           console.log("res=>", res);
-          if (id !== "new")
+          if (!!editeData)
             snackbar(
               `به روز رسانی موسسه انتخاب شده با موفقیت انجام شد`,
               "success"
