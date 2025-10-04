@@ -38,6 +38,7 @@ import EduInfoGrid from "./tabs/eduInfo/EduInfoGrid";
 import FinancialStatementsGrid from "./tabs/financial/FinancialStatementsGrid";
 import ContinuingEducationGrid from "./tabs/continuingEducation/ContinuingEducationGrid";
 import FirmContractGrid from "./tabs/firnContract/FirmContractGrid";
+import PublicationGrid from "./tabs/publication/PublicationGrid";
 
 type Props = {};
 interface FormItem {
@@ -110,6 +111,10 @@ const DetaileTabs = (props: Props) => {
       title: "قراردادها",
       com: <FirmContractGrid />,
     },
+    {
+      title: "انتشارات",
+      com: <PublicationGrid />,
+    },
     // {
     //   title: "موقعیت مکانی",
     //   com: <Director />,
@@ -144,44 +149,7 @@ const DetaileTabs = (props: Props) => {
           <Typography variant={isMobile?"body1":"h5"}>مدیریت جزئیات موسسه</Typography>
         </Grid>
         <Grid item display={"flex"}>
-          {isMobile ? (
-            <Select
-              sx={{width:"25vw" ,mr:1}}
-              label={"پنل"}
-              value={activeTab}
-              size="small"
-              onChange={(e) => setActiveTab((e.target.value as number) ?? 0)}
-            >
-              {tabSteps?.map((option: TOption, index: number) => (
-                <MenuItem key={`select-item-${option.value}`} value={index}>
-                  {option.title}
-                </MenuItem>
-              ))}
-            </Select>
-          ) : (
-            <Tabs
-              sx={{
-                mb: 2,
-                mr: 1,
-                maxWidth: "45vw",
-                direction: "rtl",
-              }}
-              value={activeTab}
-              onChange={handleTabChange}
-              variant={"scrollable"}
-              scrollButtons={"auto"}
-            >
-              {tabSteps.map((tab, index) => (
-                <Tab
-                  // wrapped
-                  key={index}
-                  label={tab.title}
-                  id={`tab-${index}`}
-                  aria-controls={`tabpanel-${index}`}
-                />
-              ))}
-            </Tabs>
-          )}
+          
           <BackButton onBack={() => navigate(-1)} />
         </Grid>
       </Grid>
