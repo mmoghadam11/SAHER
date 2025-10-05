@@ -33,4 +33,11 @@ export const InsuranceFormItems = (
     options: options?.supplementaryInsuranceOptions?.map((item: any) => ({ value: item?.id, title: item?.value })) ?? [{ value: 0, title: "خالی" }],
     rules: { },
   },
+  {
+    name: "workshopCode",
+    inputType: "text",
+    label: "کد کارگاه",
+    size: { md: 4 },
+    rules: { },
+  },
 ];

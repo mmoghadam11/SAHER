@@ -30,7 +30,8 @@ import { financialInfoItems } from "domains/Institute/forms/financialInfoItems";
 import { ratingInfoItems } from "domains/Institute/forms/ratingInfoItems";
 import { specialInfoItems } from "domains/Institute/forms/specialInfoItems";
 import { MembershipFormItems } from "./forms/MembershipFormItems";
-import { FormItem } from "domains/Institute/setting/forms/DirectorItems";
+import { FormItem } from "types/formItem";
+
 import { ContactFormItems } from "./forms/ContactFormItems";
 import { StatusFormItems } from "./forms/StatusFormItems";
 import { InsuranceFormItems } from "./forms/InsuranceFormItems";

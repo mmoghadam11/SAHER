@@ -1,14 +1,6 @@
 import { FullInstituteType } from "types/institute";
+import { FormItem } from "types/formItem";
 
-interface FormItem {
-    name: keyof FullInstituteType;
-    inputType: string;
-    label: string;
-    size: { md: number };
-    rules?: any;
-    options?: any[];
-    elementProps?: any;
-  }
 
 export const membershipInfoItems= (setValue: (name:any,val: any) => void): FormItem[] => [
   {
@@ -17,6 +9,7 @@ export const membershipInfoItems= (setValue: (name:any,val: any) => void): FormI
     label: "شماره عضویت",
     size: { md: 4 },
     rules: { required: "شماره عضویت الزامی است" },
+    tempRules: { required: "شماره عضویت الزامی است" },
   },
   {
     name: "memberShipDate",
@@ -24,6 +17,7 @@ export const membershipInfoItems= (setValue: (name:any,val: any) => void): FormI
     label: "تاریخ عضویت",
     size: { md: 4 },
     rules: { required: "تاریخ عضویت الزامی است" },
+    tempRules: { required: "تاریخ عضویت الزامی است" },
     elementProps: {
       setDay: (value: any) => {
         setValue("memberShipDate",value)

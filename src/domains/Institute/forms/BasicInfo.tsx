@@ -8,6 +8,7 @@ interface FormItem {
   label: string;
   size: { md: number };
   rules?: any;
+  tempRules?:any;
   options?: any[];
   elementProps?: any;
 }
@@ -23,6 +24,7 @@ export const getBasicInfoItems = (
       label: "نام موسسه",
       size: { md: 3 },
       rules: { required: "نام موسسه الزامی است" },
+      tempRules: { required: "نام موسسه الزامی است" },
     },
     {
       name: "latinName",
@@ -30,6 +32,7 @@ export const getBasicInfoItems = (
       label: "نام لاتین",
       size: { md: 3 },
       rules: { required: "نام لاتین الزامی است" },
+      tempRules: { required: "نام لاتین الزامی است" },
     },
     {
       name: "nationalId",
@@ -43,6 +46,13 @@ export const getBasicInfoItems = (
           message: "شناسه ملی باید 10 رقم باشد",
         },
       },
+      tempRules: {
+        required: "شناسه ملی الزامی است",
+        pattern: {
+          value: /^[0-9]{10}$/,
+          message: "شناسه ملی باید 10 رقم باشد",
+        },
+      },
     },
     {
       name: "registerNo",
@@ -50,6 +60,7 @@ export const getBasicInfoItems = (
       label: "شماره ثبت",
       size: { md: 3 },
       rules: { required: "شماره ثبت الزامی است" },
+      tempRules: { required: "شماره ثبت الزامی است" },
     },
     {
       name: "registerDate",
@@ -57,6 +68,7 @@ export const getBasicInfoItems = (
       label: "تاریخ ثبت",
       size: { md: 3 },
       rules: { required: "تاریخ ثبت الزامی است" },
+      tempRules: { required: "تاریخ ثبت الزامی است" },
       elementProps: {
         setDay: (value: any) => {
           setValue("registerDate", value);
@@ -78,6 +90,7 @@ export const getBasicInfoItems = (
       label: "تاریخ تأسیس",
       size: { md: 3 },
       rules: { required: "تاریخ تأسیس الزامی است" },
+      tempRules: { required: "تاریخ تأسیس الزامی است" },
       elementProps: {
         setDay: (value: any) => {
           // این تابع باید در کامپوننت والد تعریف شود
@@ -93,6 +106,9 @@ export const getBasicInfoItems = (
       size: { md: 3 },
       options: city?.map((item:any)=>({value:item?.id,title:item?.name}))??[{value:0,title:""}],
       rules: {
+        required: "انتخاب شهر الزامی است",
+      },
+      tempRules: {
         required: "انتخاب شهر الزامی است",
       },
     },

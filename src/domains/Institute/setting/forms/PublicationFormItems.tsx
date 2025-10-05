@@ -1,4 +1,5 @@
-import { FormItem } from "domains/Institute/setting/forms/DirectorItems";
+import { FormItem } from "types/formItem";
+
 
 export const PublicationFormItems = (
   setValue: (name: any, val: any) => void,

@@ -1,14 +1,7 @@
 import { FullInstituteType } from "types/institute";
+import { FormItem } from "types/formItem";
 
-interface FormItem {
-  name: keyof FullInstituteType;
-  inputType: string;
-  label: string;
-  size: { md: number };
-  rules?: any;
-  options?: any[];
-  elementProps?: any;
-}
+
 
 export const ceoInfoItems = (setValue: (name: any, val: any) => void): FormItem[] => [
   {
@@ -36,6 +29,13 @@ export const ceoInfoItems = (setValue: (name: any, val: any) => void): FormItem[
         message: "نام خانوادگی باید حداقل 2 کاراکتر باشد"
       }
     },
+    tempRules: { 
+      required: "نام خانوادگی مدیرعامل الزامی است",
+      minLength: {
+        value: 2,
+        message: "نام خانوادگی باید حداقل 2 کاراکتر باشد"
+      }
+    },
   },
   {
     name: "directorNationalCode",
@@ -43,6 +43,13 @@ export const ceoInfoItems = (setValue: (name: any, val: any) => void): FormItem[
     label: "کد ملی",
     size: { md: 4 },
     rules: { 
+      required: "کد ملی مدیرعامل الزامی است",
+      pattern: {
+        value: /^[0-9]{10}$/,
+        message: "کد ملی باید 10 رقم باشد"
+      }
+    },
+    tempRules: { 
       required: "کد ملی مدیرعامل الزامی است",
       pattern: {
         value: /^[0-9]{10}$/,

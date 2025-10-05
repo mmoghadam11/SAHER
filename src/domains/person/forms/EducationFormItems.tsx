@@ -14,11 +14,12 @@ export const EducationFormItems = (
     rules: { required: "انتخاب مدرک تحصیلی الزامی است" },
   },
   {
-    name: "cdeducationalCertificatePlaceId",
-    inputType: "select",
+    name: "educationalCertificatePlaceId",
+    inputType: "autocomplete",
     label: "محل اخذ مدرک",
     size: { md: 4 },
     options: options?.cityOptions?.map((item: any) => ({ value: item?.id, title: item?.name })) ?? [{ value: 0, title: "خالی" }],
+    storeValueAs: 'id',
     rules: { required: "انتخاب محل اخذ مدرک الزامی است" },
   },
   {
@@ -27,15 +28,15 @@ export const EducationFormItems = (
     label: "رشته تحصیلی",
     size: { md: 4 },
     options: options?.educationalFieldOptions?.map((item: any) => ({ value: item?.id, title: item?.value })) ?? [{ value: 0, title: "خالی" }],
-    // rules: { required: "انتخاب رشته تحصیلی الزامی است" },
+    rules: { required: "انتخاب رشته تحصیلی الزامی است" },
   },
   {
     name: "cduniversityId",
     inputType: "select",
     label: "دانشگاه",
     size: { md: 4 },
-    options: options?.universityOptions?.map((item: any) => ({ value: item?.id, title: item?.name })) ?? [{ value: 0, title: "خالی" }],
-    // rules: { required: "انتخاب دانشگاه الزامی است" },
+    options: options?.universityOptions?.map((item: any) => ({ value: item?.id, title: item?.value })) ?? [{ value: 0, title: "خالی" }],
+    rules: { required: "انتخاب دانشگاه الزامی است" },
   },
   {
     name: "educationalCertificateDate",

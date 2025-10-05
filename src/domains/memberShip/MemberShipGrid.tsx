@@ -67,7 +67,7 @@ const MemberShipGrid = (props: Props) => {
       headerName: "نام کارمند",
       flex: 2,
       renderCell: ({ row }: { row: any }) => {
-        return row.firstName + " " + row.lastName;
+        return row?.firstName + " " + row?.lastName;
       },
     },
     {
@@ -75,7 +75,7 @@ const MemberShipGrid = (props: Props) => {
       headerName: "نام لاتین",
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
-        return row.latinFirstName + " " + row.latinLastName;
+        return row?.latinFirstName + " " + row?.latinLastName;
       },
     },
     {
@@ -83,7 +83,7 @@ const MemberShipGrid = (props: Props) => {
       headerName: "تاریخ تولد",
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
-        return moment(row.birthDate).format("jYYYY/jMM/jDD");
+        return moment(row?.birthDate).format("jYYYY/jMM/jDD");
       },
     },
     { field: "idNumber", headerName: "کد پرسنلی", flex: 1 },

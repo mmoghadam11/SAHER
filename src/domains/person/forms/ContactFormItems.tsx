@@ -3,7 +3,6 @@ import { FormItem } from "types/formItem";
 
 export const ContactFormItems = (
   setValue: (name: any, val: any) => void,
-
 ): FormItem[] => [
   {
     name: "phoneNo",
@@ -32,9 +31,9 @@ export const ContactFormItems = (
     },
   },
   {
-    name: "auditingFirmPhone",
+    name: "workLandline",
     inputType: "text",
-    label: "تلفن مؤسسه حسابرسی",
+    label: "تلفن محل کار",
     size: { md: 4 },
     rules: { 
       pattern: {
@@ -55,12 +54,5 @@ export const ContactFormItems = (
         message: "فرمت ایمیل نامعتبر است"
       }
     },
-  },
-  {
-    name: "automationSystemUsername",
-    inputType: "text",
-    label: "نام کاربری سیستم اتوماسیون",
-    size: { md: 4 },
-    rules: { },
   },
 ];

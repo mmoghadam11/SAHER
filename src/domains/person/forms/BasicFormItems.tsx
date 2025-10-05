@@ -6,14 +6,6 @@ export const BasicFormItems = (
   options: any
 ): FormItem[] => [
   {
-    name: "auditingFirmId",
-    inputType: "select",
-    label: "موسسه حسابرسی",
-    size: { md: 4 },
-    options: options?.firmOptions?.map((item: any) => ({ value: item?.id, title: item?.name })) ?? [{ value: 0, title: "خالی" }],
-    rules: { required: "موسسه حسابرسی الزامی است" },
-  },
-  {
     name: "firstName",
     inputType: "text",
     label: "نام",
@@ -32,24 +24,26 @@ export const BasicFormItems = (
     inputType: "text",
     label: "نام (لاتین)",
     size: { md: 4 },
-    rules: { required: "نام لاتین الزامی است",
+    rules: { 
+      required: "نام لاتین الزامی است",
       pattern: {
-          value: /^[a-zA-Z]+$/,
-          message: "نام لاتین باید فقط شامل حروف انگلیسی باشد",
-        },
-     },
+        value: /^[a-zA-Z]+$/,
+        message: "نام لاتین باید فقط شامل حروف انگلیسی باشد",
+      },
+    },
   },
   {
     name: "latinLastName",
     inputType: "text",
     label: "نام خانوادگی (لاتین)",
     size: { md: 4 },
-    rules: { required: "نام خانوادگی لاتین الزامی است",
+    rules: { 
+      required: "نام خانوادگی لاتین الزامی است",
       pattern: {
-          value: /^[a-zA-Z]+$/,
-          message: "نام خانوادگی لاتین باید فقط شامل حروف انگلیسی باشد",
-        },
-     },
+        value: /^[a-zA-Z]+$/,
+        message: "نام خانوادگی لاتین باید فقط شامل حروف انگلیسی باشد",
+      },
+    },
   },
   {
     name: "birthDate",
@@ -108,29 +102,5 @@ export const BasicFormItems = (
     label: "شماره شناسنامه",
     size: { md: 4 },
     rules: { required: "شماره شناسنامه الزامی است" },
-  },
-  {
-    name: "cdgenderTypeId",
-    inputType: "select",
-    label: "جنسیت",
-    size: { md: 4 },
-    options: options?.genderOptions?.map((item: any) => ({ value: item?.id, title: item?.value })) ?? [{ value: 0, title: "خالی" }],
-    rules: { required: "انتخاب جنسیت الزامی است" },
-  },
-  {
-    name: "cdReliginId",
-    inputType: "select",
-    label: "دین",
-    size: { md: 4 },
-    options: options?.religionOptions?.map((item: any) => ({ value: item?.id, title: item?.value })) ?? [{ value: 0, title: "خالی" }],
-    // rules: { required: "انتخاب دین الزامی است" },
-  },
-  {
-    name: "cdmarriageTypeId",
-    inputType: "select",
-    label: "وضعیت تأهل",
-    size: { md: 4 },
-    options: options?.marriageOptions?.map((item: any) => ({ value: item?.id, title: item?.value })) ?? [{ value: 0, title: "خالی" }],
-    rules: { required: "انتخاب وضعیت تأهل الزامی است" },
   },
 ];
