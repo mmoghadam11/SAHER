@@ -1,4 +1,4 @@
-import { FormItem } from "./DirectorItems";
+import { FormItem } from "types/formItem";
 
 export const ContinuingEduItems = (
   setValue: (name: any, val: any) => void,
