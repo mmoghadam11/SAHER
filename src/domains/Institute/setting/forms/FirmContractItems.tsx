@@ -1,4 +1,5 @@
-import { FormItem } from "./DirectorItems";
+import { FormItem } from "types/formItem";
+
 
 export const FirmContractItems = (
   setValue: (name: any, val: any) => void,

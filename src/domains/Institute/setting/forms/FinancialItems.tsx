@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { FormItem } from "./DirectorItems";
+import { FormItem } from "types/formItem";
+
 import { useAuth } from "hooks/useAuth";
 
 export const EduFinancialItems = (
