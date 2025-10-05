@@ -29,6 +29,8 @@ import MemberShipGrid from "domains/memberShip/MemberShipGrid";
 import AddMembership from "domains/memberShip/AddMembership";
 import WorkgroupGrid from "domains/workgroup/WorkgroupGrid";
 import AddWorkgroup from "domains/workgroup/AddWorkgroup";
+import PersonGrid from "domains/person/PersonGrid";
+import AddPerson from "domains/person/AddPerson";
 
 const AppRoutes: React.FC = () => {
   const auth = useAuth();
@@ -66,6 +68,10 @@ const AppRoutes: React.FC = () => {
                 <Route index element={<DetaileTabs />} />
               </Route>
               <Route path=":id" element={<FormSteps />} />
+            </Route>
+            <Route path="persons" >
+              <Route index element={<PersonGrid/>} />
+              <Route path=":id" element={<AddPerson/>} />
             </Route>
             <Route path="personnels" >
               <Route index element={<MemberShipGrid/>} />
