@@ -143,6 +143,11 @@ const MENU_ITEMS: MenuItem[] = [
         access: ["administrator","city-showmenu","township-showmenu"],
       },
       {
+        title: "اشخاص",
+        url: "persons",
+        access: ["administrator","city-showmenu","township-showmenu"],
+      },
+      {
         // title: "مشخصات اشخاص",
         title: "کارکنان موسسان",
         url: "personnels",
