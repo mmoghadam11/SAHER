@@ -1,18 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "hooks/useAuth";
+import { FormItem } from "types/formItem";
 import { FullInstituteType } from "types/institute";
 
-export interface FormItem {
-  name: string;
-  inputType: string;
-  label: string;
-  size: { md: number };
-  rules?: any;
-  options?: any[];
-  elementProps?: any;
-  placeholder?:string;
-  storeValueAs?:string;
-}
+
 
 export const DirectorItems = (
   setValue: (name: any, val: any) => void,
