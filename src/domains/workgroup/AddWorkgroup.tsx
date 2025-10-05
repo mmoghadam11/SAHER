@@ -22,7 +22,8 @@ import { useSnackbar } from "hooks/useSnackbar";
 import FancyTicketDivider from "components/FancyTicketDivider";
 import BackButton from "components/buttons/BackButton";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { FormItem } from "domains/Institute/setting/forms/DirectorItems";
+import { FormItem } from "types/formItem";
+
 import { BasicFormItems } from "./forms/BasicFormItems";
 
 
