@@ -94,7 +94,7 @@ const RenderFormInput: React.FC<IRenderFormInput> = forwardRef((props, ref) => {
         {...elementProps}
         {...controllerField}
         error={errors?.[name]?.message}
-        onChange={controllerField.onChange}
+        onChange={onChange??controllerField.onChange}
       />
       //   <Box sx={{ width: "100%" }}>
       //   <Box
