@@ -77,10 +77,6 @@ const AppRoutes: React.FC = () => {
               <Route index element={<MemberShipGrid/>} />
               <Route path=":id" element={<AddMembership />} />
             </Route>
-            <Route path="workgroup" >
-              <Route index element={<WorkgroupGrid/>} />
-              <Route path=":id" element={<AddWorkgroup/>} />
-            </Route>
             <Route path="rating-test" element={<Welcome />} />
             <Route path="exam-applicants" element={<Welcome />} />
             <Route path="membership-fee" element={<Welcome />} />
@@ -88,6 +84,12 @@ const AppRoutes: React.FC = () => {
               path="contracts-concluded-by-institution"
               element={<Welcome />}
             />
+          </Route>
+          <Route path="IACPA">
+            <Route path="workgroup" >
+              <Route index element={<WorkgroupGrid/>} />
+              <Route path=":id" element={<AddWorkgroup/>} />
+            </Route>
           </Route>
           <Route path="basic-data">
             <Route path="towns" element={<Towns />} />

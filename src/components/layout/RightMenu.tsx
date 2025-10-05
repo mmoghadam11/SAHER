@@ -24,6 +24,8 @@ import {
   BusinessCenter,
   AutoStories,
   Article,
+  Bungalow,
+  AccountBalance,
 } from "@mui/icons-material";
 import { mainProviderContext } from "context/MainProviderContext";
 import { DRAWER_WIDTH, DrawerHeader } from "./Layout";
@@ -103,34 +105,24 @@ const Drawer = styled(MuiDrawer, {
 // Menu Data
 const MENU_ITEMS: MenuItem[] = [
   {
-    icon: <ManageAccounts />,
-    title: "مدیریت سیستم",
-    url: "/management",
+    icon: <AccountBalance />,
+    title: "جامعه",
+    url: "/IACPA",
     access: ["city-showmenu"],
     menuChildren: [
       {
-        
-        title: "کاربران",
-        url: "users",
-        access: ["administrator","city-showmenu"],
+        title: "کارگروه",
+        url: "workgroup",
+        access: ["administrator","city-showmenu","township-showmenu"],
       },
       {
-        title: "اعضا",
-        url: "member",
-        access: ["administrator"],
-      },
-      {
-        title: "نقش",
-        url: "roles",
-        access: ["member", "administrator","city-showmenu"],
-      },
-      {
-        title: "مجوز",
-        url: "permissions",
-        access: ["member", "administrator","city-showmenu"],
+        title: "پروانه",
+        url: "license",
+        access: ["administrator","city-showmenu","township-showmenu"],
       },
     ],
   },
+  
   {
     icon: <BusinessCenter />,
     title: "موسسات و اعضاء",
@@ -149,13 +141,8 @@ const MENU_ITEMS: MenuItem[] = [
       },
       {
         // title: "مشخصات اشخاص",
-        title: "کارکنان موسسان",
+        title: "کارکنان موسسات",
         url: "personnels",
-        access: ["administrator","city-showmenu","township-showmenu"],
-      },
-      {
-        title: "کارگروه جامعه",
-        url: "workgroup",
         access: ["administrator","city-showmenu","township-showmenu"],
       },
       {
@@ -169,7 +156,8 @@ const MENU_ITEMS: MenuItem[] = [
         access: ["administrator","city-showmenu"],
       },
       {
-        title: "حق عضویت جامعه",
+        //ثابت و متغیر دارد
+        title: "حق عضویت موسسه",
         url: "membership-fee",
         access: ["administrator","city-showmenu"],
       },
@@ -180,6 +168,7 @@ const MENU_ITEMS: MenuItem[] = [
       },
     ],
   },
+  
   {
     icon: <AutoStories />,
     title: "گزارشات",
@@ -213,6 +202,35 @@ const MENU_ITEMS: MenuItem[] = [
         title: "اطلاعات مشترک",
         url: "public-data",
         access: ["administrator","city-showmenu"],
+      },
+    ],
+  },
+  {
+    icon: <ManageAccounts />,
+    title: "مدیریت سیستم",
+    url: "/management",
+    access: ["city-showmenu"],
+    menuChildren: [
+      {
+        
+        title: "کاربران",
+        url: "users",
+        access: ["administrator","city-showmenu"],
+      },
+      {
+        title: "اعضا",
+        url: "member",
+        access: ["administrator"],
+      },
+      {
+        title: "نقش",
+        url: "roles",
+        access: ["member", "administrator","city-showmenu"],
+      },
+      {
+        title: "مجوز",
+        url: "permissions",
+        access: ["member", "administrator","city-showmenu"],
       },
     ],
   },
