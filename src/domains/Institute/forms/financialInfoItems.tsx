@@ -1,15 +1,6 @@
 import { title } from "process";
+import { FormItem } from "types/formItem";
 import { FullInstituteType } from "types/institute";
-
-interface FormItem {
-  name: keyof FullInstituteType;
-  inputType: string;
-  label: string;
-  size: { md: number };
-  rules?: any;
-  options?: any[];
-  elementProps?: any;
-}
 
 export const financialInfoItems = (setValue: (name: any, val: any) => void,ownerOptions:any): FormItem[] => [
   {
@@ -18,6 +9,13 @@ export const financialInfoItems = (setValue: (name: any, val: any) => void,owner
     label: "کد اقتصادی",
     size: { md: 4 },
     rules: { 
+      required: "کد اقتصادی الزامی است",
+      pattern: {
+        value: /^[0-9]+$/,
+        message: "کد اقتصادی باید عددی باشد"
+      }
+    },
+    tempRules: { 
       required: "کد اقتصادی الزامی است",
       pattern: {
         value: /^[0-9]+$/,
@@ -37,6 +35,13 @@ export const financialInfoItems = (setValue: (name: any, val: any) => void,owner
         message: "کد مالیاتی باید 6 رقمی باشد"
       }
     },
+    tempRules: { 
+      required: "کد مالیاتی الزامی است",
+      pattern: {
+        value: /^[0-9]{6}$/,
+        message: "کد مالیاتی باید 6 رقمی باشد"
+      }
+    },
   },
   {
     name: "financeYear",
@@ -50,6 +55,13 @@ export const financialInfoItems = (setValue: (name: any, val: any) => void,owner
         message: "سال مالی باید 4 رقم باشد"
       }
     },
+    tempRules: { 
+      required: "سال مالی الزامی است",
+      pattern: {
+        value: /^[0-9]{4}$/,
+        message: "سال مالی باید 4 رقم باشد"
+      }
+    },
   },
   {
     name: "financeYearBeginDate",
@@ -57,6 +69,7 @@ export const financialInfoItems = (setValue: (name: any, val: any) => void,owner
     label: "شروع سال مالی",
     size: { md: 4 },
     rules: { required: "تاریخ شروع سال مالی الزامی است" },
+    tempRules: { required: "تاریخ شروع سال مالی الزامی است" },
     elementProps: {
       setDay: (value: any) => {
         setValue("financeYearBeginDate", value);
@@ -70,6 +83,7 @@ export const financialInfoItems = (setValue: (name: any, val: any) => void,owner
     label: "پایان سال مالی",
     size: { md: 4 },
     rules: { required: "تاریخ پایان سال مالی الزامی است" },
+    tempRules: { required: "تاریخ پایان سال مالی الزامی است" },
     elementProps: {
       setDay: (value: any) => {
         setValue("financeYearEndDate", value);
@@ -84,6 +98,8 @@ export const financialInfoItems = (setValue: (name: any, val: any) => void,owner
     size: { md: 4 },
     options: ownerOptions?.content?.map((item:any)=>({value:item?.id,title:item?.value}))??[{value:0,title:"خالی"}],
     rules: { required: "نوع مالکیت الزامی است" },
+    // ERROR 500
+    tempRules: { required: "نوع مالکیت الزامی است" },
   },
   {
     name: "officialAreaSize",

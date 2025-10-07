@@ -16,6 +16,13 @@ export const ceoInfoItems = (setValue: (name: any, val: any) => void): FormItem[
         message: "نام باید حداقل 2 کاراکتر باشد"
       }
     },
+    tempRules: { 
+      required: "نام مدیرعامل الزامی است",
+      minLength: {
+        value: 2,
+        message: "نام باید حداقل 2 کاراکتر باشد"
+      }
+    },
   },
   {
     name: "directorLastName",
