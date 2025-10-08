@@ -12,6 +12,7 @@ type Props = {
   onAdd?: {
     function: (record: any) => void;
     title?: string;
+    icon?: any;
   };
   onManage?: {
     function: (record: any) => void;
@@ -51,7 +52,7 @@ const TableActions: React.FC<Props> = ({
         <Grid item>
           <Tooltip title={onAdd.title??"افزودن"}>
             <IconButton onClick={onAdd.function} color="primary">
-              <AddCircleOutline />
+              {onAdd?.icon || <AddCircleOutline />}
             </IconButton>
           </Tooltip>
         </Grid>
