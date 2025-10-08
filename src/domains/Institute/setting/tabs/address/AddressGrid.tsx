@@ -56,6 +56,15 @@ const AddressGrid = ({  }: Props) => {
     { field: "street", headerName: "خیابان", flex: 1 },
     { field: "plateNo", headerName: "پلاک", flex: 1 },
     {
+          field: "active",
+          headerName: "آدرس فعال",
+          flex: 1,
+          renderCell: ({ row }: { row: any }) => {
+            if (row.active) return <Chip color="secondary" label="فعال" icon={<Verified  />}/>;
+            else return<Chip color="default" label="غیر فعال"/>
+          },
+        },
+    {
       headerName: "عملیات",
       field: "action",
       flex: 1,

@@ -1,4 +1,4 @@
-import { Close, Key, ManageAccounts, Map, Toc, Verified } from "@mui/icons-material";
+import { Close, Diversity3, Key, ManageAccounts, Map, Toc, Verified } from "@mui/icons-material";
 import { Box, Chip, Grid, Typography } from "@mui/material";
 import { GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -19,6 +19,7 @@ import moment from "jalali-moment";
 import ConfirmBox from "components/confirmBox/ConfirmBox";
 import AddBranch from "./AddBranch";
 import BranchAddressGrid from "./BranchAddressGrid";
+import BranchPartnerGrid from "./partner/BranchPartnerGrid";
 
 type Props = {};
 
@@ -95,6 +96,15 @@ const BranchGrid = ({}: Props) => {
               title: "آدرس ها",
               function: () => {
                 setSelectecBranchData(row);
+                setGridFlag(1);
+              },
+            }}
+            onAdd={{
+              icon:<Diversity3 color="action"/>,
+              title: "شرکا",
+              function: () => {
+                setSelectecBranchData(row);
+                setGridFlag(2);
               },
             }}
           />
@@ -111,9 +121,9 @@ const BranchGrid = ({}: Props) => {
     typeName: string;
   };
   const [editeData, setEditeData] = useState<editeObjectType | null>(null);
-  const [selectecBranchData, setSelectecBranchData] =
-    useState<editeObjectType | null>(null);
+  const [selectecBranchData, setSelectecBranchData] =useState<editeObjectType | null>(null);
   const [addModalFlag, setAddModalFlag] = useState(false);
+  const [gridFlag, setGridFlag] = useState(0);
   const [appendFirmFlag, setAppendFirmFlag] = useState(false);
   const [deleteData, setDeleteData] = useState<any>(null);
   const [deleteFlag, setDeleteFlag] = useState(false);
@@ -189,9 +199,12 @@ const BranchGrid = ({}: Props) => {
           </Typography>
         )}
       </Grid>
-        {!!selectecBranchData && (
+        {!!selectecBranchData && gridFlag===1 ? (
           <BranchAddressGrid selectedBranch={selectecBranchData} setSelectecBranchData={setSelectecBranchData} />
-        )}
+        ):!!selectecBranchData && gridFlag===2&&(
+          <BranchPartnerGrid selectedBranch={selectecBranchData} setSelectecBranchData={setSelectecBranchData} />
+        )
+        }
       <AddBranch
         refetch={StatesData_refetch}
         addModalFlag={addModalFlag}
