@@ -66,6 +66,7 @@ function SearchPannel<T extends Record<string, any>>({
   return (
     <Grid item md={11} sm={11} xs={12}>
       <Paper elevation={3} sx={{ p: 3, mt: 1, mb: 2, width: "100%" }}>
+        <form onSubmit={handleSubmit(handleSearch)}>
         <Grid
           item
           container
@@ -95,7 +96,7 @@ function SearchPannel<T extends Record<string, any>>({
                           onChange={(e: any) => {
                             // if (!isNaN(e.target.value))
                             //   searchData[item.name](e.target.value);
-
+                            field.onChange(e)
                             setSearchData((prev: any) => ({
                               ...prev,
                               [item.name]: e.target.value,
@@ -183,6 +184,7 @@ function SearchPannel<T extends Record<string, any>>({
             <Fab
               sx={{mr:1 }}
               size="small"
+              type="button"
               onClick={handleReset}
             >
               <RestartAlt fontSize="small"/>
@@ -192,6 +194,7 @@ function SearchPannel<T extends Record<string, any>>({
             <Fab
             color="primary"
               size="small"
+              type="submit"
               onClick={handleSearch}
             >
               <Search fontSize="small"/>
@@ -199,6 +202,7 @@ function SearchPannel<T extends Record<string, any>>({
             </Tooltip>
           </Grid>
         </Grid>
+        </form>
       </Paper>
     </Grid>
   );
