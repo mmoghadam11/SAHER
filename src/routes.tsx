@@ -31,6 +31,13 @@ import WorkgroupGrid from "domains/workgroup/WorkgroupGrid";
 import AddWorkgroup from "domains/workgroup/AddWorkgroup";
 import PersonGrid from "domains/person/PersonGrid";
 import AddPerson from "domains/person/AddPerson";
+import FirmAdminGrid from "domains/firmAdmin/FirmAdminGrid";
+import FirmAdminFormSteps from "domains/firmAdmin/FirmAdminFormSteps";
+import FirmAdminDetaileTabs from "domains/firmAdmin/setting/FirmAdminDetaileTabs";
+import OfficialUserGrid from "domains/accountant/officialUser/OfficialUserGrid";
+import AddOfficialUser from "domains/accountant/officialUser/AddOfficialUser";
+import InstituteContractGrid from "domains/Institute/contracts/InstituteContractGrid";
+import ContractDetaile from "domains/Institute/contracts/ContractDetaile";
 
 const AppRoutes: React.FC = () => {
   const auth = useAuth();
@@ -61,6 +68,12 @@ const AppRoutes: React.FC = () => {
               <Route index element={<PermissionGrid/>} />
             </Route>
           </Route>
+          <Route path="accountant">
+            <Route path="official-users" >
+              <Route index element={<OfficialUserGrid/>} />
+              <Route path=":id" element={<AddOfficialUser/>} />
+            </Route>
+          </Route>
           <Route path="institutions">
             <Route path="information">
               <Route index element={<InstititeGrid/>} />
@@ -78,12 +91,22 @@ const AppRoutes: React.FC = () => {
               <Route path=":id" element={<AddMembership />} />
             </Route>
             <Route path="rating-test" element={<Welcome />} />
+            <Route path="partners" element={<Welcome />} />
             <Route path="exam-applicants" element={<Welcome />} />
             <Route path="membership-fee" element={<Welcome />} />
-            <Route
-              path="contracts-concluded-by-institution"
-              element={<Welcome />}
-            />
+            <Route path="contracts-concluded">
+              <Route index element={<InstituteContractGrid />}/>
+              <Route path=":id" element={<ContractDetaile/>} />
+            </Route>
+          </Route>
+          <Route path="FirmAdmin">
+            <Route path="information">
+              <Route index element={<FirmAdminGrid/>} />
+              <Route path="details/:id">
+                <Route index element={<FirmAdminDetaileTabs />} />
+              </Route>
+              <Route path=":id" element={<FirmAdminFormSteps />} />
+            </Route>
           </Route>
           <Route path="IACPA">
             <Route path="workgroup" >

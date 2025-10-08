@@ -26,6 +26,7 @@ import {
   Article,
   Bungalow,
   AccountBalance,
+  People,
 } from "@mui/icons-material";
 import { mainProviderContext } from "context/MainProviderContext";
 import { DRAWER_WIDTH, DrawerHeader } from "./Layout";
@@ -113,62 +114,163 @@ const MENU_ITEMS: MenuItem[] = [
       {
         title: "کارگروه",
         url: "workgroup",
-        access: ["administrator","city-showmenu","township-showmenu"],
+        access: ["administrator", "city-showmenu"],
       },
       {
         title: "پروانه",
         url: "license",
-        access: ["administrator","city-showmenu","township-showmenu"],
+        access: ["administrator", "city-showmenu"],
       },
     ],
   },
-  
+
   {
     icon: <BusinessCenter />,
-    title: "موسسات و اعضاء",
+    title: "موسسات",
     url: "/institutions",
-    access: ["city-showmenu","township-showmenu"],
+    access: ["city-showmenu"],
     menuChildren: [
       {
         title: "اطلاعات موسسات",
         url: "information",
-        access: ["administrator","city-showmenu","township-showmenu"],
+        access: ["administrator", "city-showmenu"],
       },
       {
-        title: "اشخاص",
+        title: "کارکنان حرفه‌ای موسسات",
         url: "persons",
-        access: ["administrator","city-showmenu","township-showmenu"],
+        access: ["administrator", "city-showmenu"],
       },
       {
         // title: "مشخصات اشخاص",
-        title: "کارکنان موسسات",
+        title: "حسابداران شاغل در موسسات",
         url: "personnels",
-        access: ["administrator","city-showmenu","township-showmenu"],
+        access: ["administrator", "city-showmenu"],
+      },
+      {
+        title: "شرکای موسسه",
+        url: "partners",
+        access: ["administrator", "city-showmenu"],
       },
       {
         title: "آزمون رتبه بندی",
         url: "rating-test",
-        access: ["administrator","city-showmenu","township-showmenu"],
+        access: ["administrator", "city-showmenu"],
       },
       {
         title: "متقاضیان آزمون",
         url: "exam-applicants",
-        access: ["administrator","city-showmenu"],
+        access: ["administrator", "city-showmenu"],
       },
       {
         //ثابت و متغیر دارد
         title: "حق عضویت موسسه",
         url: "membership-fee",
+        access: ["administrator", "city-showmenu"],
+      },
+      {
+        title: "قرارداد های حسابرسی",
+        url: "contracts-concluded",
+        access: ["administrator", "city-showmenu"],
+      },
+      {
+        title: "گزارش  های حسابرسی",
+        url: "reprts-by-institution",
+        access: ["administrator", "city-showmenu"],
+      },
+    ],
+  },
+  {
+    icon: <BusinessCenter />,
+    title: "ادمین موسسه",
+    url: "/FirmAdmin",
+    access: ["township-showmenu"],
+    menuChildren: [
+      {
+        title: "اطلاعات موسسه",
+        url: "information",
+        access: ["administrator", "city-showmenu", "township-showmenu"],
+      },
+      {
+        title: "کارکنان حرفه‌ای موسسه",
+        url: "persons",
+        access: ["administrator", "city-showmenu"],
+      },
+      {
+        // title: "مشخصات اشخاص",
+        title: "حسابداران شاغل در موسسه",
+        url: "personnels",
+        access: ["administrator", "city-showmenu"],
+      },
+      {
+        title: "شرکای موسسه",
+        url: "partners",
+        access: ["administrator", "city-showmenu"],
+      },
+      {
+        title: "آزمون رتبه بندی",
+        url: "rating-test",
+        access: ["administrator", "city-showmenu"],
+      },
+      {
+        title: "دوره های آموزشی",
+        url: "EDU",
+        access: ["administrator", "city-showmenu"],
+      },
+      {
+        //ثابت و متغیر دارد
+        title: "حق عضویت موسسه",
+        url: "membership-fee",
+        access: ["administrator", "city-showmenu"],
+      },
+      {
+        title: "قرارداد های حسابرسی",
+        url: "contracts-concluded-by-institution",
+        access: ["administrator", "city-showmenu"],
+      },
+      {
+        title: "گزارش  های حسابرسی",
+        url: "reprts-by-institution",
+        access: ["administrator", "city-showmenu"],
+      },
+    ],
+  },
+  {
+    icon: <People />,
+    title: "حسابداران رسمی",
+    url: "/accountant",
+    access: ["city-showmenu"],
+    menuChildren: [
+      {
+        title: "حسابدارن رسمی",
+        url: "official-users",
+        access: ["administrator", "city-showmenu"]},
+      {
+        title: "حق عضویت",
+        url: "membershipFee",
+        access: ["administrator", "city-showmenu"]},
+      {
+        title: "کارت عضویت",
+        url: "membershipCard",
         access: ["administrator","city-showmenu"],
       },
       {
-        title: "قرارداد های منعقده موسسه",
-        url: "contracts-concluded-by-institution",
+        title: "پروانه‌کار شاغل انفرادی",
+        url: "individualLicense",
+        access: ["administrator","city-showmenu"],
+      },
+      {
+        title: "آموزش مستمر",
+        url: "continuousEducation",
+        access: ["administrator","city-showmenu"],
+      },
+      {
+        title: "احکام انتظامی",
+        url: "disciplinaryOrders",
         access: ["administrator","city-showmenu"],
       },
     ],
   },
-  
+
   {
     icon: <AutoStories />,
     title: "گزارشات",
@@ -178,7 +280,7 @@ const MENU_ITEMS: MenuItem[] = [
       {
         title: "داشبورد",
         url: "dashboard",
-        access: ["administrator","city-showmenu"],
+        access: ["administrator", "city-showmenu"],
       },
     ],
   },
@@ -191,17 +293,17 @@ const MENU_ITEMS: MenuItem[] = [
       {
         title: "شهرستان",
         url: "township",
-        access: ["administrator","city-showmenu"],
+        access: ["administrator", "city-showmenu"],
       },
       {
         title: "شهر",
         url: "city",
-        access: ["administrator","city-showmenu"],
+        access: ["administrator", "city-showmenu"],
       },
       {
         title: "اطلاعات مشترک",
         url: "public-data",
-        access: ["administrator","city-showmenu"],
+        access: ["administrator", "city-showmenu"],
       },
     ],
   },
@@ -212,10 +314,9 @@ const MENU_ITEMS: MenuItem[] = [
     access: ["city-showmenu"],
     menuChildren: [
       {
-        
         title: "کاربران",
         url: "users",
-        access: ["administrator","city-showmenu"],
+        access: ["administrator", "city-showmenu"],
       },
       {
         title: "اعضا",
@@ -225,12 +326,12 @@ const MENU_ITEMS: MenuItem[] = [
       {
         title: "نقش",
         url: "roles",
-        access: ["member", "administrator","city-showmenu"],
+        access: ["member", "administrator", "city-showmenu"],
       },
       {
         title: "مجوز",
         url: "permissions",
-        access: ["member", "administrator","city-showmenu"],
+        access: ["member", "administrator", "city-showmenu"],
       },
     ],
   },
@@ -238,7 +339,7 @@ const MENU_ITEMS: MenuItem[] = [
     icon: <Help />,
     title: "راهنمای سامانه",
     url: "help",
-    access: ["member", "administrator","city-showmenu"],
+    access: ["member", "administrator", "city-showmenu"],
   },
 ];
 
@@ -396,10 +497,10 @@ const RenderMenuWithChild: React.FC<RenderMenuWithChildProps> = ({
       </Box>
 
       <Collapse in={open && expanded} timeout="auto" unmountOnExit>
-      {/**
-       * @description menu item sizing 
-       * */ }
-        <Box sx={{ pl: 4 ,pr:1}}>
+        {/**
+         * @description menu item sizing
+         * */}
+        <Box sx={{ pl: 4, pr: 1 }}>
           {menuChildren?.map((child) => (
             <NavLink
               key={`${url}/${child.url}`}
@@ -469,7 +570,7 @@ const RightMenu: React.FC<{
 }> = ({ open, handleDrawerClose, handleDrawerOpen }) => {
   const { access } = useContext(mainProviderContext);
   const theme = useTheme();
-  const authFunctions=useAuthorization()
+  const authFunctions = useAuthorization();
   return (
     <Drawer variant="permanent" open={open}>
       <DrawerHeader
@@ -516,15 +617,12 @@ const RightMenu: React.FC<{
       <Divider sx={{ borderColor: alpha(theme.palette.divider, 0.1) }} />
 
       <List sx={{ padding: "8px 0", flexGrow: 1 }}>
-        {MENU_ITEMS
-        .filter((item) => {
+        {MENU_ITEMS.filter((item) => {
           // return item.access?.includes(access?.accessMenu[0]);
           return authFunctions?.hasMenuAccess(item.access);
-        })
-        .map((menu) => {
+        }).map((menu) => {
           if (menu.menuChildren?.length) {
-            let minichild = menu.menuChildren
-            .filter((item) =>
+            let minichild = menu.menuChildren.filter((item) =>
               // item.access?.includes(access?.roleName[0])
               authFunctions?.hasMenuAccess(item.access)
             );

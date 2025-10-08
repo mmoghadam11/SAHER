@@ -55,7 +55,7 @@ const FirmContractGrid = ({ setActiveTab }: Props) => {
     enabled: true,
   } as any);
   const columns: GridColDef[] = [
-    { field: "invoiceIssueTitle", headerName: "عنوان قرارداد", flex: 1 },
+    { field: "invoiceIssueTitle", headerName: "عنوان صدور فاکتور", flex: 1 },
     { field: "applicatorFirstName", headerName: "نام درخواست کننده", flex: 1 },
     { field: "applicatorLastName", headerName: "نام خانوادگی درخواست کننده", flex: 1 },
     {
@@ -268,7 +268,7 @@ const FirmContractGrid = ({ setActiveTab }: Props) => {
             }
           )
         }
-        message={`آیا از حذف قرارداد ${deleteData?.cdContractTypeName} واقع در تاریخ ${moment(deleteData?.contractPreparationDate).format("jYYYY/jMM/jDD")} مطمعین میباشید؟`}
+        message={`آیا از حذف قرارداد ${deleteData?.cdContractTypeName} واقع در تاریخ ${deleteData?.contractPreparationDate?moment(deleteData?.contractPreparationDate).format("jYYYY/jMM/jDD"):" نامشخص"} مطمعین میباشید؟`}
         title={"درخواست حذف!"}
       />
     </Grid>

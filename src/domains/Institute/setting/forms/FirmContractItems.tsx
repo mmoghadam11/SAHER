@@ -164,6 +164,9 @@ export const FirmContractItems = (
       label: "تاخیر ثبت در سیستم",
       size: { md: 4 },
       placeholder: "به عدد وارد شود",
+      rules: {
+        pattern: { value: /^[0-9]+$/, message: "باید فقط عدد وارد شود" },
+      },
     },
     {
       name: "startFiscalYear",
@@ -277,6 +280,9 @@ export const FirmContractItems = (
       inputType: "text",
       label: "عنوان صدور فاکتور",
       size: { md: 6 },
+      rules:{
+        require:"عنوان الزامی می‌باشد"
+      }
     },
     {
       name: "cdPersonalityTypeId",
