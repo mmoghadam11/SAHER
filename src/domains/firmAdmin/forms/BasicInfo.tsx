@@ -1,17 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
-import { useAuth } from "hooks/useAuth";
-import { FullInstituteType } from "types/institute";
+import { FormItem } from "types/formItem";
 
-interface FormItem {
-  name: keyof FullInstituteType;
-  inputType: string;
-  label: string;
-  size: { md: number };
-  rules?: any;
-  tempRules?: any;
-  options?: any[];
-  elementProps?: any;
-}
+
+
 
 export const getBasicInfoItems = (
   setValue: (name: any, val: any) => void,
@@ -23,8 +13,8 @@ export const getBasicInfoItems = (
       inputType: "text",
       label: "نام موسسه",
       size: { md: 3 },
-      rules: { required: "نام موسسه الزامی است" },
-      tempRules: { required: "نام موسسه الزامی است" },
+      // rules: { required: "نام موسسه الزامی است" },
+      // tempRules: { required: "نام موسسه الزامی است" },
       elementProps: {
         disabled: true,
       },
@@ -42,20 +32,20 @@ export const getBasicInfoItems = (
       inputType: "text",
       label: "شناسه ملی",
       size: { md: 3 },
-      rules: {
-        required: "شناسه ملی الزامی است",
-        pattern: {
-          value: /^[0-9]{10}$/,
-          message: "شناسه ملی باید 10 رقم باشد",
-        },
-      },
-      tempRules: {
-        required: "شناسه ملی الزامی است",
-        pattern: {
-          value: /^[0-9]{10}$/,
-          message: "شناسه ملی باید 10 رقم باشد",
-        },
-      },
+      // rules: {
+      //   required: "شناسه ملی الزامی است",
+      //   pattern: {
+      //     value: /^[0-9]{10}$/,
+      //     message: "شناسه ملی باید 10 رقم باشد",
+      //   },
+      // },
+      // tempRules: {
+      //   required: "شناسه ملی الزامی است",
+      //   pattern: {
+      //     value: /^[0-9]{10}$/,
+      //     message: "شناسه ملی باید 10 رقم باشد",
+      //   },
+      // },
       elementProps: {
         disabled: true,
       },
@@ -65,8 +55,8 @@ export const getBasicInfoItems = (
       inputType: "text",
       label: "شماره ثبت",
       size: { md: 3 },
-      rules: { required: "شماره ثبت الزامی است" },
-      tempRules: { required: "شماره ثبت الزامی است" },
+      // rules: { required: "شماره ثبت الزامی است" },
+      // tempRules: { required: "شماره ثبت الزامی است" },
       elementProps: {
         disabled: true,
       },
@@ -117,6 +107,7 @@ export const getBasicInfoItems = (
         value: item?.id,
         title: item?.name,
       })) ?? [{ value: 0, title: "" }],
+      storeValueAs:"id",
       rules: {
         required: "انتخاب شهر الزامی است",
       },

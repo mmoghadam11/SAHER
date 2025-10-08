@@ -18,9 +18,9 @@ export const ratingInfoItems = (
     inputType: "text",
     label: "رتبه کنترل وضعیت",
     size: { md: 3 },
-    rules: {
-      required: "رتبه کنترل وضعیت الزامی است",
-    },
+    // rules: {
+    //   required: "رتبه کنترل وضعیت الزامی است",
+    // },
     elementProps: {
       disabled: true,
     },
@@ -30,13 +30,13 @@ export const ratingInfoItems = (
     inputType: "text",
     label: "امتیاز وضعیت",
     size: { md: 3 },
-    rules: {
-      required: "امتیاز وضعیت الزامی است",
-      pattern: {
-        value: /^[0-9]+$/,
-        message: "امتیاز باید عددی باشد",
-      },
-    },
+    // rules: {
+    //   required: "امتیاز وضعیت الزامی است",
+    //   pattern: {
+    //     value: /^[0-9]+$/,
+    //     message: "امتیاز باید عددی باشد",
+    //   },
+    // },
     elementProps: {
       disabled: true,
     },
@@ -46,7 +46,7 @@ export const ratingInfoItems = (
     inputType: "date",
     label: "تاریخ دریافت رتبه وضعیت",
     size: { md: 3 },
-    rules: { required: "تاریخ دریافت رتبه وضعیت الزامی است" },
+    // rules: { required: "تاریخ دریافت رتبه وضعیت الزامی است" },
     elementProps: {
       setDay: (value: any) => {
         setValue("statusControlRankReceiptDate", value);
@@ -60,9 +60,9 @@ export const ratingInfoItems = (
     inputType: "text",
     label: "شماره نامه رتبه وضعیت",
     size: { md: 3 },
-    rules: {
-      required: "شماره نامه رتبه وضعیت الزامی است",
-    },
+    // rules: {
+    //   required: "شماره نامه رتبه وضعیت الزامی است",
+    // },
     elementProps: {
       disabled: true,
     },
@@ -72,9 +72,9 @@ export const ratingInfoItems = (
     inputType: "text",
     label: "رتبه کنترل کیفیت",
     size: { md: 3 },
-    rules: {
-      required: "رتبه کنترل کیفیت الزامی است",
-    },
+    // rules: {
+    //   required: "رتبه کنترل کیفیت الزامی است",
+    // },
     elementProps: {
       disabled: true,
     },
@@ -84,13 +84,13 @@ export const ratingInfoItems = (
     inputType: "text",
     label: "امتیاز کیفیت",
     size: { md: 3 },
-    rules: {
-      required: "امتیاز کیفیت الزامی است",
-      pattern: {
-        value: /^[0-9]+$/,
-        message: "امتیاز باید عددی باشد",
-      },
-    },
+    // rules: {
+    //   required: "امتیاز کیفیت الزامی است",
+    //   pattern: {
+    //     value: /^[0-9]+$/,
+    //     message: "امتیاز باید عددی باشد",
+    //   },
+    // },
     elementProps: {
       disabled: true,
     },
@@ -100,7 +100,7 @@ export const ratingInfoItems = (
     inputType: "date",
     label: "تاریخ دریافت رتبه کیفیت",
     size: { md: 3 },
-    rules: { required: "تاریخ دریافت رتبه کیفیت الزامی است" },
+    // rules: { required: "تاریخ دریافت رتبه کیفیت الزامی است" },
     elementProps: {
       setDay: (value: any) => {
         setValue("qcRankReceiptDate", value);
@@ -114,9 +114,9 @@ export const ratingInfoItems = (
     inputType: "text",
     label: "شماره نامه رتبه کیفیت",
     size: { md: 3 },
-    rules: {
-      required: "شماره نامه رتبه کیفیت الزامی است",
-    },
+    // rules: {
+    //   required: "شماره نامه رتبه کیفیت الزامی است",
+    // },
     elementProps: {
       disabled: true,
     },

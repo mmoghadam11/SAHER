@@ -255,8 +255,8 @@ export default function FirmAdminFormSteps(): JSX.Element {
         // method:  "post",
         data: {
           ...data,
-          cdRegisterPlaceId: data?.cdRegisterPlaceId?.value,
-          cdRelationshipTypeId: data?.cdRelationshipTypeId?.value,
+          // cdRegisterPlaceId: data?.cdRegisterPlaceId?.value,
+          // cdRelationshipTypeId: data?.cdRelationshipTypeId?.value,
         },
       },
       {
@@ -295,22 +295,7 @@ export default function FirmAdminFormSteps(): JSX.Element {
   const navigate = useNavigate();
   useEffect(() => {
     if (state?.firmData) {
-      const registerPlaceObject = cityOptions?.find(
-        (city: any) => city.id === state.firmData.cdRegisterPlaceId
-      );
-
-      // پیدا کردن آبجکت کامل نوع ارتباط بر اساس ID
-      const relationshipTypeObject = relOptions?.content?.find(
-        (rel: any) => rel.id === state.firmData.cdRelationshipTypeId
-      );
-      console.log("registerPlaceObject", {
-        value: registerPlaceObject?.id,
-        title: registerPlaceObject?.name,
-      });
-      console.log("relationshipTypeObject", {
-        value: registerPlaceObject?.id,
-        title: registerPlaceObject?.value,
-      });
+     
 
       // ساختن کپی اصلاح شده
       const cleanedFirmData = Object.fromEntries(
@@ -324,22 +309,10 @@ export default function FirmAdminFormSteps(): JSX.Element {
 
       reset({
         ...cleanedFirmData,
-        cdRegisterPlaceId: {
-          value: registerPlaceObject?.id,
-          title: registerPlaceObject?.name,
-        },
-        cdRelationshipTypeId: {
-          value: relationshipTypeObject?.id,
-          title: relationshipTypeObject?.value,
-        },
+        
       });
     }
   }, [state, cityOptions, relOptions, reset]);
-  // useEffect(() => {
-  //   snackbar("1","error")
-  //   snackbar("2","error")
-  //   snackbar("3","info")
-  // }, [])
 
   return (
     <Grid container justifyContent={"center"}>

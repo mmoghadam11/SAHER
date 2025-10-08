@@ -1,16 +1,10 @@
+import { FormItem } from "types/formItem";
 import { FullInstituteType } from "types/institute";
 
-interface FormItem {
-  name: keyof FullInstituteType;
-  inputType: string;
-  label: string;
-  size: { md: number };
-  rules?: any;
-  options?: any[];
-  elementProps?: any;
-}
-
-export const specialInfoItems = (setValue: (name: any, val: any) => void,relOptions:any): FormItem[] => [
+export const specialInfoItems = (
+  setValue: (name: any, val: any) => void,
+  relOptions: any
+): FormItem[] => [
   {
     name: "burseTrustee",
     inputType: "select",
@@ -27,7 +21,7 @@ export const specialInfoItems = (setValue: (name: any, val: any) => void,relOpti
     inputType: "date",
     label: "تاریخ اعتماد بورس",
     size: { md: 3 },
-    rules: { },
+    rules: {},
     elementProps: {
       setDay: (value: any) => {
         setValue("burseTrustReceiptDate", value);
@@ -40,7 +34,7 @@ export const specialInfoItems = (setValue: (name: any, val: any) => void,relOpti
     inputType: "date",
     label: "تاریخ رد اعتماد بورس",
     size: { md: 3 },
-    rules: { },
+    rules: {},
     elementProps: {
       setDay: (value: any) => {
         setValue("burseRejectionReceiptDate", value);
@@ -86,8 +80,8 @@ export const specialInfoItems = (setValue: (name: any, val: any) => void,relOpti
     inputType: "text",
     label: "مدیر مبارزه با پولشویی",
     size: { md: 3 },
-    rules: { 
-      required: "نام مدیر مبارزه با پولشویی الزامی است"
+    rules: {
+      required: "نام مدیر مبارزه با پولشویی الزامی است",
     },
   },
   {
@@ -95,43 +89,35 @@ export const specialInfoItems = (setValue: (name: any, val: any) => void,relOpti
     inputType: "text",
     label: "کد ملی مدیر مبارزه با پولشویی",
     size: { md: 3 },
-    rules: { 
+    rules: {
       required: "کد ملی مدیر مبارزه با پولشویی الزامی است",
       pattern: {
         value: /^[0-9]{10}$/,
-        message: "کد ملی باید 10 رقم باشد"
-      }
+        message: "کد ملی باید 10 رقم باشد",
+      },
     },
   },
   {
-      name: "cdRelationshipTypeId", // تغییر نام فیلد به province
-      inputType: "autocomplete", // تغییر به autocomplete
-      label: "نوع ارتباط با جامعه",
-      size: { md: 3 },
-      options: relOptions?.content?.map((item:any)=>({value:item?.id,title:item?.value}))??[{value:0,title:""}],
-      rules: {
-        required: "نوع ارتباط با جامعه الزامی است",
-      },
-      elementProps: {
-        // اضافه کردن propsهای خاص برای Autocomplete
-        renderOption: (props: any, option: any) => (
-          <li {...props} key={option.value}>
-            {option.title}
-          </li>
-        ),
-        isOptionEqualToValue: (option: any, value: any) => {
-          return option.value === value?.value;
-        },
-        getOptionLabel: (option: any) => option.title || "",
-      },
+    name: "cdRelationshipTypeId", // تغییر نام فیلد به province
+    inputType: "autocomplete", // تغییر به autocomplete
+    label: "نوع ارتباط با جامعه",
+    size: { md: 3 },
+    options: relOptions?.content?.map((item: any) => ({
+      value: item?.id,
+      title: item?.value,
+    })) ?? [{ value: 0, title: "" }],
+    storeValueAs: "id",
+    elementProps: {
+      disabled: true,
     },
+  },
   {
     name: "auditorName",
     inputType: "text",
     label: "نام حسابرس",
     size: { md: 3 },
-    rules: { 
-      required: "نام حسابرس الزامی است"
+    elementProps: {
+      disabled: true,
     },
   },
   {
@@ -139,12 +125,13 @@ export const specialInfoItems = (setValue: (name: any, val: any) => void,relOpti
     inputType: "date",
     label: "تاریخ ادغام",
     size: { md: 3 },
-    rules: { },
+    rules: {},
     elementProps: {
       setDay: (value: any) => {
         setValue("officialNewspaperMergeDate", value);
       },
       value: "",
+      disabled: true,
     },
   },
   {
@@ -152,26 +139,33 @@ export const specialInfoItems = (setValue: (name: any, val: any) => void,relOpti
     inputType: "text",
     label: "نام موسسه ادغام‌شونده",
     size: { md: 3 },
-    rules: { },
+    rules: {},
+    elementProps: {
+      disabled: true,
+    },
   },
   {
     name: "mergingInstitutionMembershipNo",
     inputType: "text",
     label: "شماره عضویت ادغام‌شونده",
     size: { md: 3 },
-    rules: { },
+    rules: {},
+    elementProps: {
+      disabled: true,
+    },
   },
   {
     name: "dissolutionDate",
     inputType: "date",
     label: "تاریخ انحلال",
     size: { md: 3 },
-    rules: { },
+    rules: {},
     elementProps: {
       setDay: (value: any) => {
         setValue("dissolutionDate", value);
       },
       value: "",
+      disabled: true,
     },
   },
   {
@@ -179,19 +173,23 @@ export const specialInfoItems = (setValue: (name: any, val: any) => void,relOpti
     inputType: "text",
     label: "شماره روزنامه انحلال",
     size: { md: 3 },
-    rules: { },
+    rules: {},
+    elementProps: {
+      disabled: true,
+    },
   },
   {
     name: "dissolutionOfficialNewspaperDate",
     inputType: "date",
     label: "تاریخ روزنامه انحلال",
     size: { md: 3 },
-    rules: { },
+    rules: {},
     elementProps: {
       setDay: (value: any) => {
         setValue("dissolutionOfficialNewspaperDate", value);
       },
       value: "",
+      disabled: true,
     },
   },
 ];
@@ -271,7 +269,7 @@ export const specialInfoItems = (setValue: (name: any, val: any) => void,relOpti
 //     inputType: "text",
 //     label: "مدیر مبارزه با پولشویی",
 //     size: { md: 3 },
-//     rules: { 
+//     rules: {
 //       required: "نام مدیر مبارزه با پولشویی الزامی است"
 //     },
 //   },
@@ -280,7 +278,7 @@ export const specialInfoItems = (setValue: (name: any, val: any) => void,relOpti
 //     inputType: "text",
 //     label: "کد ملی مدیر مبارزه با پولشویی",
 //     size: { md: 3 },
-//     rules: { 
+//     rules: {
 //       required: "کد ملی مدیر مبارزه با پولشویی الزامی است",
 //       pattern: {
 //         value: /^[0-9]{10}$/,
@@ -293,7 +291,7 @@ export const specialInfoItems = (setValue: (name: any, val: any) => void,relOpti
 //     inputType: "text",
 //     label: "نوع ارتباط با جامعه",
 //     size: { md: 3 },
-//     rules: { 
+//     rules: {
 //       required: "نوع ارتباط با جامعه الزامی است"
 //     },
 //   },
@@ -302,7 +300,7 @@ export const specialInfoItems = (setValue: (name: any, val: any) => void,relOpti
 //     inputType: "text",
 //     label: "نام حسابرس",
 //     size: { md: 3 },
-//     rules: { 
+//     rules: {
 //       required: "نام حسابرس الزامی است"
 //     },
 //   },
