@@ -8,14 +8,14 @@ interface FormItem {
   label: string;
   size: { md: number };
   rules?: any;
-  tempRules?:any;
+  tempRules?: any;
   options?: any[];
   elementProps?: any;
 }
 
 export const getBasicInfoItems = (
   setValue: (name: any, val: any) => void,
-  city:any
+  city: any
 ): FormItem[] => {
   return [
     {
@@ -25,6 +25,9 @@ export const getBasicInfoItems = (
       size: { md: 3 },
       rules: { required: "نام موسسه الزامی است" },
       tempRules: { required: "نام موسسه الزامی است" },
+      elementProps: {
+        disabled: true,
+      },
     },
     {
       name: "latinName",
@@ -53,6 +56,9 @@ export const getBasicInfoItems = (
           message: "شناسه ملی باید 10 رقم باشد",
         },
       },
+      elementProps: {
+        disabled: true,
+      },
     },
     {
       name: "registerNo",
@@ -61,6 +67,9 @@ export const getBasicInfoItems = (
       size: { md: 3 },
       rules: { required: "شماره ثبت الزامی است" },
       tempRules: { required: "شماره ثبت الزامی است" },
+      elementProps: {
+        disabled: true,
+      },
     },
     {
       name: "registerDate",
@@ -104,7 +113,10 @@ export const getBasicInfoItems = (
       inputType: "autocomplete", // تغییر به autocomplete
       label: "شهر",
       size: { md: 3 },
-      options: city?.map((item:any)=>({value:item?.id,title:item?.name}))??[{value:0,title:""}],
+      options: city?.map((item: any) => ({
+        value: item?.id,
+        title: item?.name,
+      })) ?? [{ value: 0, title: "" }],
       rules: {
         required: "انتخاب شهر الزامی است",
       },
@@ -113,5 +125,4 @@ export const getBasicInfoItems = (
       },
     },
   ];
- 
 };

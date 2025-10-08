@@ -1,8 +1,9 @@
 import { FullInstituteType } from "types/institute";
 import { FormItem } from "types/formItem";
 
-
-export const membershipInfoItems= (setValue: (name:any,val: any) => void): FormItem[] => [
+export const membershipInfoItems = (
+  setValue: (name: any, val: any) => void
+): FormItem[] => [
   {
     name: "membershipNo",
     inputType: "text",
@@ -10,6 +11,9 @@ export const membershipInfoItems= (setValue: (name:any,val: any) => void): FormI
     size: { md: 4 },
     rules: { required: "شماره عضویت الزامی است" },
     tempRules: { required: "شماره عضویت الزامی است" },
+    elementProps: {
+      disabled: true,
+    },
   },
   {
     name: "memberShipDate",
@@ -20,8 +24,8 @@ export const membershipInfoItems= (setValue: (name:any,val: any) => void): FormI
     tempRules: { required: "تاریخ عضویت الزامی است" },
     elementProps: {
       setDay: (value: any) => {
-        setValue("memberShipDate",value)
-            },
+        setValue("memberShipDate", value);
+      },
       value: "", // مقدار اولیه
     },
   },
@@ -66,8 +70,8 @@ export const membershipInfoItems= (setValue: (name:any,val: any) => void): FormI
     rules: { required: "تاریخ آخرین پروانه الزامی است" },
     elementProps: {
       setDay: (value: any) => {
-        setValue("lastLicenceIssueDate",value)
-            },
+        setValue("lastLicenceIssueDate", value);
+      },
       value: "", // مقدار اولیه
     },
   },
