@@ -212,7 +212,7 @@ const InstititeGrid = (props: Props) => {
         handleSubmit={() =>
           mutate(
             {
-              entity: `township/delete/${deleteData?.id}`,
+              entity: `firm/remove/${deleteData?.id}`,
               method: "delete",
             },
             {
@@ -226,7 +226,7 @@ const InstititeGrid = (props: Props) => {
             }
           )
         }
-        message={`آیا از حذف ${deleteData?.name} واقع در استان ${deleteData?.provinceName} مطمعین میباشید؟`}
+        message={`آیا از حذف ${deleteData?.name} واقع در شهر ${deleteData?.registerPlaceName} مطمعین میباشید؟`}
         title={"درخواست حذف!"}
       />
     </Grid>

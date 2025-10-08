@@ -30,6 +30,8 @@ import { specialInfoItems } from "./forms/specialInfoItems";
 import FancyTicketDivider from "components/FancyTicketDivider";
 import BackButton from "components/buttons/BackButton";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { AddressFormItems } from "./setting/forms/AddressFormItems";
+import { AddressFormItemsDTO } from "./setting/forms/AddressFormItemsDTO";
 
 export default function FormSteps(): JSX.Element {
   const { id } = useParams();
@@ -130,6 +132,10 @@ export default function FormSteps(): JSX.Element {
       {
         name: "اطلاعات مالی و اداری",
         formItems: financialInfoItems(setValue, ownerOptions),
+      },
+      {
+        name: "آدرس",
+        formItems: AddressFormItemsDTO(setValue,{cityOptions},id !== "new"),
       },
       {
         name: "اطلاعات تماس",
@@ -432,3 +438,11 @@ export default function FormSteps(): JSX.Element {
     </Grid>
   );
 }
+
+/**
+ * فیلد هایی که موسسه نباید تغیر دهد
+کد عضویت
+تاریخ ثبت
+ * 
+ */
+
