@@ -1,4 +1,4 @@
-import { Article, Search, Settings } from "@mui/icons-material";
+import { Article, HistoryEdu, Search, Settings } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -76,7 +76,7 @@ const InstituteContractGrid = (props: Props) => {
             onManage={{
               title:"قرارداد ها",
               function:()=>{navigate(`${row.id}`,{state: {firmData: row} })},
-              icon:<Settings/>
+              icon:<HistoryEdu/>
             }}
           />
         );
