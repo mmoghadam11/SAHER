@@ -55,7 +55,7 @@ const DisciplinaryOrderGrid = ({ setActiveTab }: Props) => {
     enabled: true,
   } as any);
   const columns: GridColDef[] = [
-    { field: "subject", headerName: "حکم", flex: 1 },
+    { field: "subjectTypeName", headerName: "حکم", flex: 1 },
     { field: "claimant", headerName: "شاکی", flex: 1 },
     { field: "workgroupName", headerName: "کارگروه", flex: 1 },
     { field: "cdOrderTypeValue", headerName: "نوع حکم", flex: 1 },
@@ -259,7 +259,7 @@ const DisciplinaryOrderGrid = ({ setActiveTab }: Props) => {
             }
           )
         }
-        message={`آیا از حذف ${deleteData?.subject} مطمعین میباشید؟`}
+        message={`آیا از حذف ${deleteData?.subjectTypeName} مطمعین میباشید؟`}
         title={"درخواست حذف!"}
       />
     </Grid>

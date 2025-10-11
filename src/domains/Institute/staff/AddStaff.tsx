@@ -35,9 +35,14 @@ import { ProfessionalFormItems } from "./forms/ProfessionalFormItems";
 import { MembershipFormItems } from "./forms/MembershipFormItems";
 
 
-export default function AddOfficialUser(): JSX.Element {
+export default function AddStaff(): JSX.Element {
   const { id } = useParams();
   const { state } = useLocation();
+  useEffect(() => {
+    if(!!state?.staffData)
+      reset(state?.staffData)
+  }, [state?.staffData])
+  
   const {
     handleSubmit,
     control,
@@ -271,10 +276,10 @@ export default function AddOfficialUser(): JSX.Element {
     },
     {
       name: "وضعیت و وظیفه",
-      formItems: StatusFormItems(setValue, {firmOptions,cityOptions,countryOptions,DutyStatus}),
+      formItems: StatusFormItems(setValue, {firmOptions,cityOptions,countryOptions,DutyStatus,rankOptions}),
     },
     {
-      name: "اطلاعات حسابدار رسمیی تکمیلی",
+      name: "اطلاعات شخصی تکمیلی",
       formItems: PersonalInfoFormItems(setValue, {religionOptions,marriageOptions,countryOptions,genderOptions}),
     },
     {
@@ -288,13 +293,15 @@ export default function AddOfficialUser(): JSX.Element {
     console.log("lastForm=>", data);
     mutate(
       {
-        entity: `certified-accountant/${id !== "new" ? "update" : "save"}`,
+        entity: `professional-staff/${id !== "new" ? "update" : "save"}`,
         // entity: `membership/save`,
         method: id !== "new" ? "put" : "post",
         // method:  "post",
         data: {
           ...data,
-          cdPersonnelTypeId:111
+          // حسابدار رسمی=111
+          // کارکنان حرفه ای=112
+          cdPersonnelTypeId:112,
         },
       },
       {
@@ -329,48 +336,7 @@ export default function AddOfficialUser(): JSX.Element {
     );
   };
   const navigate = useNavigate();
-  useEffect(() => {
-    if (state?.firmData) {
-      const registerPlaceObject = cityOptions?.find(
-        (city: any) => city.id === state.firmData.cdRegisterPlaceId
-      );
 
-      // پیدا کردن آبجکت کامل نوع ارتباط بر اساس ID
-      const relationshipTypeObject = relOptions?.content?.find(
-        (rel: any) => rel.id === state.firmData.cdRelationshipTypeId
-      );
-      console.log("registerPlaceObject", {
-        value: registerPlaceObject?.id,
-        title: registerPlaceObject?.name,
-      });
-      console.log("relationshipTypeObject", {
-        value: registerPlaceObject?.id,
-        title: registerPlaceObject?.value,
-      });
-
-      // ساختن کپی اصلاح شده
-      const cleanedFirmData = Object.fromEntries(
-        Object.entries(state.firmData).map(([key, value]) => {
-          if (value === false) {
-            return [key, "false"]; // تغییر false به استرینگ
-          }
-          return [key, value];
-        })
-      );
-
-      reset({
-        ...cleanedFirmData,
-        cdRegisterPlaceId: {
-          value: registerPlaceObject?.id,
-          title: registerPlaceObject?.name,
-        },
-        cdRelationshipTypeId: {
-          value: relationshipTypeObject?.id,
-          title: relationshipTypeObject?.value,
-        },
-      });
-    }
-  }, [state, cityOptions, relOptions, reset]);
   // useEffect(() => {
   //   snackbar("1","error")
   //   snackbar("2","error")
@@ -392,7 +358,7 @@ export default function AddOfficialUser(): JSX.Element {
               >
                 <Grid item display={"flex"}>
                   <Inventory fontSize="large" />
-                  <Typography variant="h5">فرم اطلاعات عمومی حسابداران رسمی</Typography>
+                  <Typography variant="h5">فرم کارکنان حرفه‌ای موسسات</Typography>
                 </Grid>
                 <BackButton onBack={() => navigate(-1)} />
               </Grid>

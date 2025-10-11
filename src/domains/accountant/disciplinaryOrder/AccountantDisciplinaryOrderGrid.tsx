@@ -1,4 +1,4 @@
-import { Article, Search, Settings } from "@mui/icons-material";
+import { Article, Gavel, HistoryEdu, LibraryBooksOutlined, ReceiptLong, Search, Settings } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -25,11 +25,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import paramsSerializer from "services/paramsSerializer";
 import { PAGINATION_DEFAULT_VALUE } from "shared/paginationValue";
 import ConfirmBox from "components/confirmBox/ConfirmBox";
-import moment from "jalali-moment";
 
 type Props = {};
 
-const OfficialUserGrid = (props: Props) => {
+const AccountantDisciplinaryOrderGrid = (props: Props) => {
   const Auth = useAuth();
   const snackbar = useSnackbar();
   const navigate = useNavigate();
@@ -43,48 +42,26 @@ const OfficialUserGrid = (props: Props) => {
   } = useForm();
   const [filters, setFilters] = useState<any>({
     ...PAGINATION_DEFAULT_VALUE,
-    firstName: "",
-    lastName: "",
+    name: "",
     // code: "",
   });
   const {
-    data: StatesData,
-    status: StatesData_status,
-    refetch: StatesData_refetch,
-  } = useQuery<any>({
-    queryKey: [`certified-accountant/search${paramsSerializer(filters)}`],
-    queryFn: Auth?.getRequest,
-    select: (res: any) => {
-      return res?.data;
-    },
-    enabled: true,
-  } as any);
+      data: StatesData,
+      status: StatesData_status,
+      refetch: StatesData_refetch,
+    } = useQuery<any>({
+      queryKey: [`certified-accountant/search${paramsSerializer(filters)}`],
+      queryFn: Auth?.getRequest,
+      select: (res: any) => {
+        return res?.data;
+      },
+      enabled: true,
+    } as any);
   const columns: GridColDef[] = [
-    {
-      field: "firstName",
-      headerName: "نام حسابدار رسمی",
-      flex: 2,
-      renderCell: ({ row }: { row: any }) => {
-        return row?.firstName + " " + row?.lastName;
-      },
-    },
-    {
-      field: "latinFirstName",
-      headerName: "نام لاتین",
-      flex: 1,
-      renderCell: ({ row }: { row: any }) => {
-        return row?.latinFirstName + " " + row?.latinLastName;
-      },
-    },
-    {
-      field: "birthDate",
-      headerName: "تاریخ تولد",
-      flex: 1,
-      renderCell: ({ row }: { row: any }) => {
-        return moment(row?.birthDate).format("jYYYY/jMM/jDD");
-      },
-    },
-    { field: "idNumber", headerName: "کد پرسنلی", flex: 1 },
+    { field: "firstName", headerName: "نام حسابدار", flex: 2 },
+    { field: "lastName", headerName: "نام خانوادگی حسابدار", flex: 2 },
+    { field: "nationalCode", headerName: "کد ملی حسابدار", flex: 1 },
+    { field: "birthPlaceName", headerName: "محل تولد", flex: 1 },
     {
       headerName: "عملیات",
       field: "action",
@@ -94,22 +71,11 @@ const OfficialUserGrid = (props: Props) => {
       renderCell: ({ row }: { row: any }) => {
         return (
           <TableActions
-            onEdit={() => {
-              setEditeData(row);
-              setAddModalFlag(true);
-              navigate(`${row.id}`, { state: { firmData: row } });
+            onManage={{
+              title:"احکام انتظامی حسابدار",
+              function:()=>{navigate(`${row.id}`,{state: {accountantData: row} })},
+              icon:<LibraryBooksOutlined/>
             }}
-            onDelete={() => {
-              setDeleteData(row);
-              setDeleteFlag(true);
-            }}
-            // onManage={{
-            //   title: "جزئیات حسابدار رسمی",
-            //   function: () => {
-            //     navigate(`details/${row.id}`, { state: { firmData: row } });
-            //   },
-            //   icon: <Settings />,
-            // }}
           />
         );
       },
@@ -138,6 +104,12 @@ const OfficialUserGrid = (props: Props) => {
       label: "نام خانوادگی حسابدار",
       size: { md: 4 },
     },
+    // {
+    //   name: "code",
+    //   inputType: "text",
+    //   label: "کد موسسه",
+    //   size: { md: 4 },
+    // },
   ];
   type editeObjectType = {
     id: number;
@@ -194,15 +166,10 @@ const OfficialUserGrid = (props: Props) => {
         mb={0}
       >
         <Box display={"flex"}>
-          <Article fontSize="large" />
-          <Typography variant="h5">حسابداران رسمی</Typography>
+          <Gavel fontSize="large" />
+          <Typography variant="h5">احکام انتظامی موسسات</Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"}>
-          <CreateNewItem
-            sx={{ mr: 2 }}
-            name="حسابدار رسمی"
-            onClick={() => navigate("new")}
-          />
           <BackButton onBack={() => navigate(-1)} />
         </Box>
       </Grid>
@@ -213,7 +180,7 @@ const OfficialUserGrid = (props: Props) => {
         setFilters={setFilters}
       />
       <Grid item md={11} sm={11} xs={12}>
-        {(StatesData_status === "success"&& !!StatesData) ? (
+        {StatesData_status === "success" ? (
           <TavanaDataGrid
             rows={StatesData?.content}
             columns={columns}
@@ -226,35 +193,9 @@ const OfficialUserGrid = (props: Props) => {
           />
         ) : null}
       </Grid>
-
-      <ConfirmBox
-        open={deleteFlag}
-        handleClose={() => {
-          setDeleteFlag(false);
-          setDeleteData(null);
-        }}
-        handleSubmit={() =>
-          mutate(
-            {
-              entity: `certified-accountant/remove/${deleteData?.id}`,
-              method: "delete",
-            },
-            {
-              onSuccess: (res: any) => {
-                snackbar(`حسابدار رسمی انتخاب شده با موفقیت حذف شد`, "success");
-                StatesData_refetch();
-              },
-              onError: () => {
-                snackbar("خطا در حذف ", "error");
-              },
-            }
-          )
-        }
-        message={`آیا از حذف ${deleteData?.firstName}  ${deleteData?.lastName} مطمعین میباشید؟`}
-        title={"درخواست حذف!"}
-      />
+      
     </Grid>
   );
 };
 
-export default OfficialUserGrid;
+export default AccountantDisciplinaryOrderGrid;

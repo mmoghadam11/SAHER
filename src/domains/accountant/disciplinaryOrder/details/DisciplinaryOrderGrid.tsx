@@ -1,35 +1,32 @@
-import { Article, Search, Settings } from "@mui/icons-material";
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogTitle,
-  Grid,
-  Modal,
-  Paper,
-  Typography,
-} from "@mui/material";
-import { GridColDef } from "@mui/x-data-grid";
+import { Close, Key, ManageAccounts, Toc, Verified } from "@mui/icons-material";
+import { Box, Chip, Grid, Typography } from "@mui/material";
+import { GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import BackButton from "components/buttons/BackButton";
 import CreateNewItem from "components/buttons/CreateNewItem";
 import TavanaDataGrid from "components/dataGrid/TavanaDataGrid";
-import SearchPannel from "components/form/SearchPannel";
-import RenderFormInput from "components/render/formInputs/RenderFormInput";
 import TableActions from "components/table/TableActions";
 import { useAuth } from "hooks/useAuth";
 import { useSnackbar } from "hooks/useSnackbar";
 import React, { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import paramsSerializer from "services/paramsSerializer";
 import { PAGINATION_DEFAULT_VALUE } from "shared/paginationValue";
 import ConfirmBox from "components/confirmBox/ConfirmBox";
+import VerticalTable from "components/dataGrid/VerticalTable";
+import { isMobile } from "react-device-detect";
+import SearchPannel from "components/form/SearchPannel";
+import AddFinancial from "./AddDisciplinaryOrder";
 import moment from "jalali-moment";
+import AddDisciplinaryOrder from "./AddDisciplinaryOrder";
 
-type Props = {};
+type Props = {
+  setActiveTab: React.Dispatch<React.SetStateAction<number>>;
+};
 
-const OfficialUserGrid = (props: Props) => {
+const DisciplinaryOrderGrid = ({ setActiveTab }: Props) => {
+  const { id } = useParams();
   const Auth = useAuth();
   const snackbar = useSnackbar();
   const navigate = useNavigate();
@@ -43,16 +40,14 @@ const OfficialUserGrid = (props: Props) => {
   } = useForm();
   const [filters, setFilters] = useState<any>({
     ...PAGINATION_DEFAULT_VALUE,
-    firstName: "",
-    lastName: "",
-    // code: "",
+    personnelCaId: id,
   });
   const {
     data: StatesData,
     status: StatesData_status,
     refetch: StatesData_refetch,
   } = useQuery<any>({
-    queryKey: [`certified-accountant/search${paramsSerializer(filters)}`],
+    queryKey: [`disciplinary-order/search${paramsSerializer(filters)}`],
     queryFn: Auth?.getRequest,
     select: (res: any) => {
       return res?.data;
@@ -60,31 +55,20 @@ const OfficialUserGrid = (props: Props) => {
     enabled: true,
   } as any);
   const columns: GridColDef[] = [
+    { field: "subjectTypeName", headerName: "حکم", flex: 1 },
+    { field: "claimant", headerName: "شاکی", flex: 1 },
+    { field: "workgroupName", headerName: "کارگروه", flex: 1 },
+    { field: "cdOrderTypeValue", headerName: "نوع حکم", flex: 1 },
     {
-      field: "firstName",
-      headerName: "نام حسابدار رسمی",
-      flex: 2,
-      renderCell: ({ row }: { row: any }) => {
-        return row?.firstName + " " + row?.lastName;
-      },
-    },
-    {
-      field: "latinFirstName",
-      headerName: "نام لاتین",
+      field: "startDate",
+      headerName: "تاریخ شروع",
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
-        return row?.latinFirstName + " " + row?.latinLastName;
+        return (
+          <Typography>{moment(new Date(row?.startDate)).format("jYYYY/jMM/jDD")}</Typography>
+        );
       },
     },
-    {
-      field: "birthDate",
-      headerName: "تاریخ تولد",
-      flex: 1,
-      renderCell: ({ row }: { row: any }) => {
-        return moment(row?.birthDate).format("jYYYY/jMM/jDD");
-      },
-    },
-    { field: "idNumber", headerName: "کد پرسنلی", flex: 1 },
     {
       headerName: "عملیات",
       field: "action",
@@ -95,21 +79,14 @@ const OfficialUserGrid = (props: Props) => {
         return (
           <TableActions
             onEdit={() => {
+              // navigate(`${row.id}`, { state: { userData: row } });
               setEditeData(row);
               setAddModalFlag(true);
-              navigate(`${row.id}`, { state: { firmData: row } });
             }}
             onDelete={() => {
               setDeleteData(row);
               setDeleteFlag(true);
             }}
-            // onManage={{
-            //   title: "جزئیات حسابدار رسمی",
-            //   function: () => {
-            //     navigate(`details/${row.id}`, { state: { firmData: row } });
-            //   },
-            //   icon: <Settings />,
-            // }}
           />
         );
       },
@@ -127,17 +104,17 @@ const OfficialUserGrid = (props: Props) => {
   };
   const searchItems: searchType[] = [
     {
-      name: "firstName",
+      name: "name",
       inputType: "text",
-      label: "نام حسابدار",
+      label: "نام کاربر",
       size: { md: 4 },
     },
-    {
-      name: "lastName",
-      inputType: "text",
-      label: "نام خانوادگی حسابدار",
-      size: { md: 4 },
-    },
+    // {
+    //   name: "code",
+    //   inputType: "text",
+    //   label: "کد کاربر",
+    //   size: { md: 4 },
+    // },
   ];
   type editeObjectType = {
     id: number;
@@ -148,6 +125,7 @@ const OfficialUserGrid = (props: Props) => {
   };
   const [editeData, setEditeData] = useState<editeObjectType | null>(null);
   const [addModalFlag, setAddModalFlag] = useState(false);
+  const [appendFirmFlag, setAppendFirmFlag] = useState(false);
   const [deleteData, setDeleteData] = useState<any>(null);
   const [deleteFlag, setDeleteFlag] = useState(false);
   const [searchData, setSearchData] = useState({
@@ -182,7 +160,7 @@ const OfficialUserGrid = (props: Props) => {
     );
   }
   return (
-    <Grid container justifyContent="center">
+    <Grid container item md={12} justifyContent="center">
       <Grid
         item
         md={11}
@@ -194,39 +172,70 @@ const OfficialUserGrid = (props: Props) => {
         mb={0}
       >
         <Box display={"flex"}>
-          <Article fontSize="large" />
-          <Typography variant="h5">حسابداران رسمی</Typography>
+          <Toc fontSize="large" />
+          <Typography variant="h5">لیست احکام انتظامی</Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"}>
           <CreateNewItem
             sx={{ mr: 2 }}
-            name="حسابدار رسمی"
-            onClick={() => navigate("new")}
+            name="حکم انتظامی"
+            // onClick={() => navigate("new")}
+            onClick={() => {
+              // navigate("new")
+              // setActiveTab(1);
+              setAddModalFlag(true);
+            }}
           />
-          <BackButton onBack={() => navigate(-1)} />
         </Box>
       </Grid>
-      <SearchPannel<SearchData>
+      {/* <SearchPannel<SearchData>
         searchItems={searchItems}
         searchData={searchData}
         setSearchData={setSearchData}
         setFilters={setFilters}
-      />
+      /> */}
       <Grid item md={11} sm={11} xs={12}>
-        {(StatesData_status === "success"&& !!StatesData) ? (
-          <TavanaDataGrid
-            rows={StatesData?.content}
-            columns={columns}
-            filters={filters}
-            setFilters={setFilters}
-            rowCount={StatesData?.totalElements}
-            getRowHeight={() => "auto"}
-            autoHeight
-            hideToolbar
-          />
-        ) : null}
+        {StatesData_status === "success" ? (
+          isMobile ? (
+            <VerticalTable
+              rows={StatesData?.content}
+              columns={columns}
+              filters={filters}
+              setFilters={setFilters}
+              rowCount={StatesData?.totalElements}
+            />
+          ) : (
+            <TavanaDataGrid
+              rows={StatesData?.content}
+              columns={columns}
+              filters={filters}
+              setFilters={setFilters}
+              rowCount={StatesData?.totalElements}
+              // rowHeight={25}
+              getRowHeight={() => "auto"}
+              autoHeight
+              hideToolbar
+              // slots={{ toolbar: GridToolbar }}
+              // slotProps={{
+              //   toolbar: {
+              //     csvOptions: { disableToolbarButton: true },
+              //   },
+              // }}
+            />
+          )
+        ) : (
+          <Typography variant="body1">
+            اطلاعاتی برای نمایش موجود نمیباشد
+          </Typography>
+        )}
       </Grid>
-
+      <AddDisciplinaryOrder
+        refetch={StatesData_refetch}
+        addModalFlag={addModalFlag}
+        setAddModalFlag={setAddModalFlag}
+        editeData={editeData}
+        setEditeData={setEditeData}
+      />
       <ConfirmBox
         open={deleteFlag}
         handleClose={() => {
@@ -236,12 +245,12 @@ const OfficialUserGrid = (props: Props) => {
         handleSubmit={() =>
           mutate(
             {
-              entity: `certified-accountant/remove/${deleteData?.id}`,
+              entity: `disciplinary-order/delete/${deleteData?.id}`,
               method: "delete",
             },
             {
               onSuccess: (res: any) => {
-                snackbar(`حسابدار رسمی انتخاب شده با موفقیت حذف شد`, "success");
+                snackbar(`کاربر انتخاب شده با موفقیت حذف شد`, "success");
                 StatesData_refetch();
               },
               onError: () => {
@@ -250,11 +259,11 @@ const OfficialUserGrid = (props: Props) => {
             }
           )
         }
-        message={`آیا از حذف ${deleteData?.firstName}  ${deleteData?.lastName} مطمعین میباشید؟`}
+        message={`آیا از حذف ${deleteData?.subjectTypeName} مطمعین میباشید؟`}
         title={"درخواست حذف!"}
       />
     </Grid>
   );
 };
 
-export default OfficialUserGrid;
+export default DisciplinaryOrderGrid;

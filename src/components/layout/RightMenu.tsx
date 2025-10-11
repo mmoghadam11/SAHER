@@ -140,12 +140,11 @@ const MENU_ITEMS: MenuItem[] = [
         url: "persons",
         access: ["administrator", "city-showmenu"],
       },
-      {
-        // title: "مشخصات اشخاص",
-        title: "حسابداران شاغل در موسسات",
-        url: "personnels",
-        access: ["administrator", "city-showmenu"],
-      },
+      // {
+      //   title: "کارکنان حرفه‌ای موسسات",
+      //   url: "personnels",
+      //   access: ["administrator", "city-showmenu"],
+      // },
       {
         title: "شرکای موسسه",
         url: "partners",
@@ -275,7 +274,7 @@ const MENU_ITEMS: MenuItem[] = [
       },
       {
         title: "احکام انتظامی",
-        url: "disciplinaryOrders",
+        url: "disciplinary-order",
         access: ["administrator","city-showmenu"],
       },
     ],
@@ -300,6 +299,11 @@ const MENU_ITEMS: MenuItem[] = [
     url: "/basic-data",
     access: ["city-showmenu"],
     menuChildren: [
+      {
+        title: "اطلاعات پایه کارکنان",
+        url: "persons",
+        access: ["administrator", "city-showmenu"],
+      },
       {
         title: "شهرستان",
         url: "township",

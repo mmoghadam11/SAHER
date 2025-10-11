@@ -14,7 +14,7 @@ import { useMutation } from "@tanstack/react-query";
 import RenderFormInput from "components/render/formInputs/RenderFormInput";
 import { useAuth } from "hooks/useAuth";
 import { useSnackbar } from "hooks/useSnackbar";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 
@@ -67,7 +67,7 @@ const AddPublicData = ({
   } = useForm<FormData>();
 
 
-  const formItems: FormItem[] = [
+  const formItems: FormItem[] = useMemo(() => [
     {
       name: "typeName",
       inputType: "text",
@@ -95,22 +95,31 @@ const AddPublicData = ({
         },
       },
     },
-  ];
+  ], [editeData,addModalFlag,reset])
+  
 
   useEffect(() => {
-    if (editeData !== null) {
-      reset({
-        typeName: editeData.typeName || "",
-        className: editeData.className || "",
-        id: editeData.id,
-      });
-    } 
-  }, [editeData,addModalFlag]);
+    // این افکت باید فقط زمانی اجرا شود که مدال باز می‌شود
+    if (addModalFlag) {
+        if (editeData !== null) {
+            // حالت ویرایش: فرم را با داده‌های موجود پر کن
+            reset({
+                typeName: editeData.typeName || "",
+                className: editeData.className || "",
+                id: editeData.id,
+            });
+        } else {
+            // حالت ایجاد: فرم را با مقادیر پیش‌فرض و خالی ریست کن
+            reset({});
+        }
+    }
+}, [addModalFlag, editeData, reset]);
 
   const handleClose = () => {
     setAddModalFlag(false);
-    reset();
     setEditeData(null)
+    reset({});
+    console.log("handleClose",editeData)
     // setTimeout(()=>, 200);
   };
 
@@ -133,6 +142,7 @@ const AddPublicData = ({
             );
           else snackbar(`ایجاد اطلاعات پایه جدید با موفقیت انجام شد`, "success");
           refetch();
+          reset({})
           //   handleClose();
         },
         onError: () => {
@@ -162,19 +172,19 @@ const AddPublicData = ({
               <Grid item xs={12} md={item.size.md} key={item.name}>
                 <Controller
                   name={item.name}
-                  control={control}
                   rules={item.rules}
                   render={({ field }) => (
                     <RenderFormInput
-                      controllerField={field}
-                      errors={errors}
-                      {...item}
-                      value={(getValues() as any)[item.name]}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                        field.onChange(e);
-                      }}
+                    controllerField={field}
+                    errors={errors}
+                    {...item}
+                    value={(getValues() as any)[item.name]}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      field.onChange(e);
+                    }}
                     />
                   )}
+                  control={control}
                 />
               </Grid>
             ))}

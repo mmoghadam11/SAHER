@@ -42,6 +42,10 @@ import InstituteFinancialStatementGrid from "domains/Institute/financialStatemen
 import FinancialStatementDetaile from "domains/Institute/financialStatement/FinancialStatementDetaile";
 import InstituteDisciplinaryOrderGrid from "domains/Institute/disciplinaryOrder/InstituteDisciplinaryOrderGrid";
 import DisciplinaryOrderDetaile from "domains/Institute/disciplinaryOrder/DisciplinaryOrderDetaile";
+import AccountantDisciplinaryOrderGrid from "domains/accountant/disciplinaryOrder/AccountantDisciplinaryOrderGrid";
+import AccountantDisciplinaryOrderDetaile from "domains/accountant/disciplinaryOrder/AccountantDisciplinaryOrderDetaile";
+import StaffGrid from "domains/Institute/staff/StaffGrid";
+import AddStaff from "domains/Institute/staff/AddStaff";
 
 const AppRoutes: React.FC = () => {
   const auth = useAuth();
@@ -77,6 +81,10 @@ const AppRoutes: React.FC = () => {
               <Route index element={<OfficialUserGrid/>} />
               <Route path=":id" element={<AddOfficialUser/>} />
             </Route>
+            <Route path="disciplinary-order">
+              <Route index element={<AccountantDisciplinaryOrderGrid />}/>
+              <Route path=":id" element={<AccountantDisciplinaryOrderDetaile/>} />
+            </Route>
           </Route>
           <Route path="institutions">
             <Route path="information">
@@ -87,8 +95,8 @@ const AppRoutes: React.FC = () => {
               <Route path=":id" element={<FormSteps />} />
             </Route>
             <Route path="persons" >
-              <Route index element={<PersonGrid/>} />
-              <Route path=":id" element={<AddPerson/>} />
+              <Route index element={<StaffGrid/>} />
+              <Route path=":id" element={<AddStaff/>} />
             </Route>
             <Route path="personnels" >
               <Route index element={<MemberShipGrid/>} />

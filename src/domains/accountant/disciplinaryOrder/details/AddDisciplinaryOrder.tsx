@@ -32,7 +32,7 @@ import { DisciplinaryOrderFormItems } from "./DisciplinaryOrderFormItems";
 interface FormData {
   id?: any;
   termName: string;
-  auditingFirmId: string;
+  personnelCaId: string;
   applicatorName: string;
   hour_count: string;
   request_year: string;
@@ -93,11 +93,11 @@ const AddDisciplinaryOrder = ({
       enabled: true,
     } as any);
   const {
-      data: orderSubjectOptions,
-      status: orderSubjectOptions_status,
-      refetch: orderSubjectOptions_refetch,
+      data: workgroupOptions,
+      status: workgroupOptions_status,
+      refetch: workgroupOptions_refetch,
     } = useQuery<any>({
-      queryKey: [`common-data/find-by-type-all?typeId=48`],
+      queryKey: [`workgroup/search-all`],
       queryFn: Auth?.getRequest,
       select: (res: any) => {
         return res?.data;
@@ -105,11 +105,11 @@ const AddDisciplinaryOrder = ({
       enabled: true,
     } as any);
   const {
-      data: workgroupOptions,
-      status: workgroupOptions_status,
-      refetch: workgroupOptions_refetch,
+      data: orderSubjectOptions,
+      status: orderSubjectOptions_status,
+      refetch: orderSubjectOptions_refetch,
     } = useQuery<any>({
-      queryKey: [`workgroup/search-all`],
+      queryKey: [`common-data/find-by-type-all?typeId=48`],
       queryFn: Auth?.getRequest,
       select: (res: any) => {
         return res?.data;
@@ -128,7 +128,7 @@ const AddDisciplinaryOrder = ({
     } else
       reset({
         // auditingFirmId یا firmId چی میگه؟
-        auditingFirmId: id,
+        personnelCaId: id,
       });
   }, [editeData, addModalFlag]);
   //   useEffect(() => {
@@ -153,7 +153,7 @@ const AddDisciplinaryOrder = ({
         data: {
           ...data,
           // active: true,
-          auditingFirmId: id,
+          personnelCaId: id,
         },
       },
       {
@@ -161,7 +161,7 @@ const AddDisciplinaryOrder = ({
           console.log("res=>", res);
           if (!!editeData)
             snackbar(
-              `به روز رسانی موسسه انتخاب شده با موفقیت انجام شد`,
+              `به روز رسانی حکم حسابدار انتخاب شده با موفقیت انجام شد`,
               "success"
             );
           else snackbar(`حکم انتظامی جدید با موفقیت افزوده شد`, "success");

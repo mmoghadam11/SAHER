@@ -29,7 +29,7 @@ import moment from "jalali-moment";
 
 type Props = {};
 
-const OfficialUserGrid = (props: Props) => {
+const StaffGrid = (props: Props) => {
   const Auth = useAuth();
   const snackbar = useSnackbar();
   const navigate = useNavigate();
@@ -52,7 +52,7 @@ const OfficialUserGrid = (props: Props) => {
     status: StatesData_status,
     refetch: StatesData_refetch,
   } = useQuery<any>({
-    queryKey: [`certified-accountant/search${paramsSerializer(filters)}`],
+    queryKey: [`professional-staff/search${paramsSerializer(filters)}`],
     queryFn: Auth?.getRequest,
     select: (res: any) => {
       return res?.data;
@@ -62,7 +62,7 @@ const OfficialUserGrid = (props: Props) => {
   const columns: GridColDef[] = [
     {
       field: "firstName",
-      headerName: "نام حسابدار رسمی",
+      headerName: "نام شخص",
       flex: 2,
       renderCell: ({ row }: { row: any }) => {
         return row?.firstName + " " + row?.lastName;
@@ -97,14 +97,14 @@ const OfficialUserGrid = (props: Props) => {
             onEdit={() => {
               setEditeData(row);
               setAddModalFlag(true);
-              navigate(`${row.id}`, { state: { firmData: row } });
+              navigate(`${row.id}`, { state: { staffData: row } });
             }}
             onDelete={() => {
               setDeleteData(row);
               setDeleteFlag(true);
             }}
             // onManage={{
-            //   title: "جزئیات حسابدار رسمی",
+            //   title: "جزئیات شخص",
             //   function: () => {
             //     navigate(`details/${row.id}`, { state: { firmData: row } });
             //   },
@@ -129,13 +129,13 @@ const OfficialUserGrid = (props: Props) => {
     {
       name: "firstName",
       inputType: "text",
-      label: "نام حسابدار",
+      label: "نام شخص",
       size: { md: 4 },
     },
     {
       name: "lastName",
       inputType: "text",
-      label: "نام خانوادگی حسابدار",
+      label: "نام خانوادگی شخص",
       size: { md: 4 },
     },
   ];
@@ -195,12 +195,12 @@ const OfficialUserGrid = (props: Props) => {
       >
         <Box display={"flex"}>
           <Article fontSize="large" />
-          <Typography variant="h5">حسابداران رسمی</Typography>
+          <Typography variant="h5">کارکنان حرفه‌ای موسسات</Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"}>
           <CreateNewItem
             sx={{ mr: 2 }}
-            name="حسابدار رسمی"
+            name="شخص"
             onClick={() => navigate("new")}
           />
           <BackButton onBack={() => navigate(-1)} />
@@ -236,12 +236,12 @@ const OfficialUserGrid = (props: Props) => {
         handleSubmit={() =>
           mutate(
             {
-              entity: `certified-accountant/remove/${deleteData?.id}`,
+              entity: `membership/remove/${deleteData?.id}`,
               method: "delete",
             },
             {
               onSuccess: (res: any) => {
-                snackbar(`حسابدار رسمی انتخاب شده با موفقیت حذف شد`, "success");
+                snackbar(`شخص انتخاب شده با موفقیت حذف شد`, "success");
                 StatesData_refetch();
               },
               onError: () => {
@@ -257,4 +257,4 @@ const OfficialUserGrid = (props: Props) => {
   );
 };
 
-export default OfficialUserGrid;
+export default StaffGrid;
