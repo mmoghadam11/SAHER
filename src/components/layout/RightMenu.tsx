@@ -178,6 +178,11 @@ const MENU_ITEMS: MenuItem[] = [
         access: ["administrator", "city-showmenu"],
       },
       {
+        title: "احکام انتظامی",
+        url: "disciplinary-order",
+        access: ["administrator", "city-showmenu"],
+      },
+      {
         title: "گزارش  های حسابرسی",
         url: "reprts-by-institution",
         access: ["administrator", "city-showmenu"],

@@ -40,6 +40,8 @@ import InstituteContractGrid from "domains/Institute/contracts/InstituteContract
 import ContractDetaile from "domains/Institute/contracts/ContractDetaile";
 import InstituteFinancialStatementGrid from "domains/Institute/financialStatement/InstituteFinancialStatementGrid";
 import FinancialStatementDetaile from "domains/Institute/financialStatement/FinancialStatementDetaile";
+import InstituteDisciplinaryOrderGrid from "domains/Institute/disciplinaryOrder/InstituteDisciplinaryOrderGrid";
+import DisciplinaryOrderDetaile from "domains/Institute/disciplinaryOrder/DisciplinaryOrderDetaile";
 
 const AppRoutes: React.FC = () => {
   const auth = useAuth();
@@ -103,6 +105,10 @@ const AppRoutes: React.FC = () => {
             <Route path="financial-Statement">
               <Route index element={<InstituteFinancialStatementGrid />}/>
               <Route path=":id" element={<FinancialStatementDetaile/>} />
+            </Route>
+            <Route path="disciplinary-order">
+              <Route index element={<InstituteDisciplinaryOrderGrid />}/>
+              <Route path=":id" element={<DisciplinaryOrderDetaile/>} />
             </Route>
           </Route>
           <Route path="FirmAdmin">
