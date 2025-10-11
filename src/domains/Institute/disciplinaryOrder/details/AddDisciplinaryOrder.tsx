@@ -134,7 +134,7 @@ const AddDisciplinaryOrder = ({
   const onSubmit = (data: FormData) => {
     mutate(
       {
-        entity: `firm-financial-statement/${!!editeData ? "update" : "save"}`,
+        entity: `disciplinary-order/${!!editeData ? "update" : "save"}`,
         // entity: `firm-director/save`,
         method: !!editeData ? "put" : "post",
         // method:  "post",

@@ -55,18 +55,20 @@ const DisciplinaryOrderGrid = ({ setActiveTab }: Props) => {
     enabled: true,
   } as any);
   const columns: GridColDef[] = [
-    { field: "signatoryName", headerName: "امضا کننده", flex: 1 },
+    { field: "subject", headerName: "حکم", flex: 1 },
+    { field: "claimant", headerName: "شاکی", flex: 1 },
+    { field: "workgroupName", headerName: "کارگروه", flex: 1 },
+    { field: "cdOrderTypeValue", headerName: "نوع حکم", flex: 1 },
     {
-      field: "boardApprovalDate",
-      headerName: "تاریخ تصویب هیئت مدیره",
+      field: "startDate",
+      headerName: "تاریخ شروع",
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
         return (
-          <Typography>{moment(new Date(row?.boardApprovalDate)).format("jYYYY/jMM/jDD")}</Typography>
+          <Typography>{moment(new Date(row?.startDate)).format("jYYYY/jMM/jDD")}</Typography>
         );
       },
     },
-    { field: "fiscalYear", headerName: "سال مالی", flex: 1 },
     {
       headerName: "عملیات",
       field: "action",
