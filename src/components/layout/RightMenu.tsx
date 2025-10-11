@@ -173,6 +173,11 @@ const MENU_ITEMS: MenuItem[] = [
         access: ["administrator", "city-showmenu"],
       },
       {
+        title: "درآمدهای فصلی",
+        url: "financial-Statement",
+        access: ["administrator", "city-showmenu"],
+      },
+      {
         title: "گزارش  های حسابرسی",
         url: "reprts-by-institution",
         access: ["administrator", "city-showmenu"],

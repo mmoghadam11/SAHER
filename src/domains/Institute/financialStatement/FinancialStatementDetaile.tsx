@@ -18,7 +18,7 @@ import { Controller, FormProvider, useForm } from "react-hook-form";
 import { FullInstituteType } from "types/institute";
 
 // کامپوننت‌های مربوط به هر دسته اطلاعات
-import { Check, Inventory } from "@mui/icons-material";
+import { Check, Inventory, ReceiptLong } from "@mui/icons-material";
 import RenderFormInput from "components/render/formInputs/RenderFormInput";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAuth } from "hooks/useAuth";
@@ -27,20 +27,16 @@ import { useSnackbar } from "hooks/useSnackbar";
 import FancyTicketDivider from "components/FancyTicketDivider";
 import BackButton from "components/buttons/BackButton";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import Director from "./tabs/director/Director";
-import { getBasicInfoItems } from "../forms/BasicInfo";
-import { MiniInfoItems } from "./forms/MiniInfo";
+
 import moment from "jalali-moment";
-import DirectorGrid from "./tabs/director/DiretorGrid";
+
 import { isMobile } from "react-device-detect";
 import { TOption } from "types/render";
-import EduInfoGrid from "./tabs/eduInfo/EduInfoGrid";
-import FinancialStatementsGrid from "./tabs/financial/FinancialStatementsGrid";
-import ContinuingEducationGrid from "./tabs/continuingEducation/ContinuingEducationGrid";
-import FirmContractGrid from "./tabs/firnContract/FirmContractGrid";
-import PublicationGrid from "./tabs/publication/PublicationGrid";
-import BranchGrid from "./tabs/branchs/BranchGrid";
-import AddressGrid from "./tabs/address/AddressGrid";
+import FirmContractGrid from "../setting/tabs/firnContract/FirmContractGrid";
+import { MiniInfoItems } from "../setting/forms/MiniInfo";
+import FinancialStatementsGrid from "../setting/tabs/financial/FinancialStatementsGrid";
+
+
 
 type Props = {};
 interface FormItem {
@@ -56,7 +52,7 @@ interface FormStep {
   name: string;
   formItems: FormItem[];
 }
-const DetaileTabs = (props: Props) => {
+const FinancialStatementDetaile = (props: Props) => {
   const { id } = useParams();
   const { state } = useLocation();
   const Auth = useAuth();
@@ -92,39 +88,12 @@ const DetaileTabs = (props: Props) => {
     },
   } as any);
   const tabSteps = [
+    
     {
-      title: "مدیرعامل",
-      com: <DirectorGrid setActiveTab={setActiveTab} />,
+      title: "مالی",
+      com: <FinancialStatementsGrid setActiveTab={setActiveTab} />,
     },
-    {
-      title: "آموزشی",
-      com: <EduInfoGrid setActiveTab={setActiveTab} />,
-    },
-    // {
-    //   title: "مالی",
-    //   com: <FinancialStatementsGrid setActiveTab={setActiveTab} />,
-    // },
-    {
-      // title: "آموزش مستمر حرفه ای",
-      title: "سوابق مستمر آموزشی",
-      com: <ContinuingEducationGrid setActiveTab={setActiveTab} />,
-    },
-    // {
-    //   title: "قراردادها",
-    //   com: <FirmContractGrid />,
-    // },
-    {
-      title: "انتشارات",
-      com: <PublicationGrid />,
-    },
-    {
-      title: "شعبات",
-      com: <BranchGrid />,
-    },
-    {
-      title: "آدرس",
-      com: <AddressGrid />,
-    },
+    
   ];
 
   const formItems = useMemo(
@@ -147,9 +116,9 @@ const DetaileTabs = (props: Props) => {
         mb={1}
       >
         <Grid item display={"flex"}>
-          <Inventory fontSize={isMobile ? "medium" : "large"} />
+          <ReceiptLong fontSize={isMobile ? "medium" : "large"} />
           <Typography variant={isMobile ? "body1" : "h5"}>
-            مدیریت جزئیات موسسه
+            درآمدهای فصلی موسسه
           </Typography>
         </Grid>
         <Grid item display={"flex"}>
@@ -187,7 +156,7 @@ const DetaileTabs = (props: Props) => {
           </Grid>
         </Paper>
       </Grid>
-      <Grid item md={11} sm={11} xs={12} display={"flex"} justifyContent={"flex-start"} >
+      {/* <Grid item md={11} sm={11} xs={12} display={"flex"} justifyContent={"flex-start"} >
         {isMobile ? (
           <Select
             sx={{ width: "25vw", mr: 1, mt: 2 }}
@@ -227,10 +196,10 @@ const DetaileTabs = (props: Props) => {
             ))}
           </Tabs>
         )}
-      </Grid>
+      </Grid> */}
       {tabSteps[activeTab].com}
     </Grid>
   );
 };
 
-export default DetaileTabs;
+export default FinancialStatementDetaile;

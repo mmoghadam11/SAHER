@@ -38,6 +38,8 @@ import OfficialUserGrid from "domains/accountant/officialUser/OfficialUserGrid";
 import AddOfficialUser from "domains/accountant/officialUser/AddOfficialUser";
 import InstituteContractGrid from "domains/Institute/contracts/InstituteContractGrid";
 import ContractDetaile from "domains/Institute/contracts/ContractDetaile";
+import InstituteFinancialStatementGrid from "domains/Institute/financialStatement/InstituteFinancialStatementGrid";
+import FinancialStatementDetaile from "domains/Institute/financialStatement/FinancialStatementDetaile";
 
 const AppRoutes: React.FC = () => {
   const auth = useAuth();
@@ -97,6 +99,10 @@ const AppRoutes: React.FC = () => {
             <Route path="contracts-concluded">
               <Route index element={<InstituteContractGrid />}/>
               <Route path=":id" element={<ContractDetaile/>} />
+            </Route>
+            <Route path="financial-Statement">
+              <Route index element={<InstituteFinancialStatementGrid />}/>
+              <Route path=":id" element={<FinancialStatementDetaile/>} />
             </Route>
           </Route>
           <Route path="FirmAdmin">
