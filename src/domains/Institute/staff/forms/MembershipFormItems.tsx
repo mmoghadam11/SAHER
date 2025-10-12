@@ -17,17 +17,17 @@ export const MembershipFormItems = (
       },
     },
   },
-  {
-    name: "cdMembershipTypeId",
-    inputType: "select",
-    label: "نوع عضویت",
-    size: { md: 4 },
-    options: options?.membershipType?.map((item: any) => ({
-      value: item?.id,
-      title: item?.value,
-    })) ?? [{ value: 0, title: "خالی" }],
-    rules: { required: "انتخاب نوع عضویت الزامی است" },
-  },
+  // {
+  //   name: "cdMembershipTypeId",
+  //   inputType: "select",
+  //   label: "نوع عضویت",
+  //   size: { md: 4 },
+  //   options: options?.membershipType?.map((item: any) => ({
+  //     value: item?.id,
+  //     title: item?.value,
+  //   })) ?? [{ value: 0, title: "خالی" }],
+  //   rules: { required: "انتخاب نوع عضویت الزامی است" },
+  // },
   {
     name: "membershipDate",
     inputType: "date",

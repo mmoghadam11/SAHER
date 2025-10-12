@@ -1,4 +1,4 @@
-import { Article, Search, Settings } from "@mui/icons-material";
+import { Article, Search, Settings, Toc } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -76,7 +76,12 @@ const InstititeGrid = (props: Props) => {
             onEdit={() => {
               setEditeData(row);
               setAddModalFlag(true);
-              navigate(`${row.id}`,{state: {firmData: row} })
+              navigate(`${row.id}`,{state: {firmData: row,editable:true} })
+            }}
+            onView={() => {
+              setEditeData(row);
+              setAddModalFlag(true);
+              navigate(`${row.id}`,{state: {firmData: row,editable:false} })
             }}
             onDelete={() => {
               setDeleteData(row);
@@ -85,7 +90,7 @@ const InstititeGrid = (props: Props) => {
             onManage={{
               title:"جزئیات موسسه",
               function:()=>{navigate(`details/${row.id}`,{state: {firmData: row} })},
-              icon:<Settings/>
+              icon:<Toc/>
             }}
           />
         );
@@ -178,7 +183,7 @@ const InstititeGrid = (props: Props) => {
           <CreateNewItem
             sx={{ mr: 2 }}
             name="موسسه"
-            onClick={() => navigate("new")}
+            onClick={() => navigate("new",{state: {editable:true}})}
           />
           <BackButton onBack={() => navigate(-1)} />
         </Box>

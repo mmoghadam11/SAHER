@@ -1,4 +1,4 @@
-import { Article, Search, Settings } from "@mui/icons-material";
+import { Article, Search, Settings, Toc } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -82,7 +82,7 @@ const FirmAdminGrid = (props: Props) => {
             onManage={{
               title:"جزئیات موسسه",
               function:()=>{navigate(`details/${row.id}`,{state: {firmData: row} })},
-              icon:<Settings/>
+              icon:<Toc/>
             }}
           />
         );

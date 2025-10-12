@@ -97,7 +97,12 @@ const OfficialUserGrid = (props: Props) => {
             onEdit={() => {
               setEditeData(row);
               setAddModalFlag(true);
-              navigate(`${row.id}`, { state: { firmData: row } });
+              navigate(`${row.id}`, { state: { firmData: row , editable:true} });
+            }}
+            onView={() => {
+              setEditeData(row);
+              setAddModalFlag(true);
+              navigate(`${row.id}`, { state: { firmData: row , editable:false} });
             }}
             onDelete={() => {
               setDeleteData(row);
@@ -201,7 +206,7 @@ const OfficialUserGrid = (props: Props) => {
           <CreateNewItem
             sx={{ mr: 2 }}
             name="حسابدار رسمی"
-            onClick={() => navigate("new")}
+            onClick={() => navigate("new",{state: {editable:true}})}
           />
           <BackButton onBack={() => navigate(-1)} />
         </Box>

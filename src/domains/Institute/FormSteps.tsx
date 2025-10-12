@@ -32,6 +32,7 @@ import BackButton from "components/buttons/BackButton";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { AddressFormItems } from "./setting/forms/AddressFormItems";
 import { AddressFormItemsDTO } from "./setting/forms/AddressFormItemsDTO";
+import RenderFormDisplay from "components/render/formInputs/RenderFormDisplay";
 
 export default function FormSteps(): JSX.Element {
   const { id } = useParams();
@@ -135,7 +136,7 @@ export default function FormSteps(): JSX.Element {
       },
       {
         name: "آدرس",
-        formItems: AddressFormItemsDTO(setValue,{cityOptions},id !== "new"),
+        formItems: AddressFormItemsDTO(setValue, { cityOptions }, id !== "new"),
       },
       {
         name: "اطلاعات تماس",
@@ -350,7 +351,7 @@ export default function FormSteps(): JSX.Element {
   return (
     <Grid container justifyContent={"center"}>
       <Grid md={10.5} sm={11.5} xs={12} item>
-        <Paper elevation={3} sx={{ p: 5, mt: 3, width: "100%" }}>
+        <Paper elevation={3} sx={{ p: 5, my: 3, width: "100%" }}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={4}>
               <Grid
@@ -378,59 +379,69 @@ export default function FormSteps(): JSX.Element {
                   </Grid>
                   {stepItem?.formItems?.map((item) => (
                     <Grid item xs={12} md={item.size.md} key={item.name}>
-                      <Controller
-                        name={item.name}
-                        control={control}
-                        // rules={item.rules}
-                        rules={getRules(item)}
-                        render={({ field }) => (
-                          <RenderFormInput
-                            controllerField={field}
-                            errors={errors}
-                            {...item}
-                            value={getValues()[item.name] ?? ""}
-                            onBlur={() => trigger()}
-                            onChange={(
-                              e: React.ChangeEvent<HTMLInputElement>
-                            ) => {
-                              // handleInputChange(item.name, e.target.value);
-                              field.onChange(e);
-                            }}
-                          />
-                        )}
-                      />
+                      {state?.editable ? (
+                        <Controller
+                          name={item.name}
+                          control={control}
+                          // rules={item.rules}
+                          rules={getRules(item)}
+                          disabled={!state?.editable}
+                          render={({ field }) => (
+                            <RenderFormInput
+                              controllerField={field}
+                              errors={errors}
+                              {...item}
+                              value={getValues()[item.name] ?? ""}
+                              onBlur={() => trigger()}
+                              onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>
+                              ) => {
+                                // handleInputChange(item.name, e.target.value);
+                                field.onChange(e);
+                              }}
+                            />
+                          )}
+                        />
+                      ) : (
+                        <RenderFormDisplay
+                          item={item}
+                          value={getValues(item.name)}
+                        />
+                      )}
                     </Grid>
                   ))}
                 </Grid>
               ))}
 
-              <Grid
-                item
-                xs={12}
-                display="flex"
-                justifyContent="flex-end"
-                mt={2}
-                gap={1}
-              >
-                <Button
-                  sx={{ minWidth: "25%" }}
-                  variant="contained"
-                  startIcon={<Check />}
-                  // type="submit"
-                  onClick={handleTemporarySave}
-                  color="secondary"
+              {state?.editable && (
+                <Grid
+                  item
+                  xs={12}
+                  display="flex"
+                  justifyContent="flex-end"
+                  mt={2}
+                  gap={1}
                 >
-                  ثبت موقت
-                </Button>
-                <Button
-                  sx={{ minWidth: "25%" }}
-                  variant="contained"
-                  startIcon={<Check />}
-                  onClick={handlePermanentSave}
-                >
-                  ثبت
-                </Button>
-              </Grid>
+                  <Button
+                    sx={{ minWidth: "25%" }}
+                    variant="contained"
+                    startIcon={<Check />}
+                    // type="submit"
+                    onClick={handleTemporarySave}
+                    color="secondary"
+                  >
+                    ثبت موقت
+                  </Button>
+                  <Button
+                    sx={{ minWidth: "25%" }}
+                    variant="contained"
+                    startIcon={<Check />}
+                    onClick={handlePermanentSave}
+                  >
+                    ثبت
+                  </Button>
+                </Grid>
+              )}
             </Grid>
           </form>
         </Paper>
@@ -445,4 +456,3 @@ export default function FormSteps(): JSX.Element {
 تاریخ ثبت
  * 
  */
-

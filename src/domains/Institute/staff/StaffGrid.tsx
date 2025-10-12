@@ -97,7 +97,12 @@ const StaffGrid = (props: Props) => {
             onEdit={() => {
               setEditeData(row);
               setAddModalFlag(true);
-              navigate(`${row.id}`, { state: { staffData: row } });
+              navigate(`${row.id}`, { state: { staffData: row , editable:true} });
+            }}
+            onView={() => {
+              setEditeData(row);
+              setAddModalFlag(true);
+              navigate(`${row.id}`, { state: { staffData: row , editable:false } });
             }}
             onDelete={() => {
               setDeleteData(row);
@@ -201,7 +206,7 @@ const StaffGrid = (props: Props) => {
           <CreateNewItem
             sx={{ mr: 2 }}
             name="شخص"
-            onClick={() => navigate("new")}
+            onClick={() => navigate("new",{state: {editable:true}})}
           />
           <BackButton onBack={() => navigate(-1)} />
         </Box>

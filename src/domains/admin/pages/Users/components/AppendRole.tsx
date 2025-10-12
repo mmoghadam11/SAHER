@@ -20,20 +20,14 @@ import { useSnackbar } from "hooks/useSnackbar";
 import React, { useEffect, useState } from "react";
 import { Controller, set, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
+import RenderFormDisplay from "components/render/formInputs/RenderFormDisplay";
+import { FormItem } from "types/formItem";
 
 interface FormData {
   roles: any[];
 }
 
-interface FormItem {
-  name: keyof FormData;
-  inputType: string;
-  label: string;
-  size: { md: number };
-  rules?: any;
-  options?: any[];
-  elementProps?: any;
-}
+
 
 type Props = {
   refetch: () => void;
@@ -60,12 +54,12 @@ const AppendRole = ({
     control,
     formState: { errors },
     reset,
+    getValues
   } = useForm<FormData>();
 
+ 
   const [formData, setFormData] = useState<FormData>(
-    !!editeData
-      ? editeData?.roleDtos
-      : []
+    !!editeData ? editeData?.roleDtos : []
   );
   const {
     data: roleOptions,
@@ -81,12 +75,42 @@ const AppendRole = ({
   } as any);
   useEffect(() => {
     if (editeData !== null) {
-      setFormData(editeData?.roleDtos??[]);
+      setFormData(editeData?.roleDtos ?? []);
       reset({
         roles: editeData?.roleDtos || [],
       });
     }
   }, [editeData, appendRoleFlag]);
+   const rolesFormItem: FormItem = {
+  name: "roles",
+  inputType: "autocomplete",
+  label: "نقش‌ها",
+  size: { md: 12 }, // یا هر سایز دلخواه دیگر
+  rules: {
+    required: "انتخاب نقش الزامی است",
+    validate: (value:any) => value.length > 0 || "انتخاب حداقل یک نقش الزامی است",
+  },
+  
+  // 🔹 نکته کلیدی: تبدیل آپشن‌ها به فرمت استاندارد
+  // RenderFormDisplay انتظار ساختار { value, title } را دارد
+  options: roleOptions?.map((role: any) => ({
+    value: role.id, // یا خود آبجکت role اگر نیاز دارید
+    title: role.name,
+  })) ?? [],
+
+  // 🔹 مشخص کردن نوع ذخیره‌سازی مقدار
+  // چون مقدار ذخیره شده در فرم، یک آرایه از آبجکت‌هاست
+  storeValueAs: "object",
+
+  // 🔹 پاس دادن پراپرتی‌های خاص Autocomplete
+  elementProps: {
+    multiple: true,
+    limitTags: 2,
+    // filterSelectedOptions: true, // اگر نیاز بود
+    // getOptionLabel, isOptionEqualToValue و ... را می‌توان در RenderFormInput هندل کرد
+    // تا کامپوننت اصلی تمیز بماند.
+  },
+};
   useEffect(() => {
     console.log("formData=>", formData);
   }, [formData]);
@@ -95,7 +119,7 @@ const AppendRole = ({
     setAppendRoleFlag(false);
     reset();
     setFormData({
-      roles:[]
+      roles: [],
     });
     setEditeData(null);
     // setTimeout(() => setEditeData(null), 500);
@@ -169,7 +193,7 @@ const AppendRole = ({
                         <Chip
                           label={option.name}
                           {...getTagProps({ index })}
-                        //   disabled={index === 0} // 🔹 می‌توانید تگ خاصی را غیرفعال کنید
+                          //   disabled={index === 0} // 🔹 می‌توانید تگ خاصی را غیرفعال کنید
                           size="small"
                         />
                       ))
@@ -187,7 +211,7 @@ const AppendRole = ({
                         helperText={fieldState.error?.message}
                       />
                     )}
-                    options={roleOptions?.map((item:any) => ({
+                    options={roleOptions?.map((item: any) => ({
                       id: item.id,
                       name: item.name,
                     }))}
@@ -198,6 +222,7 @@ const AppendRole = ({
                   />
                 )}
               />
+              {/* <RenderFormDisplay item={rolesFormItem} value={getValues(rolesFormItem.name as any)} /> */}
             </Grid>
 
             <Grid item xs={12} display="flex" justifyContent="flex-end" mt={2}>
