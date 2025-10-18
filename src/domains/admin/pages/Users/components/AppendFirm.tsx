@@ -186,7 +186,7 @@ const AppendFirm = ({
   const columns: GridColDef[] = [
     { field: "name", headerName: "نام موسسه", flex: 2 },
     // { field: "registerNo", headerName: "شماره ثبت نام", flex: 1 },
-    { field: "nationalId", headerName: "کد ملی موسسه", flex: 1 },
+    { field: "nationalId", headerName: "شناسه ملی موسسه", flex: 1 },
     {
       headerName: "انتخاب",
       field: "action",
@@ -357,7 +357,7 @@ const AppendFirm = ({
                   <TableHead>
                     <TableRow>
                       <TableCell align="center">نام موسسه</TableCell>
-                      <TableCell align="center">کد ملی موسسه</TableCell>
+                      <TableCell align="center">شناسه ملی موسسه</TableCell>
                       <TableCell align="center">حذف</TableCell>
                     </TableRow>
                   </TableHead>

@@ -99,23 +99,23 @@ const FirmAdminDetaileTabs = (props: Props) => {
       title: "آموزشی",
       com: <EduInfoGrid setActiveTab={setActiveTab}/>,
     },
-    {
-      title: "مالی",
-      com: <FinancialStatementsGrid setActiveTab={setActiveTab}/>,
-    },
+    // {
+    //   title: "مالی",
+    //   com: <FinancialStatementsGrid setActiveTab={setActiveTab}/>,
+    // },
     {
       // title: "آموزش مستمر حرفه ای",
       title: "سوابق مستمر آموزشی",
       com: <ContinuingEducationGrid setActiveTab={setActiveTab}/>,
     },
-    {
-      title: "قراردادها",
-      com: <FirmContractGrid />,
-    },
-    {
-      title: "انتشارات",
-      com: <PublicationGrid />,
-    },
+    // {
+    //   title: "قراردادها",
+    //   com: <FirmContractGrid />,
+    // },
+    // {
+    //   title: "انتشارات",
+    //   com: <PublicationGrid />,
+    // },
     {
       title: "شعبات",
       com: <BranchGrid/>,

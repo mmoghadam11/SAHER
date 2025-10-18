@@ -136,6 +136,11 @@ const MENU_ITEMS: MenuItem[] = [
         access: ["administrator", "city-showmenu"],
       },
       {
+        title: "شرکای موسسه",
+        url: "partners",
+        access: ["administrator", "city-showmenu"],
+      },
+      {
         title: "کارکنان حرفه‌ای موسسات",
         url: "persons",
         access: ["administrator", "city-showmenu"],
@@ -146,21 +151,6 @@ const MENU_ITEMS: MenuItem[] = [
       //   access: ["administrator", "city-showmenu"],
       // },
       {
-        title: "شرکای موسسه",
-        url: "partners",
-        access: ["administrator", "city-showmenu"],
-      },
-      {
-        title: "آزمون رتبه بندی",
-        url: "rating-test",
-        access: ["administrator", "city-showmenu"],
-      },
-      {
-        title: "متقاضیان آزمون",
-        url: "exam-applicants",
-        access: ["administrator", "city-showmenu"],
-      },
-      {
         //ثابت و متغیر دارد
         title: "حق عضویت موسسه",
         url: "membership-fee",
@@ -169,6 +159,11 @@ const MENU_ITEMS: MenuItem[] = [
       {
         title: "قرارداد های حسابرسی",
         url: "contracts-concluded",
+        access: ["administrator", "city-showmenu"],
+      },
+      {
+        title: "گزارش  های حسابرسی",
+        url: "reprts-by-institution",
         access: ["administrator", "city-showmenu"],
       },
       {
@@ -182,8 +177,13 @@ const MENU_ITEMS: MenuItem[] = [
         access: ["administrator", "city-showmenu"],
       },
       {
-        title: "گزارش  های حسابرسی",
-        url: "reprts-by-institution",
+        title: "آزمون رتبه بندی",
+        url: "rating-test",
+        access: ["administrator", "city-showmenu"],
+      },
+      {
+        title: "متقاضیان آزمون",
+        url: "exam-applicants",
         access: ["administrator", "city-showmenu"],
       },
     ],
@@ -200,21 +200,21 @@ const MENU_ITEMS: MenuItem[] = [
         access: ["administrator", "city-showmenu", "township-showmenu"],
       },
       {
-        title: "کارکنان حرفه‌ای موسسه",
-        url: "persons",
-        access: ["administrator", "city-showmenu"],
-      },
-      {
-        // title: "مشخصات اشخاص",
-        title: "حسابداران شاغل در موسسه",
-        url: "personnels",
-        access: ["administrator", "city-showmenu"],
-      },
-      {
         title: "شرکای موسسه",
         url: "partners",
-        access: ["administrator", "city-showmenu"],
+        access: ["administrator", "city-showmenu","township-showmenu"],
       },
+      {
+        title: "کارکنان حرفه‌ای موسسه",
+        url: "persons",
+        access: ["administrator", "city-showmenu","township-showmenu"],
+      },
+      // {
+      //   // title: "مشخصات اشخاص",
+      //   title: "حسابداران شاغل در موسسه",
+      //   url: "personnels",
+      //   access: ["administrator", "city-showmenu","township-showmenu"],
+      // },
       {
         title: "آزمون رتبه بندی",
         url: "rating-test",
@@ -223,13 +223,13 @@ const MENU_ITEMS: MenuItem[] = [
       {
         title: "دوره های آموزشی",
         url: "EDU",
-        access: ["administrator", "city-showmenu"],
+        access: ["administrator", "city-showmenu","township-showmenu"],
       },
       {
         //ثابت و متغیر دارد
         title: "حق عضویت موسسه",
         url: "membership-fee",
-        access: ["administrator", "city-showmenu"],
+        access: ["administrator", "city-showmenu","township-showmenu"],
       },
       {
         title: "قرارداد های حسابرسی",

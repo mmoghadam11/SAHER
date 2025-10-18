@@ -61,7 +61,7 @@ const InstituteContractGrid = (props: Props) => {
   } as any);
   const columns: GridColDef[] = [
     { field: "name", headerName: "نام موسسه", flex: 2 },
-    { field: "nationalId", headerName: "کد ملی موسسه", flex: 1 },
+    { field: "nationalId", headerName: "شناسه ملی موسسه", flex: 1 },
     { field: "registerNo", headerName: "شماره ثبت", flex: 1 },
     { field: "directorNationalCode", headerName: "کد ملی مدیرعامل", flex: 1 },
     {

@@ -46,6 +46,12 @@ import AccountantDisciplinaryOrderGrid from "domains/accountant/disciplinaryOrde
 import AccountantDisciplinaryOrderDetaile from "domains/accountant/disciplinaryOrder/AccountantDisciplinaryOrderDetaile";
 import StaffGrid from "domains/Institute/staff/StaffGrid";
 import AddStaff from "domains/Institute/staff/AddStaff";
+import Firms4StaffGrid from "domains/firmAdmin/staff/Firms4StaffGrid";
+import FirmStaffGrid from "domains/firmAdmin/staff/FirmStaffGrid";
+import AddFirmStaff from "domains/firmAdmin/staff/AddFirmStaff";
+import Firms4PartnerGrid from "domains/firmAdmin/Partners/Firms4PartnerGrid";
+import FirmPartnersGrid from "domains/firmAdmin/Partners/FirmPartnersGrid";
+import AddFirmPartner from "domains/firmAdmin/Partners/AddFirmPartner";
 
 const AppRoutes: React.FC = () => {
   const auth = useAuth();
@@ -66,40 +72,43 @@ const AppRoutes: React.FC = () => {
         <Route element={<UserRoute />}>
           <Route path="management">
             <Route path="users">
-              <Route index element={<UsersGrid/>} />
+              <Route index element={<UsersGrid />} />
               <Route path=":id" element={<AddUser />} />
             </Route>
             <Route path="roles">
-              <Route index element={<RolesGrid/>} />
+              <Route index element={<RolesGrid />} />
             </Route>
             <Route path="permissions">
-              <Route index element={<PermissionGrid/>} />
+              <Route index element={<PermissionGrid />} />
             </Route>
           </Route>
           <Route path="accountant">
-            <Route path="official-users" >
-              <Route index element={<OfficialUserGrid/>} />
-              <Route path=":id" element={<AddOfficialUser/>} />
+            <Route path="official-users">
+              <Route index element={<OfficialUserGrid />} />
+              <Route path=":id" element={<AddOfficialUser />} />
             </Route>
             <Route path="disciplinary-order">
-              <Route index element={<AccountantDisciplinaryOrderGrid />}/>
-              <Route path=":id" element={<AccountantDisciplinaryOrderDetaile/>} />
+              <Route index element={<AccountantDisciplinaryOrderGrid />} />
+              <Route
+                path=":id"
+                element={<AccountantDisciplinaryOrderDetaile />}
+              />
             </Route>
           </Route>
           <Route path="institutions">
             <Route path="information">
-              <Route index element={<InstititeGrid/>} />
+              <Route index element={<InstititeGrid />} />
               <Route path="details/:id">
                 <Route index element={<DetaileTabs />} />
               </Route>
               <Route path=":id" element={<FormSteps />} />
             </Route>
-            <Route path="persons" >
-              <Route index element={<StaffGrid/>} />
-              <Route path=":id" element={<AddStaff/>} />
+            <Route path="persons">
+              <Route index element={<StaffGrid />} />
+              <Route path=":id" element={<AddStaff />} />
             </Route>
-            <Route path="personnels" >
-              <Route index element={<MemberShipGrid/>} />
+            <Route path="personnels">
+              <Route index element={<MemberShipGrid />} />
               <Route path=":id" element={<AddMembership />} />
             </Route>
             <Route path="rating-test" element={<Welcome />} />
@@ -107,34 +116,52 @@ const AppRoutes: React.FC = () => {
             <Route path="exam-applicants" element={<Welcome />} />
             <Route path="membership-fee" element={<Welcome />} />
             <Route path="contracts-concluded">
-              <Route index element={<InstituteContractGrid />}/>
-              <Route path=":id" element={<ContractDetaile/>} />
+              <Route index element={<InstituteContractGrid />} />
+              <Route path=":id" element={<ContractDetaile />} />
             </Route>
             <Route path="financial-Statement">
-              <Route index element={<InstituteFinancialStatementGrid />}/>
-              <Route path=":id" element={<FinancialStatementDetaile/>} />
+              <Route index element={<InstituteFinancialStatementGrid />} />
+              <Route path=":id" element={<FinancialStatementDetaile />} />
             </Route>
             <Route path="disciplinary-order">
-              <Route index element={<InstituteDisciplinaryOrderGrid />}/>
-              <Route path=":id" element={<DisciplinaryOrderDetaile/>} />
+              <Route index element={<InstituteDisciplinaryOrderGrid />} />
+              <Route path=":id" element={<DisciplinaryOrderDetaile />} />
             </Route>
           </Route>
           <Route path="FirmAdmin">
             <Route path="information">
-              <Route index element={<FirmAdminGrid/>} />
+              <Route index element={<FirmAdminGrid />} />
               <Route path="details/:id">
                 <Route index element={<FirmAdminDetaileTabs />} />
               </Route>
               <Route path=":id" element={<FirmAdminFormSteps />} />
             </Route>
+            <Route path="partners">
+              <Route index element={<Firms4PartnerGrid />} />
+              <Route path=":id">
+                <Route index element={<FirmPartnersGrid />} />
+                <Route path=":staffId" element={<AddFirmPartner />} />
+              </Route>
+            </Route>
+            <Route path="persons">
+              <Route index element={<Firms4StaffGrid />} />
+              <Route path=":id">
+                <Route index element={<FirmStaffGrid />} />
+                <Route path=":staffId" element={<AddFirmStaff />} />
+              </Route>
+            </Route>
           </Route>
           <Route path="IACPA">
-            <Route path="workgroup" >
-              <Route index element={<WorkgroupGrid/>} />
-              <Route path=":id" element={<AddWorkgroup/>} />
+            <Route path="workgroup">
+              <Route index element={<WorkgroupGrid />} />
+              <Route path=":id" element={<AddWorkgroup />} />
             </Route>
           </Route>
           <Route path="basic-data">
+            <Route path="persons">
+              <Route index element={<PersonGrid />} />
+              <Route path=":id" element={<AddPerson />} />
+            </Route>
             <Route path="towns" element={<Towns />} />
             <Route path="township" element={<TownShipGrid />} />
             <Route path="city" element={<CityGrid />} />

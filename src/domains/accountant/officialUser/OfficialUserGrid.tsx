@@ -84,7 +84,7 @@ const OfficialUserGrid = (props: Props) => {
         return moment(row?.birthDate).format("jYYYY/jMM/jDD");
       },
     },
-    { field: "idNumber", headerName: "کد پرسنلی", flex: 1 },
+    { field: "idNumber", headerName: "شماره عضویت", flex: 1 },
     {
       headerName: "عملیات",
       field: "action",

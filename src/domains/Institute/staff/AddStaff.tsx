@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Stepper,
   Step,
@@ -9,12 +9,20 @@ import {
   Paper,
   Container,
   Grid,
+  Chip,
 } from "@mui/material";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { FullInstituteType } from "types/institute";
 
 // کامپوننت‌های مربوط به هر دسته اطلاعات
-import { Check, Inventory } from "@mui/icons-material";
+import {
+  Check,
+  Close,
+  CrisisAlert,
+  Inventory,
+  PersonSearch,
+  Verified,
+} from "@mui/icons-material";
 import RenderFormInput from "components/render/formInputs/RenderFormInput";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAuth } from "hooks/useAuth";
@@ -24,19 +32,37 @@ import BackButton from "components/buttons/BackButton";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { FormItem } from "types/formItem";
 
-import { BasicFormItems } from "./forms/BasicFormItems";
-import { ContactFormItems } from "./forms/ContactFormItems";
-import { InsuranceFormItems } from "./forms/InsuranceFormItems";
-import { EducationFormItems } from "./forms/EducationFormItems";
-import { PersonalInfoFormItems } from "./forms/PersonalInfoFormItems";
-import { StatusFormItems } from "./forms/StatusFormItems";
-import { ProfessionalFormItems } from "./forms/ProfessionalFormItems";
-import { MembershipFormItems } from "./forms/MembershipFormItems";
 import RenderFormDisplay from "components/render/formInputs/RenderFormDisplay";
+import SearchPannel from "components/form/SearchPannel";
+import paramsSerializer from "services/paramsSerializer";
+import { PersonnelAssignmentFormItems } from "domains/firmAdmin/staff/forms/PersonnelAssignmentFormItems";
 
-export default function AddStaff(): JSX.Element {
-  const { id } = useParams();
+export default function AddFirmStaff(): JSX.Element {
+  const { id, staffId } = useParams();
   const { state } = useLocation();
+  const [searchData, setSearchData] = useState({
+    nationalCode: "",
+    // cdPersonnelTypeId: 112,
+    id:staffId==="new"?"":staffId
+  });
+  const [filters, setFilters] = useState<any>({
+    nationalCode: staffId!=="new"?state?.staffData?.personnelNationalCode:"",
+    id:staffId==="new"?"":staffId
+    // cdPersonnelTypeId: 112,
+    // code: "",
+  });
+  const searchItems: FormItem[] = [
+    {
+      name: "nationalCode",
+      inputType: "text",
+      label: "کد ملی",
+      size: { md: 6 },
+      elementProps:{
+        disabled:staffId!=="new"
+      }
+    },
+  ];
+
   useEffect(() => {
     if (!!state?.staffData) reset(state?.staffData);
   }, [state?.staffData]);
@@ -48,16 +74,7 @@ export default function AddStaff(): JSX.Element {
     reset,
     setValue,
     getValues,
-  } = useForm<any>({
-    defaultValues: {
-      // مقادیر اولیه برای تمام checkbox ها
-      workingGroupMembership: false,
-      internationalAssociations: false,
-      professionalAssociations: false,
-      retired: false,
-      faculty: false,
-    },
-  });
+  } = useForm<any>({});
   const Auth = useAuth();
   const snackbar = useSnackbar();
   const { mutate, isLoading } = useMutation({
@@ -65,26 +82,28 @@ export default function AddStaff(): JSX.Element {
   });
 
   const {
-    data: cityOptions,
-    status: cityOptions_status,
-    refetch: cityOptions_refetch,
+    data: searchResponse,
+    status: searchResponse_status,
+    refetch: searchResponse_refetch,
   } = useQuery<any>({
-    queryKey: [`city/search-all`],
+    queryKey: [`personnel-info/search-all${paramsSerializer(filters)}`],
     queryFn: Auth?.getRequest,
     select: (res: any) => {
       return res?.data;
     },
+    enabled: (!!filters?.nationalCode || !!filters?.personnelId) ,
   } as any);
   const {
-    data: relOptions,
-    status: relOptions_status,
-    refetch: relOptions_refetch,
+    data: editeData,
+    status: editeData_status,
+    refetch: editeData_refetch,
   } = useQuery<any>({
-    queryKey: [`common-data/find-by-type-all?typeId=16`],
+    queryKey: [`professional-staff/search-all${paramsSerializer(filters)}`],
     queryFn: Auth?.getRequest,
     select: (res: any) => {
       return res?.data;
     },
+    enabled: staffId!=="new",
   } as any);
   const {
     data: rankOptions,
@@ -97,143 +116,7 @@ export default function AddStaff(): JSX.Element {
       return res?.data;
     },
   } as any);
-  const {
-    data: membershipType,
-    status: membershipType_status,
-    refetch: membershipType_refetch,
-  } = useQuery<any>({
-    // queryKey: [process.env.REACT_APP_API_URL + `/api/unit-allocations${paramsSerializer(filters)}`],
-    // queryKey: [`/api/v1/common-type/find-all${paramsSerializer(filters)}`],
-    queryKey: [`common-data/find-by-type-all?typeId=26`],
-    queryFn: Auth?.getRequest,
-    select: (res: any) => {
-      return res?.data;
-    },
-  } as any);
-  const {
-    data: firmOptions,
-    status: firmOptions_status,
-    refetch: firmOptions_refetch,
-  } = useQuery<any>({
-    queryKey: [`firm/search-all`],
-    queryFn: Auth?.getRequest,
-    select: (res: any) => {
-      return res?.data;
-    },
-  } as any);
-  const {
-    data: genderOptions,
-    status: genderOptions_status,
-    refetch: genderOptions_refetch,
-  } = useQuery<any>({
-    queryKey: [`common-data/find-by-type-all?typeId=27`],
-    queryFn: Auth?.getRequest,
-    select: (res: any) => {
-      return res?.data;
-    },
-  } as any);
-  const {
-    data: marriageOptions,
-    status: marriageOptions_status,
-    refetch: marriageOptions_refetch,
-  } = useQuery<any>({
-    queryKey: [`common-data/find-by-type-all?typeId=28`],
-    queryFn: Auth?.getRequest,
-    select: (res: any) => {
-      return res?.data;
-    },
-  } as any);
-  const {
-    data: countryOptions,
-    status: countryOptions_status,
-    refetch: countryOptions_refetch,
-  } = useQuery<any>({
-    queryKey: [`common-data/find-by-type-all?typeId=29`],
-    queryFn: Auth?.getRequest,
-    select: (res: any) => {
-      return res?.data;
-    },
-  } as any);
-  const {
-    data: InsuranceCoverage,
-    status: InsuranceCoverage_status,
-    refetch: InsuranceCoverage_refetch,
-  } = useQuery<any>({
-    queryKey: [`common-data/find-by-type-all?typeId=30`],
-    queryFn: Auth?.getRequest,
-    select: (res: any) => {
-      return res?.data;
-    },
-  } as any);
-  const {
-    data: supplementaryInsuranceOptions,
-    status: supplementaryInsuranceOptions_status,
-    refetch: supplementaryInsuranceOptions_refetch,
-  } = useQuery<any>({
-    queryKey: [`common-data/find-by-type-all?typeId=31`],
-    queryFn: Auth?.getRequest,
-    select: (res: any) => {
-      return res?.data;
-    },
-  } as any);
-  const {
-    data: DutyStatus,
-    status: DutyStatus_status,
-    refetch: DutyStatus_refetch,
-  } = useQuery<any>({
-    queryKey: [`common-data/find-by-type-all?typeId=32`],
-    queryFn: Auth?.getRequest,
-    select: (res: any) => {
-      return res?.data;
-    },
-  } as any);
-  const {
-    data: eduCertificate,
-    status: eduCertificate_status,
-    refetch: eduCertificate_refetch,
-  } = useQuery<any>({
-    queryKey: [`common-data/find-by-type-all?typeId=33`],
-    queryFn: Auth?.getRequest,
-    select: (res: any) => {
-      return res?.data;
-    },
-  } as any);
-  const {
-    data: religionOptions,
-    status: religionOptions_status,
-    refetch: religionOptions_refetch,
-  } = useQuery<any>({
-    queryKey: [`common-data/find-by-type-all?typeId=37`],
-    queryFn: Auth?.getRequest,
-    select: (res: any) => {
-      return res?.data;
-    },
-  } as any);
-  const {
-    data: universityOptions,
-    status: universityOptions_status,
-    refetch: universityOptions_refetch,
-  } = useQuery<any>({
-    queryKey: [`common-data/find-by-type-all?typeId=38`],
-    queryFn: Auth?.getRequest,
-    select: (res: any) => {
-      return res?.data;
-    },
-  } as any);
-  const {
-    data: educationalFieldOptions,
-    status: educationalFieldOptions_status,
-    refetch: educationalFieldOptions_refetch,
-  } = useQuery<any>({
-    queryKey: [`common-data/find-by-type-all?typeId=36`],
-    queryFn: Auth?.getRequest,
-    select: (res: any) => {
-      return res?.data;
-    },
-  } as any);
-  // const [formData, setFormData] = useState<{
-  //   [K in keyof FullInstituteType]: string;
-  // }>({} as { [K in keyof FullInstituteType]: string });
+
   interface FormData {
     id?: any;
     name: string;
@@ -249,86 +132,87 @@ export default function AddStaff(): JSX.Element {
     formItems: FormItem[];
   }
 
+  const DataFormItems = useMemo(
+    () => [
+      {
+        name: "firstName",
+        inputType: "text",
+        label: "نام",
+        size: { md: 4 },
+      },
+      {
+        name: "lastName",
+        inputType: "text",
+        label: "نام خانوادگی",
+        size: { md: 4 },
+      },
+      {
+        name: "birthDate",
+        inputType: "date",
+        label: "تاریخ تولد",
+        size: { md: 4 },
+        rules: { required: "تاریخ تولد الزامی است" },
+        elementProps: {
+          setDay: (value: any) => {
+            setValue("birthDate", value);
+          },
+          value: "",
+        },
+      },
+
+      {
+        name: "fatherName",
+        inputType: "text",
+        label: "نام پدر",
+        size: { md: 4 },
+      },
+      {
+        name: "nationalCode",
+        inputType: "text",
+        label: "کد ملی",
+        size: { md: 4 },
+      },
+      {
+        name: "idNumber",
+        inputType: "text",
+        label: "شماره شناسنامه",
+        size: { md: 4 },
+      },
+    ],
+    [searchResponse,editeData, state?.accountantData]
+  );
   // آرایه مراحل و آیتم‌های فرم
-  const formSteps: FormStep[] = [
+  const formSteps: FormStep[] = useMemo(() => [
     {
-      name: "اطلاعات پایه",
-      formItems: BasicFormItems(setValue, {
-        firmOptions,
-        cityOptions,
-        genderOptions,
-        marriageOptions,
-        religionOptions,
-      }),
-    },
-    {
-      name: "جزئیات عضویت",
-      formItems: MembershipFormItems(setValue, { membershipType, rankOptions }),
-    },
-    {
-      name: "اطلاعات تماس",
-      formItems: ContactFormItems(setValue),
-    },
-    {
-      name: "تحصیلات",
-      formItems: EducationFormItems(setValue, {
-        cityOptions,
-        eduCertificate,
-        universityOptions,
-        educationalFieldOptions,
-      }),
-    },
-    {
-      name: "بیمه",
-      formItems: InsuranceFormItems(setValue, {
-        supplementaryInsuranceOptions,
-        InsuranceCoverage,
-      }),
-    },
-    {
-      name: "وضعیت و وظیفه",
-      formItems: StatusFormItems(setValue, {
-        firmOptions,
-        cityOptions,
-        countryOptions,
-        DutyStatus,
+      name: "اطلاعات عضویت",
+      formItems: PersonnelAssignmentFormItems(setValue, {
         rankOptions,
       }),
     },
-    {
-      name: "اطلاعات شخصی تکمیلی",
-      formItems: PersonalInfoFormItems(setValue, {
-        religionOptions,
-        marriageOptions,
-        countryOptions,
-        genderOptions,
-      }),
-    },
-    {
-      name: "تخصص‌ها و مهارت‌ها",
-      formItems: ProfessionalFormItems(setValue, { firmOptions, cityOptions }),
-    },
-  ];
+  ], [!!searchResponse||!!editeData])
+  
 
   const onSubmit = (data: FullInstituteType) => {
     console.log("lastForm=>", data);
     mutate(
       {
-        entity: `professional-staff/${id !== "new" ? "update" : "save"}`,
+        entity: `professional-staff/${staffId !== "new" ? "update" : "save"}`,
         // entity: `membership/save`,
-        method: id !== "new" ? "put" : "post",
+        method: staffId !== "new" ? "put" : "post",
         // method:  "post",
         data: {
           ...data,
           // حسابدار رسمی=111
           // کارکنان حرفه ای=112
-          cdPersonnelTypeId: 112,
+          // cdPersonnelTypeId: 112,
+          auditingFirmId: id,
+          personnelId: searchResponse?.[0]?.id,
         },
       },
       {
         onSuccess: (res: any) => {
           console.log("res=>", res);
-          if (id !== "new")
+          if (staffId !== "new")
             snackbar(
               `به روز رسانی عضو انتخاب شده با موفقیت انجام شد`,
               "success"
@@ -360,97 +244,138 @@ export default function AddStaff(): JSX.Element {
   };
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   snackbar("1","error")
-  //   snackbar("2","error")
-  //   snackbar("3","info")
-  // }, [])
+  useEffect(() => {
+    console.log("searchResponse", searchResponse);
+  }, [searchResponse]);
 
   return (
     <Grid container justifyContent={"center"}>
       <Grid md={10.5} sm={11.5} xs={12} item>
         <Paper elevation={3} sx={{ p: 5, my: 3, width: "100%" }}>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <Grid container spacing={4}>
+          <Grid container spacing={4} justifyContent={"center"}>
+            <Grid
+              item
+              md={12}
+              display={"flex"}
+              justifyContent={"space-between"}
+              mb={1}
+            >
+              <Grid item display={"flex"}>
+                <Inventory fontSize="large" />
+                <Typography variant="h5">فرم اطلاعات کارکنان موسسه</Typography>
+              </Grid>
+              <BackButton onBack={() => navigate(-1)} />
+            </Grid>
+            {/* <SearchPannel<any>
+              searchItems={searchItems}
+              searchData={searchData}
+              setSearchData={setSearchData}
+              setFilters={setFilters}
+              md={12}
+            /> */}
+            {/* <Grid item md={12} width={"100vw"}>
+                <FancyTicketDivider />
+              </Grid> */}
+            {!!searchResponse && (
               <Grid
                 item
                 md={12}
                 display={"flex"}
+                gap={1}
                 justifyContent={"space-between"}
-                mb={1}
               >
-                <Grid item display={"flex"}>
-                  <Inventory fontSize="large" />
-                  <Typography variant="h5">
-                    فرم کارکنان حرفه‌ای موسسات
+                <Box display={"flex"} gap={1}>
+                  <PersonSearch />
+                  <Typography variant="h6" fontSize={"large"}>
+                    اطلاعات کلی
                   </Typography>
-                </Grid>
-                <BackButton onBack={() => navigate(-1)} />
+                </Box>
+
+                {searchResponse_status === "success" &&
+                  (!searchResponse?.length ? (
+                    <Chip
+                      color="default"
+                      label="اطلاعاتی یافت نشد"
+                      icon={<CrisisAlert />}
+                    />
+                  ) : !searchResponse?.[0]?.previousFirmName ? (
+                    <Chip color="success" label="مجاز" icon={<Verified />} />
+                  ) : searchResponse?.[0]?.previousFirmId === id ? (
+                    <Chip
+                      color="warning"
+                      label="این شخص جزو کارکنان حرفه ای شماست"
+                      icon={<CrisisAlert />}
+                    />
+                  ) : (
+                    <Chip
+                      color="info"
+                      label={`مشغول در موسسه‌ی ${searchResponse?.[0]?.previousFirmName}`}
+                      icon={<CrisisAlert />}
+                    />
+                  ))}
               </Grid>
-              {formSteps.map((stepItem, stepIndex) => (
-                <Grid item container md={12} spacing={2} key={stepIndex}>
-                  <Grid item md={12} width={"100vw"}>
-                    <FancyTicketDivider />
-                  </Grid>
-                  <Grid item md={12}>
-                    <Typography variant="h6" fontSize={"large"}>
-                      {stepItem?.name}
-                    </Typography>
-                  </Grid>
-                  {stepItem?.formItems?.map((item) => (
-                    <Grid item xs={12} md={item.size.md} key={item.name}>
-                      {state?.editable ? (
-                        <Controller
-                          name={item.name}
-                          control={control}
-                          rules={item.rules}
-                          render={({ field }) => (
-                            <RenderFormInput
-                              controllerField={field}
-                              errors={errors}
-                              {...item}
-                              // value={formData[item.name]}
-                              value={getValues()[item.name] ?? ""}
-                              onChange={(
-                                e: React.ChangeEvent<HTMLInputElement>
-                              ) => {
-                                // handleInputChange(item.name, e.target.value);
-                                field.onChange(e);
-                              }}
-                            />
-                          )}
-                        />
-                      ) : (
+            )}
+            {(!!searchResponse||!!editeData) && (
+              <Grid item md={12} sm={12} xs={12}>
+                <form name="myForm" onSubmit={handleSubmit(onSubmit)}>
+                  <Grid
+                    container
+                    item
+                    md={12}
+                    spacing={4}
+                    justifyContent={"center"}
+                  >
+                    {DataFormItems?.map((item) => (
+                      <Grid item xs={12} md={item.size.md} key={item.name}>
                         <RenderFormDisplay
                           item={item}
-                          value={getValues(item.name)}
+                          value={searchResponse?.[0]?.[item.name]||editeData?.[0]?.[item.name]}
                         />
-                      )}
-                    </Grid>
-                  ))}
-                </Grid>
-              ))}
+                      </Grid>
+                    ))}
 
-              {state?.editable && (
-                <Grid
-                  item
-                  xs={12}
-                  display="flex"
-                  justifyContent="flex-end"
-                  mt={2}
-                >
-                  <Button
-                    sx={{ minWidth: "25%" }}
-                    variant="contained"
-                    startIcon={<Check />}
-                    type="submit"
-                  >
-                    ثبت
-                  </Button>
-                </Grid>
-              )}
-            </Grid>
-          </form>
+                    {(searchResponse_status === "success"||editeData_status==="success") &&
+                      (!!searchResponse?.length||!!editeData?.length) &&
+                      (!searchResponse?.[0]?.previousFirmName||!!editeData) &&
+                      formSteps.map((stepItem, stepIndex) => (
+                        <Grid
+                          item
+                          container
+                          md={12}
+                          spacing={2}
+                          key={stepIndex}
+                        >
+                          <Grid item md={12} width={"100vw"}>
+                            <FancyTicketDivider />
+                          </Grid>
+                          <Grid item md={12}>
+                            <Typography variant="h6" fontSize={"large"}>
+                              {stepItem?.name}
+                            </Typography>
+                          </Grid>
+                          {stepItem?.formItems?.map((item) => (
+                            <Grid
+                              item
+                              xs={12}
+                              md={item.size.md}
+                              key={item.name}
+                            >
+                              
+                                <RenderFormDisplay
+                                  item={item}
+                                  value={getValues()[item.name]}
+                                />
+                              
+                            </Grid>
+                          ))}
+                        </Grid>
+                      ))}
+
+                  </Grid>
+                </form>
+              </Grid>
+            )}
+          </Grid>
         </Paper>
       </Grid>
     </Grid>

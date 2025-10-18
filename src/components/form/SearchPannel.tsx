@@ -9,6 +9,7 @@ type Props<T> = {
   setSearchData: React.Dispatch<React.SetStateAction<T>>;
   searchData: T;
   setFilters: React.Dispatch<any>;
+  md?:number
 };
 
 function SearchPannel<T extends Record<string, any>>({
@@ -16,6 +17,7 @@ function SearchPannel<T extends Record<string, any>>({
   setSearchData,
   searchData,
   setFilters,
+  md=11
 }: Props<T>) {
   const {
     handleSubmit,
@@ -64,9 +66,9 @@ function SearchPannel<T extends Record<string, any>>({
     }));
   };
   return (
-    <Grid item md={11} sm={11} xs={12}>
+    <Grid item md={md} sm={11} xs={12}>
       <Paper elevation={3} sx={{ p: 3, mt: 1, mb: 2, width: "100%" }}>
-        <form onSubmit={handleSubmit(handleSearch)}>
+        <form name="SearchPanel" onSubmit={handleSubmit(handleSearch)}>
         <Grid
           item
           container

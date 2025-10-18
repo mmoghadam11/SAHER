@@ -77,6 +77,14 @@ const PersonGrid = (props: Props) => {
       },
     },
     {
+      field: "cdMembershipTypeName",
+      headerName: "وضعیت",
+      flex: 1.5,
+      // renderCell: ({ row }: { row: any }) => {
+      //   return row?.latinFirstName + " " + row?.latinLastName;
+      // },
+    },
+    {
       field: "birthDate",
       headerName: "تاریخ تولد",
       flex: 1,

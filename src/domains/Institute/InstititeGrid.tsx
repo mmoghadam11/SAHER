@@ -60,10 +60,16 @@ const InstititeGrid = (props: Props) => {
     enabled: true,
   } as any);
   const columns: GridColDef[] = [
-    { field: "name", headerName: "نام موسسه", flex: 2 },
-    { field: "nationalId", headerName: "کد ملی موسسه", flex: 1 },
+    { field: "name", headerName: "نام موسسه", flex: 1.5 },
+    { field: "nationalId", headerName: "شناسه ملی موسسه", flex: 1 },
     { field: "registerNo", headerName: "شماره ثبت", flex: 1 },
-    { field: "directorNationalCode", headerName: "کد ملی مدیرعامل", flex: 1 },
+    { field: "director", headerName: "مدیرعامل", flex: 1 ,
+      renderCell:({row}: {row:any})=>{
+        return(
+          row?.directorFirstName+" "+row?.directorLastName
+        )
+      }
+    },
     {
       headerName: "عملیات",
       field: "action",
