@@ -118,7 +118,7 @@ const DetaileTabs = (props: Props) => {
       com: <PublicationGrid />,
     },
     {
-      title: "شعبات",
+      title: "شعبه",
       com: <BranchGrid />,
     },
     {

@@ -117,7 +117,7 @@ const FirmAdminDetaileTabs = (props: Props) => {
     //   com: <PublicationGrid />,
     // },
     {
-      title: "شعبات",
+      title: "شعبه",
       com: <BranchGrid/>,
     },
     // {
