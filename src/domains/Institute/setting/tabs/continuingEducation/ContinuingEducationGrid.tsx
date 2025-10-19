@@ -1,4 +1,4 @@
-import { Close, Key, ManageAccounts, Toc, Verified } from "@mui/icons-material";
+import { Close, Key, ManageAccounts, People, Toc, Verified } from "@mui/icons-material";
 import { Box, Chip, Grid, Typography } from "@mui/material";
 import { GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -18,6 +18,7 @@ import { isMobile } from "react-device-detect";
 import AddContiniuingEdu from "./AddContiniuingEdu";
 import moment from "jalali-moment";
 import ConfirmBox from "components/confirmBox/ConfirmBox";
+import BranchEDU from "./BranchEDU";
 
 type Props = {
   setActiveTab: React.Dispatch<React.SetStateAction<number>>;
@@ -53,17 +54,22 @@ const ContinuingEducationGrid = ({ setActiveTab }: Props) => {
     enabled: true,
   } as any);
   const columns: GridColDef[] = [
-    { field: "auditingFirmName", headerName: "نام موسسه ", flex: 1 },
     { field: "cdTermNameValue", headerName: "نام دوره آموزشی", flex: 1 },
     { field: "cdEducationTypeValue", headerName: "نوع آموزش", flex: 1 },
     { field: "termDuration", headerName: "مدت زمان ترم آموزشی(روز)", flex: 1 },
-    { field: "certificateDate", headerName: "تاریخ گواهی نامه", flex: 1,
+    {
+      field: "termDate",
+      headerName: "تاریخ ترم",
+      flex: 1,
       renderCell: ({ row }: { row: any }) => {
-              return (
-                <Typography>{moment(new Date(row?.certificateDate)).format("jYYYY/jMM/jDD")}</Typography>
-              );
-            },
-     },
+        if (!!row?.termDate)
+          return (
+            <Typography>
+              {moment(new Date(row?.termDate)).format("jYYYY/jMM/jDD")}
+            </Typography>
+          );
+      },
+    },
     {
       headerName: "عملیات",
       field: "action",
@@ -76,18 +82,25 @@ const ContinuingEducationGrid = ({ setActiveTab }: Props) => {
             onEdit={() => {
               // navigate(`${row.id}`, { state: { userData: row } });
               setEditeData(row);
-              setAddModalFlag(true)
+              setAddModalFlag(true);
             }}
             onDelete={() => {
               setDeleteData(row);
               setDeleteFlag(true);
+            }}
+            onManage={{
+              icon: <People/>,
+              title: "مدیریت شرکت کنندگان",
+              function: () => {
+                setSelectecBranchData(row);
+              },
             }}
           />
         );
       },
     },
   ];
-  
+
   type editeObjectType = {
     id: number;
     value: string;
@@ -96,6 +109,7 @@ const ContinuingEducationGrid = ({ setActiveTab }: Props) => {
     typeName: string;
   };
   const [editeData, setEditeData] = useState<editeObjectType | null>(null);
+  const [selectecBranchData, setSelectecBranchData] =useState<editeObjectType | null>(null);
   const [addModalFlag, setAddModalFlag] = useState(false);
   const [appendFirmFlag, setAppendFirmFlag] = useState(false);
   const [deleteData, setDeleteData] = useState<any>(null);
@@ -132,13 +146,13 @@ const ContinuingEducationGrid = ({ setActiveTab }: Props) => {
             onClick={() => {
               // navigate("new")
               // setActiveTab(1);
-              setAddModalFlag(true)
+              setAddModalFlag(true);
             }}
           />
         </Box>
       </Grid>
-      
-      <Grid item md={11} sm={11} xs={12} >
+
+      <Grid item md={11} sm={11} xs={12}>
         {StatesData_status === "success" ? (
           isMobile ? (
             <VerticalTable
@@ -166,7 +180,11 @@ const ContinuingEducationGrid = ({ setActiveTab }: Props) => {
               // }}
             />
           )
-        ) : <Typography variant="body1">اطلاعاتی برای نمایش موجود نمیباشد</Typography>}
+        ) : (
+          <Typography variant="body1">
+            اطلاعاتی برای نمایش موجود نمیباشد
+          </Typography>
+        )}
       </Grid>
       <AddContiniuingEdu
         refetch={StatesData_refetch}
@@ -175,6 +193,7 @@ const ContinuingEducationGrid = ({ setActiveTab }: Props) => {
         editeData={editeData}
         setEditeData={setEditeData}
       />
+      {!!selectecBranchData&&<BranchEDU selectedEDUId={selectecBranchData} setSelectecBranchData={setSelectecBranchData}/>}
       <ConfirmBox
         open={deleteFlag}
         handleClose={() => {
@@ -205,4 +224,4 @@ const ContinuingEducationGrid = ({ setActiveTab }: Props) => {
   );
 };
 
-export default ContinuingEducationGrid
+export default ContinuingEducationGrid;

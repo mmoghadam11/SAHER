@@ -7,6 +7,11 @@ export interface FormItem {
   tempRules?: any;
   options?: any[];
   elementProps?: any;
-  placeholder?:string;
-  storeValueAs?:string;
+  placeholder?: string;
+  storeValueAs?: string;
+
+  inlineLoading?:boolean;
+  status?: string;
+  refetch?: () => void;
+  skipClientFilter?: boolean
 }

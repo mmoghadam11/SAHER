@@ -393,7 +393,7 @@ export default function AddFirmStaff(): JSX.Element {
                       ))}
 
                     {state?.editable &&
-                      (searchResponse?.[0]?.previousFirmId === id||searchResponse?.[0]?.previousFirmId === "new") &&
+                      (searchResponse?.[0]?.previousFirmId === id||staffId === "new") &&
                       !!searchResponse?.length && (
                         <Grid
                           item

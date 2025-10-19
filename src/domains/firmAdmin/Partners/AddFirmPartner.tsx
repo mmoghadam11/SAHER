@@ -370,8 +370,8 @@ export default function AddFirmPartner(): JSX.Element {
                       ))}
 
                     {
-                    // state?.editable &&
-                      // (staffId=== "new"||!!editeData) &&
+                    state?.editable &&
+                     (!!searchResponse?.length||!!editeData?.length) &&
                        (
                         <Grid
                           item

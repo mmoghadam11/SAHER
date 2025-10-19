@@ -51,6 +51,17 @@ export const ContinuingEduItems = (
       },
     },
     {
+      name: "termScore",
+      inputType: "text",
+      label: "امتیاز ترم",
+      size: { md: 3 },
+      placeholder: "به عدد وارد شود",
+      rules: {
+        required: "امتیاز ترم الزامی است",
+        pattern: { value: /^[0-9]+$/, message: "باید فقط عدد وارد شود" },
+      },
+    },
+    {
       name: "certificateNo",
       inputType: "text",
       label: "شماره گواهینامه",

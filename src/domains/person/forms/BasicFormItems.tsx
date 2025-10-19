@@ -103,4 +103,13 @@ export const BasicFormItems = (
     size: { md: 4 },
     rules: { required: "شماره شناسنامه الزامی است" },
   },
+  {
+    name: "auditingFirmId",
+    inputType: "autocomplete",
+    label: "موسسه",
+    size: { md: 4 },
+    options: options?.firmOptions?.map((item: any) => ({ value: item?.id, title: item?.name })) ?? [{ value: 0, title: "خالی" }],
+    storeValueAs: 'id',
+    rules: {},
+  },
 ];
