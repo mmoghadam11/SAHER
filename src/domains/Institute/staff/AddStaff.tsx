@@ -37,17 +37,24 @@ import SearchPannel from "components/form/SearchPannel";
 import paramsSerializer from "services/paramsSerializer";
 import { PersonnelAssignmentFormItems } from "domains/firmAdmin/staff/forms/PersonnelAssignmentFormItems";
 
-export default function AddFirmStaff(): JSX.Element {
+export default function AddStaff(): JSX.Element {
   const { id, staffId } = useParams();
   const { state } = useLocation();
   const [searchData, setSearchData] = useState({
     nationalCode: "",
     // cdPersonnelTypeId: 112,
-    id:staffId==="new"?"":staffId
+    id: staffId === "new" ? "" : staffId,
   });
   const [filters, setFilters] = useState<any>({
-    nationalCode: staffId!=="new"?state?.staffData?.personnelNationalCode:"",
-    id:staffId==="new"?"":staffId
+    nationalCode:
+      staffId !== "new" ? state?.staffData?.personnelNationalCode : "",
+    // personnelId:staffId==="new"?"":staffId
+    // cdPersonnelTypeId: 112,
+    // code: "",
+  });
+  const [editeDatafilters, setEditeDataFilters] = useState<any>({
+    // nationalCode: staffId!=="new"?state?.staffData?.personnelNationalCode:"",
+    id: staffId === "new" ? "" : staffId,
     // cdPersonnelTypeId: 112,
     // code: "",
   });
@@ -57,9 +64,9 @@ export default function AddFirmStaff(): JSX.Element {
       inputType: "text",
       label: "کد ملی",
       size: { md: 6 },
-      elementProps:{
-        disabled:staffId!=="new"
-      }
+      elementProps: {
+        disabled: staffId !== "new",
+      },
     },
   ];
 
@@ -91,19 +98,21 @@ export default function AddFirmStaff(): JSX.Element {
     select: (res: any) => {
       return res?.data;
     },
-    enabled: (!!filters?.nationalCode || !!filters?.personnelId) ,
+    enabled: !!filters?.nationalCode,
   } as any);
   const {
     data: editeData,
     status: editeData_status,
     refetch: editeData_refetch,
   } = useQuery<any>({
-    queryKey: [`professional-staff/search-all${paramsSerializer(filters)}`],
+    queryKey: [
+      `professional-staff/search-all${paramsSerializer(editeDatafilters)}`,
+    ],
     queryFn: Auth?.getRequest,
     select: (res: any) => {
       return res?.data;
     },
-    enabled: staffId!=="new",
+    enabled: staffId !== "new",
   } as any);
   const {
     data: rankOptions,
@@ -179,18 +188,20 @@ export default function AddFirmStaff(): JSX.Element {
         size: { md: 4 },
       },
     ],
-    [searchResponse,editeData, state?.accountantData]
+    [searchResponse, editeData, state?.accountantData]
   );
   // آرایه مراحل و آیتم‌های فرم
-  const formSteps: FormStep[] = useMemo(() => [
-    {
-      name: "اطلاعات عضویت",
-      formItems: PersonnelAssignmentFormItems(setValue, {
-        rankOptions,
-      }),
-    },
-  ], [!!searchResponse||!!editeData])
-  
+  const formSteps: FormStep[] = useMemo(
+    () => [
+      {
+        name: "اطلاعات عضویت",
+        formItems: PersonnelAssignmentFormItems(setValue, {
+          rankOptions,
+        }),
+      },
+    ],
+    [searchResponse,editeData,setValue,getValues]
+  );
 
   const onSubmit = (data: FullInstituteType) => {
     console.log("lastForm=>", data);
@@ -247,7 +258,14 @@ export default function AddFirmStaff(): JSX.Element {
   useEffect(() => {
     console.log("searchResponse", searchResponse);
   }, [searchResponse]);
-
+  useEffect(() => {
+  // اگر در حالت ویرایش هستیم و داده‌های ویرایش با موفقیت فچ شده‌اند
+  if (staffId !== "new" && editeData && editeData.length > 0) {
+    // فرم را با داده‌های دریافتی پر کنید
+    // editeData یک آرایه است، پس از آیتم اول استفاده می‌کنیم
+    reset(editeData[0]);
+  }
+}, [editeData, staffId, reset]);
   return (
     <Grid container justifyContent={"center"}>
       <Grid md={10.5} sm={11.5} xs={12} item>
@@ -266,13 +284,16 @@ export default function AddFirmStaff(): JSX.Element {
               </Grid>
               <BackButton onBack={() => navigate(-1)} />
             </Grid>
-            {/* <SearchPannel<any>
-              searchItems={searchItems}
-              searchData={searchData}
-              setSearchData={setSearchData}
-              setFilters={setFilters}
-              md={12}
-            /> */}
+            {staffId === "new" && (
+              <SearchPannel<any>
+                searchItems={searchItems}
+                searchData={searchData}
+                setSearchData={setSearchData}
+                setFilters={setFilters}
+                md={12}
+              />
+            )}
+
             {/* <Grid item md={12} width={"100vw"}>
                 <FancyTicketDivider />
               </Grid> */}
@@ -300,22 +321,16 @@ export default function AddFirmStaff(): JSX.Element {
                     />
                   ) : !searchResponse?.[0]?.previousFirmName ? (
                     <Chip color="success" label="مجاز" icon={<Verified />} />
-                  ) : searchResponse?.[0]?.previousFirmId === id ? (
-                    <Chip
-                      color="warning"
-                      label="این شخص جزو کارکنان حرفه ای شماست"
-                      icon={<CrisisAlert />}
-                    />
                   ) : (
                     <Chip
-                      color="info"
-                      label={`مشغول در موسسه‌ی ${searchResponse?.[0]?.previousFirmName}`}
+                      color="warning"
+                      label={`این شخص جزو کارکنان حرفه ای ${searchResponse?.[0]?.previousFirmName} است`}
                       icon={<CrisisAlert />}
                     />
                   ))}
               </Grid>
             )}
-            {(!!searchResponse||!!editeData) && (
+            {(!!searchResponse || !!editeData) && (
               <Grid item md={12} sm={12} xs={12}>
                 <form name="myForm" onSubmit={handleSubmit(onSubmit)}>
                   <Grid
@@ -329,14 +344,18 @@ export default function AddFirmStaff(): JSX.Element {
                       <Grid item xs={12} md={item.size.md} key={item.name}>
                         <RenderFormDisplay
                           item={item}
-                          value={searchResponse?.[0]?.[item.name]||editeData?.[0]?.[item.name]}
+                          value={
+                            searchResponse?.[0]?.[item.name] ||
+                            editeData?.[0]?.[item.name]
+                          }
                         />
                       </Grid>
                     ))}
 
-                    {(searchResponse_status === "success"||editeData_status==="success") &&
-                      (!!searchResponse?.length||!!editeData?.length) &&
-                      (!searchResponse?.[0]?.previousFirmName||!!editeData) &&
+                    {(searchResponse_status === "success" ||
+                      editeData_status === "success") &&
+                      (!!searchResponse?.length || !!editeData?.length) &&
+                      (!searchResponse?.[0]?.previousFirmName || !!editeData) &&
                       formSteps.map((stepItem, stepIndex) => (
                         <Grid
                           item
@@ -360,17 +379,59 @@ export default function AddFirmStaff(): JSX.Element {
                               md={item.size.md}
                               key={item.name}
                             >
-                              
+                              {state?.editable ? (
+                                <Controller
+                                  name={item.name}
+                                  control={control}
+                                  rules={item.rules}
+                                  render={({ field }) => (
+                                    <RenderFormInput
+                                      controllerField={field}
+                                      errors={errors}
+                                      {...item}
+                                      // value={formData[item.name]}
+                                      value={getValues()[item.name] ?? ""}
+                                      onChange={(
+                                        e: React.ChangeEvent<HTMLInputElement>
+                                      ) => {
+                                        // handleInputChange(item.name, e.target.value);
+                                        field.onChange(e);
+                                      }}
+                                    />
+                                  )}
+                                />
+                              ) : (
                                 <RenderFormDisplay
                                   item={item}
                                   value={getValues()[item.name]}
                                 />
-                              
+                              )}
                             </Grid>
                           ))}
                         </Grid>
                       ))}
 
+                    {state?.editable &&
+                      (searchResponse?.[0]?.previousFirmId === id ||
+                        staffId === "new") &&
+                      !!searchResponse?.length && (
+                        <Grid
+                          item
+                          xs={12}
+                          display="flex"
+                          justifyContent="flex-end"
+                          mt={2}
+                        >
+                          <Button
+                            sx={{ minWidth: "25%" }}
+                            variant="contained"
+                            startIcon={<Check />}
+                            type="submit"
+                          >
+                            ثبت
+                          </Button>
+                        </Grid>
+                      )}
                   </Grid>
                 </form>
               </Grid>

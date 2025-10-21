@@ -2,6 +2,7 @@ import { Article, People, Search, Settings, Toc } from "@mui/icons-material";
 import {
   Box,
   Button,
+  CircularProgress,
   Dialog,
   DialogTitle,
   Grid,
@@ -74,9 +75,11 @@ const Firms4StaffGrid = (props: Props) => {
         return (
           <TableActions
             onManage={{
-              title:"کارکنان حرفه ای",
-              function:()=>{navigate(`${row.id}`,{state: {firmData: row} })},
-              icon:<People/>
+              title: "کارکنان حرفه ای",
+              function: () => {
+                navigate(`${row.id}`, { state: { firmData: row } });
+              },
+              icon: <People />,
             }}
           />
         );
@@ -149,6 +152,19 @@ const Firms4StaffGrid = (props: Props) => {
       }
     );
   }
+  useEffect(() => {
+    if (!!StatesData)
+      navigate(`${StatesData?.content?.[0].id}`, {
+        state: { firmData: StatesData?.content?.[0] },
+      });
+  }, [StatesData_status, StatesData]);
+  if (StatesData_status === "loading")
+    return (
+      <Box height={"100vh"} textAlign={"center"} alignItems={"center"} justifyContent={"center"}>
+        <Typography>لطفا منتظر بمانید...</Typography>
+        <CircularProgress />
+      </Box>
+    );
   return (
     <Grid container justifyContent="center">
       <Grid
@@ -165,7 +181,6 @@ const Firms4StaffGrid = (props: Props) => {
           <Article fontSize="large" />
           <Typography variant="h5">موسسات شما</Typography>
         </Box>
-        
       </Grid>
       {/* <SearchPannel<SearchData>
         searchItems={searchItems}
@@ -187,12 +202,13 @@ const Firms4StaffGrid = (props: Props) => {
           />
         ) : null}
       </Grid>
-      
+
       <ConfirmBox
         open={deleteFlag}
-        handleClose={()=>{
-            setDeleteFlag(false)
-            setDeleteData(null)}}
+        handleClose={() => {
+          setDeleteFlag(false);
+          setDeleteData(null);
+        }}
         handleSubmit={() =>
           mutate(
             {

@@ -92,8 +92,8 @@ const StaffGrid = (props: Props) => {
       headerName: "تاریخ پایان همکاری",
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
-        if(row?.endDate) return moment(row?.endDate).format("jYYYY/jMM/jDD");
-        else return null
+        if (row?.endDate) return moment(row?.endDate).format("jYYYY/jMM/jDD");
+        else return null;
       },
     },
     {
@@ -101,8 +101,9 @@ const StaffGrid = (props: Props) => {
       headerName: "وضعیت همکاری",
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
-        if(row?.cooperationStatus)return <Chip color="secondary" label="فعال" icon={<CheckCircle/>}/>;
-        else return <Chip color="default" label="غیر فعال"/>;
+        if (row?.cooperationStatus)
+          return <Chip color="secondary" label="فعال" icon={<CheckCircle />} />;
+        else return <Chip color="default" label="غیر فعال" />;
       },
     },
     { field: "cdProfessionalRankName", headerName: "رتبه حرفه‌ای", flex: 1 },
@@ -118,12 +119,16 @@ const StaffGrid = (props: Props) => {
             onView={() => {
               setEditeData(row);
               setAddModalFlag(true);
-              navigate(`${row.id}`, { state: { staffData: row , editable:false } });
+              navigate(`${row.auditingFirmId + "/" + row.id}`, {
+                state: { staffData: row, editable: false },
+              });
             }}
             onEdit={() => {
               setEditeData(row);
               setAddModalFlag(true);
-              navigate(`${row.id}`, { state: { staffData: row , editable:true } });
+              navigate(`${row.auditingFirmId + "/" + row.id}`, {
+                state: { staffData: row, editable: true },
+              });
             }}
             // onManage={{
             //   title: "جزئیات شخص",
@@ -137,6 +142,17 @@ const StaffGrid = (props: Props) => {
       },
     },
   ];
+  const {
+    data: firmOptions,
+    status: firmOptions_status,
+    refetch: firmOptions_refetch,
+  } = useQuery<any>({
+    queryKey: [`firm/search-all`],
+    queryFn: Auth?.getRequest,
+    select: (res: any) => {
+      return res?.data;
+    },
+  } as any);
   interface SearchData {
     name: string;
     code: string;
@@ -146,26 +162,50 @@ const StaffGrid = (props: Props) => {
     inputType: string;
     label: string;
     size: any;
+    options?: any;
   };
   const searchItems: searchType[] = [
     {
       name: "personnelFirstName",
       inputType: "text",
-      label: "نام شخص",
-      size: { md: 4 },
+      label: "نام",
+      size: { md: 3 },
     },
     {
       name: "auditingFirmName",
       inputType: "text",
-      label: "نام خانوادگی شخص",
-      size: { md: 4 },
+      label: "نام خانوادگی",
+      size: { md: 3 },
     },
     {
       name: "personnelNationalCode",
       inputType: "text",
       label: "کدملی شخص",
-      size: { md: 4 },
+      size: { md: 3 },
     },
+    // {
+    //   name: "auditingFirmId",
+    //   inputType: "autocomplete",
+    //   label: "موسسه",
+    //   size: { md: 3 },
+    //   options: firmOptions?.map((item: any) => ({
+    //     value: item?.id,
+    //     title: item?.name,
+    //   })) ?? [{ value: 0, title: "خالی" }],
+    //   storeValueAs:"id"
+    // },
+
+    //   {
+    //   name: "cdProfessionalRankId",
+    //   inputType: "select",
+    //   label: "رده حرفه‌ای",
+    //   size: { md: 6 },
+    //   options: options?.rankOptions?.map((item: any) => ({
+    //     value: item?.id,
+    //     title: item?.value
+    //   })) ?? [{ value: 0, title: "خالی" }],
+    //   rules: { required: "انتخاب رده حرفه‌ای الزامی است" },
+    // },
   ];
   type editeObjectType = {
     id: number;
@@ -182,6 +222,7 @@ const StaffGrid = (props: Props) => {
     name: "",
     code: "",
   });
+
   useEffect(() => {
     console.log(filters);
   }, [filters]);
@@ -229,7 +270,7 @@ const StaffGrid = (props: Props) => {
           <CreateNewItem
             sx={{ mr: 2 }}
             name="شخص"
-            onClick={() => navigate("new",{state: {editable:true}})}
+            onClick={() => navigate("new", { state: { editable: true } })}
           />
           <BackButton onBack={() => navigate(-1)} />
         </Box>
@@ -241,7 +282,7 @@ const StaffGrid = (props: Props) => {
         setFilters={setFilters}
       />
       <Grid item md={11} sm={11} xs={12}>
-        {(StatesData_status === "success"&& !!StatesData) ? (
+        {StatesData_status === "success" && !!StatesData ? (
           <TavanaDataGrid
             rows={StatesData?.content}
             columns={columns}
