@@ -88,7 +88,7 @@ function SearchPannel<T extends Record<string, any>>({
                   name={item.name}
                   control={control}
                   render={({ field, fieldState }) => {
-                    if (item.inputType === "text")
+                    if (item.inputType !== "autocomplete")
                       return (
                         <RenderFormInput
                           controllerField={field}
