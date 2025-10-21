@@ -1,4 +1,4 @@
-import { Close, Key, ManageAccounts, People, Toc, Verified } from "@mui/icons-material";
+import { Close, Key, ManageAccounts, Toc, Verified } from "@mui/icons-material";
 import { Box, Chip, Grid, Typography } from "@mui/material";
 import { GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -15,16 +15,14 @@ import paramsSerializer from "services/paramsSerializer";
 import { PAGINATION_DEFAULT_VALUE } from "shared/paginationValue";
 import VerticalTable from "components/dataGrid/VerticalTable";
 import { isMobile } from "react-device-detect";
-import AddContiniuingEdu from "./AddContiniuingEdu";
 import moment from "jalali-moment";
 import ConfirmBox from "components/confirmBox/ConfirmBox";
-import BranchEDU from "./BranchEDU";
+import AddAddress from "./AddAddress";
 
 type Props = {
-  setActiveTab: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const ContinuingEducationGrid = ({ setActiveTab }: Props) => {
+const AddressGrid = ({  }: Props) => {
   const { id } = useParams();
   const Auth = useAuth();
   const snackbar = useSnackbar();
@@ -39,14 +37,14 @@ const ContinuingEducationGrid = ({ setActiveTab }: Props) => {
   } = useForm();
   const [filters, setFilters] = useState<any>({
     ...PAGINATION_DEFAULT_VALUE,
-    firm: id,
+    firmId: id,
   });
   const {
     data: StatesData,
     status: StatesData_status,
     refetch: StatesData_refetch,
   } = useQuery<any>({
-    queryKey: [`firm-prof-edu/find-by-firm${paramsSerializer(filters)}`],
+    queryKey: [`audited-firm-address/find${paramsSerializer(filters)}`],
     queryFn: Auth?.getRequest,
     select: (res: any) => {
       return res?.data;
@@ -54,22 +52,18 @@ const ContinuingEducationGrid = ({ setActiveTab }: Props) => {
     enabled: true,
   } as any);
   const columns: GridColDef[] = [
-    { field: "cdTermNameValue", headerName: "نام دوره آموزشی", flex: 1 },
-    { field: "cdEducationTypeValue", headerName: "نوع آموزش", flex: 1 },
-    { field: "termDuration", headerName: "مدت زمان ترم آموزشی(روز)", flex: 1 },
+    { field: "cityName", headerName: "شهر", flex: 1 },
+    { field: "street", headerName: "خیابان", flex: 1 },
+    { field: "plateNo", headerName: "پلاک", flex: 1 },
     {
-      field: "termDate",
-      headerName: "تاریخ ترم",
-      flex: 1,
-      renderCell: ({ row }: { row: any }) => {
-        if (!!row?.termDate)
-          return (
-            <Typography>
-              {moment(new Date(row?.termDate)).format("jYYYY/jMM/jDD")}
-            </Typography>
-          );
-      },
-    },
+          field: "active",
+          headerName: "آدرس فعال",
+          flex: 1,
+          renderCell: ({ row }: { row: any }) => {
+            if (row.active) return <Chip color="secondary" label="فعال" icon={<Verified  />}/>;
+            else return<Chip color="default" label="غیر فعال"/>
+          },
+        },
     {
       headerName: "عملیات",
       field: "action",
@@ -82,25 +76,18 @@ const ContinuingEducationGrid = ({ setActiveTab }: Props) => {
             onEdit={() => {
               // navigate(`${row.id}`, { state: { userData: row } });
               setEditeData(row);
-              setAddModalFlag(true);
+              setAddModalFlag(true)
             }}
             onDelete={() => {
               setDeleteData(row);
               setDeleteFlag(true);
-            }}
-            onManage={{
-              icon: <People/>,
-              title: "مدیریت شرکت کنندگان",
-              function: () => {
-                setSelectecBranchData(row);
-              },
             }}
           />
         );
       },
     },
   ];
-
+  
   type editeObjectType = {
     id: number;
     value: string;
@@ -109,7 +96,6 @@ const ContinuingEducationGrid = ({ setActiveTab }: Props) => {
     typeName: string;
   };
   const [editeData, setEditeData] = useState<editeObjectType | null>(null);
-  const [selectecBranchData, setSelectecBranchData] =useState<editeObjectType | null>(null);
   const [addModalFlag, setAddModalFlag] = useState(false);
   const [appendFirmFlag, setAppendFirmFlag] = useState(false);
   const [deleteData, setDeleteData] = useState<any>(null);
@@ -136,23 +122,23 @@ const ContinuingEducationGrid = ({ setActiveTab }: Props) => {
       >
         <Box display={"flex"}>
           <Toc fontSize="large" />
-          <Typography variant="h5">لیست سوابق مستمر آموزشی</Typography>
+          <Typography variant="h5">لیست آدرس ها</Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"}>
           <CreateNewItem
             sx={{ mr: 2 }}
-            name="سوابق مستمر آموزشی"
+            name="آدرس"
             // onClick={() => navigate("new")}
             onClick={() => {
               // navigate("new")
               // setActiveTab(1);
-              setAddModalFlag(true);
+              setAddModalFlag(true)
             }}
           />
         </Box>
       </Grid>
-
-      <Grid item md={11} sm={11} xs={12}>
+      
+      <Grid item md={11} sm={11} xs={12} >
         {StatesData_status === "success" ? (
           isMobile ? (
             <VerticalTable
@@ -180,20 +166,15 @@ const ContinuingEducationGrid = ({ setActiveTab }: Props) => {
               // }}
             />
           )
-        ) : (
-          <Typography variant="body1">
-            اطلاعاتی برای نمایش موجود نمیباشد
-          </Typography>
-        )}
+        ) : <Typography variant="body1">اطلاعاتی برای نمایش موجود نمیباشد</Typography>}
       </Grid>
-      <AddContiniuingEdu
+      <AddAddress
         refetch={StatesData_refetch}
         addModalFlag={addModalFlag}
         setAddModalFlag={setAddModalFlag}
         editeData={editeData}
         setEditeData={setEditeData}
       />
-      {!!selectecBranchData&&<BranchEDU selectedEDUId={selectecBranchData} setSelectecBranchData={setSelectecBranchData}/>}
       <ConfirmBox
         open={deleteFlag}
         handleClose={() => {
@@ -203,7 +184,7 @@ const ContinuingEducationGrid = ({ setActiveTab }: Props) => {
         handleSubmit={() =>
           mutate(
             {
-              entity: `firm-prof-edu/remove/${deleteData?.id}`,
+              entity: `audited-firm-address/delete/${deleteData?.id}`,
               method: "delete",
             },
             {
@@ -217,11 +198,11 @@ const ContinuingEducationGrid = ({ setActiveTab }: Props) => {
             }
           )
         }
-        message={`آیا از حذف ${deleteData?.cdTermNameValue} مطمعین میباشید؟`}
+        message={`آیا از حذف آدرس خیابان ${deleteData?.street} مطمعین میباشید؟`}
         title={"درخواست حذف!"}
       />
     </Grid>
   );
 };
 
-export default ContinuingEducationGrid;
+export default AddressGrid

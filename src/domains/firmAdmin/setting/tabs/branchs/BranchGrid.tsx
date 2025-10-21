@@ -1,4 +1,4 @@
-import { Close, Key, ManageAccounts, Toc, Verified } from "@mui/icons-material";
+import { Close, Diversity3, Key, ManageAccounts, Map, Toc, Verified } from "@mui/icons-material";
 import { Box, Chip, Grid, Typography } from "@mui/material";
 import { GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -18,11 +18,12 @@ import { isMobile } from "react-device-detect";
 import moment from "jalali-moment";
 import ConfirmBox from "components/confirmBox/ConfirmBox";
 import AddBranch from "./AddBranch";
+import BranchAddressGrid from "./BranchAddressGrid";
+import BranchPartnerGrid from "./partner/BranchPartnerGrid";
 
-type Props = {
-};
+type Props = {};
 
-const BranchGrid = ({  }: Props) => {
+const BranchGrid = ({}: Props) => {
   const { id } = useParams();
   const Auth = useAuth();
   const snackbar = useSnackbar();
@@ -52,17 +53,31 @@ const BranchGrid = ({  }: Props) => {
     enabled: true,
   } as any);
   const columns: GridColDef[] = [
-    { field: "auditingFirmName", headerName: "نام موسسه ", flex: 1 },
-    { field: "cdTermNameValue", headerName: "نام دوره آموزشی", flex: 1 },
-    { field: "cdEducationTypeValue", headerName: "نوع آموزش", flex: 1 },
-    { field: "termDuration", headerName: "مدت زمان ترم آموزشی(روز)", flex: 1 },
-    { field: "certificateDate", headerName: "تاریخ گواهی نامه", flex: 1,
+    {
+      field: "name",
+      headerName: "شعبه",
+      flex: 1,
+    },
+    {
+      field: "newspaperNotificationNo",
+      headerName: "شماره آگهی روزنامه رسمی",
+      flex: 1,
+    },
+    {
+      field: "newspaperNotificationDate",
+      headerName: "تاریخ آگهی روزنامه رسمی",
+      flex: 1,
       renderCell: ({ row }: { row: any }) => {
-              return (
-                <Typography>{moment(new Date(row?.certificateDate)).format("jYYYY/jMM/jDD")}</Typography>
-              );
-            },
-     },
+        return (
+          <Typography>
+            {moment(new Date(row?.newspaperNotificationDate)).format(
+              "jYYYY/jMM/jDD"
+            )}
+          </Typography>
+        );
+      },
+    },
+    { field: "morguePlace", headerName: "محل نگهداری اسناد", flex: 1 },
     {
       headerName: "عملیات",
       field: "action",
@@ -75,18 +90,34 @@ const BranchGrid = ({  }: Props) => {
             onEdit={() => {
               // navigate(`${row.id}`, { state: { userData: row } });
               setEditeData(row);
-              setAddModalFlag(true)
+              setAddModalFlag(true);
             }}
             onDelete={() => {
               setDeleteData(row);
               setDeleteFlag(true);
+            }}
+            onManage={{
+              icon:<Map/>,
+              title: "آدرس ها",
+              function: () => {
+                setSelectecBranchData(row);
+                setGridFlag(1);
+              },
+            }}
+            onAdd={{
+              icon:<Diversity3 color="action"/>,
+              title: "شرکا",
+              function: () => {
+                setSelectecBranchData(row);
+                setGridFlag(2);
+              },
             }}
           />
         );
       },
     },
   ];
-  
+
   type editeObjectType = {
     id: number;
     value: string;
@@ -95,7 +126,9 @@ const BranchGrid = ({  }: Props) => {
     typeName: string;
   };
   const [editeData, setEditeData] = useState<editeObjectType | null>(null);
+  const [selectecBranchData, setSelectecBranchData] =useState<editeObjectType | null>(null);
   const [addModalFlag, setAddModalFlag] = useState(false);
+  const [gridFlag, setGridFlag] = useState(0);
   const [appendFirmFlag, setAppendFirmFlag] = useState(false);
   const [deleteData, setDeleteData] = useState<any>(null);
   const [deleteFlag, setDeleteFlag] = useState(false);
@@ -121,23 +154,23 @@ const BranchGrid = ({  }: Props) => {
       >
         <Box display={"flex"}>
           <Toc fontSize="large" />
-          <Typography variant="h5">لیست سوابق مستمر آموزشی</Typography>
+          <Typography variant="h5">لیست شعبه ها</Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"}>
           <CreateNewItem
             sx={{ mr: 2 }}
-            name="سوابق مستمر آموزشی"
+            name="شعبه"
             // onClick={() => navigate("new")}
             onClick={() => {
               // navigate("new")
               // setActiveTab(1);
-              setAddModalFlag(true)
+              setAddModalFlag(true);
             }}
           />
         </Box>
       </Grid>
-      
-      <Grid item md={11} sm={11} xs={12} >
+
+      <Grid item md={11} sm={11} xs={12}>
         {StatesData_status === "success" ? (
           isMobile ? (
             <VerticalTable
@@ -165,8 +198,18 @@ const BranchGrid = ({  }: Props) => {
               // }}
             />
           )
-        ) : <Typography variant="body1">اطلاعاتی برای نمایش موجود نمیباشد</Typography>}
+        ) : (
+          <Typography variant="body1">
+            اطلاعاتی برای نمایش موجود نمیباشد
+          </Typography>
+        )}
       </Grid>
+        {!!selectecBranchData && gridFlag===1 ? (
+          <BranchAddressGrid selectedBranch={selectecBranchData} setSelectecBranchData={setSelectecBranchData} />
+        ):!!selectecBranchData && gridFlag===2&&(
+          <BranchPartnerGrid selectedBranch={selectecBranchData} setSelectecBranchData={setSelectecBranchData} />
+        )
+        }
       <AddBranch
         refetch={StatesData_refetch}
         addModalFlag={addModalFlag}
@@ -183,7 +226,7 @@ const BranchGrid = ({  }: Props) => {
         handleSubmit={() =>
           mutate(
             {
-              entity: `firm-prof-edu/remove/${deleteData?.id}`,
+              entity: `audited-firm-branch/delete/${deleteData?.id}`,
               method: "delete",
             },
             {
@@ -197,11 +240,11 @@ const BranchGrid = ({  }: Props) => {
             }
           )
         }
-        message={`آیا از حذف ${deleteData?.cdTermNameValue} مطمعین میباشید؟`}
+        message={`آیا از حذف شعبه شماره ${deleteData?.newspaperNotificationNo} مطمعین میباشید؟`}
         title={"درخواست حذف!"}
       />
     </Grid>
   );
 };
 
-export default BranchGrid
+export default BranchGrid;

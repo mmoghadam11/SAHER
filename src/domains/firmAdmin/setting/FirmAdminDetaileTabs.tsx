@@ -40,6 +40,7 @@ import ContinuingEducationGrid from "./tabs/continuingEducation/ContinuingEducat
 import FirmContractGrid from "./tabs/firnContract/FirmContractGrid";
 import PublicationGrid from "./tabs/publication/PublicationGrid";
 import BranchGrid from "./tabs/branchs/BranchGrid";
+import AddressGrid from "./tabs/address/AddressGrid";
 
 type Props = {};
 interface FormItem {
@@ -97,33 +98,33 @@ const FirmAdminDetaileTabs = (props: Props) => {
     },
     {
       title: "آموزشی",
-      com: <EduInfoGrid setActiveTab={setActiveTab}/>,
+      com: <EduInfoGrid setActiveTab={setActiveTab} />,
     },
     // {
     //   title: "مالی",
-    //   com: <FinancialStatementsGrid setActiveTab={setActiveTab}/>,
+    //   com: <FinancialStatementsGrid setActiveTab={setActiveTab} />,
     // },
     {
       // title: "آموزش مستمر حرفه ای",
       title: "سوابق مستمر آموزشی",
-      com: <ContinuingEducationGrid setActiveTab={setActiveTab}/>,
+      com: <ContinuingEducationGrid setActiveTab={setActiveTab} />,
     },
     // {
     //   title: "قراردادها",
     //   com: <FirmContractGrid />,
     // },
-    // {
-    //   title: "انتشارات",
-    //   com: <PublicationGrid />,
-    // },
+    {
+      title: "انتشارات",
+      com: <PublicationGrid />,
+    },
     {
       title: "شعبه",
-      com: <BranchGrid/>,
+      com: <BranchGrid />,
     },
-    // {
-    //   title: "موقعیت مکانی",
-    //   com: <Director />,
-    // },
+    {
+      title: "آدرس",
+      com: <AddressGrid />,
+    },
   ];
 
   const formItems = useMemo(
@@ -146,11 +147,12 @@ const FirmAdminDetaileTabs = (props: Props) => {
         mb={1}
       >
         <Grid item display={"flex"}>
-          <Inventory fontSize={isMobile?"medium":"large"} />
-          <Typography variant={isMobile?"body1":"h5"}>مدیریت جزئیات موسسه</Typography>
+          <Inventory fontSize={isMobile ? "medium" : "large"} />
+          <Typography variant={isMobile ? "body1" : "h5"}>
+            مدیریت جزئیات موسسه
+          </Typography>
         </Grid>
         <Grid item display={"flex"}>
-          
           <BackButton onBack={() => navigate(-1)} />
         </Grid>
       </Grid>
@@ -185,45 +187,46 @@ const FirmAdminDetaileTabs = (props: Props) => {
           </Grid>
         </Paper>
       </Grid>
-      <Grid item md={11} display={"flex"} justifyContent={"flex-start"}>
+      <Grid item md={11} sm={11} xs={12} display={"flex"} justifyContent={"flex-start"} >
         {isMobile ? (
-            <Select
-              sx={{width:"25vw" ,mr:1,mt:2}}
-              label={"پنل"}
-              value={activeTab}
-              size="small"
-              onChange={(e) => setActiveTab((e.target.value as number) ?? 0)}
-            >
-              {tabSteps?.map((option: TOption, index: number) => (
-                <MenuItem key={`select-item-${option.value}`} value={index}>
-                  {option.title}
-                </MenuItem>
-              ))}
-            </Select>
-          ) : (
-            <Tabs
-              sx={{
-                mt: 2,
-                mr: 1,
-                // maxWidth: "45vw",
-                // direction: "rtl",
-              }}
-              value={activeTab}
-              onChange={handleTabChange}
-              variant={"scrollable"}
-              scrollButtons={"auto"}
-            >
-              {tabSteps.map((tab, index) => (
-                <Tab
-                  // wrapped
-                  key={index}
-                  label={tab.title}
-                  id={`tab-${index}`}
-                  aria-controls={`tabpanel-${index}`}
-                />
-              ))}
-            </Tabs>
-          )}
+          <Select
+            sx={{ width: "25vw", mr: 1, mt: 2 }}
+            label={"پنل"}
+            value={activeTab}
+            size="small"
+            onChange={(e) => setActiveTab((e.target.value as number) ?? 0)}
+          >
+            {tabSteps?.map((option: TOption, index: number) => (
+              <MenuItem key={`select-item-${option.value}`} value={index}>
+                {option.title}
+              </MenuItem>
+            ))}
+          </Select>
+        ) : (
+          <Tabs
+            sx={{
+              mt: 2,
+              mr: 1,
+              direction:"rtl"
+              // maxWidth: "45vw",
+              // direction: "rtl",
+            }}
+            value={activeTab}
+            onChange={handleTabChange}
+            variant={"scrollable"}
+            scrollButtons={"auto"}
+          >
+            {tabSteps.map((tab, index) => (
+              <Tab
+                // wrapped
+                key={index}
+                label={tab.title}
+                id={`tab-${index}`}
+                aria-controls={`tabpanel-${index}`}
+              />
+            ))}
+          </Tabs>
+        )}
       </Grid>
       {tabSteps[activeTab].com}
     </Grid>

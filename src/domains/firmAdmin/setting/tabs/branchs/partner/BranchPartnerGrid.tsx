@@ -1,9 +1,13 @@
-import { Close, Key, ManageAccounts, People, Toc, Verified } from "@mui/icons-material";
-import { Box, Chip, Grid, Typography } from "@mui/material";
-import { GridColDef, GridToolbar } from "@mui/x-data-grid";
+import {
+  CloseOutlined,
+  Diversity3,
+  Map,
+  PersonAdd,
+  Verified,
+} from "@mui/icons-material";
+import { Box, Chip, Fab, Grid, Tooltip, Typography } from "@mui/material";
+import { GridColDef } from "@mui/x-data-grid";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import BackButton from "components/buttons/BackButton";
-import CreateNewItem from "components/buttons/CreateNewItem";
 import TavanaDataGrid from "components/dataGrid/TavanaDataGrid";
 import TableActions from "components/table/TableActions";
 import { useAuth } from "hooks/useAuth";
@@ -15,16 +19,18 @@ import paramsSerializer from "services/paramsSerializer";
 import { PAGINATION_DEFAULT_VALUE } from "shared/paginationValue";
 import VerticalTable from "components/dataGrid/VerticalTable";
 import { isMobile } from "react-device-detect";
-import AddContiniuingEdu from "./AddContiniuingEdu";
-import moment from "jalali-moment";
+import AddPartner from "./AddPartner";
 import ConfirmBox from "components/confirmBox/ConfirmBox";
-import BranchEDU from "./BranchEDU";
 
 type Props = {
-  setActiveTab: React.Dispatch<React.SetStateAction<number>>;
+  selectedBranch: any;
+  setSelectecBranchData: React.Dispatch<React.SetStateAction<any | null>>;
 };
 
-const ContinuingEducationGrid = ({ setActiveTab }: Props) => {
+const BranchPartnerGrid = ({
+  selectedBranch,
+  setSelectecBranchData,
+}: Props) => {
   const { id } = useParams();
   const Auth = useAuth();
   const snackbar = useSnackbar();
@@ -39,14 +45,14 @@ const ContinuingEducationGrid = ({ setActiveTab }: Props) => {
   } = useForm();
   const [filters, setFilters] = useState<any>({
     ...PAGINATION_DEFAULT_VALUE,
-    firm: id,
+    firmBranchId: selectedBranch?.id ?? "",
   });
   const {
     data: StatesData,
     status: StatesData_status,
     refetch: StatesData_refetch,
   } = useQuery<any>({
-    queryKey: [`firm-prof-edu/find-by-firm${paramsSerializer(filters)}`],
+    queryKey: [`audited-firm-branch/find-partner${paramsSerializer(filters)}`],
     queryFn: Auth?.getRequest,
     select: (res: any) => {
       return res?.data;
@@ -54,22 +60,8 @@ const ContinuingEducationGrid = ({ setActiveTab }: Props) => {
     enabled: true,
   } as any);
   const columns: GridColDef[] = [
-    { field: "cdTermNameValue", headerName: "نام دوره آموزشی", flex: 1 },
-    { field: "cdEducationTypeValue", headerName: "نوع آموزش", flex: 1 },
-    { field: "termDuration", headerName: "مدت زمان ترم آموزشی(روز)", flex: 1 },
-    {
-      field: "termDate",
-      headerName: "تاریخ ترم",
-      flex: 1,
-      renderCell: ({ row }: { row: any }) => {
-        if (!!row?.termDate)
-          return (
-            <Typography>
-              {moment(new Date(row?.termDate)).format("jYYYY/jMM/jDD")}
-            </Typography>
-          );
-      },
-    },
+    { field: "supervisorPersonName", headerName: "ناظر", flex: 1 },
+    { field: "responsiblePersonName", headerName: "نام شریک مقیم", flex: 1 },
     {
       headerName: "عملیات",
       field: "action",
@@ -80,20 +72,12 @@ const ContinuingEducationGrid = ({ setActiveTab }: Props) => {
         return (
           <TableActions
             onEdit={() => {
-              // navigate(`${row.id}`, { state: { userData: row } });
-              setEditeData(row);
-              setAddModalFlag(true);
+              setEditePartnerData(row);
+              setAddPartnerFlag(true);
             }}
             onDelete={() => {
               setDeleteData(row);
               setDeleteFlag(true);
-            }}
-            onManage={{
-              icon: <People/>,
-              title: "مدیریت شرکت کنندگان",
-              function: () => {
-                setSelectecBranchData(row);
-              },
             }}
           />
         );
@@ -108,9 +92,9 @@ const ContinuingEducationGrid = ({ setActiveTab }: Props) => {
     typeId: number;
     typeName: string;
   };
-  const [editeData, setEditeData] = useState<editeObjectType | null>(null);
-  const [selectecBranchData, setSelectecBranchData] =useState<editeObjectType | null>(null);
-  const [addModalFlag, setAddModalFlag] = useState(false);
+  const [editePartnerData, setEditePartnerData] =
+    useState<editeObjectType | null>(null);
+  const [addPartnerFlag, setAddPartnerFlag] = useState(false);
   const [appendFirmFlag, setAppendFirmFlag] = useState(false);
   const [deleteData, setDeleteData] = useState<any>(null);
   const [deleteFlag, setDeleteFlag] = useState(false);
@@ -119,11 +103,11 @@ const ContinuingEducationGrid = ({ setActiveTab }: Props) => {
     code: "",
   });
   useEffect(() => {
-    console.log(filters);
-  }, [filters]);
+    setFilters((prev: any) => ({ ...prev, firmBranchId: selectedBranch?.id }));
+  }, [selectedBranch]);
 
   return (
-    <Grid container item md={12} justifyContent="center">
+    <Grid container item md={12} justifyContent="center" mt={1}>
       <Grid
         item
         md={11}
@@ -131,24 +115,35 @@ const ContinuingEducationGrid = ({ setActiveTab }: Props) => {
         xs={12}
         display={"flex"}
         justifyContent={"space-between"}
-        m={2}
+        mx={2}
         mb={0}
       >
-        <Box display={"flex"}>
-          <Toc fontSize="large" />
-          <Typography variant="h5">لیست سوابق مستمر آموزشی</Typography>
+        <Box display={"flex"} gap={1}>
+          <Diversity3 fontSize="medium" />
+          <Typography variant="body1">لیست شرکای شعبه انتخابی</Typography>
         </Box>
-        <Box display={"flex"} justifyContent={"space-between"}>
-          <CreateNewItem
-            sx={{ mr: 2 }}
-            name="سوابق مستمر آموزشی"
-            // onClick={() => navigate("new")}
-            onClick={() => {
-              // navigate("new")
-              // setActiveTab(1);
-              setAddModalFlag(true);
-            }}
-          />
+        <Box display={"flex"} justifyContent={"space-between"} mb={2}>
+          <Tooltip title="افزودن شریک">
+            <Fab
+              size="small"
+              sx={{ mr: 1 }}
+              onClick={() => {
+                setAddPartnerFlag(true);
+              }}
+            >
+              <PersonAdd color="success" />
+            </Fab>
+          </Tooltip>
+          <Tooltip title="بستن">
+            <Fab
+              size="small"
+              onClick={() => {
+                setSelectecBranchData(null);
+              }}
+            >
+              <CloseOutlined color="error" />
+            </Fab>
+          </Tooltip>
         </Box>
       </Grid>
 
@@ -186,14 +181,14 @@ const ContinuingEducationGrid = ({ setActiveTab }: Props) => {
           </Typography>
         )}
       </Grid>
-      <AddContiniuingEdu
+      <AddPartner
+        selectedBranch={selectedBranch}
         refetch={StatesData_refetch}
-        addModalFlag={addModalFlag}
-        setAddModalFlag={setAddModalFlag}
-        editeData={editeData}
-        setEditeData={setEditeData}
+        addPartnerFlag={addPartnerFlag}
+        setAddPartnerFlag={setAddPartnerFlag}
+        editePartnerData={editePartnerData}
+        setEditePartnerData={setEditePartnerData}
       />
-      {!!selectecBranchData&&<BranchEDU selectedEDUId={selectecBranchData} setSelectecBranchData={setSelectecBranchData}/>}
       <ConfirmBox
         open={deleteFlag}
         handleClose={() => {
@@ -203,12 +198,12 @@ const ContinuingEducationGrid = ({ setActiveTab }: Props) => {
         handleSubmit={() =>
           mutate(
             {
-              entity: `firm-prof-edu/remove/${deleteData?.id}`,
+              entity: `audited-firm-branch/delete-partner/${deleteData?.id}`,
               method: "delete",
             },
             {
               onSuccess: (res: any) => {
-                snackbar(`کاربر انتخاب شده با موفقیت حذف شد`, "success");
+                snackbar(`شریک انتخاب شده با موفقیت حذف شد`, "success");
                 StatesData_refetch();
               },
               onError: () => {
@@ -217,11 +212,11 @@ const ContinuingEducationGrid = ({ setActiveTab }: Props) => {
             }
           )
         }
-        message={`آیا از حذف ${deleteData?.cdTermNameValue} مطمعین میباشید؟`}
+        message={`آیا از حذف شریک موردنظر مطمعین میباشید؟`}
         title={"درخواست حذف!"}
       />
     </Grid>
   );
 };
 
-export default ContinuingEducationGrid;
+export default BranchPartnerGrid;

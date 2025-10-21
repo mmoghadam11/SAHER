@@ -4,6 +4,7 @@ import {
   EventNote,
   Man4,
   Map,
+  MapTwoTone,
   Receipt,
   School,
 } from "@mui/icons-material";
@@ -30,6 +31,7 @@ import { useParams } from "react-router-dom";
 import { EduFinancialItems } from "../../forms/FinancialItems";
 import { ContinuingEduItems } from "../../forms/ContinuingEduItems";
 import { BranchFormItems } from "../../forms/BranchFormItems";
+import { BranchAddressFormItems } from "../../forms/BranchAddressFormItems";
 
 interface FormData {
   id?: any;
@@ -41,21 +43,22 @@ interface FormData {
   request_month: string;
 }
 
-
 type Props = {
   refetch: () => void;
-  addModalFlag: boolean;
-  setAddModalFlag: React.Dispatch<React.SetStateAction<boolean>>;
-  editeData: any;
-  setEditeData: React.Dispatch<React.SetStateAction<any>>;
+  addAddressFlag: boolean;
+  setAddAddressFlag: React.Dispatch<React.SetStateAction<boolean>>;
+  editeAddressData: any;
+  setEditeAddressData: React.Dispatch<React.SetStateAction<any>>;
+  selectedBranch: any;
 };
 
-const AddBranch = ({
-  addModalFlag,
-  setAddModalFlag,
+const AddAddress = ({
+  selectedBranch,
+  addAddressFlag,
+  setAddAddressFlag,
   refetch,
-  editeData,
-  setEditeData,
+  editeAddressData,
+  setEditeAddressData,
 }: Props) => {
   const Auth = useAuth();
   const snackbar = useSnackbar();
@@ -73,96 +76,94 @@ const AddBranch = ({
     setValue,
     getValues,
   } = useForm<FormData>();
- 
- 
 
   const {
-      data: ownershipTypeOptions,
-      status: ownershipTypeOptions_status,
-      refetch: ownershipTypeOptions_refetch,
-    } = useQuery<any>({
-
-      queryKey: [`common-data/find-by-type-all?typeId=15`],
-      queryFn: Auth?.getRequest,
-      select: (res: any) => {
-        return res?.data;
-      },
-    } as any);
+    data: ownershipTypeOptions,
+    status: ownershipTypeOptions_status,
+    refetch: ownershipTypeOptions_refetch,
+  } = useQuery<any>({
+    queryKey: [`common-data/find-by-type-all?typeId=15`],
+    queryFn: Auth?.getRequest,
+    select: (res: any) => {
+      return res?.data;
+    },
+  } as any);
   const {
-      data: PersonnelInfo,
-      status: PersonnelInfo_status,
-      refetch: PersonnelInfo_refetch,
-    } = useQuery<any>({
-
-      queryKey: [`personnel-info/search-all?auditingFirmId=${id}`],
-      queryFn: Auth?.getRequest,
-      select: (res: any) => {
-        return res?.data;
-      },
-    } as any);
-  const formItems: any[] = BranchFormItems(setValue,{ownershipTypeOptions,PersonnelInfo});
+    data: cityOptions,
+    status: cityOptions_status,
+    refetch: cityOptions_refetch,
+  } = useQuery<any>({
+    // queryKey: [process.env.REACT_APP_API_URL + `/api/unit-allocations${paramsSerializer(filters)}`],
+    // queryKey: [`/api/v1/common-type/find-all${paramsSerializer(filters)}`],
+    queryKey: [`city/search-all`],
+    queryFn: Auth?.getRequest,
+    select: (res: any) => {
+      return res?.data;
+    },
+  } as any);
+  const formItems: any[] = BranchAddressFormItems(setValue, { cityOptions });
   useEffect(() => {
-    console.log("editeData=>", getValues());
-    if (editeData !== null) {
+    console.log("editeAddressData=>", getValues());
+    if (editeAddressData !== null) {
       reset({
-        ...editeData,
+        ...editeAddressData,
       });
     } else
       reset({
         auditingFirmId: id,
       });
-  }, [editeData, addModalFlag]);
+  }, [editeAddressData, addAddressFlag]);
 
   const handleClose = () => {
-    setAddModalFlag(false);
+    setAddAddressFlag(false);
     reset();
 
-    setEditeData(null);
+    setEditeAddressData(null);
   };
 
   const onSubmit = (data: FormData) => {
     mutate(
       {
-        entity: `audited-firm-branch/${!!editeData ? "update" : "save"}`,
+        entity: `audited-firm-branch/${
+          !!editeAddressData ? "update" : "save"
+        }-address`,
         // entity: `firm-director/save`,
-        method: !!editeData ? "put" : "post",
+        method: !!editeAddressData ? "put" : "post",
         // method:  "post",
         data: {
           ...data,
           // active: true,
-          firmId: id,
+          firmBranchId: selectedBranch?.id,
+          active: true,
         },
       },
       {
         onSuccess: (res: any) => {
           console.log("res=>", res);
-          if (!!editeData)
+          if (!!editeAddressData)
             snackbar(
               `به روز رسانی موسسه انتخاب شده با موفقیت انجام شد`,
               "success"
             );
-          else
-            snackbar(`شعبه جدید با موفقیت افزوده شد`, "success");
+          else snackbar(`آدرس جدید با موفقیت افزوده شد`, "success");
           refetch();
           //   handleClose();
         },
         onError: () => {
-          snackbar("خطا در ایجاد شعبه", "error");
+          snackbar("خطا در ایجاد آدرس", "error");
         },
       }
     );
   };
 
   return (
-    <Dialog open={addModalFlag} onClose={handleClose} maxWidth={"md"}>
+    <Dialog open={addAddressFlag} onClose={handleClose} maxWidth={"md"}>
       <DialogTitle>
         <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Box display={"flex"} textAlign={"center"} alignItems={"center"}>
-            <EventNote fontSize="large" />
+          <Box display={"flex"} textAlign={"center"} alignItems={"center"} gap={1}>
+            <Map fontSize="large" />
             <Typography variant="h6">
-              {editeData
-                ? `ویرایش شعبه انتخاب شده`
-                : `ایجاد شعبه جدید`}
+              {editeAddressData ? `ویرایش آدرس انتخاب شده` : `ایجاد آدرس فعال جدید`}
             </Typography>
           </Box>
           <IconButton onClick={handleClose} size="small">
@@ -202,15 +203,17 @@ const AddBranch = ({
               </Button>
               <Button
                 variant="contained"
-                startIcon={!!editeData ? <ChangeCircle /> : <AddCircle />}
+                startIcon={
+                  !!editeAddressData ? <ChangeCircle /> : <AddCircle />
+                }
                 type="submit"
                 disabled={isLoading}
               >
                 {isLoading
-                  ? !!editeData
+                  ? !!editeAddressData
                     ? "در حال به روز رسانی..."
                     : "در حال ایجاد..."
-                  : !!editeData
+                  : !!editeAddressData
                   ? "به روز رسانی"
                   : "ایجاد"}
               </Button>
@@ -222,4 +225,4 @@ const AddBranch = ({
   );
 };
 
-export default AddBranch;
+export default AddAddress;

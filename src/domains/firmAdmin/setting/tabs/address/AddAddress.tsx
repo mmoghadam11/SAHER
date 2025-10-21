@@ -24,12 +24,13 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import RenderFormInput from "components/render/formInputs/RenderFormInput";
 import { useAuth } from "hooks/useAuth";
 import { useSnackbar } from "hooks/useSnackbar";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { EduFinancialItems } from "../../forms/FinancialItems";
 import { ContinuingEduItems } from "../../forms/ContinuingEduItems";
 import { BranchFormItems } from "../../forms/BranchFormItems";
+import { AddressFormItems } from "../../forms/AddressFormItems";
 
 interface FormData {
   id?: any;
@@ -75,32 +76,20 @@ const AddBranch = ({
   } = useForm<FormData>();
  
  
-
-  const {
-      data: ownershipTypeOptions,
-      status: ownershipTypeOptions_status,
-      refetch: ownershipTypeOptions_refetch,
-    } = useQuery<any>({
-
-      queryKey: [`common-data/find-by-type-all?typeId=15`],
-      queryFn: Auth?.getRequest,
-      select: (res: any) => {
-        return res?.data;
-      },
-    } as any);
-  const {
-      data: PersonnelInfo,
-      status: PersonnelInfo_status,
-      refetch: PersonnelInfo_refetch,
-    } = useQuery<any>({
-
-      queryKey: [`personnel-info/search-all?auditingFirmId=${id}`],
-      queryFn: Auth?.getRequest,
-      select: (res: any) => {
-        return res?.data;
-      },
-    } as any);
-  const formItems: any[] = BranchFormItems(setValue,{ownershipTypeOptions,PersonnelInfo});
+const {
+    data: cityOptions,
+    status: cityOptions_status,
+    refetch: cityOptions_refetch,
+  } = useQuery<any>({
+    // queryKey: [process.env.REACT_APP_API_URL + `/api/unit-allocations${paramsSerializer(filters)}`],
+    // queryKey: [`/api/v1/common-type/find-all${paramsSerializer(filters)}`],
+    queryKey: [`city/search-all`],
+    queryFn: Auth?.getRequest,
+    select: (res: any) => {
+      return res?.data;
+    },
+  } as any);
+  let formItems: any[] = useMemo(() => AddressFormItems(setValue,{cityOptions}), [cityOptions]) ;
   useEffect(() => {
     console.log("editeData=>", getValues());
     if (editeData !== null) {
@@ -123,7 +112,7 @@ const AddBranch = ({
   const onSubmit = (data: FormData) => {
     mutate(
       {
-        entity: `audited-firm-branch/${!!editeData ? "update" : "save"}`,
+        entity: `audited-firm-address/${!!editeData ? "update" : "save"}`,
         // entity: `firm-director/save`,
         method: !!editeData ? "put" : "post",
         // method:  "post",
@@ -142,12 +131,12 @@ const AddBranch = ({
               "success"
             );
           else
-            snackbar(`شعبه جدید با موفقیت افزوده شد`, "success");
+            snackbar(`آدرس جدید با موفقیت افزوده شد`, "success");
           refetch();
           //   handleClose();
         },
         onError: () => {
-          snackbar("خطا در ایجاد شعبه", "error");
+          snackbar("خطا در ایجاد آدرس", "error");
         },
       }
     );
@@ -161,8 +150,8 @@ const AddBranch = ({
             <EventNote fontSize="large" />
             <Typography variant="h6">
               {editeData
-                ? `ویرایش شعبه انتخاب شده`
-                : `ایجاد شعبه جدید`}
+                ? `ویرایش آدرس انتخاب شده`
+                : `ایجاد آدرس جدید`}
             </Typography>
           </Box>
           <IconButton onClick={handleClose} size="small">
