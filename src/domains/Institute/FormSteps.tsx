@@ -91,6 +91,17 @@ export default function FormSteps(): JSX.Element {
       return res?.data;
     },
   } as any);
+  const {
+      data: personnelOptions,
+      status: personnelOptions_status,
+      refetch: personnelOptions_refetch,
+    } = useQuery<any>({
+      queryKey: [`personnel-info/search-all?auditingFirmId=${id}`],
+      queryFn: Auth?.getRequest,
+      select: (res: any) => {
+        return res?.data;
+      },
+    } as any);
   // const [formData, setFormData] = useState<{
   //   [K in keyof FullInstituteType]: string;
   // }>({} as { [K in keyof FullInstituteType]: string });
@@ -156,10 +167,10 @@ export default function FormSteps(): JSX.Element {
       },
       {
         name: "اطلاعات تخصصی",
-        formItems: specialInfoItems(setValue, relOptions),
+        formItems: specialInfoItems(setValue, {relOptions,personnelOptions}),
       },
     ],
-    [isTemporarySave, cityOptions]
+    [isTemporarySave, cityOptions,personnelOptions,relOptions]
   );
   // آرایه مراحل و آیتم‌های فرم
   // const formSteps: FormStep[] =
@@ -210,7 +221,8 @@ export default function FormSteps(): JSX.Element {
   // تابع برای دریافت قوانین بر اساس نوع ثبت
   const getRules = (item: FormItem) => {
     if (isTemporarySave) {
-      return item.tempRules || {};
+      // return item.tempRules || {};
+      return  {};
     }
     return item.rules || {};
   };

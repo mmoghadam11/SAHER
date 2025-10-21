@@ -54,6 +54,11 @@ const BranchGrid = ({}: Props) => {
   } as any);
   const columns: GridColDef[] = [
     {
+      field: "name",
+      headerName: "شعبه",
+      flex: 1,
+    },
+    {
       field: "newspaperNotificationNo",
       headerName: "شماره آگهی روزنامه رسمی",
       flex: 1,

@@ -2,6 +2,7 @@ import { Article, Search, Settings, Toc } from "@mui/icons-material";
 import {
   Box,
   Button,
+  Chip,
   Dialog,
   DialogTitle,
   Grid,
@@ -63,12 +64,31 @@ const InstititeGrid = (props: Props) => {
     { field: "name", headerName: "نام موسسه", flex: 1.5 },
     { field: "nationalId", headerName: "شناسه ملی موسسه", flex: 1 },
     { field: "registerNo", headerName: "شماره ثبت", flex: 1 },
-    { field: "director", headerName: "مدیرعامل", flex: 1 ,
-      renderCell:({row}: {row:any})=>{
-        return(
-          row?.directorFirstName+" "+row?.directorLastName
-        )
-      }
+    {
+      field: "director",
+      headerName: "مدیرعامل",
+      flex: 1,
+      renderCell: ({ row }: { row: any }) => {
+        return row?.directorFirstName + " " + row?.directorLastName;
+      },
+    },
+    {
+      field: "firmRegisterStatusName",
+      headerName: "وضعیت",
+      flex: 1,
+      renderCell: ({ row }: { row: any }) => {
+        switch (row?.firmRegisterStatusCode) {
+          case "user_confirm":
+            return <Chip label={row?.firmRegisterStatusName} color="info"/>;
+            break;
+          case "admin_confirm":
+            return <Chip label={row?.firmRegisterStatusName} color="success"/>;
+            break;
+          default:
+            return <Chip label={row?.firmRegisterStatusName??"پیشنویس"} color="default"/>;
+            break;
+        }
+      },
     },
     {
       headerName: "عملیات",
@@ -82,21 +102,27 @@ const InstititeGrid = (props: Props) => {
             onEdit={() => {
               setEditeData(row);
               setAddModalFlag(true);
-              navigate(`${row.id}`,{state: {firmData: row,editable:true} })
+              navigate(`${row.id}`, {
+                state: { firmData: row, editable: true },
+              });
             }}
             onView={() => {
               setEditeData(row);
               setAddModalFlag(true);
-              navigate(`${row.id}`,{state: {firmData: row,editable:false} })
+              navigate(`${row.id}`, {
+                state: { firmData: row, editable: false },
+              });
             }}
             onDelete={() => {
               setDeleteData(row);
               setDeleteFlag(true);
             }}
             onManage={{
-              title:"جزئیات موسسه",
-              function:()=>{navigate(`details/${row.id}`,{state: {firmData: row} })},
-              icon:<Toc/>
+              title: "جزئیات موسسه",
+              function: () => {
+                navigate(`details/${row.id}`, { state: { firmData: row } });
+              },
+              icon: <Toc />,
             }}
           />
         );
@@ -189,7 +215,7 @@ const InstititeGrid = (props: Props) => {
           <CreateNewItem
             sx={{ mr: 2 }}
             name="موسسه"
-            onClick={() => navigate("new",{state: {editable:true}})}
+            onClick={() => navigate("new", { state: { editable: true } })}
           />
           <BackButton onBack={() => navigate(-1)} />
         </Box>
@@ -214,12 +240,13 @@ const InstititeGrid = (props: Props) => {
           />
         ) : null}
       </Grid>
-      
+
       <ConfirmBox
         open={deleteFlag}
-        handleClose={()=>{
-            setDeleteFlag(false)
-            setDeleteData(null)}}
+        handleClose={() => {
+          setDeleteFlag(false);
+          setDeleteData(null);
+        }}
         handleSubmit={() =>
           mutate(
             {

@@ -64,34 +64,6 @@ export const financialInfoItems = (setValue: (name: any, val: any) => void,owner
     },
   },
   {
-    name: "financeYearBeginDate",
-    inputType: "date",
-    label: "شروع سال مالی",
-    size: { md: 4 },
-    rules: { required: "تاریخ شروع سال مالی الزامی است" },
-    tempRules: { required: "تاریخ شروع سال مالی الزامی است" },
-    elementProps: {
-      setDay: (value: any) => {
-        setValue("financeYearBeginDate", value);
-      },
-      value: "", // مقدار اولیه
-    },
-  },
-  {
-    name: "financeYearEndDate",
-    inputType: "date",
-    label: "پایان سال مالی",
-    size: { md: 4 },
-    rules: { required: "تاریخ پایان سال مالی الزامی است" },
-    tempRules: { required: "تاریخ پایان سال مالی الزامی است" },
-    elementProps: {
-      setDay: (value: any) => {
-        setValue("financeYearEndDate", value);
-      },
-      value: "", // مقدار اولیه
-    },
-  },
-  {
     name: "cdOwnershipTypeId",
     inputType: "select",
     label: "نوع مالکیت",

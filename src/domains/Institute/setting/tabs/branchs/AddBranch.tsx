@@ -94,7 +94,7 @@ const AddBranch = ({
       refetch: PersonnelInfo_refetch,
     } = useQuery<any>({
 
-      queryKey: [`personnel-info/search-all`],
+      queryKey: [`personnel-info/search-all?auditingFirmId=${id}`],
       queryFn: Auth?.getRequest,
       select: (res: any) => {
         return res?.data;

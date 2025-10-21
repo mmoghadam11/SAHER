@@ -232,7 +232,7 @@ const FirmStaffGrid = (props: Props) => {
             onClick={() => navigate("new", { state: { editable: true } })}
             sx={{ minWidth: "100px", mb: 2, mr: 2 }}
           >
-            افزودن کارکن حرفه ای
+            افزودن کارکنان حرفه ای
           </Button>
           {/* <CreateNewItem
             sx={{ mr: 2 }}

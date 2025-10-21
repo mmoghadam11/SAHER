@@ -34,7 +34,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 export default function FirmAdminFormSteps(): JSX.Element {
   const { id } = useParams();
   const { state } = useLocation();
-  const [isTemporarySave, setIsTemporarySave] = useState(true);
+  const [isTemporarySave, setIsTemporarySave] = useState(false);
   const {
     handleSubmit,
     control,
@@ -75,6 +75,17 @@ export default function FirmAdminFormSteps(): JSX.Element {
       return res?.data;
     },
   } as any);
+  const {
+        data: personnelOptions,
+        status: personnelOptions_status,
+        refetch: personnelOptions_refetch,
+      } = useQuery<any>({
+        queryKey: [`personnel-info/search-all?auditingFirmId=${id}`],
+        queryFn: Auth?.getRequest,
+        select: (res: any) => {
+          return res?.data;
+        },
+      } as any);
   const {
     data: ownerOptions,
     status: ownerOptions_status,
@@ -149,10 +160,10 @@ export default function FirmAdminFormSteps(): JSX.Element {
       },
       {
         name: "اطلاعات تخصصی",
-        formItems: specialInfoItems(setValue, relOptions),
+        formItems: specialInfoItems(setValue, {relOptions,personnelOptions}),
       },
     ],
-    [isTemporarySave, cityOptions]
+    [isTemporarySave, cityOptions,ownerOptions ,relOptions,personnelOptions ]
   );
   // آرایه مراحل و آیتم‌های فرم
   // const formSteps: FormStep[] =
@@ -248,7 +259,7 @@ export default function FirmAdminFormSteps(): JSX.Element {
     mutate(
       {
         entity: `firm/${
-          id !== "new" ? (isTemporarySave ? "update" : "confirm-user") : "save"
+          id !== "new" ? (isTemporarySave ? "update" : "confirm-admin") : "save"
         }`,
         // entity: `firm/save`,
         method: id !== "new" ? "put" : "post",

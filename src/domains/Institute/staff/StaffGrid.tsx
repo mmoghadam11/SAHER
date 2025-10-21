@@ -1,7 +1,8 @@
-import { Article, Search, Settings } from "@mui/icons-material";
+import { Article, CheckCircle, Search, Settings } from "@mui/icons-material";
 import {
   Box,
   Button,
+  Chip,
   Dialog,
   DialogTitle,
   Grid,
@@ -61,30 +62,50 @@ const StaffGrid = (props: Props) => {
   } as any);
   const columns: GridColDef[] = [
     {
-      field: "firstName",
+      field: "personnelFirstName",
       headerName: "نام شخص",
-      flex: 2,
+      flex: 1.5,
       renderCell: ({ row }: { row: any }) => {
-        return row?.firstName + " " + row?.lastName;
+        return row?.personnelFirstName + " " + row?.personnelLastName;
       },
     },
     {
-      field: "latinFirstName",
-      headerName: "نام لاتین",
-      flex: 1,
-      renderCell: ({ row }: { row: any }) => {
-        return row?.latinFirstName + " " + row?.latinLastName;
-      },
+      field: "personnelNationalCode",
+      headerName: "کد ملی",
+      flex: 1.5,
+    },
+    {
+      field: "auditingFirmName",
+      headerName: "نام موسسه",
+      flex: 1.5,
     },
     {
       field: "birthDate",
-      headerName: "تاریخ تولد",
+      headerName: "تاریخ شروع همکاری",
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
-        return moment(row?.birthDate).format("jYYYY/jMM/jDD");
+        return moment(row?.startDate).format("jYYYY/jMM/jDD");
       },
     },
-    { field: "idNumber", headerName: "کد پرسنلی", flex: 1 },
+    {
+      field: "endDate",
+      headerName: "تاریخ پایان همکاری",
+      flex: 1,
+      renderCell: ({ row }: { row: any }) => {
+        if(row?.endDate) return moment(row?.endDate).format("jYYYY/jMM/jDD");
+        else return null
+      },
+    },
+    {
+      field: "cooperationStatus",
+      headerName: "وضعیت همکاری",
+      flex: 1,
+      renderCell: ({ row }: { row: any }) => {
+        if(row?.cooperationStatus)return <Chip color="secondary" label="فعال" icon={<CheckCircle/>}/>;
+        else return <Chip color="default" label="غیر فعال"/>;
+      },
+    },
+    { field: "cdProfessionalRankName", headerName: "رتبه حرفه‌ای", flex: 1 },
     {
       headerName: "عملیات",
       field: "action",
@@ -94,19 +115,15 @@ const StaffGrid = (props: Props) => {
       renderCell: ({ row }: { row: any }) => {
         return (
           <TableActions
-            onEdit={() => {
-              setEditeData(row);
-              setAddModalFlag(true);
-              navigate(`${row.id}`, { state: { staffData: row , editable:true} });
-            }}
             onView={() => {
               setEditeData(row);
               setAddModalFlag(true);
               navigate(`${row.id}`, { state: { staffData: row , editable:false } });
             }}
-            onDelete={() => {
-              setDeleteData(row);
-              setDeleteFlag(true);
+            onEdit={() => {
+              setEditeData(row);
+              setAddModalFlag(true);
+              navigate(`${row.id}`, { state: { staffData: row , editable:true } });
             }}
             // onManage={{
             //   title: "جزئیات شخص",
@@ -132,15 +149,21 @@ const StaffGrid = (props: Props) => {
   };
   const searchItems: searchType[] = [
     {
-      name: "firstName",
+      name: "personnelFirstName",
       inputType: "text",
       label: "نام شخص",
       size: { md: 4 },
     },
     {
-      name: "lastName",
+      name: "auditingFirmName",
       inputType: "text",
       label: "نام خانوادگی شخص",
+      size: { md: 4 },
+    },
+    {
+      name: "personnelNationalCode",
+      inputType: "text",
+      label: "کدملی شخص",
       size: { md: 4 },
     },
   ];

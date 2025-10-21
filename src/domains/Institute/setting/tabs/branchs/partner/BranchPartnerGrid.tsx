@@ -1,4 +1,10 @@
-import { CloseOutlined, Diversity3, Map, PersonAdd, Verified } from "@mui/icons-material";
+import {
+  CloseOutlined,
+  Diversity3,
+  Map,
+  PersonAdd,
+  Verified,
+} from "@mui/icons-material";
 import { Box, Chip, Fab, Grid, Tooltip, Typography } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -14,6 +20,7 @@ import { PAGINATION_DEFAULT_VALUE } from "shared/paginationValue";
 import VerticalTable from "components/dataGrid/VerticalTable";
 import { isMobile } from "react-device-detect";
 import AddPartner from "./AddPartner";
+import ConfirmBox from "components/confirmBox/ConfirmBox";
 
 type Props = {
   selectedBranch: any;
@@ -53,8 +60,8 @@ const BranchPartnerGrid = ({
     enabled: true,
   } as any);
   const columns: GridColDef[] = [
-    { field: "branchbasedPartnerNo", headerName: "شماره شریک", flex: 1 },
-    { field: "branchbasedPartnerName", headerName: "نام شریک", flex: 1 },
+    { field: "supervisorPersonName", headerName: "ناظر", flex: 1 },
+    { field: "responsiblePersonName", headerName: "نام شریک مقیم", flex: 1 },
     {
       headerName: "عملیات",
       field: "action",
@@ -62,14 +69,18 @@ const BranchPartnerGrid = ({
       headerAlign: "center",
       align: "center",
       renderCell: ({ row }: { row: any }) => {
-          return (
-            <TableActions
-              onEdit={() => {
-                setEditePartnerData(row);
-                setAddPartnerFlag(true);
-              }}
-            />
-          );
+        return (
+          <TableActions
+            onEdit={() => {
+              setEditePartnerData(row);
+              setAddPartnerFlag(true);
+            }}
+            onDelete={() => {
+              setDeleteData(row);
+              setDeleteFlag(true);
+            }}
+          />
+        );
       },
     },
   ];
@@ -85,14 +96,14 @@ const BranchPartnerGrid = ({
     useState<editeObjectType | null>(null);
   const [addPartnerFlag, setAddPartnerFlag] = useState(false);
   const [appendFirmFlag, setAppendFirmFlag] = useState(false);
-  const [deleteAddressData, setDeleteAddressData] = useState<any>(null);
+  const [deleteData, setDeleteData] = useState<any>(null);
   const [deleteFlag, setDeleteFlag] = useState(false);
   const [searchData, setSearchData] = useState({
     name: "",
     code: "",
   });
   useEffect(() => {
-    setFilters((prev:any)=>({...prev,firmBranchId: selectedBranch?.id}))
+    setFilters((prev: any) => ({ ...prev, firmBranchId: selectedBranch?.id }));
   }, [selectedBranch]);
 
   return (
@@ -177,6 +188,32 @@ const BranchPartnerGrid = ({
         setAddPartnerFlag={setAddPartnerFlag}
         editePartnerData={editePartnerData}
         setEditePartnerData={setEditePartnerData}
+      />
+      <ConfirmBox
+        open={deleteFlag}
+        handleClose={() => {
+          setDeleteFlag(false);
+          setDeleteData(null);
+        }}
+        handleSubmit={() =>
+          mutate(
+            {
+              entity: `audited-firm-branch/delete-partner/${deleteData?.id}`,
+              method: "delete",
+            },
+            {
+              onSuccess: (res: any) => {
+                snackbar(`شریک انتخاب شده با موفقیت حذف شد`, "success");
+                StatesData_refetch();
+              },
+              onError: () => {
+                snackbar("خطا در حذف ", "error");
+              },
+            }
+          )
+        }
+        message={`آیا از حذف شریک موردنظر مطمعین میباشید؟`}
+        title={"درخواست حذف!"}
       />
     </Grid>
   );

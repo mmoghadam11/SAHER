@@ -1,16 +1,9 @@
+import { FormItem } from "types/formItem";
 import { FullInstituteType } from "types/institute";
 
-interface FormItem {
-  name: keyof FullInstituteType;
-  inputType: string;
-  label: string;
-  size: { md: number };
-  rules?: any;
-  options?: any[];
-  elementProps?: any;
-}
 
-export const specialInfoItems = (setValue: (name: any, val: any) => void,relOptions:any): FormItem[] => [
+
+export const specialInfoItems = (setValue: (name: any, val: any) => void,options:any): FormItem[] => [
   {
     name: "burseTrustee",
     inputType: "select",
@@ -81,34 +74,45 @@ export const specialInfoItems = (setValue: (name: any, val: any) => void,relOpti
     ],
     rules: { required: "وضعیت معتمد دیوان محاسبات الزامی است" },
   },
+  // {
+  //   name: "moneyLaunderingCombatingManagerName",
+  //   inputType: "text",
+  //   label: "مدیر مبارزه با پولشویی",
+  //   size: { md: 3 },
+  //   rules: { 
+  //     required: "نام مدیر مبارزه با پولشویی الزامی است"
+  //   },
+  // },
+  // {
+  //   name: "moneyLaunderingCombatingManagerNationalcode",
+  //   inputType: "text",
+  //   label: "کد ملی مدیر مبارزه با پولشویی",
+  //   size: { md: 3 },
+  //   rules: { 
+  //     required: "کد ملی مدیر مبارزه با پولشویی الزامی است",
+  //     pattern: {
+  //       value: /^[0-9]{10}$/,
+  //       message: "کد ملی باید 10 رقم باشد"
+  //     }
+  //   },
+  // },
   {
-    name: "moneyLaunderingCombatingManagerName",
-    inputType: "text",
+    name: "moneyLaunderingCombatingManagerId", // تغییر نام فیلد به province
+    inputType: "autocomplete", // تغییر به autocomplete
     label: "مدیر مبارزه با پولشویی",
     size: { md: 3 },
-    rules: { 
-      required: "نام مدیر مبارزه با پولشویی الزامی است"
-    },
-  },
-  {
-    name: "moneyLaunderingCombatingManagerNationalcode",
-    inputType: "text",
-    label: "کد ملی مدیر مبارزه با پولشویی",
-    size: { md: 3 },
-    rules: { 
-      required: "کد ملی مدیر مبارزه با پولشویی الزامی است",
-      pattern: {
-        value: /^[0-9]{10}$/,
-        message: "کد ملی باید 10 رقم باشد"
-      }
-    },
+    options: options?.personnelOptions?.map((item: any) => ({
+      value: item?.id,
+      title: `${item?.firstName} ${item?.lastName} - ${item?.nationalCode}`,
+    })) ?? [{ value: 0, title: "خالی" }],
+    storeValueAs: "id",
   },
   {
       name: "cdRelationshipTypeId", // تغییر نام فیلد به province
       inputType: "autocomplete", // تغییر به autocomplete
       label: "نوع ارتباط با جامعه",
       size: { md: 3 },
-      options: relOptions?.content?.map((item:any)=>({value:item?.id,title:item?.value}))??[{value:0,title:""}],
+      options: options?.relOptions?.content?.map((item:any)=>({value:item?.id,title:item?.value}))??[{value:0,title:""}],
       rules: {
         required: "نوع ارتباط با جامعه الزامی است",
       },
@@ -125,15 +129,15 @@ export const specialInfoItems = (setValue: (name: any, val: any) => void,relOpti
         getOptionLabel: (option: any) => option.title || "",
       },
     },
-  {
-    name: "auditorName",
-    inputType: "text",
-    label: "نام حسابرس",
-    size: { md: 3 },
-    rules: { 
-      required: "نام حسابرس الزامی است"
-    },
-  },
+  // {
+  //   name: "auditorName",
+  //   inputType: "text",
+  //   label: "نام حسابرس",
+  //   size: { md: 3 },
+  //   rules: { 
+  //     required: "نام حسابرس الزامی است"
+  //   },
+  // },
   {
     name: "officialNewspaperMergeDate",
     inputType: "date",

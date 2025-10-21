@@ -3,7 +3,7 @@ import { FullInstituteType } from "types/institute";
 
 export const specialInfoItems = (
   setValue: (name: any, val: any) => void,
-  relOptions: any
+  options: any
 ): FormItem[] => [
   {
     name: "burseTrustee",
@@ -75,34 +75,45 @@ export const specialInfoItems = (
     ],
     rules: { required: "وضعیت معتمد دیوان محاسبات الزامی است" },
   },
+  // {
+  //   name: "moneyLaunderingCombatingManagerName",
+  //   inputType: "text",
+  //   label: "مدیر مبارزه با پولشویی",
+  //   size: { md: 3 },
+  //   rules: {
+  //     required: "نام مدیر مبارزه با پولشویی الزامی است",
+  //   },
+  // },
+  // {
+  //   name: "moneyLaunderingCombatingManagerNationalcode",
+  //   inputType: "text",
+  //   label: "کد ملی مدیر مبارزه با پولشویی",
+  //   size: { md: 3 },
+  //   rules: {
+  //     required: "کد ملی مدیر مبارزه با پولشویی الزامی است",
+  //     pattern: {
+  //       value: /^[0-9]{10}$/,
+  //       message: "کد ملی باید 10 رقم باشد",
+  //     },
+  //   },
+  // },
   {
-    name: "moneyLaunderingCombatingManagerName",
-    inputType: "text",
+    name: "moneyLaunderingCombatingManagerId", // تغییر نام فیلد به province
+    inputType: "autocomplete", // تغییر به autocomplete
     label: "مدیر مبارزه با پولشویی",
     size: { md: 3 },
-    rules: {
-      required: "نام مدیر مبارزه با پولشویی الزامی است",
-    },
-  },
-  {
-    name: "moneyLaunderingCombatingManagerNationalcode",
-    inputType: "text",
-    label: "کد ملی مدیر مبارزه با پولشویی",
-    size: { md: 3 },
-    rules: {
-      required: "کد ملی مدیر مبارزه با پولشویی الزامی است",
-      pattern: {
-        value: /^[0-9]{10}$/,
-        message: "کد ملی باید 10 رقم باشد",
-      },
-    },
+    options: options?.personnelOptions?.map((item: any) => ({
+      value: item?.id,
+      title: item?.firstName+" "+item?.lastName+" "+item?.nationalCode,
+    })) ?? [{ value: 0, title: "" }],
+    storeValueAs: "id",
   },
   {
     name: "cdRelationshipTypeId", // تغییر نام فیلد به province
     inputType: "autocomplete", // تغییر به autocomplete
     label: "نوع ارتباط با جامعه",
     size: { md: 3 },
-    options: relOptions?.content?.map((item: any) => ({
+    options: options?.relOptions?.content?.map((item: any) => ({
       value: item?.id,
       title: item?.value,
     })) ?? [{ value: 0, title: "" }],
@@ -111,15 +122,15 @@ export const specialInfoItems = (
       disabled: true,
     },
   },
-  {
-    name: "auditorName",
-    inputType: "text",
-    label: "نام حسابرس",
-    size: { md: 3 },
-    elementProps: {
-      disabled: true,
-    },
-  },
+  // {
+  //   name: "auditorName",
+  //   inputType: "text",
+  //   label: "نام حسابرس",
+  //   size: { md: 3 },
+  //   elementProps: {
+  //     disabled: true,
+  //   },
+  // },
   {
     name: "officialNewspaperMergeDate",
     inputType: "date",

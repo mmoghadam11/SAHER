@@ -87,7 +87,8 @@ const FirmPartnersGrid = (props: Props) => {
       headerName: "تاریخ شروع همکاری",
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
-        return moment(row?.startDate).format("jYYYY/jMM/jDD");
+        if(row?.startDate)return moment(row?.startDate).format("jYYYY/jMM/jDD");
+        else return "---"
       },
     },
     {

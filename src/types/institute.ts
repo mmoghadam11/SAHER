@@ -100,8 +100,9 @@ export interface FullInstituteType {
   centralBankTrustee: string;
   centralInsuranceTrustee: string;
   courtAccountsTrustee: string;
-  moneyLaunderingCombatingManagerName: string;
-  moneyLaunderingCombatingManagerNationalcode: string;
+  // moneyLaunderingCombatingManagerName: string;
+  // moneyLaunderingCombatingManagerNationalcode: string;
+  moneyLaunderingCombatingManagerId?:string;
   // relationshipTypeName: string;
   cdRelationshipTypeId: any;
   auditorName: string;
