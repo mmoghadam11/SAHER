@@ -1,14 +1,25 @@
-import { useQuery } from "@tanstack/react-query";
-import { useAuth } from "hooks/useAuth";
 import { FormItem } from "types/formItem";
-import { FullInstituteType } from "types/institute";
-
-
 
 export const BranchFormItems = (
   setValue: (name: any, val: any) => void,
+  options: any
 ): FormItem[] => {
   return [
+    {
+      name: "name",
+      inputType: "text",
+      label: "نام شعبه",
+      size: { md: 6 },
+      rules: { required: "نام شعبه الزامی است" },
+    },
+    {
+      name: "cdOwnershipTypeId",
+      inputType: "select",
+      label: "نوع مالکیت",
+      size: { md: 6 },
+      options: options?.ownershipTypeOptions?.map((item: any) => ({ value: item?.id, title: item?.value })) ?? [{ value: 0, title: "خالی" }],
+      rules: { required: "انتخاب نوع مالکیت الزامی است" },
+    },
     {
       name: "newspaperNotificationNo",
       inputType: "text",
@@ -17,8 +28,8 @@ export const BranchFormItems = (
       rules: {
         required: "شماره آگهی الزامی است",
         pattern: {
-          value: /^[0-9]{10}$/,
-          message: "شماره آگهی باید 10 رقم باشد",
+          value: /^[0-9]+$/,
+          message: "شماره آگهی باید عدد باشد",
         },
       },
     },
@@ -26,7 +37,7 @@ export const BranchFormItems = (
       name: "newspaperNotificationDate",
       inputType: "date",
       label: "تاریخ آگهی",
-      size: { md: 4 },
+      size: { md: 6 },
       rules: { required: "تاریخ آگهی الزامی است" },
       elementProps: {
         setDay: (value: any) => setValue("newspaperNotificationDate", value),
@@ -39,6 +50,30 @@ export const BranchFormItems = (
       label: "محل نگهداری اسناد",
       size: { md: 6 },
       rules: { required: "محل نگهداری اسناد الزامی است" },
+    },
+    {
+      name: "responsiblePersonId",
+      inputType: "autocomplete",
+      label: "شخص مسئول",
+      size: { md: 6 },
+      options: options?.PersonnelInfo?.map((item: any) => ({ 
+        value: item?.id, 
+        title: `${item?.firstName} ${item?.lastName} - ${item?.nationalCode}`
+      })) ?? [{ value: 0, title: "خالی" }],
+      storeValueAs: 'id',
+      rules: { required: "انتخاب شخص مسئول الزامی است" },
+    },
+    {
+      name: "supervisorPersonId",
+      inputType: "autocomplete",
+      label: "ناظر",
+      size: { md: 6 },
+      options: options?.PersonnelInfo?.map((item: any) => ({ 
+        value: item?.id, 
+        title: `${item?.firstName} ${item?.lastName} - ${item?.nationalCode}`
+      })) ?? [{ value: 0, title: "خالی" }],
+      storeValueAs: 'id',
+      rules: { required: "انتخاب ناظر الزامی است" },
     },
   ];
 };
