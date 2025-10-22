@@ -7,41 +7,35 @@ import { FullInstituteType } from "types/institute";
 
 export const DirectorItems = (
   setValue: (name: any, val: any) => void,
+  options:any
 ): FormItem[] => {
   return [
     {
-      name: "firstName",
-      inputType: "text",
-      label: "نام مدیرعامل",
-      size: { md: 6 },
-      rules: { required: "نام مدیرعامل الزامی است" },
-    },
-    {
-      name: "lastName",
-      inputType: "text",
-      label: "نام خانوادگی مدیرعامل",
-      size: { md: 6 },
-      rules: { required: "نام خانوادگی الزامی است" },
-    },
-    {
-      name: "nationalCode",
-      inputType: "text",
-      label: "شناسه ملی",
-      size: { md: 6 },
-      rules: {
-        required: "شناسه ملی الزامی است",
-        pattern: {
-          value: /^[0-9]{10}$/,
-          message: "شناسه ملی باید 10 رقم باشد",
-        },
+    name: "directorPersonnelId",
+    inputType: "autocomplete",
+    label: "مدیرعامل",
+    size: { md: 6 },
+    options: options?.personnelOptions?.map((item: any) => ({
+      value: item?.id,
+      title: `${item?.firstName} ${item?.lastName} - ${item?.nationalCode}`,
+    })) ?? [{ value: 0, title: "خالی" }],
+    storeValueAs: "id",
+    rules: { required: "انتخاب پرسنل الزامی است" },
+  },
+  {
+    name: "directorAcceptanceDate",
+    inputType: "date",
+    label: "تاریخ شروع مدیریت",
+    size: { md: 6 },
+    rules: { required: "تاریخ شروع مدیریت الزامی است" },
+    tempRules: { required: "تاریخ شروع مدیریت الزامی است" },
+    elementProps: {
+      setDay: (value: any) => {
+        setValue("registerDate", value);
+        // این تابع باید در کامپوننت والد تعریف شود
       },
+      value: "", // مقدار اولیه
     },
-    {
-      name: "mobileNo",
-      inputType: "text",
-      label: "شماره موبایل",
-      size: { md: 6 },
-      rules: { required: "شماره موبایل الزامی است" },
-    },
+  },
   ];
 };

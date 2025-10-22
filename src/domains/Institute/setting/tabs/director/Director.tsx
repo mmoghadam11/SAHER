@@ -89,11 +89,22 @@ const Director = (props: Props) => {
     formItems: any[];
   }
 
+  const {
+      data: personnelOptions,
+      status: personnelOptions_status,
+      refetch: personnelOptions_refetch,
+    } = useQuery<any>({
+      queryKey: [`personnel-info/search-all?auditingFirmId=${id}`],
+      queryFn: Auth?.getRequest,
+      select: (res: any) => {
+        return res?.data;
+      },
+    } as any);
   // آرایه مراحل و آیتم‌های فرم
   const formSteps: FormStep[] = [
     {
       name: "اطلاعات مدیرعامل",
-      formItems: DirectorItems(setValue),
+      formItems: DirectorItems(setValue, { personnelOptions }),
     },
   ];
   const handleInputChange = (fieldName: any, value: string) => {

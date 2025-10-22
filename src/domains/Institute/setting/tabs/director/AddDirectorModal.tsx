@@ -83,8 +83,18 @@ const AddDirectorModal = ({
         }
   );
 
-  
-  const formItems: any[] = DirectorItems(setValue);
+  const {
+          data: personnelOptions,
+          status: personnelOptions_status,
+          refetch: personnelOptions_refetch,
+        } = useQuery<any>({
+          queryKey: [`personnel-info/search-all?auditingFirmId=${id}`],
+          queryFn: Auth?.getRequest,
+          select: (res: any) => {
+            return res?.data;
+          },
+        } as any);
+  const formItems: any[] = DirectorItems(setValue,{personnelOptions});
   useEffect(() => {
     if (editeData !== null) {
       setFormData(editeData);
