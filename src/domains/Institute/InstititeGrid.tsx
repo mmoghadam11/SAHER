@@ -62,6 +62,11 @@ const InstititeGrid = (props: Props) => {
   } as any);
   const columns: GridColDef[] = [
     { field: "name", headerName: "نام موسسه", flex: 1.5 },
+    { field: "membershipNo", headerName: "شماره عضویت", flex: 1 },
+    { field: "cityNameAddress", headerName: "شهر", flex: 1 },
+    { field: "officePhoneNo", headerName: "تلفن", flex: 1 },
+    { field: "qcRank", headerName: "رتبه کنترل کیفیت", flex: 1 },
+    { field: "financeYear", headerName: "سال مالی", flex: 1 },
     { field: "nationalId", headerName: "شناسه ملی موسسه", flex: 1 },
     { field: "registerNo", headerName: "شماره ثبت", flex: 1 },
     {
