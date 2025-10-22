@@ -167,7 +167,7 @@ const AccountantDisciplinaryOrderGrid = (props: Props) => {
       >
         <Box display={"flex"}>
           <Gavel fontSize="large" />
-          <Typography variant="h5">احکام انتظامی موسسات</Typography>
+          <Typography variant="h5">احکام انتظامی حسابداران</Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"}>
           <BackButton onBack={() => navigate(-1)} />
