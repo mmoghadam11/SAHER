@@ -1,4 +1,4 @@
-import { Article, People, Search, Settings, Toc } from "@mui/icons-material";
+import { Article, Diversity3, People, Search, Settings, Toc } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -63,7 +63,7 @@ const AllFirms4PartnerGrid = (props: Props) => {
     { field: "name", headerName: "نام موسسه", flex: 2 },
     { field: "nationalId", headerName: "شناسه ملی موسسه", flex: 1 },
     { field: "registerNo", headerName: "شماره ثبت", flex: 1 },
-    { field: "directorNationalCode", headerName: "کد ملی مدیرعامل", flex: 1 },
+    // { field: "directorNationalCode", headerName: "کد ملی مدیرعامل", flex: 1 },
     {
       headerName: "عملیات",
       field: "action",
@@ -74,9 +74,9 @@ const AllFirms4PartnerGrid = (props: Props) => {
         return (
           <TableActions
             onManage={{
-              title:"کارکنان حرفه ای",
+              title:"شرکای موسسه",
               function:()=>{navigate(`${row.id}`,{state: {firmData: row} })},
-              icon:<People/>
+              icon:<Diversity3/>
             }}
           />
         );
@@ -163,7 +163,7 @@ const AllFirms4PartnerGrid = (props: Props) => {
       >
         <Box display={"flex"}>
           <Article fontSize="large" />
-          <Typography variant="h5">موسسات شما</Typography>
+          <Typography variant="h5">لیست موسسات</Typography>
         </Box>
         
       </Grid>

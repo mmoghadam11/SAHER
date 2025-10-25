@@ -54,7 +54,7 @@ const AllFirmPartnersGrid = (props: Props) => {
   const [filters, setFilters] = useState<any>({
     ...PAGINATION_DEFAULT_VALUE,
     auditingFirmId: id,
-    firstName:"",
+    firstName: "",
     lastName: "",
     // cooperationStatus:true,
     // code: "",
@@ -75,29 +75,33 @@ const AllFirmPartnersGrid = (props: Props) => {
   const columns: GridColDef[] = [
     {
       field: "personnelFirstName",
-      headerName: "نام شخص",
-      flex: 2,
-      renderCell: ({ row }: { row: any }) => {
-        return row?.personnelFirstName + " " + row?.personnelLastName;
-      },
+      headerName: "نام",
+      flex: 1.5,
+    },
+    {
+      field: "personnelLastName",
+      headerName: "نام خانوادگی",
+      flex: 1.5,
     },
     {
       field: "birthDate",
-      align:"center",
-      headerName: "تاریخ شروع همکاری",
+      align: "center",
+      headerName: "تاریخ شروع",
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
-        return moment(row?.startDate).format("jYYYY/jMM/jDD");
+        if (row?.startDate)
+          return moment(row?.startDate).format("jYYYY/jMM/jDD");
+        else return "---";
       },
     },
     {
       field: "endDate",
-      align:"center",
-      headerName: "تاریخ پایان همکاری",
+      align: "center",
+      headerName: "تاریخ پایان",
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
-        if(row?.endDate) return moment(row?.endDate).format("jYYYY/jMM/jDD");
-        else return "---"
+        if (row?.endDate) return moment(row?.endDate).format("jYYYY/jMM/jDD");
+        else return "---";
       },
     },
     {
@@ -105,12 +109,16 @@ const AllFirmPartnersGrid = (props: Props) => {
       headerName: "سهم الشرکه",
       flex: 1,
     },
-    { field: "partnerStatus", headerName: "وضعیت همکاری", flex: 1,
+    {
+      field: "partnerStatus",
+      headerName: "وضعیت",
+      flex: 1,
       renderCell: ({ row }: { row: any }) => {
-        if(row?.partnerStatus) return <Chip color="secondary" label="فعال" icon={<CheckCircle/>}/>;
-        else return <Chip color="default" label="غیر فعال"/>;
+        if (row?.partnerStatus)
+          return <Chip color="secondary" label="فعال" icon={<CheckCircle />} />;
+        else return <Chip color="default" label="غیر فعال" />;
       },
-     },
+    },
     {
       headerName: "عملیات",
       field: "action",
@@ -118,19 +126,33 @@ const AllFirmPartnersGrid = (props: Props) => {
       headerAlign: "center",
       align: "center",
       renderCell: ({ row }: { row: any }) => {
-        if(row?.partnerStatus===true) return (
-          <TableActions
-            
-            onView={() => {
-              setEditeData(row);
-              setAddModalFlag(true);
-              navigate(`${row.id}`, {
-                state: { staffData: row, editable: false },
-              });
-            }}
-            
-          />
-        );
+        if (row?.partnerStatus === true)
+          return (
+            <TableActions
+              onEdit={() => {
+                setEditeData(row);
+                setAddModalFlag(true);
+                navigate(`${row.id}`, {
+                  state: { staffData: row, editable: true },
+                });
+              }}
+              onView={() => {
+                setEditeData(row);
+                setAddModalFlag(true);
+                navigate(`${row.id}`, {
+                  state: { staffData: row, editable: false },
+                });
+              }}
+              onManage={{
+                title: "پایان همکاری",
+                function: () => {
+                  setDeleteData(row);
+                  setDeleteFlag(true);
+                },
+                icon: <PersonRemove color="error" />,
+              }}
+            />
+          );
       },
     },
   ];
@@ -148,13 +170,13 @@ const AllFirmPartnersGrid = (props: Props) => {
     {
       name: "personnelFirstName",
       inputType: "text",
-      label: "نام شخص",
+      label: "نام",
       size: { md: 4 },
     },
     {
       name: "personnelLastName",
       inputType: "text",
-      label: "نام خانوادگی شخص",
+      label: "نام خانوادگی",
       size: { md: 4 },
     },
   ];
@@ -255,11 +277,12 @@ const AllFirmPartnersGrid = (props: Props) => {
         ) : null}
       </Grid>
       <TerminateCooprationModal
-      addModalFlag={deleteFlag}
-      setAddModalFlag={setDeleteFlag}
-      editeData={deleteData}
-      setEditeData={setDeleteData}
-      refetch={StatesData_refetch}/>
+        addModalFlag={deleteFlag}
+        setAddModalFlag={setDeleteFlag}
+        editeData={deleteData}
+        setEditeData={setDeleteData}
+        refetch={StatesData_refetch}
+      />
       {/* <ConfirmBox
         open={deleteFlag}
         handleClose={() => {

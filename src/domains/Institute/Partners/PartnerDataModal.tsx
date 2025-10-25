@@ -37,17 +37,18 @@ import SearchPannel from "components/form/SearchPannel";
 import paramsSerializer from "services/paramsSerializer";
 import { PartnerAssignmentFormItems } from "./forms/PartnerAssignmentFormItems";
 
-export default function AddFirmPartner(): JSX.Element {
+export default function PartnerDataModal(): JSX.Element {
   const { id, staffId } = useParams();
   const { state } = useLocation();
   const [searchData, setSearchData] = useState({
     nationalCode: "",
     // cdPersonnelTypeId: 112,
-    id:staffId==="new"?"":staffId
+    id: staffId === "new" ? "" : staffId,
   });
   const [filters, setFilters] = useState<any>({
-    nationalCode: staffId!=="new"?state?.staffData?.personnelNationalCode:"",
-    id:staffId==="new"?"":staffId
+    nationalCode:
+      staffId !== "new" ? state?.staffData?.personnelNationalCode : "",
+    id: staffId === "new" ? "" : staffId,
     // cdPersonnelTypeId: 112,
     // code: "",
   });
@@ -57,9 +58,9 @@ export default function AddFirmPartner(): JSX.Element {
       inputType: "text",
       label: "کد ملی",
       size: { md: 6 },
-      elementProps:{
-        disabled:staffId!=="new"
-      }
+      elementProps: {
+        disabled: staffId !== "new",
+      },
     },
   ];
 
@@ -91,7 +92,7 @@ export default function AddFirmPartner(): JSX.Element {
     select: (res: any) => {
       return res?.data;
     },
-    enabled: (!!filters?.nationalCode || !!filters?.personnelId) ,
+    enabled: !!filters?.nationalCode || !!filters?.personnelId,
   } as any);
   const {
     data: editeData,
@@ -103,7 +104,7 @@ export default function AddFirmPartner(): JSX.Element {
     select: (res: any) => {
       return res?.data;
     },
-    enabled: staffId!=="new",
+    enabled: staffId !== "new",
   } as any);
   const {
     data: rankOptions,
@@ -179,18 +180,20 @@ export default function AddFirmPartner(): JSX.Element {
         size: { md: 4 },
       },
     ],
-    [searchResponse,editeData, state?.accountantData]
+    [searchResponse, editeData, state?.accountantData]
   );
   // آرایه مراحل و آیتم‌های فرم
-  const formSteps: FormStep[] = useMemo(() => [
-    {
-      name: "اطلاعات شراکت",
-      formItems: PartnerAssignmentFormItems(setValue, {
-        rankOptions,
-      }),
-    },
-  ], [!!searchResponse||!!editeData])
-  
+  const formSteps: FormStep[] = useMemo(
+    () => [
+      {
+        name: "اطلاعات شراکت",
+        formItems: PartnerAssignmentFormItems(setValue, {
+          rankOptions,
+        }),
+      },
+    ],
+    [!!searchResponse || !!editeData]
+  );
 
   const onSubmit = (data: FullInstituteType) => {
     console.log("lastForm=>", data);
@@ -205,7 +208,7 @@ export default function AddFirmPartner(): JSX.Element {
           // حسابدار رسمی=111
           // کارکنان حرفه ای=112
           // cdPersonnelTypeId: 112,
-          partnerStatus:true,
+          partnerStatus: true,
           auditingFirmId: id,
           personnelId: searchResponse?.[0]?.id,
         },
@@ -267,13 +270,15 @@ export default function AddFirmPartner(): JSX.Element {
               </Grid>
               <BackButton onBack={() => navigate(-1)} />
             </Grid>
-            <SearchPannel<any>
-              searchItems={searchItems}
-              searchData={searchData}
-              setSearchData={setSearchData}
-              setFilters={setFilters}
-              md={12}
-            />
+            {staffId === "new" && (
+              <SearchPannel<any>
+                searchItems={searchItems}
+                searchData={searchData}
+                setSearchData={setSearchData}
+                setFilters={setFilters}
+                md={12}
+              />
+            )}
             {/* <Grid item md={12} width={"100vw"}>
                 <FancyTicketDivider />
               </Grid> */}
@@ -293,7 +298,7 @@ export default function AddFirmPartner(): JSX.Element {
                 </Box>
               </Grid>
             )}
-            {(!!searchResponse||!!editeData) && (
+            {(!!searchResponse || !!editeData) && (
               <Grid item md={12} sm={12} xs={12}>
                 <form name="myForm" onSubmit={handleSubmit(onSubmit)}>
                   <Grid
@@ -303,17 +308,25 @@ export default function AddFirmPartner(): JSX.Element {
                     spacing={4}
                     justifyContent={"center"}
                   >
-                    {(!!searchResponse?.length||!!editeData?.length)?DataFormItems?.map((item) => (
-                      <Grid item xs={12} md={item.size.md} key={item.name}>
-                        <RenderFormDisplay
-                          item={item}
-                          value={searchResponse?.[0]?.[item.name]||editeData?.[0]?.[item.name]}
-                        />
-                      </Grid>
-                    )):<Typography>شخص مناسبی یافت نشد</Typography>}
+                    {!!searchResponse?.length || !!editeData?.length ? (
+                      DataFormItems?.map((item) => (
+                        <Grid item xs={12} md={item.size.md} key={item.name}>
+                          <RenderFormDisplay
+                            item={item}
+                            value={
+                              searchResponse?.[0]?.[item.name] ||
+                              editeData?.[0]?.[item.name]
+                            }
+                          />
+                        </Grid>
+                      ))
+                    ) : (
+                      <Typography>شخص مناسبی یافت نشد</Typography>
+                    )}
 
-                    {(searchResponse_status === "success"||editeData_status==="success") &&
-                      (!!searchResponse?.length||!!editeData?.length) &&
+                    {(searchResponse_status === "success" ||
+                      editeData_status === "success") &&
+                      (!!searchResponse?.length || !!editeData?.length) &&
                       formSteps.map((stepItem, stepIndex) => (
                         <Grid
                           item
@@ -369,10 +382,8 @@ export default function AddFirmPartner(): JSX.Element {
                         </Grid>
                       ))}
 
-                    {
-                    state?.editable &&
-                      (!!searchResponse?.length||!!editeData?.length) &&
-                       (
+                    {state?.editable &&
+                      (!!searchResponse?.length || !!editeData?.length) && (
                         <Grid
                           item
                           xs={12}

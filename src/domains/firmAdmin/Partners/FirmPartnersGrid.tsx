@@ -94,7 +94,7 @@ const FirmPartnersGrid = (props: Props) => {
     {
       field: "birthDate",
       align:"center",
-      headerName: "تاریخ شروع",
+      headerName: "شروع همکاری",
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
         if(row?.startDate)return moment(row?.startDate).format("jYYYY/jMM/jDD");
@@ -104,7 +104,7 @@ const FirmPartnersGrid = (props: Props) => {
     {
       field: "endDate",
       align:"center",
-      headerName: "تاریخ پایان",
+      headerName: "پایان همکاری",
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
         if(row?.endDate) return moment(row?.endDate).format("jYYYY/jMM/jDD");
