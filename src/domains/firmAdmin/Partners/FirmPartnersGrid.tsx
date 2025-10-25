@@ -73,18 +73,28 @@ const FirmPartnersGrid = (props: Props) => {
     enabled: true,
   } as any);
   const columns: GridColDef[] = [
+    // {
+    //   field: "personnelFirstName",
+    //   headerName: "نام شخص",
+    //   flex: 2,
+    //   renderCell: ({ row }: { row: any }) => {
+    //     return row?.personnelFirstName + " " + row?.personnelLastName;
+    //   },
+    // },
     {
       field: "personnelFirstName",
-      headerName: "نام شخص",
-      flex: 2,
-      renderCell: ({ row }: { row: any }) => {
-        return row?.personnelFirstName + " " + row?.personnelLastName;
-      },
+      headerName: "نام",
+      flex: 1.5,
+    },
+    {
+      field: "personnelLastName",
+      headerName: "نام خانوادگی",
+      flex: 1.5,
     },
     {
       field: "birthDate",
       align:"center",
-      headerName: "تاریخ شروع همکاری",
+      headerName: "تاریخ شروع",
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
         if(row?.startDate)return moment(row?.startDate).format("jYYYY/jMM/jDD");
@@ -94,7 +104,7 @@ const FirmPartnersGrid = (props: Props) => {
     {
       field: "endDate",
       align:"center",
-      headerName: "تاریخ پایان همکاری",
+      headerName: "تاریخ پایان",
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
         if(row?.endDate) return moment(row?.endDate).format("jYYYY/jMM/jDD");
@@ -106,7 +116,7 @@ const FirmPartnersGrid = (props: Props) => {
       headerName: "سهم الشرکه",
       flex: 1,
     },
-    { field: "partnerStatus", headerName: "وضعیت همکاری", flex: 1,
+    { field: "partnerStatus", headerName: "وضعیت", flex: 1,
       renderCell: ({ row }: { row: any }) => {
         if(row?.partnerStatus) return <Chip color="secondary" label="فعال" icon={<CheckCircle/>}/>;
         else return <Chip color="default" label="غیر فعال"/>;
@@ -136,7 +146,7 @@ const FirmPartnersGrid = (props: Props) => {
               });
             }}
             onManage={{
-              title: "اتمام همکاری",
+              title: "پایان همکاری",
               function: () => {
                 setDeleteData(row);
                 setDeleteFlag(true);
