@@ -54,14 +54,14 @@ export const BranchFormItems = (
     {
       name: "responsiblePersonId",
       inputType: "autocomplete",
-      label: "شخص مسئول",
+      label: "مدیر مسئول شعبه",
       size: { md: 6 },
       options: options?.PersonnelInfo?.map((item: any) => ({ 
         value: item?.id, 
         title: `${item?.firstName} ${item?.lastName} - ${item?.nationalCode}`
       })) ?? [{ value: 0, title: "خالی" }],
       storeValueAs: 'id',
-      rules: { required: "انتخاب شخص مسئول الزامی است" },
+      rules: { required: "انتخاب مدیر مسئول شعبه الزامی است" },
     },
     {
       name: "supervisorPersonId",
