@@ -64,7 +64,7 @@ const ContactNumberAuth = () => {
     Province: string;
   };
   const [myData, setMyData] = useState<DataType>({
-    name: "نام شخص",
+    name: "نام",
     familyName: "نام خانوادگی",
     fatherName: "نام پدر",
     birthDate: "تاریخ تولد",

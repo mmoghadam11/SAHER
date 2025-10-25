@@ -63,7 +63,7 @@ const PersonGrid = (props: Props) => {
   const columns: GridColDef[] = [
     {
       field: "firstName",
-      headerName: "نام شخص",
+      headerName: "نام",
       flex: 2,
       renderCell: ({ row }: { row: any }) => {
         return row?.firstName + " " + row?.lastName;
@@ -148,13 +148,13 @@ const PersonGrid = (props: Props) => {
     {
       name: "firstName",
       inputType: "text",
-      label: "نام شخص",
+      label: "نام",
       size: { md: 4 },
     },
     {
       name: "lastName",
       inputType: "text",
-      label: "نام خانوادگی شخص",
+      label: "نام خانوادگی",
       size: { md: 4 },
     },
   ];

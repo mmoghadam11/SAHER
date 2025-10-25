@@ -172,13 +172,13 @@ const FirmPartnersGrid = (props: Props) => {
     {
       name: "personnelFirstName",
       inputType: "text",
-      label: "نام شخص",
+      label: "نام",
       size: { md: 4 },
     },
     {
       name: "personnelLastName",
       inputType: "text",
-      label: "نام خانوادگی شخص",
+      label: "نام خانوادگی",
       size: { md: 4 },
     },
   ];

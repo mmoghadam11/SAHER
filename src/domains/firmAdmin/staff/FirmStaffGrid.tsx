@@ -73,7 +73,7 @@ const FirmStaffGrid = (props: Props) => {
   const columns: GridColDef[] = [
     {
       field: "personnelFirstName",
-      headerName: "نام شخص",
+      headerName: "نام",
       flex: 2,
       renderCell: ({ row }: { row: any }) => {
         return row?.personnelFirstName + " " + row?.personnelLastName;
@@ -156,13 +156,13 @@ const FirmStaffGrid = (props: Props) => {
     {
       name: "personnelFirstName",
       inputType: "text",
-      label: "نام شخص",
+      label: "نام",
       size: { md: 4 },
     },
     {
       name: "personnelLastName",
       inputType: "text",
-      label: "نام خانوادگی شخص",
+      label: "نام خانوادگی",
       size: { md: 4 },
     },
   ];
