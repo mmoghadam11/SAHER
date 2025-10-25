@@ -2,6 +2,7 @@ import { Article, People, Search, Settings, Toc } from "@mui/icons-material";
 import {
   Box,
   Button,
+  CircularProgress,
   Dialog,
   DialogTitle,
   Grid,
@@ -149,6 +150,19 @@ const Firms4PartnerGrid = (props: Props) => {
       }
     );
   }
+  useEffect(() => {
+      if (StatesData?.content.length===1)
+        navigate(`${StatesData?.content?.[0].id}`, {
+          state: { firmData: StatesData?.content?.[0] },
+        });
+    }, [StatesData_status, StatesData]);
+    if (StatesData_status === "loading")
+      return (
+        <Box height={"100vh"} textAlign={"center"} alignItems={"center"} justifyContent={"center"}>
+          <Typography>لطفا منتظر بمانید...</Typography>
+          <CircularProgress />
+        </Box>
+      );
   return (
     <Grid container justifyContent="center">
       <Grid

@@ -153,7 +153,7 @@ const Firms4StaffGrid = (props: Props) => {
     );
   }
   useEffect(() => {
-    if (!!StatesData)
+    if (StatesData?.content.length===1)
       navigate(`${StatesData?.content?.[0].id}`, {
         state: { firmData: StatesData?.content?.[0] },
       });
