@@ -1,4 +1,4 @@
-import { Article, Search, Settings } from "@mui/icons-material";
+import { Article, Search, Settings, Work } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -26,6 +26,7 @@ import paramsSerializer from "services/paramsSerializer";
 import { PAGINATION_DEFAULT_VALUE } from "shared/paginationValue";
 import ConfirmBox from "components/confirmBox/ConfirmBox";
 import moment from "jalali-moment";
+import EditeFirmPersonnel from "./EditeFirmPersonnel";
 
 type Props = {};
 
@@ -105,24 +106,29 @@ const PersonGrid = (props: Props) => {
             onEdit={() => {
               setEditeData(row);
               setAddModalFlag(true);
-              navigate(`${row.id}`, { state: { firmData: row , row,editable:true} });
+              navigate(`${row.id}`, {
+                state: { firmData: row, row, editable: true },
+              });
             }}
             onView={() => {
               setEditeData(row);
               setAddModalFlag(true);
-              navigate(`${row.id}`, { state: { firmData: row , row,editable:false} });
+              navigate(`${row.id}`, {
+                state: { firmData: row, row, editable: false },
+              });
             }}
             onDelete={() => {
               setDeleteData(row);
               setDeleteFlag(true);
             }}
-            // onManage={{
-            //   title: "جزئیات شخص",
-            //   function: () => {
-            //     navigate(`details/${row.id}`, { state: { firmData: row } });
-            //   },
-            //   icon: <Settings />,
-            // }}
+            onManage={{
+              title: "ویرایش موسسه",
+              function: () => {
+                setEditeData(row);
+                setAddModalFlag(true);
+              },
+              icon: <Work/>,
+            }}
           />
         );
       },
@@ -214,7 +220,7 @@ const PersonGrid = (props: Props) => {
           <CreateNewItem
             sx={{ mr: 2 }}
             name="شخص"
-            onClick={() => navigate("new",{state: {editable:true}})}
+            onClick={() => navigate("new", { state: { editable: true } })}
           />
           <BackButton onBack={() => navigate(-1)} />
         </Box>
@@ -226,7 +232,7 @@ const PersonGrid = (props: Props) => {
         setFilters={setFilters}
       />
       <Grid item md={11} sm={11} xs={12}>
-        {(StatesData_status === "success"&& !!StatesData) ? (
+        {StatesData_status === "success" && !!StatesData ? (
           <TavanaDataGrid
             rows={StatesData?.content}
             columns={columns}
@@ -239,7 +245,12 @@ const PersonGrid = (props: Props) => {
           />
         ) : null}
       </Grid>
-
+      <EditeFirmPersonnel 
+      addModalFlag={addModalFlag}
+      editeData={editeData}
+      refetch={StatesData_refetch}
+      setAddModalFlag={setAddModalFlag}
+      setEditeData={setEditeData} />
       <ConfirmBox
         open={deleteFlag}
         handleClose={() => {
