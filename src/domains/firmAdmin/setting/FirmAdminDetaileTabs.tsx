@@ -96,10 +96,10 @@ const FirmAdminDetaileTabs = (props: Props) => {
       title: "مدیرعامل",
       com: <DirectorGrid setActiveTab={setActiveTab} />,
     },
-    {
-      title: "آموزشی",
-      com: <EduInfoGrid setActiveTab={setActiveTab} />,
-    },
+    // {
+    //   title: "آموزشی",
+    //   com: <EduInfoGrid setActiveTab={setActiveTab} />,
+    // },
     // {
     //   title: "مالی",
     //   com: <FinancialStatementsGrid setActiveTab={setActiveTab} />,
@@ -187,7 +187,14 @@ const FirmAdminDetaileTabs = (props: Props) => {
           </Grid>
         </Paper>
       </Grid>
-      <Grid item md={11} sm={11} xs={12} display={"flex"} justifyContent={"flex-start"} >
+      <Grid
+        item
+        md={11}
+        sm={11}
+        xs={12}
+        display={"flex"}
+        justifyContent={"flex-start"}
+      >
         {isMobile ? (
           <Select
             sx={{ width: "25vw", mr: 1, mt: 2 }}
@@ -207,7 +214,7 @@ const FirmAdminDetaileTabs = (props: Props) => {
             sx={{
               mt: 2,
               mr: 1,
-              direction:"rtl"
+              direction: "rtl",
               // maxWidth: "45vw",
               // direction: "rtl",
             }}
