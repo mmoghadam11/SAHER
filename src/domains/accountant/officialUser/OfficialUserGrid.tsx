@@ -60,22 +60,52 @@ const OfficialUserGrid = (props: Props) => {
     enabled: true,
   } as any);
   const columns: GridColDef[] = [
+    // {
+    //   field: "firstName",
+    //   headerName: "نام حسابدار رسمی",
+    //   flex: 2,
+    //   renderCell: ({ row }: { row: any }) => {
+    //     return row?.firstName + " " + row?.lastName;
+    //   },
+    // },
     {
       field: "firstName",
-      headerName: "نام حسابدار رسمی",
-      flex: 2,
-      renderCell: ({ row }: { row: any }) => {
-        return row?.firstName + " " + row?.lastName;
-      },
+      headerName: "نام",
+      flex: 1,
     },
     {
-      field: "latinFirstName",
-      headerName: "نام لاتین",
+      field: "lastName",
+      headerName: "نام خانوادگی",
       flex: 1,
-      renderCell: ({ row }: { row: any }) => {
-        return row?.latinFirstName + " " + row?.latinLastName;
-      },
     },
+    {
+      field: "idNumber",
+      headerName: "کد عضویت",
+      flex: 1,
+    },
+    {
+      field: "cdMembershipTypeName",
+      headerName: "نوع عضویت",
+      flex: 1,
+    },
+    {
+      field: "mobileNo",
+      headerName: "تلفن همراه",
+      flex: 1,
+    },
+    {
+      field: "birthPlaceName",
+      headerName: "شهر تولد",
+      flex: 1,
+    },
+    // {
+    //   field: "latinFirstName",
+    //   headerName: "نام لاتین",
+    //   flex: 1,
+    //   renderCell: ({ row }: { row: any }) => {
+    //     return row?.latinFirstName + " " + row?.latinLastName;
+    //   },
+    // },
     {
       field: "birthDate",
       headerName: "تاریخ تولد",
@@ -84,7 +114,6 @@ const OfficialUserGrid = (props: Props) => {
         return moment(row?.birthDate).format("jYYYY/jMM/jDD");
       },
     },
-    { field: "idNumber", headerName: "شماره عضویت", flex: 1 },
     {
       headerName: "عملیات",
       field: "action",
@@ -95,13 +124,9 @@ const OfficialUserGrid = (props: Props) => {
         return (
           <TableActions
             onEdit={() => {
-              setEditeData(row);
-              setAddModalFlag(true);
               navigate(`${row.id}`, { state: { firmData: row , editable:true} });
             }}
             onView={() => {
-              setEditeData(row);
-              setAddModalFlag(true);
               navigate(`${row.id}`, { state: { firmData: row , editable:false} });
             }}
             onDelete={() => {
@@ -109,9 +134,10 @@ const OfficialUserGrid = (props: Props) => {
               setDeleteFlag(true);
             }}
             // onManage={{
-            //   title: "جزئیات حسابدار رسمی",
+            //   title: "ویرایش موسسه",
             //   function: () => {
-            //     navigate(`details/${row.id}`, { state: { firmData: row } });
+            //     setEditeData(row);
+            //     setAddModalFlag(true);
             //   },
             //   icon: <Settings />,
             // }}
