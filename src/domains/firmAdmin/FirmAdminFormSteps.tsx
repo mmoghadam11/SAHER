@@ -146,10 +146,10 @@ export default function FirmAdminFormSteps(): JSX.Element {
         name: "اطلاعات تماس",
         formItems: contactInfoItems(setValue),
       },
-      {
-        name: "اطلاعات مدیرعامل",
-        formItems: ceoInfoItems(setValue),
-      },
+      // {
+      //   name: "اطلاعات مدیرعامل",
+      //   formItems: ceoInfoItems(setValue),
+      // },
       // {
       //   name: "اطلاعات هیئت مدیره",
       //   formItems: boardInfoItems(setValue)
