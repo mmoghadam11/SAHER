@@ -7,13 +7,14 @@ import { Add } from "@mui/icons-material";
 
 type Props = {
   icon?: React.ReactElement;
-  name: string;
+  name?: string;
   url?: string;
   onClick?:any;
+  title?:string;
   sx?:any
 };
 
-const CreateNewItem: React.FC<Props> = ({ icon, name, url,onClick,sx}) => {
+const CreateNewItem: React.FC<Props> = ({ icon, name,title, url,onClick,sx}) => {
   const navigate = useNavigate();
   if(!isMobile)
   return (
@@ -24,7 +25,7 @@ const CreateNewItem: React.FC<Props> = ({ icon, name, url,onClick,sx}) => {
       color="info"
       sx={{ ...sx,minWidth: "100px", mb: 2 }}
     >
-      ایجاد {name} جدید
+     {!!title?title:`ایجاد ${name} جدید`} 
     </Button>
   );
   else return(
