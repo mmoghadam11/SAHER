@@ -12,6 +12,7 @@ import {
   FormGroup,
   FormControlLabel,
   Checkbox,
+  CircularProgress,
 } from "@mui/material";
 import ErrorHandler from "components/errorHandler/ErrorHandler";
 import React, { forwardRef } from "react";
@@ -195,89 +196,86 @@ const RenderFormInput: React.FC<IRenderFormInput> = forwardRef((props, ref) => {
   //   );
   // }
   if (props.inputType === "autocomplete") {
-    let {
-      options,
-      status,
-      refetch,
-      customOnChange,
-      externalValue,
-      storeValueAs = "object",
-    } = props;
-    if (status === "loading") return <LoadingState label={label} />;
-    if (status === "error" && refetch)
-      return <ErrorState label={label} refetch={refetch} />;
+      let {
+         options = [],
+         status,
+         refetch,
+         customOnChange,
+         externalValue,
+         storeValueAs = "object",
+         skipClientFilter = false, // <-- این را اضافه کنید
+         inlineLoading = false,      // <-- این را اضافه کنید
+      } = props;
 
-    // const getDisplayValue = () => {
-    //   const currentValue = controllerField.value;
+      // اگر inlineLoading فعال باشد، به‌جای return LoadingState، اسپینر داخلی نشان می‌دهیم
+      const loading = props?.elementProps?.loading ?? status === "loading";
 
-    //   if (
-    //     storeValueAs === "id" &&
-    //     (typeof currentValue === "number" || typeof currentValue === "string")
-    //   ) {
-    //     return (
-    //       options?.find((option: TOption) => option.value === currentValue) ||
-    //       null
-    //     );
-    //   }
+      // رفتار قدیمی را نگه‌می‌داریم مگر اینکه inlineLoading=true شود
+      if (!inlineLoading) {
+         if (status === "loading") return <LoadingState label={label} />;
+         if (status === "error" && refetch)
+            return <ErrorState label={label} refetch={refetch} />;
+      }
 
-    //   return currentValue || null;
-    // };
-    return (
-      <Autocomplete
-        ref={ref}
-        {...controllerField}
-        {...elementProps}
-        options={options}
-        //@ts-ignore
-        getOptionLabel={(option: TOption) => {
-          if (typeof option !== "object") {
-            let result = options.find((op: TOption) => op?.value === option);
-            return result?.title || "";
-          }
-          return option?.title || "";
-        }}
-        filterOptions={(ops, state) => {
-          //@ts-ignore
-          let temp = ops?.filter((op: TOption) =>
-            op?.title?.includes(state?.inputValue)
-          );
-          return temp;
-        }}
-        // value={
-        //   externalValue !== undefined ? externalValue : controllerField?.value
-        // }
-        value={controllerField?.value || null}
-        onChange={(event, newValue: any, reason) => {
-          let valueToStore = newValue;
-          if (storeValueAs === "id") {
-            valueToStore = newValue ? newValue.value : null;
-          }
-          // Call custom onChange if provided
-          if (customOnChange) {
-            customOnChange(event, newValue, reason);
-          }
-          // Also call react-hook-form's onChange
-          controllerField.onChange(valueToStore);
-        }}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            variant="outlined"
-            label={label}
-            error={Boolean(errors?.[name]?.message)}
-            helperText={errors?.[name]?.message}
-            size="medium"
-          />
-        )}
-        isOptionEqualToValue={(option: any, value: any) => {
-          // اگر value هنوز تنظیم نشده (null/undefined)، false برگردان
-          if (!value) return false;
-          if (storeValueAs === "object") return option.value === value.value;
-          else return option.value === value;
-        }}
-      />
-    );
-  }
+      return (
+         <Autocomplete
+            ref={ref}
+            {...controllerField}
+            {...elementProps} // شامل onInputChange, noOptionsText, ...
+            options={options}
+            loading={loading} // <-- اینجا از loading استفاده کنید
+            getOptionLabel={(option: TOption) => {
+               if (typeof option !== "object") {
+                  let result = options.find((op: TOption) => op?.value === option);
+                  return result?.title || "";
+               }
+               return option?.title || "";
+            }}
+            filterOptions={(ops, state) => {
+               if (skipClientFilter) return ops; // <-- این منطق را اضافه کنید
+               //@ts-ignore
+               return ops?.filter((op: TOption) =>
+                  op?.title?.includes(state?.inputValue)
+               );
+            }}
+            value={controllerField?.value || null}
+            onChange={(event, newValue: any, reason) => {
+               let valueToStore = newValue;
+               if (storeValueAs === "id") {
+                  valueToStore = newValue ? newValue.value : null;
+               }
+               if (customOnChange) {
+                  customOnChange(event, newValue, reason);
+               }
+               controllerField.onChange(valueToStore);
+            }}
+            renderInput={(params) => (
+               <TextField
+                  {...params}
+                  variant="outlined"
+                  label={label}
+                  error={Boolean(errors?.[name]?.message)}
+                  helperText={errors?.[name]?.message}
+                  size="medium"
+                  InputProps={{ // <-- این بخش اسپینر داخلی را اضافه می‌کند
+                     ...params.InputProps,
+                     endAdornment: (
+                        <>
+                           {loading ? <CircularProgress color="inherit" size={16} /> : null}
+                           {params.InputProps.endAdornment}
+                        </>
+                     ),
+                  }}
+               />
+            )}
+            isOptionEqualToValue={(option: any, value: any) => {
+               if (!value) return false;
+               if (storeValueAs === "object") return option.value === value.value;
+               else return option.value === value;
+            }}
+         />
+      );
+   }
 
   if (props.inputType === "select") {
     let { options, status, refetch } = props;
