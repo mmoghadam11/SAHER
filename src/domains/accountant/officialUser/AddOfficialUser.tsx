@@ -282,7 +282,7 @@ export default function AddOfficialUser(): JSX.Element {
       }),
     },
     {
-      name: "وضعیت و وظیفه",
+      name: "وضعیت و نظام وظیفه",
       formItems: StatusFormItems(setValue, {
         firmOptions,
         cityOptions,
@@ -291,7 +291,7 @@ export default function AddOfficialUser(): JSX.Element {
       }),
     },
     {
-      name: "اطلاعات حسابدار رسمیی تکمیلی",
+      name: "اطلاعات تکمیلی",
       formItems: PersonalInfoFormItems(setValue, {
         religionOptions,
         marriageOptions,
