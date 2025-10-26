@@ -41,7 +41,6 @@ interface FormData {
   request_month: string;
 }
 
-
 type Props = {
   refetch: () => void;
   addModalFlag: boolean;
@@ -73,34 +72,33 @@ const AddBranch = ({
     setValue,
     getValues,
   } = useForm<FormData>();
- 
- 
 
   const {
-      data: ownershipTypeOptions,
-      status: ownershipTypeOptions_status,
-      refetch: ownershipTypeOptions_refetch,
-    } = useQuery<any>({
-
-      queryKey: [`common-data/find-by-type-all?typeId=15`],
-      queryFn: Auth?.getRequest,
-      select: (res: any) => {
-        return res?.data;
-      },
-    } as any);
+    data: ownershipTypeOptions,
+    status: ownershipTypeOptions_status,
+    refetch: ownershipTypeOptions_refetch,
+  } = useQuery<any>({
+    queryKey: [`common-data/find-by-type-all?typeId=15`],
+    queryFn: Auth?.getRequest,
+    select: (res: any) => {
+      return res?.data;
+    },
+  } as any);
   const {
-      data: PersonnelInfo,
-      status: PersonnelInfo_status,
-      refetch: PersonnelInfo_refetch,
-    } = useQuery<any>({
-
-      queryKey: [`personnel-info/search-all?auditingFirmId=${id}`],
-      queryFn: Auth?.getRequest,
-      select: (res: any) => {
-        return res?.data;
-      },
-    } as any);
-  const formItems: any[] = BranchFormItems(setValue,{ownershipTypeOptions,PersonnelInfo});
+    data: PersonnelInfo,
+    status: PersonnelInfo_status,
+    refetch: PersonnelInfo_refetch,
+  } = useQuery<any>({
+    queryKey: [`certified-accountant/search-all?auditingFirmId=${id}`],
+    queryFn: Auth?.getRequest,
+    select: (res: any) => {
+      return res?.data;
+    },
+  } as any);
+  const formItems: any[] = BranchFormItems(setValue, {
+    ownershipTypeOptions,
+    PersonnelInfo,
+  });
   useEffect(() => {
     console.log("editeData=>", getValues());
     if (editeData !== null) {
@@ -141,8 +139,7 @@ const AddBranch = ({
               `به روز رسانی موسسه انتخاب شده با موفقیت انجام شد`,
               "success"
             );
-          else
-            snackbar(`شعبه جدید با موفقیت افزوده شد`, "success");
+          else snackbar(`شعبه جدید با موفقیت افزوده شد`, "success");
           refetch();
           //   handleClose();
         },
@@ -154,15 +151,22 @@ const AddBranch = ({
   };
 
   return (
-    <Dialog open={addModalFlag} onClose={handleClose} maxWidth={"md"}>
+    <Dialog
+      open={addModalFlag}
+      onClose={handleClose}
+      maxWidth={"md"}
+      PaperProps={{
+        sx: {
+          overflow: "visible", // اجازه به محتوای Dialog برای بیرون زدن
+        },
+      }}
+    >
       <DialogTitle>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Box display={"flex"} textAlign={"center"} alignItems={"center"}>
             <EventNote fontSize="large" />
             <Typography variant="h6">
-              {editeData
-                ? `ویرایش شعبه انتخاب شده`
-                : `ایجاد شعبه جدید`}
+              {editeData ? `ویرایش شعبه انتخاب شده` : `ایجاد شعبه جدید`}
             </Typography>
           </Box>
           <IconButton onClick={handleClose} size="small">
@@ -171,7 +175,7 @@ const AddBranch = ({
         </Box>
       </DialogTitle>
 
-      <DialogContent>
+      <DialogContent sx={{overflow:"visible"}}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={3} mt={1}>
             {formItems.map((item) => (

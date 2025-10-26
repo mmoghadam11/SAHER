@@ -88,7 +88,7 @@ const AddDirectorModal = ({
           status: personnelOptions_status,
           refetch: personnelOptions_refetch,
         } = useQuery<any>({
-          queryKey: [`personnel-info/search-all?auditingFirmId=${id}`],
+          queryKey: [`certified-accountant/search-all?auditingFirmId=${id}`],
           queryFn: Auth?.getRequest,
           select: (res: any) => {
             return res?.data;
@@ -130,9 +130,9 @@ const AddDirectorModal = ({
   const onSubmit = (data: FormData) => {
     mutate(
       {
-        entity: `firm-director/${id!=="new" ? "update" : "save"}`,
+        entity: `firm-director/${!!editeData ? "update" : "save"}`,
         // entity: `firm-director/save`,
-        method: id!=="new" ? "put" : "post",
+        method: !!editeData ? "put" : "post",
         // method:  "post",
         data: {
           ...data,
@@ -161,7 +161,13 @@ const AddDirectorModal = ({
   };
 
   return (
-    <Dialog open={addModalFlag} onClose={handleClose} maxWidth={"md"}>
+    <Dialog open={addModalFlag} onClose={handleClose} maxWidth={"md"} 
+    PaperProps={{
+        sx: {
+          overflow: "visible", // اجازه به محتوای Dialog برای بیرون زدن
+        },
+      }}
+    >
       <DialogTitle>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Box display={"flex"} textAlign={"center"} alignItems={"center"}>
@@ -176,9 +182,9 @@ const AddDirectorModal = ({
         </Box>
       </DialogTitle>
 
-      <DialogContent>
+      <DialogContent sx={{ overflow: "visible" }}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Grid container spacing={3} mt={1}>
+          <Grid container spacing={3} mt={1} overflow={"visible"} sx={{overflow:"visible",height:"100%"}}>
             {formItems.map((item) => (
               <Grid item xs={12} md={item.size.md} key={item.name}>
                       <Controller

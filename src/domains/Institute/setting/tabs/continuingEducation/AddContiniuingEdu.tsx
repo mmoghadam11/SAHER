@@ -160,7 +160,13 @@ const AddContiniuingEdu = ({
   };
 
   return (
-    <Dialog open={addModalFlag} onClose={handleClose} maxWidth={"md"}>
+    <Dialog open={addModalFlag} onClose={handleClose} maxWidth={"md"}
+    PaperProps={{
+        sx: {
+          overflow: "visible", // اجازه به محتوای Dialog برای بیرون زدن
+        },
+      }}
+    >
       <DialogTitle>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Box display={"flex"} textAlign={"center"} alignItems={"center"}>
@@ -177,7 +183,7 @@ const AddContiniuingEdu = ({
         </Box>
       </DialogTitle>
 
-      <DialogContent>
+      <DialogContent sx={{overflow:"visible"}}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={3} mt={1}>
             {formItems.map((item) => (

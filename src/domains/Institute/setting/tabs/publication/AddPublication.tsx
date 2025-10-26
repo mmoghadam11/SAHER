@@ -71,8 +71,7 @@ const AddPublication = ({
     setValue,
     getValues,
   } = useForm<FormData>();
-  
-  
+
   const {
     data: firmOptions,
     status: firmOptions_status,
@@ -86,19 +85,22 @@ const AddPublication = ({
     enabled: true,
   } as any);
   const {
-      data: PublicationType,
-      status: PublicationType_status,
-      refetch: PublicationType_refetch,
-    } = useQuery<any>({
-      queryKey: [`common-data/find-by-type-all?typeId=39`],
-      queryFn: Auth?.getRequest,
-      select: (res: any) => {
-        return res?.data;
-      },
-      enabled: true,
-    } as any);
+    data: PublicationType,
+    status: PublicationType_status,
+    refetch: PublicationType_refetch,
+  } = useQuery<any>({
+    queryKey: [`common-data/find-by-type-all?typeId=39`],
+    queryFn: Auth?.getRequest,
+    select: (res: any) => {
+      return res?.data;
+    },
+    enabled: true,
+  } as any);
 
-  const formItems: any[] = PublicationFormItems(setValue,{firmOptions,PublicationType});
+  const formItems: any[] = PublicationFormItems(setValue, {
+    firmOptions,
+    PublicationType,
+  });
   useEffect(() => {
     console.log("editeData=>", getValues());
     if (editeData !== null) {
@@ -122,7 +124,6 @@ const AddPublication = ({
 
     setEditeData(null);
   };
-
 
   const onSubmit = (data: FormData) => {
     mutate(
@@ -157,15 +158,22 @@ const AddPublication = ({
   };
 
   return (
-    <Dialog open={addModalFlag} onClose={handleClose} maxWidth={"sm"} sx={{overflow:"visible",minHeight:"60vh"}}>
-      <DialogTitle >
+    <Dialog
+      open={addModalFlag}
+      onClose={handleClose}
+      maxWidth={"sm"}
+      PaperProps={{
+        sx: {
+          overflow: "visible", // اجازه به محتوای Dialog برای بیرون زدن
+        },
+      }}
+    >
+      <DialogTitle>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Box display={"flex"} textAlign={"center"} alignItems={"center"}>
             <Receipt fontSize="large" />
             <Typography variant="h6">
-              {editeData
-                ? `ویرایش نشریه انتخاب شده`
-                : `ایجاد نشریه جدید`}
+              {editeData ? `ویرایش نشریه انتخاب شده` : `ایجاد نشریه جدید`}
             </Typography>
           </Box>
           <IconButton onClick={handleClose} size="small">
@@ -174,7 +182,9 @@ const AddPublication = ({
         </Box>
       </DialogTitle>
 
-      <DialogContent sx={{ alignContent:"end",overflow:"visible",minHeight:"auto"}}>
+      <DialogContent
+        sx={{ alignContent: "end", overflow: "visible", minHeight: "auto" }}
+      >
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={3} mt={1}>
             {formItems.map((item) => (
@@ -185,7 +195,7 @@ const AddPublication = ({
                   rules={item.rules}
                   render={({ field }) => (
                     <RenderFormInput
-                    value={(getValues() as any)[item.name]}
+                      value={(getValues() as any)[item.name]}
                       controllerField={field}
                       errors={errors}
                       {...item}
@@ -225,4 +235,4 @@ const AddPublication = ({
   );
 };
 
-export default AddPublication
+export default AddPublication;
