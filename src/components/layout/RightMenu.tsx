@@ -209,12 +209,12 @@ const MENU_ITEMS: MenuItem[] = [
         url: "persons",
         access: ["administrator", "city-showmenu","township-showmenu"],
       },
-      // {
-      //   // title: "مشخصات اشخاص",
-      //   title: "حسابداران شاغل در موسسه",
-      //   url: "personnels",
-      //   access: ["administrator", "city-showmenu","township-showmenu"],
-      // },
+      {
+        title: "حسابداران شاغل در موسسه",
+        // url: "personnels",
+        url: "hired-accountants",
+        access: ["administrator", "city-showmenu","township-showmenu"],
+      },
       {
         title: "آزمون رتبه بندی",
         url: "rating-test",
