@@ -194,7 +194,7 @@ export default function AddStaff(): JSX.Element {
   const formSteps: FormStep[] = useMemo(
     () => [
       {
-        name: "اطلاعات عضویت",
+        name: "سابقه همکاری در موسسه",
         formItems: PersonnelAssignmentFormItems(setValue, {
           rankOptions,
         }),

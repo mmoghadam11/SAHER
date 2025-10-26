@@ -193,7 +193,7 @@ export default function AddFirmAccountant(): JSX.Element {
   const formSteps: FormStep[] = useMemo(
     () => [
       {
-        name: "اطلاعات عضویت",
+        name: "سابقه همکاری در موسسه",
         formItems: AccountantAssignmentFormItems(setValue, {
           rankOptions,
         }),
