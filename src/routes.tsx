@@ -52,6 +52,12 @@ import AddFirmStaff from "domains/firmAdmin/staff/AddFirmStaff";
 import Firms4PartnerGrid from "domains/firmAdmin/Partners/Firms4PartnerGrid";
 import FirmPartnersGrid from "domains/firmAdmin/Partners/FirmPartnersGrid";
 import AddFirmPartner from "domains/firmAdmin/Partners/AddFirmPartner";
+import AllFirms4PartnerGrid from "domains/Institute/Partners/AllFirms4PartnerGrid";
+import AllFirmPartnersGrid from "domains/Institute/Partners/AllFirmPartnersGrid";
+import PartnerDataModal from "domains/Institute/Partners/PartnerDataModal";
+import Firms4AccountantGrid from "domains/firmAdmin/FirmHiredAccountant/Firms4AccountantGrid";
+import FirmAccountantGrid from "domains/firmAdmin/FirmHiredAccountant/FirmAccountantGrid";
+import AddFirmAccountant from "domains/firmAdmin/FirmHiredAccountant/AddFirmAccountants";
 
 const AppRoutes: React.FC = () => {
   const auth = useAuth();
@@ -105,14 +111,20 @@ const AppRoutes: React.FC = () => {
             </Route>
             <Route path="persons">
               <Route index element={<StaffGrid />} />
-              <Route path=":id" element={<AddStaff />} />
+              <Route path=":id/:staffId" element={<AddStaff />} />
             </Route>
             <Route path="personnels">
               <Route index element={<MemberShipGrid />} />
               <Route path=":id" element={<AddMembership />} />
             </Route>
             <Route path="rating-test" element={<Welcome />} />
-            <Route path="partners" element={<Welcome />} />
+            <Route path="partners">
+              <Route index element={<AllFirms4PartnerGrid />} />
+              <Route path=":id">
+                <Route index element={<AllFirmPartnersGrid />} />
+                <Route path=":staffId" element={<PartnerDataModal />} />
+              </Route>
+            </Route>
             <Route path="exam-applicants" element={<Welcome />} />
             <Route path="membership-fee" element={<Welcome />} />
             <Route path="contracts-concluded">
@@ -148,6 +160,13 @@ const AppRoutes: React.FC = () => {
               <Route path=":id">
                 <Route index element={<FirmStaffGrid />} />
                 <Route path=":staffId" element={<AddFirmStaff />} />
+              </Route>
+            </Route>
+            <Route path="hired-accountants">
+              <Route index element={<Firms4AccountantGrid />} />
+              <Route path=":id">
+                <Route index element={<FirmAccountantGrid />} />
+                <Route path=":staffId" element={<AddFirmAccountant />} />
               </Route>
             </Route>
           </Route>
