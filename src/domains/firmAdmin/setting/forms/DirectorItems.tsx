@@ -28,12 +28,9 @@ export const DirectorItems = (
     label: "تاریخ شروع مدیریت",
     size: { md: 6 },
     rules: { required: "تاریخ شروع مدیریت الزامی است" },
-    tempRules: { required: "تاریخ شروع مدیریت الزامی است" },
+    // tempRules: { required: "تاریخ شروع مدیریت الزامی است" },
     elementProps: {
-      setDay: (value: any) => {
-        setValue("registerDate", value);
-        // این تابع باید در کامپوننت والد تعریف شود
-      },
+      setDay: (value: any) => setValue("directorAcceptanceDate", value),
       value: "", // مقدار اولیه
     },
   },

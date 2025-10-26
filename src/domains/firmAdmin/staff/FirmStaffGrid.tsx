@@ -35,6 +35,7 @@ import { PAGINATION_DEFAULT_VALUE } from "shared/paginationValue";
 import ConfirmBox from "components/confirmBox/ConfirmBox";
 import moment from "jalali-moment";
 import TerminateCooprationModal from "./components/TerminateCooprationModal";
+import { FormItem } from "types/formItem";
 
 type Props = {};
 
@@ -70,18 +71,39 @@ const FirmStaffGrid = (props: Props) => {
     },
     enabled: true,
   } as any);
+  const {
+    data: rankOptions,
+    status: rankOptions_status,
+    refetch: rankOptions_refetch,
+  } = useQuery<any>({
+    queryKey: [`common-data/find-by-type-all?typeId=25`],
+    queryFn: Auth?.getRequest,
+    select: (res: any) => {
+      return res?.data;
+    },
+  } as any);
   const columns: GridColDef[] = [
+    // {
+    //   field: "personnelFirstName",
+    //   headerName: "نام",
+    //   flex: 2,
+    //   renderCell: ({ row }: { row: any }) => {
+    //     return row?.personnelFirstName + " " + row?.personnelLastName;
+    //   },
+    // },
     {
       field: "personnelFirstName",
       headerName: "نام",
-      flex: 2,
-      renderCell: ({ row }: { row: any }) => {
-        return row?.personnelFirstName + " " + row?.personnelLastName;
-      },
+      flex: 1.5,
+    },
+    {
+      field: "personnelLastName",
+      headerName: "نام خانوادگی",
+      flex: 1.5,
     },
     {
       field: "birthDate",
-      headerName: "تاریخ شروع همکاری",
+      headerName: "شروع همکاری",
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
         return moment(row?.startDate).format("jYYYY/jMM/jDD");
@@ -89,23 +111,24 @@ const FirmStaffGrid = (props: Props) => {
     },
     {
       field: "endDate",
-      headerName: "تاریخ پایان همکاری",
+      headerName: "پایان همکاری",
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
-        if(row?.endDate) return moment(row?.endDate).format("jYYYY/jMM/jDD");
-        else return null
+        if (row?.endDate) return moment(row?.endDate).format("jYYYY/jMM/jDD");
+        else return null;
       },
     },
     {
       field: "cooperationStatus",
-      headerName: "وضعیت همکاری",
+      headerName: "وضعیت",
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
-        if(row?.cooperationStatus)return <Chip color="secondary" label="فعال" icon={<CheckCircle/>}/>;
-        else return <Chip color="default" label="غیر فعال"/>;
+        if (row?.cooperationStatus)
+          return <Chip color="secondary" label="فعال" icon={<CheckCircle />} />;
+        else return <Chip color="default" label="غیر فعال" />;
       },
     },
-    { field: "cdProfessionalRankName", headerName: "رتبه حرفه‌ای", flex: 1 },
+    { field: "cdProfessionalRankName", headerName: "رده حرفه‌ای", flex: 1 },
     {
       headerName: "عملیات",
       field: "action",
@@ -113,32 +136,33 @@ const FirmStaffGrid = (props: Props) => {
       headerAlign: "center",
       align: "center",
       renderCell: ({ row }: { row: any }) => {
-        if(row?.cooperationStatus===true) return (
-          <TableActions
-            onEdit={() => {
-              setEditeData(row);
-              setAddModalFlag(true);
-              navigate(`${row.id}`, {
-                state: { staffData: row, editable: true },
-              });
-            }}
-            onView={() => {
-              setEditeData(row);
-              setAddModalFlag(true);
-              navigate(`${row.id}`, {
-                state: { staffData: row, editable: false },
-              });
-            }}
-            onManage={{
-              title: "اتمام همکاری",
-              function: () => {
-                setDeleteData(row);
-                setDeleteFlag(true);
-              },
-              icon: <PersonRemove color="error" />,
-            }}
-          />
-        );
+        if (row?.cooperationStatus === true)
+          return (
+            <TableActions
+              onEdit={() => {
+                setEditeData(row);
+                setAddModalFlag(true);
+                navigate(`${row.id}`, {
+                  state: { staffData: row, editable: true },
+                });
+              }}
+              onView={() => {
+                setEditeData(row);
+                setAddModalFlag(true);
+                navigate(`${row.id}`, {
+                  state: { staffData: row, editable: false },
+                });
+              }}
+              onManage={{
+                title: "پایان همکاری",
+                function: () => {
+                  setDeleteData(row);
+                  setDeleteFlag(true);
+                },
+                icon: <PersonRemove color="error" />,
+              }}
+            />
+          );
       },
     },
   ];
@@ -146,24 +170,41 @@ const FirmStaffGrid = (props: Props) => {
     personnelFirstName: string;
     personnelLastName: string;
   }
-  type searchType = {
-    name: string;
-    inputType: string;
-    label: string;
-    size: any;
-  };
-  const searchItems: searchType[] = [
+
+  const searchItems: FormItem[] = [
     {
       name: "personnelFirstName",
       inputType: "text",
       label: "نام",
-      size: { md: 4 },
+      size: { md: 3 },
     },
     {
       name: "personnelLastName",
       inputType: "text",
       label: "نام خانوادگی",
-      size: { md: 4 },
+      size: { md: 3 },
+    },
+    {
+      name: "cooperationStatus",
+      inputType: "select",
+      label: "وضعیت",
+      size: { md: 3 },
+      options: [
+        { value: "", title: "همه" },
+        { value: "true", title: "فعال" },
+        { value: "false", title: "غیرفعال" },
+      ],
+    },
+    {
+      name: "cdProfessionalRankId",
+      inputType: "autocomplete",
+      label: "رده حرفه‌ای",
+      size: { md: 3 },
+      options: rankOptions?.map((item: any) => ({
+        id: item.id,
+        value: item.value,
+      })) ?? [{ id: 0, value: "خالی" }],
+      storeValueAs: "id",
     },
   ];
   type editeObjectType = {
@@ -263,11 +304,12 @@ const FirmStaffGrid = (props: Props) => {
         ) : null}
       </Grid>
       <TerminateCooprationModal
-      addModalFlag={deleteFlag}
-      setAddModalFlag={setDeleteFlag}
-      editeData={deleteData}
-      setEditeData={setDeleteData}
-      refetch={StatesData_refetch}/>
+        addModalFlag={deleteFlag}
+        setAddModalFlag={setDeleteFlag}
+        editeData={deleteData}
+        setEditeData={setDeleteData}
+        refetch={StatesData_refetch}
+      />
       {/* <ConfirmBox
         open={deleteFlag}
         handleClose={() => {

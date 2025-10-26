@@ -77,7 +77,7 @@ const BranchGrid = ({}: Props) => {
         );
       },
     },
-    { field: "morguePlace", headerName: "محل نگهداری اسناد", flex: 1 },
+    // { field: "morguePlace", headerName: "محل نگهداری اسناد", flex: 1 },
     {
       headerName: "عملیات",
       field: "action",

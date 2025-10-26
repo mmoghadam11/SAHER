@@ -161,7 +161,7 @@ export const usePartnerFormItems = ({
         refetch: Supervisor_refetch,
         skipClientFilter: true, // فیلتر کلاینتی خاموش
         elementProps: {
-          onInputChange: (_e, v, reason) => {
+          onInputChange: (_e: any, v: string, reason: string) => {
             if (reason === "input") {
               setSupervisorTyping(true);
               setSupervisorSearch(v);

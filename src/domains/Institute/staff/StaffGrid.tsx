@@ -27,6 +27,7 @@ import paramsSerializer from "services/paramsSerializer";
 import { PAGINATION_DEFAULT_VALUE } from "shared/paginationValue";
 import ConfirmBox from "components/confirmBox/ConfirmBox";
 import moment from "jalali-moment";
+import { FormItem } from "types/formItem";
 
 type Props = {};
 
@@ -46,6 +47,7 @@ const StaffGrid = (props: Props) => {
     ...PAGINATION_DEFAULT_VALUE,
     firstName: "",
     lastName: "",
+    cooperationStatus: "",
     // code: "",
   });
   const {
@@ -61,18 +63,28 @@ const StaffGrid = (props: Props) => {
     enabled: true,
   } as any);
   const columns: GridColDef[] = [
+    // {
+    //   field: "personnelFirstName",
+    //   headerName: "نام شخص",
+    //   flex: 1.5,
+    //   renderCell: ({ row }: { row: any }) => {
+    //     return row?.personnelFirstName + " " + row?.personnelLastName;
+    //   },
+    // },
     {
       field: "personnelFirstName",
-      headerName: "نام شخص",
+      headerName: "نام",
       flex: 1.5,
-      renderCell: ({ row }: { row: any }) => {
-        return row?.personnelFirstName + " " + row?.personnelLastName;
-      },
+    },
+    {
+      field: "personnelLastName",
+      headerName: "نام خانوادگی",
+      flex: 1.5,
     },
     {
       field: "personnelNationalCode",
       headerName: "کد ملی",
-      flex: 1.5,
+      flex: 1.2,
     },
     {
       field: "auditingFirmName",
@@ -81,7 +93,7 @@ const StaffGrid = (props: Props) => {
     },
     {
       field: "birthDate",
-      headerName: "تاریخ شروع همکاری",
+      headerName: "شروع همکاری",
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
         return moment(row?.startDate).format("jYYYY/jMM/jDD");
@@ -89,7 +101,7 @@ const StaffGrid = (props: Props) => {
     },
     {
       field: "endDate",
-      headerName: "تاریخ پایان همکاری",
+      headerName: "پایان همکاری",
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
         if (row?.endDate) return moment(row?.endDate).format("jYYYY/jMM/jDD");
@@ -98,7 +110,7 @@ const StaffGrid = (props: Props) => {
     },
     {
       field: "cooperationStatus",
-      headerName: "وضعیت همکاری",
+      headerName: "وضعیت",
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
         if (row?.cooperationStatus)
@@ -106,7 +118,7 @@ const StaffGrid = (props: Props) => {
         else return <Chip color="default" label="غیر فعال" />;
       },
     },
-    { field: "cdProfessionalRankName", headerName: "رتبه حرفه‌ای", flex: 1 },
+    { field: "cdProfessionalRankName", headerName: "رده حرفه‌ای", flex: 1 },
     {
       headerName: "عملیات",
       field: "action",
@@ -153,47 +165,71 @@ const StaffGrid = (props: Props) => {
       return res?.data;
     },
   } as any);
-  interface SearchData {
-    name: string;
-    code: string;
-  }
-  type searchType = {
-    name: string;
-    inputType: string;
-    label: string;
-    size: any;
-    options?: any;
-  };
-  const searchItems: searchType[] = [
+  const {
+    data: rankOptions,
+    status: rankOptions_status,
+    refetch: rankOptions_refetch,
+  } = useQuery<any>({
+    queryKey: [`common-data/find-by-type-all?typeId=25`],
+    queryFn: Auth?.getRequest,
+    select: (res: any) => {
+      return res?.data;
+    },
+  } as any);
+
+  const searchItems: FormItem[] = [
     {
       name: "personnelFirstName",
       inputType: "text",
       label: "نام",
       size: { md: 3 },
     },
-    {
-      name: "auditingFirmName",
-      inputType: "text",
-      label: "نام خانوادگی",
-      size: { md: 3 },
-    },
-    {
-      name: "personnelNationalCode",
-      inputType: "text",
-      label: "کدملی شخص",
-      size: { md: 3 },
-    },
     // {
-    //   name: "auditingFirmId",
-    //   inputType: "autocomplete",
-    //   label: "موسسه",
+    //   name: "personnelLastName",
+    //   inputType: "text",
+    //   label: "نام خانوادگی",
     //   size: { md: 3 },
-    //   options: firmOptions?.map((item: any) => ({
-    //     value: item?.id,
-    //     title: item?.name,
-    //   })) ?? [{ value: 0, title: "خالی" }],
-    //   storeValueAs:"id"
     // },
+    // {
+      //   name: "personnelNationalCode",
+      //   inputType: "text",
+      //   label: "کدملی شخص",
+      //   size: { md: 3 },
+      // },
+      {
+        name: "cooperationStatus",
+        inputType: "select",
+        label: "وضعیت",
+        size: { md: 3 },
+        options: [
+          { value: "", title: "همه" },
+          { value: "true", title: "فعال" },
+          { value: "false", title: "غیرفعال" },
+        ],
+      },
+      {
+        name: "auditingFirmId",
+        inputType: "autocomplete",
+        label: "موسسه",
+        size: { md: 3 },
+        options: firmOptions?.map((item: any) => ({
+          id: item.id,
+          value: item.name,
+        })) ?? [{ id: 0, name: "خالی" }],
+        storeValueAs: "id",
+      },
+      {
+        name: "cdProfessionalRankId",
+        inputType: "autocomplete",
+        label: "رده حرفه‌ای",
+        size: { md: 3 },
+        options: rankOptions?.map((item: any) => ({
+          id: item.id,
+          value: item.value,
+        })) ?? [{ id: 0, value: "خالی" }],
+        storeValueAs: "id",
+      },
+      
 
     //   {
     //   name: "cdProfessionalRankId",
@@ -275,7 +311,7 @@ const StaffGrid = (props: Props) => {
           <BackButton onBack={() => navigate(-1)} />
         </Box>
       </Grid>
-      <SearchPannel<SearchData>
+      <SearchPannel<any>
         searchItems={searchItems}
         searchData={searchData}
         setSearchData={setSearchData}
