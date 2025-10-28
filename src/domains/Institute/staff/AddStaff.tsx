@@ -38,18 +38,20 @@ import paramsSerializer from "services/paramsSerializer";
 import { PersonnelAssignmentFormItems } from "domains/firmAdmin/staff/forms/PersonnelAssignmentFormItems";
 
 export default function AddStaff(): JSX.Element {
-  const { id, staffId } = useParams();
+  const { staffId } = useParams();
+  const Auth = useAuth();
   const { state } = useLocation();
   const [searchData, setSearchData] = useState({
     nationalCode: "",
+    auditingFirmId:state?.staffData?state?.staffData?.auditingFirmId:"",
     // cdPersonnelTypeId: 112,
     id: staffId === "new" ? "" : staffId,
   });
   const [filters, setFilters] = useState<any>({
-    nationalCode:
-      staffId !== "new" ? state?.staffData?.personnelNationalCode : "",
+    nationalCode:staffId !== "new" ? state?.staffData?.personnelNationalCode : "",
+    auditingFirmId:state?.staffData?state?.staffData?.auditingFirmId:"",
     // personnelId:staffId==="new"?"":staffId
-    // cdPersonnelTypeId: 112,
+    cdPersonnelTypeId: 112,
     // code: "",
   });
   const [editeDatafilters, setEditeDataFilters] = useState<any>({
@@ -58,6 +60,17 @@ export default function AddStaff(): JSX.Element {
     // cdPersonnelTypeId: 112,
     // code: "",
   });
+  const {
+        data: firmOptions,
+        status: firmOptions_status,
+        refetch: firmOptions_refetch,
+      } = useQuery<any>({
+        queryKey: [`firm/search-all`],
+        queryFn: Auth?.getRequest,
+        select: (res: any) => {
+          return res?.data;
+        },
+      } as any);
   const searchItems: FormItem[] = [
     {
       name: "nationalCode",
@@ -67,6 +80,14 @@ export default function AddStaff(): JSX.Element {
       elementProps: {
         disabled: staffId !== "new",
       },
+    }, 
+    {
+      name: "auditingFirmId",
+      inputType: "autocomplete",
+      label: "موسسه",
+      size: { md: 6 },
+      options: firmOptions?.map((item:any)=>({id:item.id,value:item.name})) ?? [{ value: 0, title: "خالی" }],
+      storeValueAs:"id"
     },
   ];
 
@@ -82,7 +103,6 @@ export default function AddStaff(): JSX.Element {
     setValue,
     getValues,
   } = useForm<any>({});
-  const Auth = useAuth();
   const snackbar = useSnackbar();
   const { mutate, isLoading } = useMutation({
     mutationFn: Auth?.serverCall,
@@ -93,7 +113,7 @@ export default function AddStaff(): JSX.Element {
     status: searchResponse_status,
     refetch: searchResponse_refetch,
   } = useQuery<any>({
-    queryKey: [`personnel-info/search-all${paramsSerializer(filters)}`],
+    queryKey: [`personnel-info/search-all?nationalCode=${filters?.nationalCode}&&cdPersonnelTypeId=112`],
     queryFn: Auth?.getRequest,
     select: (res: any) => {
       return res?.data;
@@ -112,7 +132,7 @@ export default function AddStaff(): JSX.Element {
     select: (res: any) => {
       return res?.data;
     },
-    enabled: staffId !== "new",
+    enabled: (staffId !== "new"||!!filters?.auditingFirmId),
   } as any);
   const {
     data: rankOptions,
@@ -200,7 +220,7 @@ export default function AddStaff(): JSX.Element {
         }),
       },
     ],
-    [searchResponse,editeData,setValue,getValues]
+    [searchResponse,editeData,setValue,getValues,reset]
   );
 
   const onSubmit = (data: FullInstituteType) => {
@@ -216,7 +236,7 @@ export default function AddStaff(): JSX.Element {
           // حسابدار رسمی=111
           // کارکنان حرفه ای=112
           // cdPersonnelTypeId: 112,
-          auditingFirmId: id,
+          auditingFirmId: filters?.auditingFirmId,
           personnelId: searchResponse?.[0]?.id,
         },
       },
@@ -256,8 +276,9 @@ export default function AddStaff(): JSX.Element {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("searchResponse", searchResponse);
-  }, [searchResponse]);
+    setEditeDataFilters((prev:any)=>({...prev,auditingFirmId:filters?.auditingFirmId??staffId}))
+    console.log("filters", filters);
+  }, [filters]);
   useEffect(() => {
   // اگر در حالت ویرایش هستیم و داده‌های ویرایش با موفقیت فچ شده‌اند
   if (staffId !== "new" && editeData && editeData.length > 0) {
@@ -330,7 +351,7 @@ export default function AddStaff(): JSX.Element {
                   ))}
               </Grid>
             )}
-            {(!!searchResponse || !!editeData) && (
+            {(!!searchResponse?.length || !!editeData?.length) && (
               <Grid item md={12} sm={12} xs={12}>
                 <form name="myForm" onSubmit={handleSubmit(onSubmit)}>
                   <Grid
@@ -355,7 +376,7 @@ export default function AddStaff(): JSX.Element {
                     {(searchResponse_status === "success" ||
                       editeData_status === "success") &&
                       (!!searchResponse?.length || !!editeData?.length) &&
-                      (!searchResponse?.[0]?.previousFirmName || !!editeData) &&
+                      (!searchResponse?.[0]?.previousFirmName || searchResponse?.[0]?.previousFirmId===filters.auditingFirmId ||!!editeData) &&
                       formSteps.map((stepItem, stepIndex) => (
                         <Grid
                           item
@@ -412,7 +433,7 @@ export default function AddStaff(): JSX.Element {
                       ))}
 
                     {state?.editable &&
-                      (searchResponse?.[0]?.previousFirmId === id ||
+                      (searchResponse?.[0]?.previousFirmId === filters.auditingFirmId ||
                         staffId === "new") &&
                       !!searchResponse?.length && (
                         <Grid

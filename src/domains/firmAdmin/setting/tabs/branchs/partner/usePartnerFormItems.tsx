@@ -122,11 +122,11 @@ export const usePartnerFormItems = ({
       {
         name: "responsiblePersonId",
         inputType: "autocomplete",
-        label: "شریک مقیم",
+        label: "شریک مستقر در شعبه",
         size: { md: 6 },
         options: ResponsiblePersonnel?.map(mapOption) ?? [],
         storeValueAs: "id",
-        rules: { required: "انتخاب شریک الزامی است" },
+        rules: { required: "انتخاب شریک مستقر در شعبه الزامی است" },
         status: Responsible_status,
         refetch: Responsible_refetch,
         skipClientFilter: true, // فیلتر کلاینتی خاموش
@@ -149,36 +149,36 @@ export const usePartnerFormItems = ({
         },
         inlineLoading: true,
       },
-      {
-        name: "supervisorPersonId",
-        inputType: "autocomplete",
-        label: "ناظر",
-        size: { md: 6 },
-        options: SupervisorPersonnel?.map(mapOption) ?? [],
-        storeValueAs: "id",
-        rules: { required: "انتخاب ناظر الزامی است" },
-        status: Supervisor_status,
-        refetch: Supervisor_refetch,
-        skipClientFilter: true, // فیلتر کلاینتی خاموش
-        elementProps: {
-          onInputChange: (_e: any, v: string, reason: string) => {
-            if (reason === "input") {
-              setSupervisorTyping(true);
-              setSupervisorSearch(v);
-            } else if (reason === "clear") {
-              setSupervisorTyping(true);
-              setSupervisorSearch("");
-            }
-          },
-          loading: Supervisor_fetching&&!!supervisorFilters,
-          noOptionsText:
-            (supervisorSearch.trim().length < 2 &&
-              "برای جستجو حداقل ۲ کاراکتر وارد کنید") ||
-            "موردی یافت نشد",
-          openOnFocus: true,
-        },
-        inlineLoading: true,
-      },
+      // {
+      //   name: "supervisorPersonId",
+      //   inputType: "autocomplete",
+      //   label: "ناظر",
+      //   size: { md: 6 },
+      //   options: SupervisorPersonnel?.map(mapOption) ?? [],
+      //   storeValueAs: "id",
+      //   rules: { required: "انتخاب ناظر الزامی است" },
+      //   status: Supervisor_status,
+      //   refetch: Supervisor_refetch,
+      //   skipClientFilter: true, // فیلتر کلاینتی خاموش
+      //   elementProps: {
+      //     onInputChange: (_e: any, v: string, reason: string) => {
+      //       if (reason === "input") {
+      //         setSupervisorTyping(true);
+      //         setSupervisorSearch(v);
+      //       } else if (reason === "clear") {
+      //         setSupervisorTyping(true);
+      //         setSupervisorSearch("");
+      //       }
+      //     },
+      //     loading: Supervisor_fetching&&!!supervisorFilters,
+      //     noOptionsText:
+      //       (supervisorSearch.trim().length < 2 &&
+      //         "برای جستجو حداقل ۲ کاراکتر وارد کنید") ||
+      //       "موردی یافت نشد",
+      //     openOnFocus: true,
+      //   },
+      //   inlineLoading: true,
+      // },
     ],
     [
       ResponsiblePersonnel,

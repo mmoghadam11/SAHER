@@ -21,6 +21,7 @@ import VerticalTable from "components/dataGrid/VerticalTable";
 import { isMobile } from "react-device-detect";
 import AddPartner from "./AddPartner";
 import ConfirmBox from "components/confirmBox/ConfirmBox";
+import moment from "jalali-moment";
 
 type Props = {
   selectedBranch: any;
@@ -60,8 +61,36 @@ const BranchPartnerGrid = ({
     enabled: true,
   } as any);
   const columns: GridColDef[] = [
-    { field: "supervisorPersonName", headerName: "ناظر", flex: 1 },
-    { field: "responsiblePersonName", headerName: "نام شریک مقیم", flex: 1 },
+    {
+      field: "responsiblePersonName",
+      headerName: "شریک مستقر در شعبه",
+      flex: 1,
+    },
+    {
+      field: "startDate",
+      headerName: "تاریخ شروع",
+      flex: 1,
+      renderCell: ({ row }: { row: any }) => {
+        return (
+          <Typography>
+            {moment(new Date(row?.startDate)).format("jYYYY/jMM/jDD")}
+          </Typography>
+        );
+      },
+    },
+    {
+      field: "endDate",
+      headerName: "تاریخ پایان",
+      flex: 1,
+      renderCell: ({ row }: { row: any }) => {
+        if (row.endDate)
+          return (
+            <Typography>
+              {moment(new Date(row?.endDate)).format("jYYYY/jMM/jDD")}
+            </Typography>
+          );
+      },
+    },
     {
       headerName: "عملیات",
       field: "action",

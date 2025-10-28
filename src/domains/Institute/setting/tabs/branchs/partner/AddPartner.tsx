@@ -30,8 +30,6 @@ import { usePartnerFormItems } from "./usePartnerFormItems"; // هوک جدید 
 // import { useDebounce } from "hooks/useDebounce"; // حذف شد
 // import paramsSerializer from "services/paramsSerializer"; // حذف شد
 
-
-
 type Props = {
   refetch: () => void;
   addPartnerFlag: boolean;
@@ -61,14 +59,14 @@ const AddPartner = ({
     formState: { errors },
     reset,
     getValues,
-    // setValue, // دیگر لازم نیست
+    setValue,
   } = useForm<any>();
 
   // --- تمام منطق جستجو، debounce، فیلتر، useQuery و ... حذف شد ---
 
   // --- استفاده از هوک جدید ---
   // این یک خط، جایگزین حدود ۸۰ خط منطق قبلی شما شده است
-  const formItems = usePartnerFormItems({ editePartnerData });
+  const formItems = usePartnerFormItems({ setValue, editePartnerData });
 
   // --- useEffect خلوت شده ---
   useEffect(() => {
@@ -127,7 +125,16 @@ const AddPartner = ({
 
   // --- JSX (بدون تغییر) ---
   return (
-    <Dialog open={addPartnerFlag} onClose={handleClose} maxWidth={"md"}>
+    <Dialog
+      open={addPartnerFlag}
+      onClose={handleClose}
+      maxWidth={"md"}
+      PaperProps={{
+        sx: {
+          overflow: "visible", // اجازه به محتوای Dialog برای بیرون زدن
+        },
+      }}
+    >
       <DialogTitle>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Box
@@ -147,7 +154,7 @@ const AddPartner = ({
         </Box>
       </DialogTitle>
 
-      <DialogContent>
+      <DialogContent sx={{ overflow: "visible" }}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={3} mt={1}>
             {formItems.map((item) => (

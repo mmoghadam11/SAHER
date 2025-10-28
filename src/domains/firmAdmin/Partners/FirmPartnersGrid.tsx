@@ -29,7 +29,7 @@ import { useAuth } from "hooks/useAuth";
 import { useSnackbar } from "hooks/useSnackbar";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import paramsSerializer from "services/paramsSerializer";
 import { PAGINATION_DEFAULT_VALUE } from "shared/paginationValue";
 import ConfirmBox from "components/confirmBox/ConfirmBox";
@@ -41,6 +41,7 @@ type Props = {};
 const FirmPartnersGrid = (props: Props) => {
   const Auth = useAuth();
   const { id } = useParams();
+  const {state}=useLocation();
   const snackbar = useSnackbar();
   const navigate = useNavigate();
   const { isLoading, mutate, error } = useMutation({
@@ -92,6 +93,11 @@ const FirmPartnersGrid = (props: Props) => {
       flex: 1.5,
     },
     {
+      field: "membershipNo",
+      headerName: "کد عضویت",
+      flex: 1.5,
+    },
+    {
       field: "birthDate",
       align:"center",
       headerName: "شروع همکاری",
@@ -131,13 +137,13 @@ const FirmPartnersGrid = (props: Props) => {
       renderCell: ({ row }: { row: any }) => {
         if(row?.partnerStatus===true) return (
           <TableActions
-            onEdit={() => {
-              setEditeData(row);
-              setAddModalFlag(true);
-              navigate(`${row.id}`, {
-                state: { staffData: row, editable: true },
-              });
-            }}
+            // onEdit={() => {
+            //   setEditeData(row);
+            //   setAddModalFlag(true);
+            //   navigate(`${row.id}`, {
+            //     state: { staffData: row, editable: true },
+            //   });
+            // }}
             onView={() => {
               setEditeData(row);
               setAddModalFlag(true);
@@ -145,14 +151,14 @@ const FirmPartnersGrid = (props: Props) => {
                 state: { staffData: row, editable: false },
               });
             }}
-            onManage={{
-              title: "پایان همکاری",
-              function: () => {
-                setDeleteData(row);
-                setDeleteFlag(true);
-              },
-              icon: <PersonRemove color="error" />,
-            }}
+            // onManage={{
+            //   title: "پایان همکاری",
+            //   function: () => {
+            //     setDeleteData(row);
+            //     setDeleteFlag(true);
+            //   },
+            //   icon: <PersonRemove color="error" />,
+            // }}
           />
         );
       },
@@ -238,10 +244,10 @@ const FirmPartnersGrid = (props: Props) => {
       >
         <Box display={"flex"}>
           <Article fontSize="large" />
-          <Typography variant="h5">شرکای موسسه</Typography>
+          <Typography variant="h5">شرکای موسسه {state?.firmData?.name}</Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"}>
-          <Button
+          {/* <Button
             endIcon={<AddCircle />}
             variant="contained"
             color="info"
@@ -249,7 +255,7 @@ const FirmPartnersGrid = (props: Props) => {
             sx={{ minWidth: "100px", mb: 2, mr: 2 }}
           >
             افزودن شریک
-          </Button>
+          </Button> */}
           {/* <CreateNewItem
             sx={{ mr: 2 }}
             name="شخص"
@@ -272,7 +278,7 @@ const FirmPartnersGrid = (props: Props) => {
             filters={filters}
             setFilters={setFilters}
             rowCount={StatesData?.totalElements}
-            getRowHeight={() => "auto"}
+            // getRowHeight={() => "auto"}
             autoHeight
             hideToolbar
           />
