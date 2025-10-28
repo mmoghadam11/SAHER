@@ -44,36 +44,36 @@ export const BranchFormItems = (
         value: "",
       },
     },
-    {
-      name: "morguePlace",
-      inputType: "text",
-      label: "محل نگهداری اسناد",
-      size: { md: 6 },
-      rules: { required: "محل نگهداری اسناد الزامی است" },
-    },
-    {
-      name: "responsiblePersonId",
-      inputType: "autocomplete",
-      label: "مدیر مسئول شعبه",
-      size: { md: 6 },
-      options: options?.PersonnelInfo?.map((item: any) => ({ 
-        value: item?.id, 
-        title: `${item?.firstName} ${item?.lastName} - ${item?.nationalCode}`
-      })) ?? [{ value: 0, title: "خالی" }],
-      storeValueAs: 'id',
-      rules: { required: "انتخاب مدیر مسئول شعبه الزامی است" },
-    },
-    {
-      name: "supervisorPersonId",
-      inputType: "autocomplete",
-      label: "ناظر",
-      size: { md: 6 },
-      options: options?.PersonnelInfo?.map((item: any) => ({ 
-        value: item?.id, 
-        title: `${item?.firstName} ${item?.lastName} - ${item?.nationalCode}`
-      })) ?? [{ value: 0, title: "خالی" }],
-      storeValueAs: 'id',
-      rules: { required: "انتخاب ناظر الزامی است" },
-    },
+    // {
+    //   name: "morguePlace",
+    //   inputType: "text",
+    //   label: "محل نگهداری اسناد",
+    //   size: { md: 6 },
+    //   rules: { required: "محل نگهداری اسناد الزامی است" },
+    // },
+    // {
+    //   name: "responsiblePersonId",
+    //   inputType: "autocomplete",
+    //   label: "مدیر مسئول شعبه",
+    //   size: { md: 6 },
+    //   options: options?.PersonnelInfo?.map((item: any) => ({ 
+    //     value: item?.id, 
+    //     title: `${item?.firstName} ${item?.lastName} - ${item?.nationalCode}`
+    //   })) ?? [{ value: 0, title: "خالی" }],
+    //   storeValueAs: 'id',
+    //   rules: { required: "انتخاب مدیر مسئول شعبه الزامی است" },
+    // },
+    // {
+    //   name: "supervisorPersonId",
+    //   inputType: "autocomplete",
+    //   label: "ناظر",
+    //   size: { md: 6 },
+    //   options: options?.PersonnelInfo?.map((item: any) => ({ 
+    //     value: item?.id, 
+    //     title: `${item?.firstName} ${item?.lastName} - ${item?.nationalCode}`
+    //   })) ?? [{ value: 0, title: "خالی" }],
+    //   storeValueAs: 'id',
+    //   rules: { required: "انتخاب ناظر الزامی است" },
+    // },
   ];
 };

@@ -11,7 +11,7 @@ export const DirectorItems = (
 ): FormItem[] => {
   return [
     {
-    name: "directorPersonnelId",
+    name: "personnelId",
     inputType: "autocomplete",
     label: "مدیرعامل",
     size: { md: 6 },
@@ -23,17 +23,14 @@ export const DirectorItems = (
     rules: { required: "انتخاب پرسنل الزامی است" },
   },
   {
-    name: "directorAcceptanceDate",
+    name: "startDate",
     inputType: "date",
     label: "تاریخ شروع مدیریت",
     size: { md: 6 },
     rules: { required: "تاریخ شروع مدیریت الزامی است" },
-    tempRules: { required: "تاریخ شروع مدیریت الزامی است" },
+    // tempRules: { required: "تاریخ شروع مدیریت الزامی است" },
     elementProps: {
-      setDay: (value: any) => {
-        setValue("registerDate", value);
-        // این تابع باید در کامپوننت والد تعریف شود
-      },
+      setDay: (value: any) => setValue("startDate", value),
       value: "", // مقدار اولیه
     },
   },

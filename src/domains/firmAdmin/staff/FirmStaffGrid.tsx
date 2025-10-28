@@ -29,7 +29,7 @@ import { useAuth } from "hooks/useAuth";
 import { useSnackbar } from "hooks/useSnackbar";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import paramsSerializer from "services/paramsSerializer";
 import { PAGINATION_DEFAULT_VALUE } from "shared/paginationValue";
 import ConfirmBox from "components/confirmBox/ConfirmBox";
@@ -42,6 +42,7 @@ type Props = {};
 const FirmStaffGrid = (props: Props) => {
   const Auth = useAuth();
   const { id } = useParams();
+  const {state}=useLocation();
   const snackbar = useSnackbar();
   const navigate = useNavigate();
   const { isLoading, mutate, error } = useMutation({
@@ -101,6 +102,13 @@ const FirmStaffGrid = (props: Props) => {
       headerName: "نام خانوادگی",
       flex: 1.5,
     },
+    { field: "cdProfessionalRankName", headerName: "رده حرفه‌ای", flex: 1 },
+    { field: "cdProfessionalRankDate", headerName: "تاریخ اخذ رده", flex: 1,
+      renderCell: ({ row }: { row: any }) => {
+        if (row?.endDate) return moment(row?.cdProfessionalRankDate).format("jYYYY/jMM/jDD");
+        else return null;
+      },
+    },
     {
       field: "birthDate",
       headerName: "شروع همکاری",
@@ -128,7 +136,6 @@ const FirmStaffGrid = (props: Props) => {
         else return <Chip color="default" label="غیر فعال" />;
       },
     },
-    { field: "cdProfessionalRankName", headerName: "رده حرفه‌ای", flex: 1 },
     {
       headerName: "عملیات",
       field: "action",
@@ -263,7 +270,7 @@ const FirmStaffGrid = (props: Props) => {
       >
         <Box display={"flex"}>
           <Article fontSize="large" />
-          <Typography variant="h5">کارکنان حرفه‌ای موسسه</Typography>
+          <Typography variant="h5">کارکنان حرفه‌ای موسسه {state?.firmData?.name}</Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"}>
           <Button

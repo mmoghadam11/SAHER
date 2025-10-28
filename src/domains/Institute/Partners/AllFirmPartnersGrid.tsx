@@ -29,7 +29,7 @@ import { useAuth } from "hooks/useAuth";
 import { useSnackbar } from "hooks/useSnackbar";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import paramsSerializer from "services/paramsSerializer";
 import { PAGINATION_DEFAULT_VALUE } from "shared/paginationValue";
 import ConfirmBox from "components/confirmBox/ConfirmBox";
@@ -41,6 +41,7 @@ type Props = {};
 const AllFirmPartnersGrid = (props: Props) => {
   const Auth = useAuth();
   const { id } = useParams();
+  const { state } = useLocation();
   const snackbar = useSnackbar();
   const navigate = useNavigate();
   const { isLoading, mutate, error } = useMutation({
@@ -76,12 +77,17 @@ const AllFirmPartnersGrid = (props: Props) => {
     {
       field: "personnelFirstName",
       headerName: "نام",
-      flex: 1.5,
+      flex: 1.1,
     },
     {
       field: "personnelLastName",
       headerName: "نام خانوادگی",
-      flex: 1.5,
+      flex: 1.1,
+    },
+    {
+      field: "membershipNo",
+      headerName: "کد عضویت",
+      flex: 1,
     },
     {
       field: "birthDate",
@@ -236,7 +242,7 @@ const AllFirmPartnersGrid = (props: Props) => {
       >
         <Box display={"flex"}>
           <Article fontSize="large" />
-          <Typography variant="h5">شرکای موسسه</Typography>
+          <Typography variant="h5">شرکای موسسه {state?.firmData?.name}</Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"}>
           <Button

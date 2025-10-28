@@ -16,6 +16,7 @@ import { FullInstituteType } from "types/institute";
 
 // کامپوننت‌های مربوط به هر دسته اطلاعات
 import {
+  AddCircle,
   Check,
   Close,
   CrisisAlert,
@@ -36,6 +37,7 @@ import RenderFormDisplay from "components/render/formInputs/RenderFormDisplay";
 import SearchPannel from "components/form/SearchPannel";
 import { PersonnelAssignmentFormItems } from "./forms/PersonnelAssignmentFormItems";
 import paramsSerializer from "services/paramsSerializer";
+import CreateNewItem from "components/buttons/CreateNewItem";
 
 export default function AddFirmStaff(): JSX.Element {
   const { id, staffId } = useParams();
@@ -49,7 +51,7 @@ export default function AddFirmStaff(): JSX.Element {
     nationalCode:
       staffId !== "new" ? state?.staffData?.personnelNationalCode : "",
     // personnelId:staffId==="new"?"":staffId
-    // cdPersonnelTypeId: 112,
+    cdPersonnelTypeId: 112,
     // code: "",
   });
   const [editeDatafilters, setEditeDataFilters] = useState<any>({
@@ -259,13 +261,13 @@ export default function AddFirmStaff(): JSX.Element {
     console.log("searchResponse", searchResponse);
   }, [searchResponse]);
   useEffect(() => {
-  // اگر در حالت ویرایش هستیم و داده‌های ویرایش با موفقیت فچ شده‌اند
-  if (staffId !== "new" && editeData && editeData.length > 0) {
-    // فرم را با داده‌های دریافتی پر کنید
-    // editeData یک آرایه است، پس از آیتم اول استفاده می‌کنیم
-    reset(editeData[0]);
-  }
-}, [editeData, staffId, reset]);
+    // اگر در حالت ویرایش هستیم و داده‌های ویرایش با موفقیت فچ شده‌اند
+    if (staffId !== "new" && editeData && editeData.length > 0) {
+      // فرم را با داده‌های دریافتی پر کنید
+      // editeData یک آرایه است، پس از آیتم اول استفاده می‌کنیم
+      reset(editeData[0]);
+    }
+  }, [editeData, staffId, reset]);
   return (
     <Grid container justifyContent={"center"}>
       <Grid md={10.5} sm={11.5} xs={12} item>
@@ -284,7 +286,7 @@ export default function AddFirmStaff(): JSX.Element {
               </Grid>
               <BackButton onBack={() => navigate(-1)} />
             </Grid>
-            {staffId==="new" && (
+            {staffId === "new" && (
               <SearchPannel<any>
                 searchItems={searchItems}
                 searchData={searchData}
@@ -314,11 +316,18 @@ export default function AddFirmStaff(): JSX.Element {
 
                 {searchResponse_status === "success" &&
                   (!searchResponse?.length ? (
-                    <Chip
-                      color="default"
-                      label="اطلاعاتی یافت نشد"
-                      icon={<CrisisAlert />}
-                    />
+                    <Box display={"flex"}>
+                      <Chip
+                        color="default"
+                        label="اطلاعاتی یافت نشد"
+                        icon={<CrisisAlert />}
+                      />
+                      <Chip 
+                      color="info"
+                      icon={<AddCircle/>}
+                      label="ایجاد شخص جدید"
+                      onClick={()=>{navigate(`/FirmAdmin/persons/add/new`, { state: { editable: true,cdPersonnelTypeId:112 }} )}}/>
+                    </Box>
                   ) : !searchResponse?.[0]?.previousFirmName ? (
                     <Chip color="success" label="مجاز" icon={<Verified />} />
                   ) : searchResponse?.[0]?.previousFirmId === id ? (
@@ -336,7 +345,7 @@ export default function AddFirmStaff(): JSX.Element {
                   ))}
               </Grid>
             )}
-            {(!!searchResponse || !!editeData) && (
+            {(!!searchResponse?.length || !!editeData?.length) && (
               <Grid item md={12} sm={12} xs={12}>
                 <form name="myForm" onSubmit={handleSubmit(onSubmit)}>
                   <Grid

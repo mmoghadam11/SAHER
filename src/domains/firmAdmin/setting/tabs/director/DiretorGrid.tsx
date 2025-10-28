@@ -56,28 +56,28 @@ const DirectorGrid = ({ setActiveTab }: Props) => {
     { field: "firstName", headerName: "نام مدیرعامل", flex: 1 },
     { field: "lastName", headerName: "نام خانوادگی", flex: 1 },
     { field: "nationalCode", headerName: "کد ملی", flex: 1 },
-    {
-      headerName: "عملیات",
-      field: "action",
-      flex: 1,
-      headerAlign: "center",
-      align: "center",
-      renderCell: ({ row }: { row: any }) => {
-        return (
-          <TableActions
-            onEdit={() => {
-              // navigate(`${row.id}`, { state: { userData: row } });
-              setEditeData(row);
-              setAddModalFlag(true)
-            }}
-            onDelete={() => {
-              setDeleteData(row);
-              setDeleteFlag(true);
-            }}
-          />
-        );
-      },
-    },
+    // {
+    //   headerName: "عملیات",
+    //   field: "action",
+    //   flex: 1,
+    //   headerAlign: "center",
+    //   align: "center",
+    //   renderCell: ({ row }: { row: any }) => {
+    //     return (
+    //       <TableActions
+    //         onEdit={() => {
+    //           // navigate(`${row.id}`, { state: { userData: row } });
+    //           setEditeData(row);
+    //           setAddModalFlag(true)
+    //         }}
+    //         onDelete={() => {
+    //           setDeleteData(row);
+    //           setDeleteFlag(true);
+    //         }}
+    //       />
+    //     );
+    //   },
+    // },
   ];
   interface SearchData {
     name: string;
@@ -163,16 +163,13 @@ const DirectorGrid = ({ setActiveTab }: Props) => {
           <Typography variant="h5">لیست مدیران عامل</Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"}>
-          <CreateNewItem
+          {/* <CreateNewItem
             sx={{ mr: 2 }}
             name="مدیرعامل"
-            // onClick={() => navigate("new")}
             onClick={() => {
-              // navigate("new")
-              // setActiveTab(1);
               setAddModalFlag(true)
             }}
-          />
+          /> */}
         </Box>
       </Grid>
       {/* <SearchPannel<SearchData>

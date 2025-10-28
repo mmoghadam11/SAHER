@@ -33,10 +33,10 @@ export const PartnerAssignmentFormItems = (
   {
     name: "dang",
     inputType: "text",
-    label: "درصد سهم‌الشرکه",
+    label: "سهم‌الشرکه(به ریال)",
     size: { md: 6 },
     rules: { 
-      required: "درصد سهم‌الشرکه الزامی است",
+      required: "سهم‌الشرکه(به ریال) الزامی است",
       pattern: {
         value: /^[0-9]+$/,
         message: "باید فقط عدد وارد شود"
