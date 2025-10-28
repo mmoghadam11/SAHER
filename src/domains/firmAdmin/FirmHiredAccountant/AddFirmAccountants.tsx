@@ -16,6 +16,7 @@ import { FullInstituteType } from "types/institute";
 
 // کامپوننت‌های مربوط به هر دسته اطلاعات
 import {
+  AddCircle,
   Check,
   Close,
   CrisisAlert,
@@ -47,9 +48,9 @@ export default function AddFirmAccountant(): JSX.Element {
   });
   const [filters, setFilters] = useState<any>({
     nationalCode:
-      staffId !== "new" ? state?.staffData?.personnelNationalCode : "",
+      staffId !== "new" ? state?.staffData?.nationalCode : "",
     // personnelId:staffId==="new"?"":staffId
-    // cdPersonnelTypeId: 112,
+    cdPersonnelTypeId: 111,
     // code: "",
   });
   const [editeDatafilters, setEditeDataFilters] = useState<any>({
@@ -94,7 +95,7 @@ export default function AddFirmAccountant(): JSX.Element {
     refetch: searchResponse_refetch,
   } = useQuery<any>({
     // queryKey: [`personnel-info/search-all${paramsSerializer(filters)}`],
-    queryKey: [`certified-accountant/search-all${paramsSerializer(filters)}`],
+    queryKey: [`personnel-info/search-all${paramsSerializer(filters)}`],
     queryFn: Auth?.getRequest,
     select: (res: any) => {
       return res?.data;
@@ -106,7 +107,7 @@ export default function AddFirmAccountant(): JSX.Element {
     status: editeData_status,
     refetch: editeData_refetch,
   } = useQuery<any>({
-    queryKey: [`professional-staff/search-all${paramsSerializer(editeDatafilters)}`],
+    queryKey: [`membership/search-all${paramsSerializer(editeDatafilters)}`],
     queryFn: Auth?.getRequest,
     select: (res: any) => {
       return res?.data;
@@ -206,7 +207,7 @@ export default function AddFirmAccountant(): JSX.Element {
     console.log("lastForm=>", data);
     mutate(
       {
-        entity: `professional-staff/${staffId !== "new" ? "update" : "save"}`,
+        entity: `membership/${staffId !== "new" ? "update" : "save"}`,
         // entity: `membership/save`,
         method: staffId !== "new" ? "put" : "post",
         // method:  "post",
@@ -214,7 +215,7 @@ export default function AddFirmAccountant(): JSX.Element {
           ...data,
           // حسابدار رسمی=111
           // کارکنان حرفه ای=112
-          // cdPersonnelTypeId: 112,
+          cdPersonnelTypeId: state?.cdPersonnelTypeId??null,
           auditingFirmId: id,
           personnelId: searchResponse?.[0]?.id,
         },
@@ -224,10 +225,10 @@ export default function AddFirmAccountant(): JSX.Element {
           console.log("res=>", res);
           if (staffId !== "new")
             snackbar(
-              `به روز رسانی عضو انتخاب شده با موفقیت انجام شد`,
+              `به روز رسانی حسابدار انتخاب شده با موفقیت انجام شد`,
               "success"
             );
-          else snackbar(`ایجاد عضو جدید با موفقیت انجام شد`, "success");
+          else snackbar(`افزودن حسابدار جدید با موفقیت انجام شد`, "success");
           // refetch();
           //   handleClose();
         },
@@ -258,13 +259,13 @@ export default function AddFirmAccountant(): JSX.Element {
     console.log("searchResponse", searchResponse);
   }, [searchResponse]);
   useEffect(() => {
-  // اگر در حالت ویرایش هستیم و داده‌های ویرایش با موفقیت فچ شده‌اند
-  if (staffId !== "new" && editeData && editeData.length > 0) {
-    // فرم را با داده‌های دریافتی پر کنید
-    // editeData یک آرایه است، پس از آیتم اول استفاده می‌کنیم
-    reset(editeData[0]);
-  }
-}, [editeData, staffId, reset]);
+    // اگر در حالت ویرایش هستیم و داده‌های ویرایش با موفقیت فچ شده‌اند
+    if (staffId !== "new" && editeData && editeData.length > 0) {
+      // فرم را با داده‌های دریافتی پر کنید
+      // editeData یک آرایه است، پس از آیتم اول استفاده می‌کنیم
+      reset(editeData[0]);
+    }
+  }, [editeData, staffId, reset]);
   return (
     <Grid container justifyContent={"center"}>
       <Grid md={10.5} sm={11.5} xs={12} item>
@@ -279,11 +280,13 @@ export default function AddFirmAccountant(): JSX.Element {
             >
               <Grid item display={"flex"}>
                 <Inventory fontSize="large" />
-                <Typography variant="h5">فرم اطلاعات حسابداران موسسه</Typography>
+                <Typography variant="h5">
+                  فرم اطلاعات حسابداران موسسه
+                </Typography>
               </Grid>
               <BackButton onBack={() => navigate(-1)} />
             </Grid>
-            {staffId==="new" && (
+            {staffId === "new" && (
               <SearchPannel<any>
                 searchItems={searchItems}
                 searchData={searchData}
@@ -313,11 +316,23 @@ export default function AddFirmAccountant(): JSX.Element {
 
                 {searchResponse_status === "success" &&
                   (!searchResponse?.length ? (
-                    <Chip
-                      color="default"
-                      label="اطلاعاتی یافت نشد"
-                      icon={<CrisisAlert />}
-                    />
+                    <Box display={"flex"}>
+                      <Chip
+                        color="default"
+                        label="اطلاعاتی یافت نشد"
+                        icon={<CrisisAlert />}
+                      />
+                      <Chip
+                        color="info"
+                        icon={<AddCircle />}
+                        label="ایجاد شخص جدید"
+                        onClick={() => {
+                          navigate(`/FirmAdmin/persons/add/new`, {
+                            state: { editable: true,cdPersonnelTypeId:111 },
+                          });
+                        }}
+                      />
+                    </Box>
                   ) : !searchResponse?.[0]?.previousFirmName ? (
                     <Chip color="success" label="مجاز" icon={<Verified />} />
                   ) : searchResponse?.[0]?.previousFirmId === id ? (
@@ -335,7 +350,7 @@ export default function AddFirmAccountant(): JSX.Element {
                   ))}
               </Grid>
             )}
-            {(!!searchResponse || !!editeData) && (
+            {(!!searchResponse?.length || !!editeData?.length) && (
               <Grid item md={12} sm={12} xs={12}>
                 <form name="myForm" onSubmit={handleSubmit(onSubmit)}>
                   <Grid

@@ -5,28 +5,30 @@ export const AccountantAssignmentFormItems = (
   options: any
 ): FormItem[] => [
   {
-    name: "startDate",
+    name: "cooperationStartDate",
     inputType: "date",
     label: "تاریخ شروع",
     size: { md: 6 },
     rules: { required: "تاریخ شروع الزامی است" },
     elementProps: {
       setDay: (value: any) => {
-        setValue("startDate", value);
+        setValue("cooperationStartDate", value);
       },
       value: "",
     },
   },
   {
-    name: "cdProfessionalRankId",
-    inputType: "select",
-    label: "رده حرفه‌ای",
+    name: "lastMembershipCardIssuanceDate",
+    inputType: "date",
+    label: "تاریخ صدور کارت",
     size: { md: 6 },
-    options: options?.rankOptions?.map((item: any) => ({ 
-      value: item?.id, 
-      title: item?.value 
-    })) ?? [{ value: 0, title: "خالی" }],
-    rules: { required: "انتخاب رده حرفه‌ای الزامی است" },
+    rules: { required: "تاریخ صدور کارت الزامی است" },
+    elementProps: {
+      setDay: (value: any) => {
+        setValue("lastMembershipCardIssuanceDate", value);
+      },
+      value: "",
+    },
   },
   {
     name: "officePhone",
@@ -40,22 +42,20 @@ export const AccountantAssignmentFormItems = (
       }
     },
   },
-  // {
-  //   name: "operationalJob",
-  //   inputType: "text",
-  //   label: "شغل عملیاتی",
-  //   size: { md: 6 },
-  //   rules: { required: "شغل عملیاتی الزامی است" },
-  // },
   {
-    name: "description",
+    name: "personnelEmail",
     inputType: "text",
-    label: "توضیحات",
-    size: { md: 12 },
-    elementProps: {
-      multiline: true,
-      rows: 3,
+    label: "ایمیل",
+    size: { md: 6 },
+    rules: { 
+      pattern: {
+        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+        message: "فرمت ایمیل نامعتبر است"
+      }
     },
-    rules: { },
   },
 ];
+
+
+
+

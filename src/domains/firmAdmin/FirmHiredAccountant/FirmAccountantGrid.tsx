@@ -2,9 +2,11 @@ import {
   AddCircle,
   Article,
   CheckCircle,
+  Close,
   PersonRemove,
   Search,
   Settings,
+  Verified,
 } from "@mui/icons-material";
 import {
   Box,
@@ -64,7 +66,7 @@ const FirmAccountantGrid = (props: Props) => {
     status: StatesData_status,
     refetch: StatesData_refetch,
   } = useQuery<any>({
-    queryKey: [`certified-accountant/search${paramsSerializer(filters)}`],
+    queryKey: [`membership/search${paramsSerializer(filters)}`],
     queryFn: Auth?.getRequest,
     select: (res: any) => {
       return res?.data;
@@ -92,21 +94,32 @@ const FirmAccountantGrid = (props: Props) => {
     //   },
     // },
     {
+      field: "membershipNo",
+      headerName: "کد عضویت",
+      flex: 1,
+    },
+    {
       field: "firstName",
       headerName: "نام",
-      flex: 1.5,
+      flex: 1,
     },
     {
       field: "lastName",
       headerName: "نام خانوادگی",
-      flex: 1.5,
+      flex: 1.1,
     },
     {
-      field: "birthDate",
+      field: "membershipTypeName",
+      headerName: "نوع عضویت",
+      flex: 1,
+    },
+    {
+      field: "cooperationStartDate",
       headerName: "شروع همکاری",
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
-        return moment(row?.startDate).format("jYYYY/jMM/jDD");
+        if (row?.cooperationStartDate)
+          return moment(row?.cooperationStartDate).format("jYYYY/jMM/jDD");
       },
     },
     {
@@ -114,21 +127,33 @@ const FirmAccountantGrid = (props: Props) => {
       headerName: "پایان همکاری",
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
-        if (row?.endDate) return moment(row?.endDate).format("jYYYY/jMM/jDD");
+        if (row?.cooperationEndDate)
+          return moment(row?.cooperationEndDate).format("jYYYY/jMM/jDD");
         else return null;
       },
     },
     {
-      field: "cooperationStatus",
+      field: "lastMembershipCardIssuanceDate",
+      headerName: "تاریخ صدور کارت",
+      flex: 1,
+      renderCell: ({ row }: { row: any }) => {
+        if (row?.lastMembershipCardIssuanceDate)
+          return moment(row?.lastMembershipCardIssuanceDate).format(
+            "jYYYY/jMM/jDD"
+          );
+        else return null;
+      },
+    },
+    {
+      field: "status",
       headerName: "وضعیت",
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
-        if (row?.cooperationStatus)
-          return <Chip color="secondary" label="فعال" icon={<CheckCircle />} />;
-        else return <Chip color="default" label="غیر فعال" />;
+        if (row?.status)
+          return <Chip label="فعال" icon={<Verified />} color="secondary" />;
+        else return <Chip label="غیر فعال" icon={<Close />} color="default" />;
       },
     },
-    { field: "cdproffesionalRankValue", headerName: "رده حرفه‌ای", flex: 1 },
     {
       headerName: "عملیات",
       field: "action",
@@ -136,33 +161,36 @@ const FirmAccountantGrid = (props: Props) => {
       headerAlign: "center",
       align: "center",
       renderCell: ({ row }: { row: any }) => {
-        if (row?.cooperationStatus === true)
-          return (
-            <TableActions
-              onEdit={() => {
-                setEditeData(row);
-                setAddModalFlag(true);
-                navigate(`${row.id}`, {
-                  state: { staffData: row, editable: true },
-                });
-              }}
-              onView={() => {
-                setEditeData(row);
-                setAddModalFlag(true);
-                navigate(`${row.id}`, {
-                  state: { staffData: row, editable: false },
-                });
-              }}
-              onManage={{
-                title: "پایان همکاری",
-                function: () => {
-                  setDeleteData(row);
-                  setDeleteFlag(true);
-                },
-                icon: <PersonRemove color="error" />,
-              }}
-            />
-          );
+        return (
+          <TableActions
+            onEdit={() => {
+              setEditeData(row);
+              setAddModalFlag(true);
+              navigate(`${row.id}`, {
+                state: { staffData: row, editable: true },
+              });
+            }}
+            onView={() => {
+              setEditeData(row);
+              setAddModalFlag(true);
+              navigate(`${row.id}`, {
+                state: { staffData: row, editable: false },
+              });
+            }}
+            onManage={{
+              title: "پایان همکاری",
+              function: () => {
+                setDeleteData(row);
+                setCooprationFlag(true);
+              },
+              icon: <PersonRemove color="error" />,
+            }}
+            onDelete={() => {
+              setDeleteData(row);
+              setDeleteFlag(true);
+            }}
+          />
+        );
       },
     },
   ];
@@ -195,17 +223,17 @@ const FirmAccountantGrid = (props: Props) => {
     //     { value: "false", title: "غیرفعال" },
     //   ],
     // },
-    {
-      name: "cdProfessionalRankId",
-      inputType: "autocomplete",
-      label: "رده حرفه‌ای",
-      size: { md: 3 },
-      options: rankOptions?.map((item: any) => ({
-        id: item.id,
-        value: item.value,
-      })) ?? [{ id: 0, value: "خالی" }],
-      storeValueAs: "id",
-    },
+    // {
+    //   name: "cdProfessionalRankId",
+    //   inputType: "autocomplete",
+    //   label: "رده حرفه‌ای",
+    //   size: { md: 3 },
+    //   options: rankOptions?.map((item: any) => ({
+    //     id: item.id,
+    //     value: item.value,
+    //   })) ?? [{ id: 0, value: "خالی" }],
+    //   storeValueAs: "id",
+    // },
   ];
   type editeObjectType = {
     id: number;
@@ -218,6 +246,7 @@ const FirmAccountantGrid = (props: Props) => {
   const [addModalFlag, setAddModalFlag] = useState(false);
   const [deleteData, setDeleteData] = useState<any>(null);
   const [deleteFlag, setDeleteFlag] = useState(false);
+  const [cooprationFlag, setCooprationFlag] = useState(false);
   const [searchData, setSearchData] = useState({
     personnelFirstName: "",
     personnelLastName: "",
@@ -304,13 +333,13 @@ const FirmAccountantGrid = (props: Props) => {
         ) : null}
       </Grid>
       <TerminateCooprationModal
-        addModalFlag={deleteFlag}
-        setAddModalFlag={setDeleteFlag}
+        addModalFlag={cooprationFlag}
+        setAddModalFlag={setCooprationFlag}
         editeData={deleteData}
         setEditeData={setDeleteData}
         refetch={StatesData_refetch}
       />
-      {/* <ConfirmBox
+      <ConfirmBox
         open={deleteFlag}
         handleClose={() => {
           setDeleteFlag(false);
@@ -319,13 +348,18 @@ const FirmAccountantGrid = (props: Props) => {
         handleSubmit={() =>
           mutate(
             {
-              entity: `professional-staff/terminate-cooperation?personnelId=${deleteData?.personnelId}&auditingFirmId=${id}`,
-              method: "put",
+              entity: `membership/remove/${deleteData?.id}`,
+              method: "delete",
             },
             {
               onSuccess: (res: any) => {
-                snackbar(`اتمام همکاری با شخص انتخاب شده با موفقیت انجام شد`, "success");
+                snackbar(
+                  `اتمام همکاری با شخص انتخاب شده با موفقیت انجام شد`,
+                  "success"
+                );
                 StatesData_refetch();
+                setDeleteFlag(false);
+                setDeleteData(null);
               },
               onError: () => {
                 snackbar("خطا در اتمام همکاری ", "error");
@@ -333,9 +367,10 @@ const FirmAccountantGrid = (props: Props) => {
             }
           )
         }
-        message={`آیا از اتمام همکاری با ${deleteData?.personnelFirstName}  ${deleteData?.personnelLastName} مطمعین میباشید؟`}
+        // message={`آیا از اتمام همکاری با ${deleteData?.firstName}  ${deleteData?.lastName} مطمعین میباشید؟`}
+        message={`آیا از حذف  ${deleteData?.firstName}  ${deleteData?.lastName} مطمعین میباشید؟`}
         title={"درخواست حذف!"}
-      /> */}
+      />
     </Grid>
   );
 };

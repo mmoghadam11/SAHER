@@ -65,7 +65,7 @@ const TerminateCooprationModal = ({
 }: Props) => {
   const Auth = useAuth();
   const snackbar = useSnackbar();
-  const { id,staffId } = useParams();
+  const { id, staffId } = useParams();
 
   const { mutate, isLoading } = useMutation({
     mutationFn: Auth?.serverCall,
@@ -96,9 +96,7 @@ const TerminateCooprationModal = ({
   const formItems: any[] = TerminateFormItem(setValue);
   useEffect(() => {
     console.log("editeData=>", getValues());
-   
   }, [editeData, addModalFlag]);
-
 
   const handleClose = () => {
     setAddModalFlag(false);
@@ -109,7 +107,7 @@ const TerminateCooprationModal = ({
   const onSubmit = (data: FormData) => {
     mutate(
       {
-        entity: `professional-staff/terminate-cooperation`,
+        entity: `membership/terminate-cooperation`,
         // entity: `firm-director/save`,
         method: "put",
         // method:  "post",
@@ -117,16 +115,14 @@ const TerminateCooprationModal = ({
           ...data,
           personnelId: editeData?.personnelId,
           auditingFirmId: id,
+          id:editeData?.id
         },
       },
       {
         onSuccess: (res: any) => {
           console.log("res=>", res);
           if (!!editeData)
-            snackbar(
-              `به روز رسانی موسسه انتخاب شده با موفقیت انجام شد`,
-              "success"
-            );
+            snackbar(`اتمام همکاری با موفقیت انجام شد`, "success");
           else snackbar(`اطلاعات آموزشی جدید با موفقیت افزوده شد`, "success");
           refetch();
           //   handleClose();
@@ -139,14 +135,23 @@ const TerminateCooprationModal = ({
   };
 
   return (
-    <Dialog open={addModalFlag} onClose={handleClose} maxWidth={"sm"}>
+    <Dialog
+      open={addModalFlag}
+      onClose={handleClose}
+      maxWidth={"sm"}
+      PaperProps={{
+        sx: {
+          overflow: "visible", // اجازه به محتوای Dialog برای بیرون زدن
+        },
+      }}
+    >
       <DialogTitle>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Box display={"flex"} textAlign={"center"} alignItems={"center"}>
-            <PersonRemove  />
+            <PersonRemove />
             <Typography variant="body1">
               {editeData
-                ? `درخواست اتمام همکاری با${editeData?.personnelFirstName} ${editeData?.personnelLastName}`
+                ? `درخواست اتمام همکاری با ${editeData?.firstName} ${editeData?.lastName}`
                 : `ایجاد اطلاعات آموزشی جدید`}
             </Typography>
           </Box>
@@ -156,7 +161,7 @@ const TerminateCooprationModal = ({
         </Box>
       </DialogTitle>
 
-      <DialogContent>
+      <DialogContent sx={{overflow:"visible"}}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={3} mt={1} justifyContent={"center"}>
             {formItems.map((item) => (
