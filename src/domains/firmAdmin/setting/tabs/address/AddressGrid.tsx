@@ -52,6 +52,8 @@ const AddressGrid = ({  }: Props) => {
     enabled: true,
   } as any);
   const columns: GridColDef[] = [
+    { field: "placeTypeName", headerName: "نوع دفتر", flex: 1 },
+    { field: "auditingFirmBranchName", headerName: "نام شعبه", flex: 1 },
     { field: "cityName", headerName: "شهر", flex: 1 },
     { field: "street", headerName: "خیابان", flex: 1 },
     { field: "plateNo", headerName: "پلاک", flex: 1 },
