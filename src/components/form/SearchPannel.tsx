@@ -50,12 +50,17 @@ function SearchPannel<T extends Record<string, any>>({
       ...resetData,
     }));
   };
-  const handleSearch = () => {
+  const handleSearch = (data:any) => {
+    console.log("data",data)
     // ایجاد فیلترها به صورت داینامیک بر اساس searchItems
     const newFilters: Record<string, any> = {};
 
     searchItems.forEach((item) => {
-      if (searchData[item.name] !== undefined) {
+      if(item.inputType!=="autocomplete")
+        {if (data[item.name] !== undefined) {
+          newFilters[item.name] = data[item.name];
+        }}
+      else if (searchData[item.name] !== undefined) {
         newFilters[item.name] = searchData[item.name];
       }
     });
