@@ -103,4 +103,15 @@ export const BasicFormItems = (
     size: { md: 4 },
     rules: { required: "شماره شناسنامه الزامی است" },
   },
+  {
+    name: "cdServiceTypeId",
+    inputType: "select",
+    label: "وضعیت فعالیت",
+    size: { md: 4 },
+    options: options?.serviceTypeOptions?.map((item: any) => ({
+        value: item.id,
+        title: item.value,
+      })) ?? [{ value: 0, title: "خالی" }],
+    rules: { required: "وضعیت فعالیت الزامی است" },
+  },
 ];

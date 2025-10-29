@@ -42,7 +42,7 @@ type Props = {};
 const FirmStaffGrid = (props: Props) => {
   const Auth = useAuth();
   const { id } = useParams();
-  const {state}=useLocation();
+  const { state } = useLocation();
   const snackbar = useSnackbar();
   const navigate = useNavigate();
   const { isLoading, mutate, error } = useMutation({
@@ -102,10 +102,23 @@ const FirmStaffGrid = (props: Props) => {
       headerName: "نام خانوادگی",
       flex: 1.5,
     },
+    {
+      field: "personnelNationalCode",
+      headerName: "کد ملی",
+      flex: 1.2,
+    },
     { field: "cdProfessionalRankName", headerName: "رده حرفه‌ای", flex: 1 },
-    { field: "cdProfessionalRankDate", headerName: "تاریخ اخذ رده", flex: 1,
+    {
+      field: "rankDate",
+      headerName: "تاریخ اخذ رده",
+      flex: 1,
       renderCell: ({ row }: { row: any }) => {
-        if (row?.endDate) return moment(row?.cdProfessionalRankDate).format("jYYYY/jMM/jDD");
+        if (row?.rankDate)
+          return (
+            <Typography variant="caption">
+              {moment(row?.rankDate).format("jYYYY/jMM/jDD")}
+            </Typography>
+          );
         else return null;
       },
     },
@@ -114,7 +127,11 @@ const FirmStaffGrid = (props: Props) => {
       headerName: "شروع همکاری",
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
-        return moment(row?.startDate).format("jYYYY/jMM/jDD");
+        return (
+          <Typography variant="caption">
+            {moment(row?.startDate).format("jYYYY/jMM/jDD")}
+          </Typography>
+        );
       },
     },
     {
@@ -122,7 +139,12 @@ const FirmStaffGrid = (props: Props) => {
       headerName: "پایان همکاری",
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
-        if (row?.endDate) return moment(row?.endDate).format("jYYYY/jMM/jDD");
+        if (row?.endDate)
+          return (
+            <Typography variant="caption">
+              moment(row?.endDate).format("jYYYY/jMM/jDD")
+            </Typography>
+          );
         else return null;
       },
     },
@@ -270,7 +292,9 @@ const FirmStaffGrid = (props: Props) => {
       >
         <Box display={"flex"}>
           <Article fontSize="large" />
-          <Typography variant="h5">کارکنان حرفه‌ای موسسه {state?.firmData?.name}</Typography>
+          <Typography variant="h5">
+            کارکنان حرفه‌ای موسسه {state?.firmData?.name}
+          </Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"}>
           <Button

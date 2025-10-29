@@ -259,6 +259,8 @@ const RenderFormInput: React.FC<IRenderFormInput> = forwardRef((props, ref) => {
                   size="medium"
                   InputProps={{ // <-- این بخش اسپینر داخلی را اضافه می‌کند
                      ...params.InputProps,
+                    //  style: { height: 40 },
+                     style: { height: 45 },
                      endAdornment: (
                         <>
                            {loading ? <CircularProgress color="inherit" size={16} /> : null}

@@ -260,7 +260,7 @@ const PersonGrid = (props: Props) => {
         handleSubmit={() =>
           mutate(
             {
-              entity: `membership/remove/${deleteData?.id}`,
+              entity: `personnel-info/delete/${deleteData?.id}`,
               method: "delete",
             },
             {

@@ -86,17 +86,28 @@ const StaffGrid = (props: Props) => {
       headerName: "کد ملی",
       flex: 1.2,
     },
+    { field: "cdProfessionalRankName", headerName: "رده حرفه‌ای", flex: 1 },
+    {
+      field: "rankDate",
+      headerName: "تاریخ اخذ رده",
+      flex: 1,
+      renderCell: ({ row }: { row: any }) => {
+        if (row?.rankDate)
+          return <Typography variant="caption">{moment(row?.rankDate).format("jYYYY/jMM/jDD")}</Typography> ;
+        else return null;
+      },
+    },
     {
       field: "auditingFirmName",
       headerName: "نام موسسه",
       flex: 1.5,
     },
     {
-      field: "birthDate",
+      field: "startDate",
       headerName: "شروع همکاری",
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
-        return moment(row?.startDate).format("jYYYY/jMM/jDD");
+        if (row?.startDate) return<Typography variant="caption">{ moment(row?.startDate).format("jYYYY/jMM/jDD")}</Typography>;
       },
     },
     {
@@ -104,7 +115,7 @@ const StaffGrid = (props: Props) => {
       headerName: "پایان همکاری",
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
-        if (row?.endDate) return moment(row?.endDate).format("jYYYY/jMM/jDD");
+        if (row?.endDate) return <Typography variant="caption">{moment(row?.endDate).format("jYYYY/jMM/jDD")}</Typography>;
         else return null;
       },
     },
@@ -118,7 +129,6 @@ const StaffGrid = (props: Props) => {
         else return <Chip color="default" label="غیر فعال" />;
       },
     },
-    { field: "cdProfessionalRankName", headerName: "رده حرفه‌ای", flex: 1 },
     {
       headerName: "عملیات",
       field: "action",
@@ -178,58 +188,57 @@ const StaffGrid = (props: Props) => {
   } as any);
 
   const searchItems: FormItem[] = [
+    // {
+    //   name: "personnelFirstName",
+    //   inputType: "text",
+    //   label: "نام",
+    //   size: { md: 3 },
+    // },
     {
-      name: "personnelFirstName",
+      name: "personnelLastName",
       inputType: "text",
-      label: "نام",
+      label: "نام خانوادگی",
       size: { md: 3 },
     },
     // {
-    //   name: "personnelLastName",
+    //   name: "personnelNationalCode",
     //   inputType: "text",
-    //   label: "نام خانوادگی",
+    //   label: "کدملی شخص",
     //   size: { md: 3 },
     // },
-    // {
-      //   name: "personnelNationalCode",
-      //   inputType: "text",
-      //   label: "کدملی شخص",
-      //   size: { md: 3 },
-      // },
-      {
-        name: "cooperationStatus",
-        inputType: "select",
-        label: "وضعیت",
-        size: { md: 3 },
-        options: [
-          { value: "", title: "همه" },
-          { value: "true", title: "فعال" },
-          { value: "false", title: "غیرفعال" },
-        ],
-      },
-      {
-        name: "auditingFirmId",
-        inputType: "autocomplete",
-        label: "موسسه",
-        size: { md: 3 },
-        options: firmOptions?.map((item: any) => ({
-          id: item.id,
-          value: item.name,
-        })) ?? [{ id: 0, name: "خالی" }],
-        storeValueAs: "id",
-      },
-      {
-        name: "cdProfessionalRankId",
-        inputType: "autocomplete",
-        label: "رده حرفه‌ای",
-        size: { md: 3 },
-        options: rankOptions?.map((item: any) => ({
-          id: item.id,
-          value: item.value,
-        })) ?? [{ id: 0, value: "خالی" }],
-        storeValueAs: "id",
-      },
-      
+    {
+      name: "cooperationStatus",
+      inputType: "select",
+      label: "وضعیت",
+      size: { md: 3 },
+      options: [
+        { value: "", title: "همه" },
+        { value: "true", title: "فعال" },
+        { value: "false", title: "غیرفعال" },
+      ],
+    },
+    {
+      name: "auditingFirmId",
+      inputType: "autocomplete",
+      label: "موسسه",
+      size: { md: 3 },
+      options: firmOptions?.map((item: any) => ({
+        id: item.id,
+        value: item.name,
+      })) ?? [{ id: 0, name: "خالی" }],
+      storeValueAs: "id",
+    },
+    {
+      name: "cdProfessionalRankId",
+      inputType: "autocomplete",
+      label: "رده حرفه‌ای",
+      size: { md: 3 },
+      options: rankOptions?.map((item: any) => ({
+        id: item.id,
+        value: item.value,
+      })) ?? [{ id: 0, value: "خالی" }],
+      storeValueAs: "id",
+    },
 
     //   {
     //   name: "cdProfessionalRankId",
@@ -303,11 +312,11 @@ const StaffGrid = (props: Props) => {
           <Typography variant="h5">کارکنان حرفه‌ای موسسات</Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"}>
-          <CreateNewItem
+          {/* <CreateNewItem
             sx={{ mr: 2 }}
             name="شخص"
             onClick={() => navigate("new", { state: { editable: true } })}
-          />
+          /> */}
           <BackButton onBack={() => navigate(-1)} />
         </Box>
       </Grid>

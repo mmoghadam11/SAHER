@@ -205,14 +205,14 @@ const MENU_ITEMS: MenuItem[] = [
         access: ["administrator", "city-showmenu","township-showmenu"],
       },
       {
-        title: "کارکنان حرفه‌ای موسسه",
-        url: "persons",
-        access: ["administrator", "city-showmenu","township-showmenu"],
-      },
-      {
         title: "حسابداران شاغل در موسسه",
         // url: "personnels",
         url: "hired-accountants",
+        access: ["administrator", "city-showmenu","township-showmenu"],
+      },
+      {
+        title: "کارکنان حرفه‌ای موسسه",
+        url: "persons",
         access: ["administrator", "city-showmenu","township-showmenu"],
       },
       {
@@ -250,7 +250,7 @@ const MENU_ITEMS: MenuItem[] = [
     access: ["city-showmenu"],
     menuChildren: [
       {
-        title: "حسابدارن رسمی",
+        title: "حسابداران رسمی",
         url: "official-users",
         access: ["administrator", "city-showmenu"]},
       {
@@ -279,7 +279,39 @@ const MENU_ITEMS: MenuItem[] = [
       },
     ],
   },
-
+  {
+    icon: <People />,
+    title: "حسابدار رسمی",
+    url: "/accountant-user",
+    access: ["city-showmenu"],
+    menuChildren: [
+      {
+        title: "کارتابل",
+        url: "cartable",
+        access: ["administrator", "city-showmenu","township-showmenu"]
+      },
+      {
+        title: "حق عضویت",
+        url: "membershipFee",
+        access: ["administrator", "city-showmenu","township-showmenu"]
+      },
+      // {
+      //   title: "قراردادها",
+      //   url: "individualLicense",
+      //   access: ["administrator","city-showmenu","township-showmenu"],
+      // },
+      {
+        title: "احکام انتظامی",
+        url: "disciplinary-order",
+        access: ["administrator","city-showmenu","township-showmenu"],
+      },
+      {
+        title: "گزارشات",
+        url: "continuousEducation",
+        access: ["administrator","city-showmenu","township-showmenu"],
+      },
+    ],
+  },
   {
     icon: <AutoStories />,
     title: "گزارشات",

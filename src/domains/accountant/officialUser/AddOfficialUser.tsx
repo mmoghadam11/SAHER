@@ -227,17 +227,17 @@ export default function AddOfficialUser(): JSX.Element {
       return res?.data;
     },
   } as any);
-  // const [formData, setFormData] = useState<{
-  //   [K in keyof FullInstituteType]: string;
-  // }>({} as { [K in keyof FullInstituteType]: string });
-  interface FormData {
-    id?: any;
-    name: string;
-    code: string;
-    provinceId: string;
-    provinceName: string;
-    province?: any;
-  }
+  const {
+      data: serviceTypeOptions,
+      status: serviceTypeOptions_status,
+      refetch: serviceTypeOptions_refetch,
+    } = useQuery<any>({
+      queryKey: [`common-data/find-by-type-all?typeId=49`],
+      queryFn: Auth?.getRequest,
+      select: (res: any) => {
+        return res?.data;
+      },
+    } as any);
 
   // تعریف نوع برای هر مرحله
   interface FormStep {
@@ -255,10 +255,11 @@ export default function AddOfficialUser(): JSX.Element {
         genderOptions,
         marriageOptions,
         religionOptions,
+        serviceTypeOptions
       }),
     },
     {
-      name: "جزئیات عضویت",
+      name: "اطلاعات عضویت",
       formItems: MembershipFormItems(setValue, { membershipType, rankOptions }),
     },
     {
@@ -304,7 +305,7 @@ export default function AddOfficialUser(): JSX.Element {
       formItems: ProfessionalFormItems(setValue, { firmOptions, cityOptions }),
     },
   ];
-
+  
   const onSubmit = (data: FullInstituteType) => {
     console.log("lastForm=>", data);
     mutate(
@@ -353,14 +354,14 @@ export default function AddOfficialUser(): JSX.Element {
   };
   const navigate = useNavigate();
   useEffect(() => {
-    if (state?.firmData) {
+    if (state?.accountantData) {
       const registerPlaceObject = cityOptions?.find(
-        (city: any) => city.id === state.firmData.cdRegisterPlaceId
+        (city: any) => city.id === state.accountantData.cdRegisterPlaceId
       );
 
       // پیدا کردن آبجکت کامل نوع ارتباط بر اساس ID
       const relationshipTypeObject = relOptions?.content?.find(
-        (rel: any) => rel.id === state.firmData.cdRelationshipTypeId
+        (rel: any) => rel.id === state.accountantData.cdRelationshipTypeId
       );
       console.log("registerPlaceObject", {
         value: registerPlaceObject?.id,
@@ -373,7 +374,7 @@ export default function AddOfficialUser(): JSX.Element {
 
       // ساختن کپی اصلاح شده
       const cleanedFirmData = Object.fromEntries(
-        Object.entries(state.firmData).map(([key, value]) => {
+        Object.entries(state.accountantData).map(([key, value]) => {
           if (value === false) {
             return [key, "false"]; // تغییر false به استرینگ
           }
@@ -419,9 +420,10 @@ export default function AddOfficialUser(): JSX.Element {
                     فرم اطلاعات عمومی حسابداران رسمی
                   </Typography>
                 </Grid>
-                <BackButton onBack={() => navigate(-1)} />
+                <BackButton onBack={() => navigate("/accountant/official-users",{state:{searchFilters:state?.searchFilters}})} />
               </Grid>
-              {formSteps.map((stepItem, stepIndex) => (
+              {state?.editable?(
+                formSteps.filter(item=>item.name!=="تحصیلات").map((stepItem, stepIndex) => (
                 <Grid item container md={12} spacing={2} key={stepIndex}>
                   <Grid item md={12} width={"100vw"}>
                     <FancyTicketDivider />
@@ -433,7 +435,6 @@ export default function AddOfficialUser(): JSX.Element {
                   </Grid>
                   {stepItem?.formItems?.map((item) => (
                     <Grid item xs={12} md={item.size.md} key={item.name}>
-                      {state?.editable ? (
                         <Controller
                           name={item.name}
                           control={control}
@@ -455,16 +456,33 @@ export default function AddOfficialUser(): JSX.Element {
                             />
                           )}
                         />
-                      ) : (
+                    </Grid>
+                  ))}
+                </Grid>
+              ))
+              ):(
+                formSteps.map((stepItem, stepIndex) => (
+                <Grid item container md={12} spacing={2} key={stepIndex}>
+                  <Grid item md={12} width={"100vw"}>
+                    <FancyTicketDivider />
+                  </Grid>
+                  <Grid item md={12}>
+                    <Typography variant="h6" fontSize={"large"}>
+                      {stepItem?.name}
+                    </Typography>
+                  </Grid>
+                  {stepItem?.formItems?.map((item) => (
+                    <Grid item xs={12} md={item.size.md} key={item.name}>
                         <RenderFormDisplay
                           item={item}
                           value={getValues(item.name)}
                         />
-                      )}
                     </Grid>
                   ))}
                 </Grid>
-              ))}
+              ))
+              )
+              }
               {state?.editable && (
                 <Grid
                   item

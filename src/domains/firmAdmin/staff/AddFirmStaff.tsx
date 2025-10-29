@@ -43,13 +43,13 @@ export default function AddFirmStaff(): JSX.Element {
   const { id, staffId } = useParams();
   const { state } = useLocation();
   const [searchData, setSearchData] = useState({
-    nationalCode: "",
+    nationalCode: state?.nationalCode??"",
     // cdPersonnelTypeId: 112,
     id: staffId === "new" ? "" : staffId,
   });
   const [filters, setFilters] = useState<any>({
     nationalCode:
-      staffId !== "new" ? state?.staffData?.personnelNationalCode : "",
+      staffId !== "new" ? state?.staffData?.personnelNationalCode : state?.nationalCode??"",
     // personnelId:staffId==="new"?"":staffId
     cdPersonnelTypeId: 112,
     // code: "",
@@ -103,6 +103,23 @@ export default function AddFirmStaff(): JSX.Element {
     enabled: !!filters?.nationalCode,
   } as any);
   const {
+    data: othersideUser,
+    status: othersideUser_status,
+    refetch: othersideUser_refetch,
+  } = useQuery<any>({
+    queryKey: [
+      `personnel-info/search-all${paramsSerializer({
+        nationalCode: filters.nationalCode,
+        cdPersonnelTypeId: 111,
+      })}`,
+    ],
+    queryFn: Auth?.getRequest,
+    select: (res: any) => {
+      return res?.data;
+    },
+    enabled: searchResponse_status === "success" && !searchResponse?.length,
+  } as any);
+  const {
     data: editeData,
     status: editeData_status,
     refetch: editeData_refetch,
@@ -127,15 +144,6 @@ export default function AddFirmStaff(): JSX.Element {
       return res?.data;
     },
   } as any);
-
-  interface FormData {
-    id?: any;
-    name: string;
-    code: string;
-    provinceId: string;
-    provinceName: string;
-    province?: any;
-  }
 
   // تعریف نوع برای هر مرحله
   interface FormStep {
@@ -256,7 +264,34 @@ export default function AddFirmStaff(): JSX.Element {
     );
   };
   const navigate = useNavigate();
-
+  function userNotFound() {
+    if (othersideUser_status === "success" && !!othersideUser.length)
+      return <Chip
+            color="error"
+            label= "این شخص حسابداران رسمی میباشد"
+            icon={<CrisisAlert />}
+          />
+    else if (othersideUser_status === "success")
+      return (
+        <Box display={"flex"} gap={1}>
+          <Chip
+            color="default"
+            label="اطلاعاتی یافت نشد"
+            icon={<CrisisAlert />}
+          />
+          <Chip
+            color="info"
+            icon={<AddCircle />}
+            label="ایجاد شخص جدید"
+            onClick={() => {
+              navigate(`/FirmAdmin/persons/add/new`, {
+                state: { editable: true, cdPersonnelTypeId: 112,nationalCode:filters?.nationalCode},
+              });
+            }}
+          />
+        </Box>
+      );
+  }
   useEffect(() => {
     console.log("searchResponse", searchResponse);
   }, [searchResponse]);
@@ -316,18 +351,7 @@ export default function AddFirmStaff(): JSX.Element {
 
                 {searchResponse_status === "success" &&
                   (!searchResponse?.length ? (
-                    <Box display={"flex"}>
-                      <Chip
-                        color="default"
-                        label="اطلاعاتی یافت نشد"
-                        icon={<CrisisAlert />}
-                      />
-                      <Chip 
-                      color="info"
-                      icon={<AddCircle/>}
-                      label="ایجاد شخص جدید"
-                      onClick={()=>{navigate(`/FirmAdmin/persons/add/new`, { state: { editable: true,cdPersonnelTypeId:112 }} )}}/>
-                    </Box>
+                    userNotFound()
                   ) : !searchResponse?.[0]?.previousFirmName ? (
                     <Chip color="success" label="مجاز" icon={<Verified />} />
                   ) : searchResponse?.[0]?.previousFirmId === id ? (

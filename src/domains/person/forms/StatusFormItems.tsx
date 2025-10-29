@@ -20,4 +20,16 @@ export const StatusFormItems = (
     options: options?.DutyStatus?.map((item: any) => ({ value: item?.id, title: item?.value })) ?? [{ value: 0, title: "خالی" }],
     rules: { required: "انتخاب وضعیت وظیفه الزامی است" },
   },
+  {
+    name: "cdPersonnelTypeId",
+    inputType: "select",
+    label: "جایگاه",
+    size: { md: 4 },
+    options: [
+      { value: 111, title: "حسابدار رسمی" },
+      { value: 112, title: "کارکنان رسمی" },
+    ] ,
+    rules: { required: "انتخاب جایگاه الزامی است" },
+  },
+
 ];

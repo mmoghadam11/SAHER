@@ -145,16 +145,6 @@ export default function AddStaff(): JSX.Element {
       return res?.data;
     },
   } as any);
-
-  interface FormData {
-    id?: any;
-    name: string;
-    code: string;
-    provinceId: string;
-    provinceName: string;
-    province?: any;
-  }
-
   // تعریف نوع برای هر مرحله
   interface FormStep {
     name: string;
@@ -274,7 +264,7 @@ export default function AddStaff(): JSX.Element {
     );
   };
   const navigate = useNavigate();
-
+  
   useEffect(() => {
     setEditeDataFilters((prev:any)=>({...prev,auditingFirmId:filters?.auditingFirmId??staffId}))
     console.log("filters", filters);

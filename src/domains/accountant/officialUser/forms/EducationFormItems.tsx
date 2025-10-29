@@ -13,15 +13,15 @@ export const EducationFormItems = (
     options: options?.eduCertificate?.map((item: any) => ({ value: item?.id, title: item?.value })) ?? [{ value: 0, title: "خالی" }],
     rules: { required: "انتخاب مدرک تحصیلی الزامی است" },
   },
-  {
-    name: "educationalCertificatePlaceId",
-    inputType: "autocomplete",
-    label: "محل اخذ مدرک",
-    size: { md: 4 },
-    options: options?.cityOptions?.map((item: any) => ({ value: item?.id, title: item?.name })) ?? [{ value: 0, title: "خالی" }],
-    storeValueAs: 'id',
-    rules: { required: "انتخاب محل اخذ مدرک الزامی است" },
-  },
+  // {
+  //   name: "educationalCertificatePlaceId",
+  //   inputType: "autocomplete",
+  //   label: "محل اخذ مدرک",
+  //   size: { md: 4 },
+  //   options: options?.cityOptions?.map((item: any) => ({ value: item?.id, title: item?.name })) ?? [{ value: 0, title: "خالی" }],
+  //   storeValueAs: 'id',
+  //   rules: { required: "انتخاب محل اخذ مدرک الزامی است" },
+  // },
   {
     name: "cdeducationalFieldId",
     inputType: "select",
@@ -61,7 +61,7 @@ export const EducationFormItems = (
   {
     name: "facultyStartDate",
     inputType: "date",
-    label: "تاریخ شروع عضویت در هیئت علمی",
+    label: "تاریخ شروع هیئت علمی",
     size: { md: 4 },
     rules: { },
     elementProps: {
@@ -74,7 +74,7 @@ export const EducationFormItems = (
   {
     name: "facultyEndDate",
     inputType: "date",
-    label: "تاریخ پایان عضویت در هیئت علمی",
+    label: "تاریخ پایان هیئت علمی",
     size: { md: 4 },
     rules: { },
     elementProps: {

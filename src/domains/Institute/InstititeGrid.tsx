@@ -66,35 +66,35 @@ const InstititeGrid = (props: Props) => {
     { field: "cityNameAddress", headerName: "شهر", flex: 1 },
     { field: "officePhoneNo", headerName: "تلفن", flex: 1 },
     { field: "qcRank", headerName: "رتبه کنترل کیفیت", flex: 1 },
-    { field: "financeYear", headerName: "سال مالی", flex: 1 },
+    { field: "financeYear", headerName: "سال مالی", flex: 0.7 },
     { field: "nationalId", headerName: "شناسه ملی موسسه", flex: 1 },
-    { field: "registerNo", headerName: "شماره ثبت", flex: 1 },
-    {
-      field: "director",
-      headerName: "مدیرعامل",
-      flex: 1,
-      renderCell: ({ row }: { row: any }) => {
-        return row?.directorFirstName + " " + row?.directorLastName;
-      },
-    },
-    {
-      field: "firmRegisterStatusName",
-      headerName: "وضعیت",
-      flex: 1,
-      renderCell: ({ row }: { row: any }) => {
-        switch (row?.firmRegisterStatusCode) {
-          case "user_confirm":
-            return <Chip label={row?.firmRegisterStatusName} color="info"/>;
-            break;
-          case "admin_confirm":
-            return <Chip label={row?.firmRegisterStatusName} color="success"/>;
-            break;
-          default:
-            return <Chip label={row?.firmRegisterStatusName??"پیشنویس"} color="default"/>;
-            break;
-        }
-      },
-    },
+    { field: "registerNo", headerName: "شماره ثبت", flex: 0.7 },
+    // {
+    //   field: "director",
+    //   headerName: "مدیرعامل",
+    //   flex: 1,
+    //   renderCell: ({ row }: { row: any }) => {
+    //     return row?.directorFirstName + " " + row?.directorLastName;
+    //   },
+    // },
+    // {
+    //   field: "firmRegisterStatusName",
+    //   headerName: "وضعیت",
+    //   flex: 1,
+    //   renderCell: ({ row }: { row: any }) => {
+    //     switch (row?.firmRegisterStatusCode) {
+    //       case "user_confirm":
+    //         return <Chip label={row?.firmRegisterStatusName} color="info"/>;
+    //         break;
+    //       case "admin_confirm":
+    //         return <Chip label={row?.firmRegisterStatusName} color="success"/>;
+    //         break;
+    //       default:
+    //         return <Chip label={row?.firmRegisterStatusName??"پیشنویس"} color="default"/>;
+    //         break;
+    //     }
+    //   },
+    // },
     {
       headerName: "عملیات",
       field: "action",

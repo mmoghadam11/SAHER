@@ -60,16 +60,16 @@ export const MembershipFormItems = (
   //   options: options?.rankOptions?.map((item: any) => ({ value: item?.id, title: item?.value })) ?? [{ value: 0, title: "خالی" }],
   //   rules: { required: "انتخاب رده حرفه‌ای الزامی است" },
   // },
-  {
-    name: "memberNo",
-    inputType: "text",
-    label: "شماره عضو",
-    size: { md: 4 },
-    rules: { 
-      pattern: {
-        value: /^[0-9]+$/,
-        message: "باید فقط عدد وارد شود"
-      }
-    },
-  },
+  // {
+  //   name: "memberNo",
+  //   inputType: "text",
+  //   label: "شماره عضو",
+  //   size: { md: 4 },
+  //   rules: { 
+  //     pattern: {
+  //       value: /^[0-9]+$/,
+  //       message: "باید فقط عدد وارد شود"
+  //     }
+  //   },
+  // },
 ];

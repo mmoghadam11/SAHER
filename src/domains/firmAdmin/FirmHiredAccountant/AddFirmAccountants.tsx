@@ -103,6 +103,23 @@ export default function AddFirmAccountant(): JSX.Element {
     enabled: !!filters?.nationalCode,
   } as any);
   const {
+      data: othersideUser,
+      status: othersideUser_status,
+      refetch: othersideUser_refetch,
+    } = useQuery<any>({
+      queryKey: [
+        `personnel-info/search-all${paramsSerializer({
+          nationalCode: filters.nationalCode,
+          cdPersonnelTypeId: 112,
+        })}`,
+      ],
+      queryFn: Auth?.getRequest,
+      select: (res: any) => {
+        return res?.data;
+      },
+      enabled: searchResponse_status === "success" && !searchResponse?.length,
+    } as any);
+  const {
     data: editeData,
     status: editeData_status,
     refetch: editeData_refetch,
@@ -254,7 +271,34 @@ export default function AddFirmAccountant(): JSX.Element {
     );
   };
   const navigate = useNavigate();
-
+  function userNotFound() {
+      if (othersideUser_status === "success" && !!othersideUser.length)
+        return <Chip
+              color="error"
+              label= "این شخص جزو کارکنان حرفه‌ای میباشد"
+              icon={<CrisisAlert />}
+            />
+      else if (othersideUser_status === "success")
+        return (
+          <Box display={"flex"} gap={1}>
+            <Chip
+              color="default"
+              label="اطلاعاتی یافت نشد"
+              icon={<CrisisAlert />}
+            />
+            <Chip
+              color="info"
+              icon={<AddCircle />}
+              label="ایجاد شخص جدید"
+              onClick={() => {
+                navigate(`/FirmAdmin/persons/add/new`, {
+                  state: { editable: true, cdPersonnelTypeId: 111,nationalCode:filters?.nationalCode},
+                });
+              }}
+            />
+          </Box>
+        );
+    }
   useEffect(() => {
     console.log("searchResponse", searchResponse);
   }, [searchResponse]);
@@ -316,23 +360,7 @@ export default function AddFirmAccountant(): JSX.Element {
 
                 {searchResponse_status === "success" &&
                   (!searchResponse?.length ? (
-                    <Box display={"flex"}>
-                      <Chip
-                        color="default"
-                        label="اطلاعاتی یافت نشد"
-                        icon={<CrisisAlert />}
-                      />
-                      <Chip
-                        color="info"
-                        icon={<AddCircle />}
-                        label="ایجاد شخص جدید"
-                        onClick={() => {
-                          navigate(`/FirmAdmin/persons/add/new`, {
-                            state: { editable: true,cdPersonnelTypeId:111 },
-                          });
-                        }}
-                      />
-                    </Box>
+                    userNotFound()
                   ) : !searchResponse?.[0]?.previousFirmName ? (
                     <Chip color="success" label="مجاز" icon={<Verified />} />
                   ) : searchResponse?.[0]?.previousFirmId === id ? (

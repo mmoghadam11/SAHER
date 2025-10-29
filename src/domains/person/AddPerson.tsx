@@ -264,15 +264,15 @@ export default function AddPerson(): JSX.Element {
       name: "اطلاعات تماس",
       formItems: ContactFormItems(setValue),
     },
-    {
-      name: "تحصیلات",
-      formItems: EducationFormItems(setValue, {
-        cityOptions,
-        eduCertificate,
-        universityOptions,
-        educationalFieldOptions,
-      }),
-    },
+    // {
+    //   name: "تحصیلات",
+    //   formItems: EducationFormItems(setValue, {
+    //     cityOptions,
+    //     eduCertificate,
+    //     universityOptions,
+    //     educationalFieldOptions,
+    //   }),
+    // },
     {
       name: "بیمه",
       formItems: InsuranceFormItems(setValue, {
@@ -282,12 +282,18 @@ export default function AddPerson(): JSX.Element {
     },
     {
       name: "وضعیت و وظیفه",
-      formItems: StatusFormItems(setValue, {
+      formItems: !state?.cdPersonnelTypeId?StatusFormItems(setValue, {
         firmOptions,
         cityOptions,
         countryOptions,
         DutyStatus,
-      }),
+      }):
+      StatusFormItems(setValue, {
+        firmOptions,
+        cityOptions,
+        countryOptions,
+        DutyStatus,
+      })?.filter(item=>item.name!=="cdPersonnelTypeId"),
     },
     {
       name: "اطلاعات شخصی تکمیلی",
@@ -306,17 +312,25 @@ export default function AddPerson(): JSX.Element {
 
   const onSubmit = (data: FullInstituteType) => {
     console.log("lastForm=>", data);
+    console.log("state?.cdPersonnelTypeId=>", !!state?.cdPersonnelTypeId);
     mutate(
       {
         entity: `personnel-info/${id !== "new" ? "update" : "save"}`,
         // entity: `membership/save`,
         method: id !== "new" ? "put" : "post",
         // method:  "post",
-        data: {
-          ...data,
-          cdRegisterPlaceId: data?.cdRegisterPlaceId?.value,
-          cdRelationshipTypeId: data?.cdRelationshipTypeId?.value,
-        },
+        data: !!state?.cdPersonnelTypeId
+          ? {
+              ...data,
+              cdRegisterPlaceId: data?.cdRegisterPlaceId?.value,
+              cdRelationshipTypeId: data?.cdRelationshipTypeId?.value,
+              cdPersonnelTypeId: state?.cdPersonnelTypeId,
+            }
+          : {
+              ...data,
+              cdRegisterPlaceId: data?.cdRegisterPlaceId?.value,
+              cdRelationshipTypeId: data?.cdRelationshipTypeId?.value,
+            },
       },
       {
         onSuccess: (res: any) => {
@@ -417,7 +431,32 @@ export default function AddPerson(): JSX.Element {
                   <Inventory fontSize="large" />
                   <Typography variant="h5">فرم اطلاعات عمومی اشخاص</Typography>
                 </Grid>
-                <BackButton onBack={() => navigate(-1)} />
+                <BackButton
+                  onBack={() => {
+                    // switch (state?.cdPersonnelTypeId) {
+                    //   case 112:
+                    //     navigate(-1, {
+                    //       state: {
+                    //         editable: true,
+                    //         nationalCode: state?.nationalCode,
+                    //       },
+                    //     });
+                    //     break;
+                    //   case 111:
+                    //     navigate(-1, {
+                    //       state: {
+                    //         editable: true,
+                    //         nationalCode: state?.nationalCode,
+                    //       },
+                    //     });
+                    //     break;
+                    //   default:
+                    //     navigate(-1);
+                    //     break;
+                    // }
+                    navigate(-1)
+                  }}
+                />
               </Grid>
               {formSteps.map((stepItem, stepIndex) => (
                 <Grid item container md={12} spacing={2} key={stepIndex}>
