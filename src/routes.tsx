@@ -58,6 +58,7 @@ import PartnerDataModal from "domains/Institute/Partners/PartnerDataModal";
 import Firms4AccountantGrid from "domains/firmAdmin/FirmHiredAccountant/Firms4AccountantGrid";
 import FirmAccountantGrid from "domains/firmAdmin/FirmHiredAccountant/FirmAccountantGrid";
 import AddFirmAccountant from "domains/firmAdmin/FirmHiredAccountant/AddFirmAccountants";
+import AccountantDetaileTabs from "domains/accountant/officialUser/details/DetailsTabs";
 
 const AppRoutes: React.FC = () => {
   const auth = useAuth();
@@ -91,6 +92,22 @@ const AppRoutes: React.FC = () => {
           <Route path="accountant">
             <Route path="official-users">
               <Route index element={<OfficialUserGrid />} />
+              <Route path="details/:id">
+                <Route index element={<AccountantDetaileTabs />} />
+              </Route>
+              <Route path=":id" element={<AddOfficialUser />} />
+            </Route>
+            <Route path="disciplinary-order">
+              <Route index element={<AccountantDisciplinaryOrderGrid />} />
+              <Route
+                path=":id"
+                element={<AccountantDisciplinaryOrderDetaile />}
+              />
+            </Route>
+          </Route>
+          <Route path="accountant-user">
+            <Route path="cartable">
+              <Route index element={<OfficialUserGrid />} />
               <Route path=":id" element={<AddOfficialUser />} />
             </Route>
             <Route path="disciplinary-order">
@@ -111,6 +128,7 @@ const AppRoutes: React.FC = () => {
             </Route>
             <Route path="persons">
               <Route index element={<StaffGrid />} />
+              <Route path=":staffId" element={<AddStaff />} />
               <Route path=":id/:staffId" element={<AddStaff />} />
             </Route>
             <Route path="personnels">
@@ -157,6 +175,7 @@ const AppRoutes: React.FC = () => {
             </Route>
             <Route path="persons">
               <Route index element={<Firms4StaffGrid />} />
+              <Route path="add/:id" element={<AddPerson />} />
               <Route path=":id">
                 <Route index element={<FirmStaffGrid />} />
                 <Route path=":staffId" element={<AddFirmStaff />} />
