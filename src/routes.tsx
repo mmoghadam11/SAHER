@@ -60,6 +60,8 @@ import FirmAccountantGrid from "domains/firmAdmin/FirmHiredAccountant/FirmAccoun
 import AddFirmAccountant from "domains/firmAdmin/FirmHiredAccountant/AddFirmAccountants";
 import AccountantDetaileTabs from "domains/accountant/officialUser/details/DetailsTabs";
 import AllDisciplinaryOrderGrid from "domains/Institute/disciplinaryOrder/AllDisciplinaryOrderGrid";
+import AddCAOrganization from "domains/CAOrganization/AddCAOrganization";
+import CAOrganizationGrid from "domains/CAOrganization/CAOrganizationGrid";
 
 const AppRoutes: React.FC = () => {
   const auth = useAuth();
@@ -195,6 +197,10 @@ const AppRoutes: React.FC = () => {
             <Route path="workgroup">
               <Route index element={<WorkgroupGrid />} />
               <Route path=":id" element={<AddWorkgroup />} />
+            </Route>
+            <Route path="ca_organization">
+              <Route index element={<CAOrganizationGrid />} />
+              {/* <Route path=":id" element={<AddCAOrganization />} /> */}
             </Route>
           </Route>
           <Route path="basic-data">
