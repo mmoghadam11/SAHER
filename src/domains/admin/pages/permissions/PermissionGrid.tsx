@@ -17,6 +17,7 @@ import ConfirmBox from "components/confirmBox/ConfirmBox";
 import VerticalTable from "components/dataGrid/VerticalTable";
 import { isMobile } from "react-device-detect";
 import SearchPannel from "components/form/SearchPannel";
+import AddPermition from "./AddPermition";
 
 type Props = {};
 
@@ -51,6 +52,27 @@ const PermissionGrid = (props: Props) => {
   } as any);
   const columns: GridColDef[] = [
     { field: "name", headerName: "نام مجوز", flex: 2 },
+    {
+      headerName: "عملیات",
+      field: "action",
+      flex: 1,
+      headerAlign: "center",
+      align: "center",
+      renderCell: ({ row }: { row: any }) => {
+        return (
+          <TableActions
+            onEdit={() => {
+              setEditeData(row);
+              setAddModalFlag(true);
+            }}
+            onDelete={() => {
+              setDeleteData(row);
+              setDeleteFlag(true);
+            }}
+          />
+        );
+      },
+    },
   ];
   interface SearchData {
     name: string;
@@ -90,7 +112,6 @@ const PermissionGrid = (props: Props) => {
     console.log(filters);
   }, [filters]);
 
-  
   return (
     <Grid container justifyContent="center">
       <Grid
@@ -108,11 +129,11 @@ const PermissionGrid = (props: Props) => {
           <Typography variant="h5">مدیریت مجوز نقش ها</Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"}>
-          {/* <CreateNewItem
+          <CreateNewItem
             sx={{ mr: 2 }}
             name="مجوز"
             onClick={() => setAddModalFlag(true)}
-          /> */}
+          />
           <BackButton onBack={() => navigate(-1)} />
         </Box>
       </Grid>
@@ -145,9 +166,41 @@ const PermissionGrid = (props: Props) => {
           )
         ) : null}
       </Grid>
+      <AddPermition
+        addModalFlag={addModalFlag}
+        editeData={editeData}
+        refetch={StatesData_refetch}
+        setAddModalFlag={setAddModalFlag}
+        setEditeData={setEditeData}
+      />
+      <ConfirmBox
+        open={deleteFlag}
+        handleClose={() => {
+          setDeleteFlag(false);
+          setDeleteData(null);
+        }}
+        handleSubmit={() =>
+          mutate(
+            {
+              entity: `permission/delete/${deleteData?.id}`,
+              method: "delete",
+            },
+            {
+              onSuccess: (res: any) => {
+                snackbar(`نقش انتخاب شده با موفقیت حذف شد`, "success");
+                StatesData_refetch();
+              },
+              onError: () => {
+                snackbar("خطا در حذف ", "error");
+              },
+            }
+          )
+        }
+        message={`آیا از حذف ${deleteData?.name} مطمعین میباشید؟`}
+        title={"درخواست حذف!"}
+      />
     </Grid>
   );
 };
 
-
-export default PermissionGrid
+export default PermissionGrid;
