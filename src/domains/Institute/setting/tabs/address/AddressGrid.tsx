@@ -19,10 +19,9 @@ import moment from "jalali-moment";
 import ConfirmBox from "components/confirmBox/ConfirmBox";
 import AddAddress from "./AddAddress";
 
-type Props = {
-};
+type Props = {};
 
-const AddressGrid = ({  }: Props) => {
+const AddressGrid = ({}: Props) => {
   const { id } = useParams();
   const Auth = useAuth();
   const snackbar = useSnackbar();
@@ -58,14 +57,15 @@ const AddressGrid = ({  }: Props) => {
     { field: "street", headerName: "خیابان", flex: 1 },
     { field: "plateNo", headerName: "پلاک", flex: 1 },
     {
-          field: "active",
-          headerName: "آدرس فعال",
-          flex: 1,
-          renderCell: ({ row }: { row: any }) => {
-            if (row.active) return <Chip color="secondary" label="فعال" icon={<Verified  />}/>;
-            else return<Chip color="default" label="غیر فعال"/>
-          },
-        },
+      field: "relocationDate",
+      headerName: "تاریخ جا به جایی",
+      flex: 1,
+      renderCell: ({ row }: { row: any }) => {
+        if (row.relocationDate)
+          return moment(row?.relocationDate).format("jYYYY/jMM/jDD");
+        else return null;
+      },
+    },
     {
       headerName: "عملیات",
       field: "action",
@@ -78,7 +78,7 @@ const AddressGrid = ({  }: Props) => {
             onEdit={() => {
               // navigate(`${row.id}`, { state: { userData: row } });
               setEditeData(row);
-              setAddModalFlag(true)
+              setAddModalFlag(true);
             }}
             onDelete={() => {
               setDeleteData(row);
@@ -89,7 +89,7 @@ const AddressGrid = ({  }: Props) => {
       },
     },
   ];
-  
+
   type editeObjectType = {
     id: number;
     value: string;
@@ -134,13 +134,13 @@ const AddressGrid = ({  }: Props) => {
             onClick={() => {
               // navigate("new")
               // setActiveTab(1);
-              setAddModalFlag(true)
+              setAddModalFlag(true);
             }}
           />
         </Box>
       </Grid>
-      
-      <Grid item md={11} sm={11} xs={12} >
+
+      <Grid item md={11} sm={11} xs={12}>
         {StatesData_status === "success" ? (
           isMobile ? (
             <VerticalTable
@@ -168,7 +168,11 @@ const AddressGrid = ({  }: Props) => {
               // }}
             />
           )
-        ) : <Typography variant="body1">اطلاعاتی برای نمایش موجود نمیباشد</Typography>}
+        ) : (
+          <Typography variant="body1">
+            اطلاعاتی برای نمایش موجود نمیباشد
+          </Typography>
+        )}
       </Grid>
       <AddAddress
         refetch={StatesData_refetch}
@@ -207,4 +211,4 @@ const AddressGrid = ({  }: Props) => {
   );
 };
 
-export default AddressGrid
+export default AddressGrid;

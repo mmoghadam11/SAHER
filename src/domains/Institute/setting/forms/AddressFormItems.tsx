@@ -14,7 +14,7 @@ export const AddressFormItems = (
     //   title: item?.value
     // })) ?? [{ value: 0, title: "خالی" }],
     options: [
-      { value: "o", title: "موسسه" },
+      { value: "o", title: "دفتر اصلی" },
       { value: "b", title: "شعبه" },
     ],
     rules: { required: "انتخاب نوع آدرس الزامی است" },
@@ -26,14 +26,14 @@ export const AddressFormItems = (
     size: { md: 4 },
     options: options?.branchOptions?.map((item: any) => ({
       value: item?.id,
-      title: item?.name
+      title: item?.name,
     })) ?? [{ value: 0, title: "خالی" }],
-    storeValueAs:"id",
+    storeValueAs: "id",
     rules: {
       validate: {
         // 'value' مقدار فعلی فیلد branchId هست
         // 'formValues' شامل تمام مقادیر فرم در لحظه اعتبارسنجی هست
-        conditionalRequired: (value:any, formValues:any) => {
+        conditionalRequired: (value: any, formValues: any) => {
           // اگر placeType 'b' (شعبه) باشه:
           if (formValues.placeType === "b") {
             // چک میکنیم که branchId یک مقدار معتبر (غیر صفر و غیر خالی) داشته باشه
@@ -46,7 +46,7 @@ export const AddressFormItems = (
           if (formValues.placeType === "o") {
             // چک میکنیم که branchId باید خالی باشه
             if (value && value !== 0) {
-              return "برای نوع دفتر 'موسسه'، فیلد شعبه باید خالی باشد";
+              return "برای نوع دفتر 'دفتر اصلی'، فیلد شعبه باید خالی باشد";
             }
           }
           // در غیر این صورت (مقادیر درست هستند یا شرط خاصی نیست)
@@ -60,7 +60,11 @@ export const AddressFormItems = (
     inputType: "autocomplete",
     label: "شهر",
     size: { md: 4 },
-    options: options?.cityOptions?.map((item:any)=>({value:item?.id,title:item?.name}))??[{value:0,title:""}],    storeValueAs: 'id',
+    options: options?.cityOptions?.map((item: any) => ({
+      value: item?.id,
+      title: item?.name,
+    })) ?? [{ value: null, title: "خالی" }],
+    storeValueAs: "id",
     rules: { required: "انتخاب شهر الزامی است" },
   },
   {
@@ -75,26 +79,26 @@ export const AddressFormItems = (
     inputType: "text",
     label: "خیابان فرعی",
     size: { md: 4 },
-    rules: { },
+    rules: {},
   },
   {
     name: "alley",
     inputType: "text",
     label: "کوچه",
     size: { md: 4 },
-    rules: { },
+    rules: {},
   },
   {
     name: "plateNo",
     inputType: "text",
     label: "پلاک",
     size: { md: 4 },
-    rules: { 
+    rules: {
       required: "شماره پلاک الزامی است",
       pattern: {
         value: /^[0-9]+$/,
-        message: "شماره پلاک باید عددی باشد"
-      }
+        message: "شماره پلاک باید عددی باشد",
+      },
     },
   },
   {
@@ -102,11 +106,11 @@ export const AddressFormItems = (
     inputType: "text",
     label: "واحد",
     size: { md: 4 },
-    rules: { 
+    rules: {
       pattern: {
         value: /^[0-9]+$/,
-        message: "شماره واحد باید عددی باشد"
-      }
+        message: "شماره واحد باید عددی باشد",
+      },
     },
   },
   {
@@ -114,11 +118,11 @@ export const AddressFormItems = (
     inputType: "text",
     label: "طبقه",
     size: { md: 4 },
-    rules: { 
+    rules: {
       pattern: {
         value: /^[0-9]+$/,
-        message: "شماره طبقه باید عددی باشد"
-      }
+        message: "شماره طبقه باید عددی باشد",
+      },
     },
   },
   {
@@ -126,12 +130,12 @@ export const AddressFormItems = (
     inputType: "text",
     label: "کد پستی",
     size: { md: 4 },
-    rules: { 
+    rules: {
       required: "کد پستی الزامی است",
       pattern: {
         value: /^[0-9]{10}$/,
-        message: "کد پستی باید 10 رقم باشد"
-      }
+        message: "کد پستی باید 10 رقم باشد",
+      },
     },
   },
   {
@@ -139,6 +143,17 @@ export const AddressFormItems = (
     inputType: "text",
     label: "صندوق پستی",
     size: { md: 4 },
-    rules: { },
+    rules: {},
+  },
+  {
+    name: "relocationDate",
+    inputType: "date",
+    label: "تاریخ جا به جایی",
+    size: { md: 4 },
+    rules: { required: "تاریخ جا به جایی الزامی است" },
+    elementProps: {
+      setDay: (value: any) => setValue("relocationDate", value),
+      value: "",
+    },
   },
 ];

@@ -9,6 +9,7 @@ export interface FormItem {
   elementProps?: any;
   placeholder?: string;
   storeValueAs?: string;
+  watchedValues?: any
 
   inlineLoading?:boolean;
   status?: string;

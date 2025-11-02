@@ -94,8 +94,6 @@ const {
     status: branchOptions_status,
     refetch: branchOptions_refetch,
   } = useQuery<any>({
-    // queryKey: [process.env.REACT_APP_API_URL + `/api/unit-allocations${paramsSerializer(filters)}`],
-    // queryKey: [`/api/v1/common-type/find-all${paramsSerializer(filters)}`],
     queryKey: [`audited-firm-branch/find-all-by-firm?firmId=${id}`],
     queryFn: Auth?.getRequest,
     select: (res: any) => {

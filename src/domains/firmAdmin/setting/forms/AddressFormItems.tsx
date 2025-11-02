@@ -14,7 +14,7 @@ export const AddressFormItems = (
     //   title: item?.value
     // })) ?? [{ value: 0, title: "خالی" }],
     options: [
-      { value: "o", title: "موسسه" },
+      { value: "o", title: "دفتر اصلی" },
       { value: "b", title: "شعبه" },
     ],
     rules: { required: "انتخاب نوع آدرس الزامی است" },
@@ -46,7 +46,7 @@ export const AddressFormItems = (
           if (formValues.placeType === "o") {
             // چک میکنیم که branchId باید خالی باشه
             if (value && value !== 0) {
-              return "برای نوع دفتر 'موسسه'، فیلد شعبه باید خالی باشد";
+              return "برای نوع دفتر 'دفتر اصلی'، فیلد شعبه باید خالی باشد";
             }
           }
           // در غیر این صورت (مقادیر درست هستند یا شرط خاصی نیست)
@@ -144,5 +144,16 @@ export const AddressFormItems = (
     label: "صندوق پستی",
     size: { md: 4 },
     rules: {},
+  },
+  {
+    name: "relocationDate",
+    inputType: "date",
+    label: "تاریخ جا به جایی",
+    size: { md: 4 },
+    rules: { required: "تاریخ جا به جایی الزامی است" },
+    elementProps: {
+      setDay: (value: any) => setValue("relocationDate", value),
+      value: "",
+    },
   },
 ];
