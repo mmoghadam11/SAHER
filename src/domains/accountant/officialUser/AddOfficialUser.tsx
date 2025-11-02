@@ -260,7 +260,7 @@ export default function AddOfficialUser(): JSX.Element {
     },
     {
       name: "اطلاعات عضویت",
-      formItems: MembershipFormItems(setValue, { membershipType, rankOptions }),
+      formItems: MembershipFormItems(setValue, { membershipType, rankOptions}),
     },
     {
       name: "اطلاعات تماس",
@@ -439,7 +439,7 @@ export default function AddOfficialUser(): JSX.Element {
                           name={item.name}
                           control={control}
                           rules={item.rules}
-                          disabled={!state?.editable}
+                          disabled={!state?.editable||(stepItem?.name==="اطلاعات عضویت"&&!!state.accountantData)||(item.name==="membershipDate")}
                           render={({ field }) => (
                             <RenderFormInput
                               controllerField={field}

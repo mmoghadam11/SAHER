@@ -31,9 +31,9 @@ const formItems: FormItem[] =[
   {
     name: "changeDate",
     inputType: "date",
-    label: "تاریخ تغیر عضویت",
+    label: "تاریخ تغییر عضویت",
     size: { md: 6 },
-    rules: { required: "تاریخ تغیر عضویت الزامی است" },
+    rules: { required: "تاریخ تغییر عضویت الزامی است" },
     elementProps: {
       setDay: (value: any) => {
         setValue("changeDate", value);

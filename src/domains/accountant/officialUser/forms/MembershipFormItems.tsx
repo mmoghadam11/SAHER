@@ -25,6 +25,9 @@ export const MembershipFormItems = (
     size: { md: 4 },
     options: options?.membershipType?.map((item: any) => ({ value: item?.id, title: item?.value })) ?? [{ value: 0, title: "خالی" }],
     rules: { required: "انتخاب نوع عضویت الزامی است" },
+    elementProps:{
+      disabled:true
+    }
   },
   {
     name: "membershipDate",
@@ -37,6 +40,7 @@ export const MembershipFormItems = (
         setValue("membershipDate", value);
       },
       value: "",
+      disabled:true
     },
   },
   {

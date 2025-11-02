@@ -96,7 +96,7 @@ const MemberList = () => {
         { field: 'selectionOrder', headerName: "اولویت کاربر", flex: 1 },
 
         {
-            field: 'func', headerName: 'تغیر رمز عبور', flex: 1,
+            field: 'func', headerName: 'تغییر رمز عبور', flex: 1,
             renderCell: ({ row }: any) => {
                 return <Button size='small' variant='contained' onClick={() => {
                     setSelectedUser(row);

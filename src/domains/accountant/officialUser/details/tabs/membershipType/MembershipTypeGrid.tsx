@@ -54,7 +54,7 @@ const MembershipTypeGrid = ({}: Props) => {
     { field: "cdMembershipTypeName", headerName: "نوع عضویت", flex: 1 },
     {
       field: "changeDate",
-      headerName: "تاریخ تغیر وضعیت  ",
+      headerName: "تاریخ تغییر وضعیت  ",
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
         if (row.changeDate)
@@ -121,12 +121,12 @@ const MembershipTypeGrid = ({}: Props) => {
       >
         <Box display={"flex"}>
           <Toc fontSize="large" />
-          <Typography variant="h5">سوابق تغیر عضویت</Typography>
+          <Typography variant="h5">سوابق تغییر عضویت</Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"}>
           <CreateNewItem
             sx={{ mr: 2 }}
-            title="تغیر عضویت"
+            title="تغییر عضویت"
             onClick={() => {
               setAddModalFlag(true);
             }}

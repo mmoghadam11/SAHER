@@ -176,7 +176,7 @@ const DisciplinaryOrderGrid = ({ setActiveTab }: Props) => {
           <Typography variant="h5">لیست احکام انتظامی</Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"}>
-          <CreateNewItem
+          {/* <CreateNewItem
             sx={{ mr: 2 }}
             name="حکم انتظامی"
             // onClick={() => navigate("new")}
@@ -185,7 +185,7 @@ const DisciplinaryOrderGrid = ({ setActiveTab }: Props) => {
               // setActiveTab(1);
               setAddModalFlag(true);
             }}
-          />
+          /> */}
         </Box>
       </Grid>
       {/* <SearchPannel<SearchData>

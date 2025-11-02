@@ -121,6 +121,11 @@ const MENU_ITEMS: MenuItem[] = [
         url: "license",
         access: ["administrator", "city-showmenu"],
       },
+      {
+        title: "شاغلین سازمان حسابرسی",
+        url: "ca_organization",
+        access: ["administrator", "city-showmenu"],
+      },
     ],
   },
 
@@ -128,7 +133,7 @@ const MENU_ITEMS: MenuItem[] = [
     icon: <BusinessCenter />,
     title: "موسسات",
     url: "/institutions",
-    access: ["city-showmenu"],
+    access: ["city-showmenu","operator-showmenu"],
     menuChildren: [
       {
         title: "اطلاعات موسسات",
@@ -174,7 +179,7 @@ const MENU_ITEMS: MenuItem[] = [
       {
         title: "احکام انتظامی",
         url: "disciplinary-order",
-        access: ["administrator", "city-showmenu"],
+        access: ["administrator", "city-showmenu","operator-showmenu"],
       },
       {
         title: "آزمون رتبه بندی",

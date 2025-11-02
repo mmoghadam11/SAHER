@@ -47,6 +47,7 @@ const RenderFormInput: React.FC<IRenderFormInput> = forwardRef((props, ref) => {
         label={label}
         error={Boolean(errors?.[name]?.message)}
         helperText={errors?.[name]?.message}
+        value={value}
         {...controllerField}
         {...elementProps}
         inputRef={ref}
@@ -55,7 +56,7 @@ const RenderFormInput: React.FC<IRenderFormInput> = forwardRef((props, ref) => {
         inputProps={{ style: !Defaultfont ? { fontSize: 16 } : null }} // font size of input text
         InputLabelProps={{ style: !Defaultfont ? { fontSize: 16 } : null }}
         onChange={onChange}
-        value={value}
+        // value={value}
         defaultValue={defaultValue}
         placeholder={placeholder}
       />

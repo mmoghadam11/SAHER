@@ -142,7 +142,7 @@ const AddMembershipType = ({
           //   handleClose();
         },
         onError: () => {
-          snackbar("خطا در تغیر نوع عضویت", "error");
+          snackbar("خطا در تغییر نوع عضویت", "error");
         },
       }
     );
@@ -163,7 +163,7 @@ const AddMembershipType = ({
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Box display={"flex"} textAlign={"center"} alignItems={"center"}>
             <AccountBox fontSize="large" />
-            <Typography variant="h6">تغیر عضویت</Typography>
+            <Typography variant="h6">تغییر عضویت</Typography>
           </Box>
           <IconButton onClick={handleClose} size="small">
             <Close />

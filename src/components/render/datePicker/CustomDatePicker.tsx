@@ -22,6 +22,8 @@ const CustomDatePicker: React.FC<IRenderFormInput> = forwardRef( ({ value, setDa
         label={label}
         // value={typeof value === "string" ? value : "convertDayToString(value)"}
         value={typeof value === "string" ?   moment(new Date(value)).format("jYYYY/jMM/jDD") : "وارد نشده"}
+        inputProps={{ style: { fontSize: 16 }  }} // font size of input text
+        InputLabelProps={{ style: {fontSize: 16}  }}
         disabled
         fullWidth
         size="small"

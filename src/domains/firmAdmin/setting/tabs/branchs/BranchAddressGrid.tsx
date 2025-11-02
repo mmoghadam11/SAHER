@@ -124,7 +124,7 @@ const BranchAddressGrid = ({
           <Typography variant="body1">لیست آدرس‌های شعبه انتخابی</Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"} mb={2}>
-          <Tooltip title="تغیر آدرس فعال">
+          <Tooltip title="تغییر آدرس فعال">
             <Fab
               size="small"
               sx={{ mr: 1 }}

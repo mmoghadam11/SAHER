@@ -69,6 +69,7 @@ const InstititeGrid = (props: Props) => {
     { field: "financeYear", headerName: "سال مالی", flex: 0.7 },
     { field: "nationalId", headerName: "شناسه ملی موسسه", flex: 1 },
     { field: "registerNo", headerName: "شماره ثبت", flex: 0.7 },
+    { field: "cdFirmActivityStatusName", headerName: "وضعیت فعالیت", flex: 0.7 },
     // {
     //   field: "director",
     //   headerName: "مدیرعامل",

@@ -409,7 +409,7 @@ export default function FirmAdminFormSteps(): JSX.Element {
 }
 
 /**
- * فیلد هایی که موسسه نباید تغیر دهد
+ * فیلد هایی که موسسه نباید تغییر دهد
 کد عضویت
 تاریخ ثبت
  * 
