@@ -59,6 +59,7 @@ import Firms4AccountantGrid from "domains/firmAdmin/FirmHiredAccountant/Firms4Ac
 import FirmAccountantGrid from "domains/firmAdmin/FirmHiredAccountant/FirmAccountantGrid";
 import AddFirmAccountant from "domains/firmAdmin/FirmHiredAccountant/AddFirmAccountants";
 import AccountantDetaileTabs from "domains/accountant/officialUser/details/DetailsTabs";
+import AllDisciplinaryOrderGrid from "domains/Institute/disciplinaryOrder/AllDisciplinaryOrderGrid";
 
 const AppRoutes: React.FC = () => {
   const auth = useAuth();
@@ -154,7 +155,8 @@ const AppRoutes: React.FC = () => {
               <Route path=":id" element={<FinancialStatementDetaile />} />
             </Route>
             <Route path="disciplinary-order">
-              <Route index element={<InstituteDisciplinaryOrderGrid />} />
+              {/* <Route index element={<InstituteDisciplinaryOrderGrid />} /> */}
+              <Route index element={<AllDisciplinaryOrderGrid/>} />
               <Route path=":id" element={<DisciplinaryOrderDetaile />} />
             </Route>
           </Route>
