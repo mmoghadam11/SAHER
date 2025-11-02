@@ -34,7 +34,6 @@ import MembershipTypeGrid from "./tabs/membershipType/MembershipTypeGrid";
 import { MiniInfoItems } from "./MiniInfoItems";
 import EDUGrid from "./tabs/education/EDUGrid";
 
-
 type Props = {};
 interface FormItem {
   name: keyof FullInstituteType;
@@ -66,10 +65,10 @@ const AccountantDetaileTabs = (props: Props) => {
     setValue,
     getValues,
   } = useForm<any>();
-  const [activeTab, setActiveTab] = useState<number>(0);
+  const [activeTab, setActiveTab] = useState<number>(1);
   useEffect(() => {
-      reset(state?.accountantData);
-    }, [state?.accountantData]);
+    reset(state?.accountantData);
+  }, [state?.accountantData]);
   const {
     data: cityOptions,
     status: cityOptions_status,
@@ -83,12 +82,12 @@ const AccountantDetaileTabs = (props: Props) => {
   } as any);
   const tabSteps = [
     {
-      title: "نوع عضویت",
-      com: <MembershipTypeGrid/>,
+      title: "تحصیلات",
+      com: <EDUGrid />,
     },
     {
-      title: "تحصیلات",
-      com: <EDUGrid/>,
+      title: "نوع عضویت",
+      com: <MembershipTypeGrid />,
     },
   ];
 
@@ -118,7 +117,8 @@ const AccountantDetaileTabs = (props: Props) => {
           </Typography>
         </Grid>
         <Grid item display={"flex"}>
-          <BackButton onBack={() => navigate(-1)} />
+          {/* <BackButton onBack={() => navigate(-1)} /> */}
+          <BackButton onBack={() => navigate("/accountant/official-users",{state:{searchFilters:state?.searchFilters}})} />
         </Grid>
       </Grid>
       <Grid item md={11}>
@@ -152,7 +152,14 @@ const AccountantDetaileTabs = (props: Props) => {
           </Grid>
         </Paper>
       </Grid>
-      <Grid item md={11} sm={11} xs={12} display={"flex"} justifyContent={"flex-start"} >
+      <Grid
+        item
+        md={11}
+        sm={11}
+        xs={12}
+        display={"flex"}
+        justifyContent={"flex-start"}
+      >
         {isMobile ? (
           <Select
             sx={{ width: "25vw", mr: 1, mt: 2 }}
@@ -172,7 +179,7 @@ const AccountantDetaileTabs = (props: Props) => {
             sx={{
               mt: 2,
               mr: 1,
-              direction:"rtl"
+              direction: "rtl",
               // maxWidth: "45vw",
               // direction: "rtl",
             }}

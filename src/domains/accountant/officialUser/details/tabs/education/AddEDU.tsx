@@ -28,8 +28,17 @@ import { useSnackbar } from "hooks/useSnackbar";
 import React, { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
-import { MembershipFormItems } from "./MembershipFormItems";
-import { FormItem } from "types/formItem";
+import { EducationFormItems } from "./EducationFormItems";
+
+interface FormData {
+  id?: any;
+  termName: string;
+  auditingFirmId: string;
+  applicatorName: string;
+  hour_count: string;
+  request_year: string;
+  request_month: string;
+}
 
 type Props = {
   refetch: () => void;
@@ -39,7 +48,7 @@ type Props = {
   setEditeData: React.Dispatch<React.SetStateAction<any>>;
 };
 
-const AddMembershipType = ({
+const AddEDU = ({
   addModalFlag,
   setAddModalFlag,
   refetch,
@@ -61,17 +70,20 @@ const AddMembershipType = ({
     reset,
     setValue,
     getValues,
-    watch,
   } = useForm<any>();
 
-  const watchedMembershipTypeId = watch("cdMembershipTypeId");
-  const { data: firmOptions } = useQuery<any>({
-    queryKey: [`firm/search-all`],
+  const {
+    data: cityOptions,
+    status: cityOptions_status,
+    refetch: cityOptions_refetch,
+  } = useQuery<any>({
+    // queryKey: [process.env.REACT_APP_API_URL + `/api/unit-allocations${paramsSerializer(filters)}`],
+    // queryKey: [`/api/v1/common-type/find-all${paramsSerializer(filters)}`],
+    queryKey: [`city/search-all`],
     queryFn: Auth?.getRequest,
     select: (res: any) => {
       return res?.data;
     },
-    enabled: Number(watchedMembershipTypeId) === 63,
   } as any);
   const {
     data: membershipType,
@@ -84,14 +96,48 @@ const AddMembershipType = ({
       return res?.data;
     },
   } as any);
+  const {
+    data: universityOptions,
+    status: universityOptions_status,
+    refetch: universityOptions_refetch,
+  } = useQuery<any>({
+    queryKey: [`common-data/find-by-type-all?typeId=38`],
+    queryFn: Auth?.getRequest,
+    select: (res: any) => {
+      return res?.data;
+    },
+  } as any);
+  const {
+    data: educationalFieldOptions,
+    status: educationalFieldOptions_status,
+    refetch: educationalFieldOptions_refetch,
+  } = useQuery<any>({
+    queryKey: [`common-data/find-by-type-all?typeId=36`],
+    queryFn: Auth?.getRequest,
+    select: (res: any) => {
+      return res?.data;
+    },
+  } as any);
+  const {
+    data: eduCertificate,
+    status: eduCertificate_status,
+    refetch: eduCertificate_refetch,
+  } = useQuery<any>({
+    queryKey: [`common-data/find-by-type-all?typeId=33`],
+    queryFn: Auth?.getRequest,
+    select: (res: any) => {
+      return res?.data;
+    },
+  } as any);
   let formItems: any[] = useMemo(
     () =>
-      MembershipFormItems(
-        setValue,
-        { membershipType, firmOptions },
-        watchedMembershipTypeId
-      ),
-    [membershipType, watchedMembershipTypeId, firmOptions]
+      EducationFormItems(setValue, {
+        cityOptions,
+        eduCertificate,
+        universityOptions,
+        educationalFieldOptions,
+      }),
+    [cityOptions, eduCertificate, universityOptions, educationalFieldOptions]
   );
   useEffect(() => {
     console.log("editeData=>", getValues());
@@ -112,14 +158,10 @@ const AddMembershipType = ({
     setEditeData(null);
   };
 
-  useEffect(() => {
-    console.log("watchedMembershipTypeId", watchedMembershipTypeId);
-  }, [watchedMembershipTypeId]);
-
   const onSubmit = (data: FormData) => {
     mutate(
       {
-        entity: `membership-type-change/${!!editeData ? "update" : "save"}`,
+        entity: `educational-degree/${!!editeData ? "update" : "save"}`,
         // entity: `firm-director/save`,
         method: !!editeData ? "put" : "post",
         // method:  "post",
@@ -134,15 +176,15 @@ const AddMembershipType = ({
           console.log("res=>", res);
           if (!!editeData)
             snackbar(
-              `به روز رسانی نوع عضویت انتخاب شده با موفقیت انجام شد`,
+              `به روز رسانی سابقه تحصیلی انتخاب شده با موفقیت انجام شد`,
               "success"
             );
-          else snackbar(`نوع عضویت جدید با موفقیت افزوده شد`, "success");
+          else snackbar(`سابقه تحصیلی جدید با موفقیت افزوده شد`, "success");
           refetch();
           //   handleClose();
         },
         onError: () => {
-          snackbar("خطا در تغیر نوع عضویت", "error");
+          snackbar("خطا در ایجاد سابقه تحصیلی", "error");
         },
       }
     );
@@ -162,8 +204,12 @@ const AddMembershipType = ({
       <DialogTitle>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Box display={"flex"} textAlign={"center"} alignItems={"center"}>
-            <AccountBox fontSize="large" />
-            <Typography variant="h6">تغیر عضویت</Typography>
+            <School fontSize="large" />
+            <Typography variant="h6">
+              {editeData
+                ? `ویرایش سابقه تحصیلی انتخاب شده`
+                : `سابقه تحصیلی جدید`}
+            </Typography>
           </Box>
           <IconButton onClick={handleClose} size="small">
             <Close />
@@ -171,9 +217,9 @@ const AddMembershipType = ({
         </Box>
       </DialogTitle>
 
-      <DialogContent sx={{ overflow: "visible" }}>
+      <DialogContent sx={{overflow:"visible"}}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Grid container spacing={3} mt={1} justifyContent={"center"}>
+          <Grid container spacing={3} mt={1}>
             {formItems.map((item) => (
               <Grid item xs={12} md={item.size.md} key={item.name}>
                 <Controller
@@ -222,4 +268,4 @@ const AddMembershipType = ({
   );
 };
 
-export default AddMembershipType;
+export default AddEDU;
