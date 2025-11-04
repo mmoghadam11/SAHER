@@ -17,3 +17,9 @@ export const apiV2 = axios.create({
     "Content-Type": "application/json",
   },
 });
+export const apiUpload = axios.create({
+  baseURL: BASE_URL+"/api/",
+  // headers: {
+  //   // "Content-Type": "multipart/form-data",
+  // },
+});

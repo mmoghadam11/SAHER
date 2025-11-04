@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { TAuthContext, TServerCall } from "../types/authContext";
 import jwtDecode from "jwt-decode";
-import { api, apiV2, BASE_URL } from "services/axios";
+import { api, apiUpload, apiV2, BASE_URL } from "services/axios";
 import useLocalStorage from "hooks/useLocalStorge";
 import { ILoggedInUser } from "types/user";
 import { convertArabicCharToPersian } from "services/convertArabicCharToPersian";
@@ -24,8 +24,8 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
   const [userInfo, setUserInfo] = useLocalStorage<ILoggedInUser>("userInfo", {
     firstName: "",
     lastName: "",
+    nationalCode: "",
     // fatherName: "",
-    // nationalCode: "",
     // projectKey: "",
     // previous_price: "",
     // betaja_price: "",
@@ -71,7 +71,7 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
           setContract(
             "",
             "",
-            // "",
+            "",
             // "",
             // "",
             // "",
@@ -243,6 +243,73 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
       throw new Error(JSON.stringify(e) || `خطا در انجام عملیات`);
     }
   };
+  const serverCallUpload = async ({
+    entity,
+    method,
+    data ,
+  }: TServerCall) => {
+    try {
+      const apiUrl = process.env.REACT_APP_API_URL || 'http://192.168.100.95:8086/api/v1/';
+      let requestOptions = {
+        url: convertArabicCharToPersian( apiUrl + entity),
+        method,
+        headers: {
+          Authorization: "Bearer " + (localToken || token),
+        },
+        redirect: "follow",
+        ...(data && { data: data }),
+      };
+      let response = await apiUpload({ ...requestOptions });
+      if (response.status === 200) {
+        return response.data;
+      } else if (response.status === 204) {
+        return { data: { rows: [] } };
+      } else {
+        // setNotification(response.status, `خطا در انجام عملیات - ${response?.statusText}`, "error");
+        // setNotification(response.status, "", "error");
+        throw new Error(`خطا در انجام عملیات - ${response?.statusText}`);
+      }
+    } catch (e: any) {
+      if (e?.response?.status === 401) {
+        clearUserInfo();
+      }
+      throw e.response || new Error(`خطا در انجام عملیات`);
+    }
+  };
+  const serverCallGetFile = async ({
+    entity,
+    method="get",
+    data
+  }: TServerCall) => {
+    try {
+      const apiUrl = process.env.REACT_APP_API_URL || 'http://192.168.100.95:8086/api/v1/';
+      let requestOptions = {
+        url: convertArabicCharToPersian( apiUrl + entity),
+        method,
+        headers: {
+          Authorization: "Bearer " + (localToken || token),
+        },
+        responseType: 'blob',
+        redirect: "follow",
+        ...(data && { data: data }),
+      };
+      let response = await apiUpload({ ...requestOptions });
+      if (response.status === 200) {
+        return response.data;
+      } else if (response.status === 204) {
+        return { data: { rows: [] } };
+      } else {
+        // setNotification(response.status, `خطا در انجام عملیات - ${response?.statusText}`, "error");
+        // setNotification(response.status, "", "error");
+        throw new Error(`خطا در انجام عملیات - ${response?.statusText}`);
+      }
+    } catch (e: any) {
+      if (e?.response?.status === 401) {
+        clearUserInfo();
+      }
+      throw e.response || new Error(`خطا در انجام عملیات`);
+    }
+  };
 
   //OLD LOGOUT
   // async function logout() {
@@ -281,8 +348,8 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
   function setContract(
     firstName: any,
     lastName: any,
+    nationalCode: any,
     // fatherName: any,
-    // nationalCode: any,
     // projectKey: any,
     // previous_price: any,
     // betaja_price: any,
@@ -298,8 +365,8 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
     setUserInfo({
       firstName: firstName,
       lastName: lastName,
+      nationalCode: nationalCode,
       // fatherName: fatherName,
-      // nationalCode: nationalCode,
       // projectKey: projectKey,
       // previous_price: previous_price,
       // betaja_price: betaja_price,
@@ -329,8 +396,8 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
     setUserInfo({
       firstName: "",
       lastName: "",
+      nationalCode: "",
       // fatherName: "",
-      // nationalCode: "",
       // projectKey: "",
       // previous_price: "",
       // betaja_price: "",
@@ -363,6 +430,22 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
       throw new Error(error?.message || `خطا در انجام عملیات`);
     }
   };
+  const getRequestDownloadFile = async ({
+    queryKey,
+  }: {
+    queryKey: string | number | boolean | Array<number | boolean | string>;
+  }) => {
+    let tempEntity = queryKey;
+    if (Array.isArray(queryKey)) {
+      tempEntity = queryKey.join("/");
+    }
+    tempEntity = String(tempEntity);
+    try {
+      return await serverCallGetFile({ entity: tempEntity, method: "get" });
+    } catch (error: any) {
+      throw new Error(error?.message || `خطا در انجام عملیات`);
+    }
+  };
   const getRequestV2 = async ({
     queryKey,
   }: {
@@ -390,6 +473,9 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
           getRequest,
           serverCallV2,
           getRequestV2,
+          serverCallUpload,
+          serverCallGetFile,
+          getRequestDownloadFile,
           isUserLoggedIn: !!token,
           logout,
           userInfo,

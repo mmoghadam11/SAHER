@@ -1,5 +1,13 @@
-import { Box, Button, Grid, IconButton, Toolbar, Typography } from "@mui/material";
-import React, { useContext } from "react";
+import {
+  Avatar,
+  Box,
+  Button,
+  Grid,
+  IconButton,
+  Toolbar,
+  Typography,
+} from "@mui/material";
+import React, { useContext, useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import MenuIcon from "@mui/icons-material/Menu";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
@@ -15,6 +23,9 @@ import "./Navbar.css";
 import { isMobile } from "react-device-detect";
 import { store } from "../../redux/configureStore";
 import { mainProviderContext } from "context/MainProviderContext";
+import UploadAvatarSimpleDialog from "./UploadAvatarSimpleDialog";
+import { useQuery } from "@tanstack/react-query";
+import paramsSerializer from "services/paramsSerializer";
 
 interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
@@ -48,8 +59,12 @@ const Navbar: React.FC<Props> = ({ open, hideRightMenu, handleDrawerOpen }) => {
   const Auth = useAuth();
   const navigate = useNavigate();
 
-  const {access} = useContext(mainProviderContext);
-  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+  const { access } = useContext(mainProviderContext);
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
+    null
+  );
+  const [openAvatar, setOpenAvatar] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string | undefined>("");
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -62,6 +77,41 @@ const Navbar: React.FC<Props> = ({ open, hideRightMenu, handleDrawerOpen }) => {
   const isOpenUserMenu = Boolean(anchorEl);
 
   const colorMode = React.useContext(ColorModeContext);
+  const filters={
+    username :localStorage.getItem("username")
+  }
+  const {
+      data: image,
+      status: image_status,
+      refetch: image_refetch,
+    } = useQuery<any>({
+      queryKey: [`user/download-profile-image${paramsSerializer(filters)}`],
+      queryFn: Auth?.getRequestDownloadFile,
+      select: (res: any) => {
+        return res;
+      },
+      enabled: true,
+    } as any);
+    useEffect(() => {
+    let objectUrl: string | null = null;
+
+    // 1. چک کنید که داده‌ی تصویر وجود دارد و از نوع Blob است
+    if (image && image instanceof Blob) {
+      // 2. یک URL موقت از Blob بسازید
+      objectUrl = URL.createObjectURL(image);
+      // 3. URL ساخته شده را در استیت قرار دهید
+      setAvatarUrl(objectUrl);
+    }
+
+    // 4. (مهم) تابع پاک‌سازی:
+    // این تابع زمانی اجرا می‌شود که کامپوننت unmount شود یا 'image' تغییر کند
+    return () => {
+      if (objectUrl) {
+        // URL موقت قبلی را از حافظه مرورگر پاک می‌کند
+        URL.revokeObjectURL(objectUrl);
+      }
+    };
+  }, [image]);
   return (
     <>
       <Popover
@@ -73,7 +123,14 @@ const Navbar: React.FC<Props> = ({ open, hideRightMenu, handleDrawerOpen }) => {
           horizontal: "left",
         }}
       >
-        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }} className="account-menu">
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+          className="account-menu"
+        >
           {/* {
             Auth?.userInfo?.member_id ?
             (<Button
@@ -88,7 +145,10 @@ const Navbar: React.FC<Props> = ({ open, hideRightMenu, handleDrawerOpen }) => {
               پروفایل
             </Button>) : null
           } */}
-          <Box className="account-menu-btn" sx={{ display: "flex", alignItems: "center" }}>
+          <Box
+            className="account-menu-btn"
+            sx={{ display: "flex", alignItems: "center" }}
+          >
             <Typography variant="button">روشنایی</Typography>
             <MaterialUISwitch
               sx={{ m: 1 }}
@@ -97,6 +157,16 @@ const Navbar: React.FC<Props> = ({ open, hideRightMenu, handleDrawerOpen }) => {
             />
           </Box>
 
+          <Button
+            className="account-menu-btn"
+            sx={{ mt: 1, color: (theme) => theme.palette.text.primary }}
+            color="warning"
+            variant="contained"
+            endIcon={<AccountCircleIcon fontSize="large" />}
+            onClick={() => setOpenAvatar(true)}
+          >
+            تصویر پروفایل
+          </Button>
           <Button
             className="account-menu-btn"
             sx={{ mt: 1, color: (theme) => theme.palette.text.primary }}
@@ -127,9 +197,8 @@ const Navbar: React.FC<Props> = ({ open, hideRightMenu, handleDrawerOpen }) => {
       >
         <Toolbar sx={{ display: "flex", alignItems: "center" }}>
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            {
-              hideRightMenu ? null :
-              (<IconButton
+            {hideRightMenu ? null : (
+              <IconButton
                 color="inherit"
                 aria-label="open drawer"
                 onClick={handleDrawerOpen}
@@ -140,8 +209,8 @@ const Navbar: React.FC<Props> = ({ open, hideRightMenu, handleDrawerOpen }) => {
                 }}
               >
                 <MenuIcon />
-              </IconButton>)
-            }
+              </IconButton>
+            )}
             <Box
               component="img"
               sx={{ height: "48px", width: "auto" }}
@@ -152,25 +221,29 @@ const Navbar: React.FC<Props> = ({ open, hideRightMenu, handleDrawerOpen }) => {
           <Box sx={{ flexGrow: 1, textAlign: "center" }}>{pathname}</Box> */}
           <Box sx={{ flexGrow: 1, marginLeft: "20px" }}>
             <Typography variant="h6">
-              { isMobile ? "ساحر" : "سامانه ساحــر"}
+              {isMobile ? "ساحر" : "سامانه ساحــر"}
             </Typography>
           </Box>
-          <Box sx={{
-            flexGrow: 10,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            flexDirection: "row",
-          }}>
-            <Grid container 
-              spacing={1} 
-              width={'100%'}
+          <Box
+            sx={{
+              flexGrow: 10,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "row",
+            }}
+          >
+            <Grid
+              container
+              spacing={1}
+              width={"100%"}
               sx={{
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
                 flexDirection: "row",
-              }}>
+              }}
+            >
               {/* <Grid item>
                 <Box>
                   <Button variant="contained" color="warning" onClick={()=> navigate("/help")}>
@@ -181,35 +254,35 @@ const Navbar: React.FC<Props> = ({ open, hideRightMenu, handleDrawerOpen }) => {
                 </Box>
               </Grid> */}
               {
-              // Auth?.isContractSet() ?
-              //   (<Grid item sx={{
-              //     display: "flex",
-              //     justifyContent: "flex-start",
-              //     alignItems: "center",
-              //     flexDirection: "row",
-              //   }}>
-              //     <Typography variant="caption" margin={"5px"}>
-              //       {
-              //           "کد واحد: "
-              //       }
-              //     </Typography>
-              //     <Typography variant="body1" fontWeight={600}>
-              //       {Auth?.userInfo.contract_number}
-              //     </Typography>
-              //   </Grid>) : 
-              //   access.admin ?
-              //   (<Grid item sx={{
-              //     display: "flex",
-              //     justifyContent: "flex-start",
-              //     alignItems: "center",
-              //     flexDirection: "row",
-              //   }}>
-              //     <Typography variant="caption" margin={"5px"}>
-              //       {
-              //         "سطح دسترسی: ادمین"
-              //       }
-              //     </Typography>
-              //   </Grid>) : null
+                // Auth?.isContractSet() ?
+                //   (<Grid item sx={{
+                //     display: "flex",
+                //     justifyContent: "flex-start",
+                //     alignItems: "center",
+                //     flexDirection: "row",
+                //   }}>
+                //     <Typography variant="caption" margin={"5px"}>
+                //       {
+                //           "کد واحد: "
+                //       }
+                //     </Typography>
+                //     <Typography variant="body1" fontWeight={600}>
+                //       {Auth?.userInfo.contract_number}
+                //     </Typography>
+                //   </Grid>) :
+                //   access.admin ?
+                //   (<Grid item sx={{
+                //     display: "flex",
+                //     justifyContent: "flex-start",
+                //     alignItems: "center",
+                //     flexDirection: "row",
+                //   }}>
+                //     <Typography variant="caption" margin={"5px"}>
+                //       {
+                //         "سطح دسترسی: ادمین"
+                //       }
+                //     </Typography>
+                //   </Grid>) : null
               }
             </Grid>
           </Box>
@@ -221,21 +294,47 @@ const Navbar: React.FC<Props> = ({ open, hideRightMenu, handleDrawerOpen }) => {
               flexDirection: "row",
             }}
           >
-            {
-              isMobile ? null :
+            {isMobile ? null : (
               <>
                 <Typography variant="caption" color="inherit" fontWeight={600}>
-                  {Auth?.userInfo?.firstName + " " + Auth?.userInfo?.lastName+" "+"عزیز"}
+                  {Auth?.userInfo?.firstName +
+                    " " +
+                    Auth?.userInfo?.lastName +
+                    " " +
+                    "عزیز"}
                 </Typography>
-                <Typography variant="caption" margin={"5px"}>خوش آمدید!</Typography>
+                <Typography variant="caption" margin={"5px"}>
+                  خوش آمدید!
+                </Typography>
               </>
-            }
+            )}
             <IconButton color="inherit" onClick={handleClick}>
-              <AccountCircleIcon sx={{ fontSize: "28px" }} color="inherit" />
+              <Avatar
+                src={avatarUrl ?? undefined}
+                sx={{
+                  width: 40,
+                  height: 40,
+                  border: "2px solid",
+                  borderColor: "divider",
+                }}
+              >
+                <AccountCircleIcon sx={{width: 40,height: 40,}} color="inherit" />
+              </Avatar>
+              {/* <AccountCircleIcon sx={{ fontSize: "28px" }} color="inherit" /> */}
             </IconButton>
           </Box>
         </Toolbar>
       </AppBar>
+      <UploadAvatarSimpleDialog
+        refetch={image_refetch}
+        open={openAvatar}
+        onClose={() => setOpenAvatar(false)}
+        currentAvatarUrl={avatarUrl}
+        onUploaded={(data) => {
+          // بسته به پاسخ سرور آدرس نهایی را ست کنید
+          setAvatarUrl(data?.url ?? data?.avatarUrl);
+        }}
+      />
     </>
   );
 };
@@ -257,7 +356,7 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
       transform: "translateX(22px)",
       "& .MuiSwitch-thumb:before": {
         backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
-          "#ccc",
+          "#ccc"
         )}" d="M4.2 2.5l-.7 1.8-1.8.7 1.8.7.7 1.8.6-1.8L6.7 5l-1.9-.7-.6-1.8zm15 8.3a6.7 6.7 0 11-6.6-6.6 5.8 5.8 0 006.6 6.6z"/></svg>')`,
       },
       "& + .MuiSwitch-track": {
@@ -281,7 +380,7 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
       backgroundRepeat: "no-repeat",
       backgroundPosition: "center",
       backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
-        "#757575",
+        "#757575"
       )}" d="M9.305 1.667V3.75h1.389V1.667h-1.39zm-4.707 1.95l-.982.982L5.09 6.072l.982-.982-1.473-1.473zm10.802 0L13.927 5.09l.982.982 1.473-1.473-.982-.982zM10 5.139a4.872 4.872 0 00-4.862 4.86A4.872 4.872 0 0010 14.862 4.872 4.872 0 0014.86 10 4.872 4.872 0 0010 5.139zm0 1.389A3.462 3.462 0 0113.471 10a3.462 3.462 0 01-3.473 3.472A3.462 3.462 0 016.527 10 3.462 3.462 0 0110 6.528zM1.665 9.305v1.39h2.083v-1.39H1.666zm14.583 0v1.39h2.084v-1.39h-2.084zM5.09 13.928L3.616 15.4l.982.982 1.473-1.473-.982-.982zm9.82 0l-.982.982 1.473 1.473.982-.982-1.473-1.473zM9.305 16.25v2.083h1.389V16.25h-1.39z"/></svg>')`,
     },
   },

@@ -5,10 +5,13 @@ export type TAuthContext = {
   token: string;
   storeToken: (token: string) => void;
   storeRefreshToken: (refreshToken: string) => void;
+  serverCallUpload: (params: TServerCall) => any;
+  serverCallGetFile: (params: TServerCall) => any;
   serverCall: (params: TServerCall) => any;
   getRequest: ({ queryKey }: { queryKey: QueryFunction<unknown, QueryKey, any> }) => any;
   serverCallV2: (params: TServerCall) => any;
   getRequestV2: ({ queryKey }: { queryKey: QueryFunction<unknown, QueryKey, any> }) => any;
+  getRequestDownloadFile: ({ queryKey }: { queryKey: QueryFunction<unknown, QueryKey, any> }) => any;
   isUserLoggedIn: boolean;
   logout: () => void;
   refreshToken: () => void;
@@ -23,6 +26,7 @@ export type TServerCall = {
   entity: string | number | Array<string | number>;
   data?: any;
   method: THttpMethods;
+  headers?:any;
   // method: AXIOS
 };
 

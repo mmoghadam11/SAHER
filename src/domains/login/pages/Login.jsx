@@ -165,6 +165,7 @@ const Login = () => {
           setContract(
             result.firstName,
             result.lastName,
+            result.nationalCode,
           );
           // window.location.pathname = "/welcome";
         }
