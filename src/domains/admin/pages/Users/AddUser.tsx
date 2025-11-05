@@ -84,6 +84,19 @@ export default function AddUser(): JSX.Element {
       },
     },
     {
+      name: "nationalCode",
+      inputType: "text",
+      label: "کد ملی",
+      size: { md: 4 },
+      rules: {
+        required: "کد ملی الزامی است",
+        pattern: {
+          value: /^[0-9]{10}$/,
+          message: "کد مالیاتی باید 10 رقمی باشد",
+        },
+      },
+    },
+    {
       name: "username",
       inputType: "text",
       label: "نام کاربری",
@@ -119,7 +132,6 @@ export default function AddUser(): JSX.Element {
       },
     },
   ];
-  
 
   const onSubmit = (data: any) => {
     const { confirmPassword, ...submitData } = data;
@@ -154,8 +166,8 @@ export default function AddUser(): JSX.Element {
   };
   useEffect(() => {
     if (!!state?.userData) {
-        const { password, ...editeData } = state?.userData;
-        reset(editeData);
+      const { password, ...editeData } = state?.userData;
+      reset(editeData);
     }
   }, [state?.userData]);
 

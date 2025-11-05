@@ -57,6 +57,7 @@ const UsersGrid = (props: Props) => {
     { field: "username", headerName: "نام کاربر", flex: 2 },
     { field: "firstname", headerName: "نام", flex: 1 },
     { field: "lastname", headerName: "نام خانوادگی", flex: 1 },
+    { field: "nationalCode", headerName: "کدملی", flex: 1 },
     {
       field: "active",
       headerName: "فعال",
@@ -115,9 +116,21 @@ const UsersGrid = (props: Props) => {
   };
   const searchItems: searchType[] = [
     {
-      name: "name",
+      name: "firstname",
       inputType: "text",
-      label: "نام کاربر",
+      label: "نام",
+      size: { md: 4 },
+    },
+    {
+      name: "lastname",
+      inputType: "text",
+      label: "نام خانوادگی",
+      size: { md: 4 },
+    },
+    {
+      name: "nationalCode",
+      inputType: "text",
+      label: "کدملی",
       size: { md: 4 },
     },
     // {
