@@ -102,6 +102,11 @@ const OfficialUserGrid = (props: Props) => {
       flex: 1,
     },
     {
+      field: "auditingFirmName",
+      headerName: "موسسه",
+      flex: 1,
+    },
+    {
       field: "nationalCode",
       headerName: "کد ملی",
       flex: 1,

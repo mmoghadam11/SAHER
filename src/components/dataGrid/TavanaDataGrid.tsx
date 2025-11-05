@@ -1,5 +1,10 @@
 import React from "react";
-import { DataGrid, DataGridProps, GridPaginationModel, GridToolbar } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  DataGridProps,
+  GridPaginationModel,
+  GridToolbar,
+} from "@mui/x-data-grid";
 import { Grid } from "@mui/material";
 import { IQueryFilter } from "types/types";
 
@@ -10,13 +15,19 @@ interface Props extends DataGridProps {
 }
 
 const TavanaDataGrid = (props: Props) => {
-  const { setFilters, filters, hideToolbar=false } = props;
+  const { setFilters, filters, hideToolbar = false } = props;
   return (
     <Grid container spacing={0}>
       <Grid item xs={12} sx={{ minHeight: "200px" }}>
         <DataGrid
           sx={{
-            "& .MuiTablePagination-actions": {direction: "rtl"}
+            "& .MuiTablePagination-actions": { direction: "rtl" },
+            "& .font-12": {fontSize: "12px"},
+            "& .font-13": {
+              // fontWeight: 425,
+              fontSize: "13px",
+              // color: "primary.main",
+            },
           }}
           localeText={{
             toolbarDensity: "اندازه",
@@ -42,7 +53,9 @@ const TavanaDataGrid = (props: Props) => {
               lang: "fa",
               dir: "rtl",
               labelDisplayedRows: ({ from, to, count }) => {
-                return `${from}–${to} از ${count !== -1 ? count : `نمایش بیشتر ${to}`}`;
+                return `${from}–${to} از ${
+                  count !== -1 ? count : `نمایش بیشتر ${to}`
+                }`;
               },
             },
 
@@ -61,13 +74,13 @@ const TavanaDataGrid = (props: Props) => {
             onPaginationModelChange: (pagination: GridPaginationModel) => {
               setFilters((filters) => ({
                 ...filters,
-                size  : pagination?.pageSize,
-                page: pagination?.page+1,
+                size: pagination?.pageSize,
+                page: pagination?.page + 1,
               }));
             },
             paginationMode: "server",
             paginationModel: {
-              page: filters?.page ? (filters?.page-1) : 0,
+              page: filters?.page ? filters?.page - 1 : 0,
               pageSize: filters?.size || 10,
             },
             // rowCount: filters?.count,
@@ -75,7 +88,7 @@ const TavanaDataGrid = (props: Props) => {
           })}
           {...props}
           slots={{
-            ...hideToolbar ? {} : {toolbar: GridToolbar},
+            ...(hideToolbar ? {} : { toolbar: GridToolbar }),
             ...props?.slots,
           }}
         />

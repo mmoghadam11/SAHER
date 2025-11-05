@@ -43,7 +43,8 @@ const MembershipTypeGrid = ({}: Props) => {
     status: StatesData_status,
     refetch: StatesData_refetch,
   } = useQuery<any>({
-    queryKey: [`membership-type-change/search${paramsSerializer(filters)}`],
+    // queryKey: [`membership-type-change/search${paramsSerializer(filters)}`],
+    queryKey: [`change-service/search${paramsSerializer(filters)}`],
     queryFn: Auth?.getRequest,
     select: (res: any) => {
       return res?.data;
@@ -51,7 +52,8 @@ const MembershipTypeGrid = ({}: Props) => {
     enabled: true,
   } as any);
   const columns: GridColDef[] = [
-    { field: "cdMembershipTypeName", headerName: "نوع عضویت", flex: 1 },
+    // { field: "cdMembershipTypeName", headerName: "نوع عضویت", flex: 1 },
+    { field: "cdServiceTypeName", headerName: "نوع عضویت", flex: 1 },
     {
       field: "changeDate",
       headerName: "تاریخ تغییر وضعیت  ",
@@ -62,7 +64,9 @@ const MembershipTypeGrid = ({}: Props) => {
         else return null;
       },
     },
-    { field: "documentNumber", headerName: "مستندات", flex: 1 },
+    { field: "auditingFirmName", headerName: "موسسه", flex: 1 },
+    // { field: "documentNumber", headerName: "مستندات", flex: 1 },
+    { field: "document", headerName: "مستندات", flex: 1 },
     {
       headerName: "عملیات",
       field: "action",
@@ -184,7 +188,8 @@ const MembershipTypeGrid = ({}: Props) => {
         handleSubmit={() =>
           mutate(
             {
-              entity: `membership-type-change/delete/${deleteData?.id}`,
+              // entity: `membership-type-change/delete/${deleteData?.id}`,
+              entity: `change-service/delete/${deleteData?.id}`,
               method: "delete",
             },
             {

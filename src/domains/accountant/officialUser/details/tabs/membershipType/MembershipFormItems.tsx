@@ -7,7 +7,8 @@ export const MembershipFormItems = (
 ): FormItem[] => {
 const formItems: FormItem[] =[
   {
-    name: "cdMembershipTypeId",
+    // name: "cdMembershipTypeId",
+    name: "cdServiceTypeId",
     inputType: "select",
     label: "نوع عضویت",
     size: { md: 6 },
@@ -17,17 +18,6 @@ const formItems: FormItem[] =[
     })) ?? [{ value: 0, title: "خالی" }],
     rules: { required: "انتخاب نوع عضویت الزامی است" },
   },
-  // {
-  //   name: "auditingFirmId",
-  //   inputType: "autocomplete",
-  //   label: "موسسه",
-  //   size: { md: 4 },
-  //   options: options?.firmOptions?.map((item: any) => ({
-  //     value: item.id,
-  //     title: item.name,
-  //   })) ?? [{ value: 0, title: "خالی" }],
-  //   storeValueAs: "id",
-  // },
   {
     name: "changeDate",
     inputType: "date",
@@ -42,7 +32,8 @@ const formItems: FormItem[] =[
     },
   },
   {
-    name: "documentNumber",
+    // name: "documentNumber",
+    name: "document",
     inputType: "text",
     label: "مستندات",
     size: { md: 12 },

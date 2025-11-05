@@ -64,7 +64,8 @@ const AddMembershipType = ({
     watch,
   } = useForm<any>();
 
-  const watchedMembershipTypeId = watch("cdMembershipTypeId");
+  // const watchedMembershipTypeId = watch("cdMembershipTypeId");
+  const watchedMembershipTypeId = watch("cdServiceTypeId");
   const { data: firmOptions } = useQuery<any>({
     queryKey: [`firm/search-all`],
     queryFn: Auth?.getRequest,
@@ -119,7 +120,8 @@ const AddMembershipType = ({
   const onSubmit = (data: FormData) => {
     mutate(
       {
-        entity: `membership-type-change/${!!editeData ? "update" : "save"}`,
+        // entity: `membership-type-change/${!!editeData ? "update" : "save"}`,
+        entity: `change-service/${!!editeData ? "update" : "save"}`,
         // entity: `firm-director/save`,
         method: !!editeData ? "put" : "post",
         // method:  "post",

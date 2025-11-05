@@ -288,7 +288,7 @@ const MENU_ITEMS: MenuItem[] = [
     icon: <People />,
     title: "حسابدار رسمی",
     url: "/accountant-user",
-    access: ["city-showmenu"],
+    access: ["city-showmenu","accountant-showmenu"],
     menuChildren: [
       {
         title: "کارتابل",
@@ -308,7 +308,7 @@ const MENU_ITEMS: MenuItem[] = [
       {
         title: "احکام انتظامی",
         url: "disciplinary-order",
-        access: ["administrator","city-showmenu","township-showmenu"],
+        access: ["administrator","city-showmenu","township-showmenu","accountant-showmenu"],
       },
       {
         title: "گزارشات",

@@ -26,6 +26,7 @@ import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import moment from "jalali-moment";
+import TicketDivider from "components/FancyTicketDivider";
 
 const RenderFormInput: React.FC<IRenderFormInput> = forwardRef((props, ref) => {
   const {
@@ -321,6 +322,8 @@ const RenderFormInput: React.FC<IRenderFormInput> = forwardRef((props, ref) => {
     );
   }
   if (props.inputType === "titleDivider") {
+    if(label==="")
+      return <TicketDivider/>
     return (
       <Box width="100%">
         <Typography>{label}</Typography>
