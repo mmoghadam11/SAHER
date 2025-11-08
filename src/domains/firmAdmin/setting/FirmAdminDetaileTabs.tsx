@@ -149,7 +149,7 @@ const FirmAdminDetaileTabs = (props: Props) => {
         <Grid item display={"flex"}>
           <Inventory fontSize={isMobile ? "medium" : "large"} />
           <Typography variant={isMobile ? "body1" : "h5"}>
-            مدیریت جزئیات موسسه
+            مدیریت جزئیات موسسه {state?.firmData?.name}
           </Typography>
         </Grid>
         <Grid item display={"flex"}>

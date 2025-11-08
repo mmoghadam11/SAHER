@@ -96,10 +96,10 @@ const DetaileTabs = (props: Props) => {
       title: "مدیرعامل",
       com: <DirectorGrid setActiveTab={setActiveTab} />,
     },
-    // {
-    //   title: "آموزشی",
-    //   com: <EduInfoGrid setActiveTab={setActiveTab} />,
-    // },
+    {
+      title: "آموزشی",
+      com: <EduInfoGrid setActiveTab={setActiveTab} />,
+    },
     // {
     //   title: "مالی",
     //   com: <FinancialStatementsGrid setActiveTab={setActiveTab} />,
@@ -149,7 +149,7 @@ const DetaileTabs = (props: Props) => {
         <Grid item display={"flex"}>
           <Inventory fontSize={isMobile ? "medium" : "large"} />
           <Typography variant={isMobile ? "body1" : "h5"}>
-            مدیریت جزئیات موسسه
+            مدیریت جزئیات موسسه {state?.firmData?.name}
           </Typography>
         </Grid>
         <Grid item display={"flex"}>
