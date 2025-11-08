@@ -1,5 +1,11 @@
-import { Close, Key, ManageAccounts, Verified } from "@mui/icons-material";
-import { Box, Chip, Grid, Typography } from "@mui/material";
+import {
+  AccountCircle,
+  Close,
+  Key,
+  ManageAccounts,
+  Verified,
+} from "@mui/icons-material";
+import { Avatar, Box, Chip, Grid, Typography } from "@mui/material";
 import { GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import BackButton from "components/buttons/BackButton";
@@ -19,6 +25,7 @@ import { isMobile } from "react-device-detect";
 import AppendRole from "./components/AppendRole";
 import AppendFirm from "./components/AppendFirm";
 import SearchPannel from "components/form/SearchPannel";
+import { UseGetProfileImage } from "hooks/useGetProfileImage";
 
 type Props = {};
 
@@ -54,6 +61,28 @@ const UsersGrid = (props: Props) => {
     enabled: true,
   } as any);
   const columns: GridColDef[] = [
+    {
+      field: "image",
+      headerName: "پروفایل",
+      flex: 1,
+      renderCell: ({ row }: { row: any }) => {
+        const { avatarUrl } = UseGetProfileImage(row.username);
+          return (
+            <Avatar
+              src={avatarUrl ?? undefined}
+              sx={{
+                width: 40,
+                height: 40,
+                border: "2px solid",
+                borderColor: "divider",
+              }}
+            >
+              <AccountCircle sx={{ width: 40, height: 40 }} color="inherit" />
+            </Avatar>
+          );
+        
+      },
+    },
     { field: "username", headerName: "نام کاربر", flex: 2 },
     { field: "firstname", headerName: "نام", flex: 1 },
     { field: "lastname", headerName: "نام خانوادگی", flex: 1 },
@@ -89,7 +118,7 @@ const UsersGrid = (props: Props) => {
             }}
             onManage={{
               title: "افزودن دسترسی",
-              icon:<Key color="secondary"/>,
+              icon: <Key color="secondary" />,
               function: () => {
                 setEditeData(row);
                 setAppendFirmFlag(true);

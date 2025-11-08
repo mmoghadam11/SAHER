@@ -66,7 +66,7 @@ const UploadAvatarSimpleDialog: React.FC<Props> = ({
       setPreview(currentAvatarUrl ?? null);
     } else {
       // پاک کردن URLهای موقتی برای جلوگیری از نشت حافظه
-      if (preview?.startsWith("blob:")) URL.revokeObjectURL(preview);
+      if (!currentAvatarUrl&&preview?.startsWith("blob:")) URL.revokeObjectURL(preview);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
@@ -215,19 +215,19 @@ const UploadAvatarSimpleDialog: React.FC<Props> = ({
 
       <DialogActions sx={{ justifyContent: "space-between", px: 3, pb: 2 }}>
         <Box>
-          <Button
+          {/* <Button
             color="inherit"
             startIcon={<DeleteOutline />}
             onClick={handleClear}
             disabled={isLoading || (!file && !currentAvatarUrl)}
           >
             حذف انتخاب
-          </Button>
+          </Button> */}
           <Button
             color="inherit"
             startIcon={<DeleteOutline />}
             onClick={handleClearPermanently}
-            disabled={isLoading || (!file && !currentAvatarUrl)}
+            disabled={isLoadingFile || (!file && !currentAvatarUrl)}
           >
             حذف عکس پروفایل
           </Button>

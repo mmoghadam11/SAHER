@@ -96,9 +96,15 @@ const Navbar: React.FC<Props> = ({ open, hideRightMenu, handleDrawerOpen }) => {
     let objectUrl: string | null = null;
 
     // 1. چک کنید که داده‌ی تصویر وجود دارد و از نوع Blob است
-    if (image && image instanceof Blob) {
+    if (image && image instanceof Blob&&image.type.startsWith("image/")) {
       // 2. یک URL موقت از Blob بسازید
       objectUrl = URL.createObjectURL(image);
+      // 3. URL ساخته شده را در استیت قرار دهید
+      setAvatarUrl(objectUrl);
+    }
+    if (image && image instanceof Blob&&!image.type.startsWith("image/")) {
+      // 2. یک URL موقت از Blob بسازید
+      objectUrl = "";
       // 3. URL ساخته شده را در استیت قرار دهید
       setAvatarUrl(objectUrl);
     }
