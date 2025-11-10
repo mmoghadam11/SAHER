@@ -439,7 +439,7 @@ export default function AddOfficialUser(): JSX.Element {
                           name={item.name}
                           control={control}
                           rules={item.rules}
-                          disabled={!state?.editable||(stepItem?.name==="اطلاعات عضویت"&&!!state.accountantData)||(item.name==="membershipDate")}
+                          disabled={!state?.editable}
                           render={({ field }) => (
                             <RenderFormInput
                               controllerField={field}

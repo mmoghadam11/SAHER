@@ -28,14 +28,16 @@ import ConfirmBox from "components/confirmBox/ConfirmBox";
 import moment from "jalali-moment";
 import { FormItem } from "types/formItem";
 import NewSearchPannel from "components/form/NewSearchPannel";
+import { useAuthorization } from "hooks/useAutorization";
 
 type Props = {};
 
 const OfficialUserGrid = (props: Props) => {
   const Auth = useAuth();
+  const { hasMenuAccess } = useAuthorization();
   const snackbar = useSnackbar();
   const navigate = useNavigate();
-  const {state}=useLocation();
+  const { state } = useLocation();
   const { isLoading, mutate, error } = useMutation({
     mutationFn: Auth?.serverCall,
   });
@@ -46,20 +48,24 @@ const OfficialUserGrid = (props: Props) => {
   } = useForm();
   const [filters, setFilters] = useState<any>({
     ...PAGINATION_DEFAULT_VALUE,
-    ...state?.searchFilters
+    nationalCode: hasMenuAccess(["accountant-showmenu"])
+      ? Auth.userInfo.nationalCode
+      : "",
+    ...state?.searchFilters,
     // code: "",
   });
+
   useEffect(() => {
-    setFilters((prev:any)=>({
+    setFilters((prev: any) => ({
       ...prev,
-      ...state?.searchFilters
-    }))
-    setSearchData((prev:any)=>({
+      ...state?.searchFilters,
+    }));
+    setSearchData((prev: any) => ({
       ...prev,
-      ...state?.searchFilters
-    }))
-  }, [state])
-  
+      ...state?.searchFilters,
+    }));
+  }, [state]);
+
   const {
     data: StatesData,
     status: StatesData_status,
@@ -70,7 +76,7 @@ const OfficialUserGrid = (props: Props) => {
     select: (res: any) => {
       return res?.data;
     },
-    enabled: true,
+    enabled: !!Auth.userInfo,
   } as any);
   const columns: GridColDef[] = [
     // {
@@ -149,46 +155,79 @@ const OfficialUserGrid = (props: Props) => {
       headerAlign: "center",
       align: "center",
       renderCell: ({ row }: { row: any }) => {
-        return (
-          <TableActions
-            onEdit={() => {
-              navigate(`${row.id}`, {
-                state: { accountantData: row, editable: true,searchFilters:filters },
-              });
-            }}
-            onView={() => {
-              navigate(`${row.id}`, {
-                state: { accountantData: row, editable: false,searchFilters:filters },
-              });
-            }}
-            onDelete={() => {
-              setDeleteData(row);
-              setDeleteFlag(true);
-            }}
-            onManage={{
-              title: "جزئیات حسابدار رسمی",
-              function: () => {
-                navigate(`details/${row.id}`, 
-                  { state: { accountantData: row ,searchFilters:filters } });
-              },
-              icon: <Toc />,
-            }}
-          />
-        );
+        if (!hasMenuAccess(["accountant-showmenu"]))
+          return (
+            <TableActions
+              onEdit={() => {
+                navigate(`${row.id}`, {
+                  state: {
+                    accountantData: row,
+                    editable: true,
+                    searchFilters: filters,
+                  },
+                });
+              }}
+              onView={() => {
+                navigate(`${row.id}`, {
+                  state: {
+                    accountantData: row,
+                    editable: false,
+                    searchFilters: filters,
+                  },
+                });
+              }}
+              onDelete={() => {
+                setDeleteData(row);
+                setDeleteFlag(true);
+              }}
+              onManage={{
+                title: "جزئیات حسابدار رسمی",
+                function: () => {
+                  navigate(`details/${row.id}`, {
+                    state: { accountantData: row, searchFilters: filters },
+                  });
+                },
+                icon: <Toc />,
+              }}
+            />
+          );
+        else
+          return (
+            <TableActions
+              onView={() => {
+                navigate(`${row.id}`, {
+                  state: {
+                    accountantData: row,
+                    editable: false,
+                    searchFilters: filters,
+                  },
+                });
+              }}
+              onManage={{
+                title: "جزئیات حسابدار رسمی",
+                function: () => {
+                  navigate(`details/${row.id}`, {
+                    state: { accountantData: row, searchFilters: filters },
+                  });
+                },
+                icon: <Toc />,
+              }}
+            />
+          );
       },
     },
   ];
   const {
-      data: membershipType,
-      status: membershipType_status,
-      refetch: membershipType_refetch,
-    } = useQuery<any>({
-      queryKey: [`common-data/find-by-type-all?typeId=26`],
-      queryFn: Auth?.getRequest,
-      select: (res: any) => {
-        return res?.data;
-      },
-    } as any);
+    data: membershipType,
+    status: membershipType_status,
+    refetch: membershipType_refetch,
+  } = useQuery<any>({
+    queryKey: [`common-data/find-by-type-all?typeId=26`],
+    queryFn: Auth?.getRequest,
+    select: (res: any) => {
+      return res?.data;
+    },
+  } as any);
   const {
     data: serviceTypeOptions,
     status: serviceTypeOptions_status,
@@ -280,7 +319,7 @@ const OfficialUserGrid = (props: Props) => {
   const [deleteData, setDeleteData] = useState<any>(null);
   const [deleteFlag, setDeleteFlag] = useState(false);
   const [searchData, setSearchData] = useState({
-    ...state?.searchFilters
+    ...state?.searchFilters,
   });
   useEffect(() => {
     console.log(filters);
@@ -326,20 +365,26 @@ const OfficialUserGrid = (props: Props) => {
           <Typography variant="h5">حسابداران رسمی</Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"}>
-          <CreateNewItem
-            sx={{ mr: 2 }}
-            name="حسابدار رسمی"
-            onClick={() => navigate("new", { state: { editable: true } })}
-          />
+          {!hasMenuAccess(["accountant-showmenu"]) && (
+            <CreateNewItem
+              sx={{ mr: 2 }}
+              name="حسابدار رسمی"
+              onClick={() => navigate("new", { state: { editable: true } })}
+            />
+          )}
+          
           <BackButton onBack={() => navigate(-1)} />
         </Box>
       </Grid>
-      <NewSearchPannel<SearchData>
-        searchItems={searchItems}
-        searchData={searchData}
-        setSearchData={setSearchData}
-        setFilters={setFilters}
-      />
+      {!hasMenuAccess(["accountant-showmenu"]) && (
+        <NewSearchPannel<SearchData>
+          searchItems={searchItems}
+          searchData={searchData}
+          setSearchData={setSearchData}
+          setFilters={setFilters}
+        />
+      )}
+
       <Grid item md={11} sm={11} xs={12}>
         {StatesData_status === "success" && !!StatesData ? (
           <TavanaDataGrid

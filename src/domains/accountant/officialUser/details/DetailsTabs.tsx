@@ -33,6 +33,7 @@ import { TOption } from "types/render";
 import MembershipTypeGrid from "./tabs/membershipType/MembershipTypeGrid";
 import { MiniInfoItems } from "./MiniInfoItems";
 import EDUGrid from "./tabs/education/EDUGrid";
+import { useAuthorization } from "hooks/useAutorization";
 
 type Props = {};
 interface FormItem {
@@ -52,6 +53,7 @@ const AccountantDetaileTabs = (props: Props) => {
   const { id } = useParams();
   const { state } = useLocation();
   const Auth = useAuth();
+  const {hasMenuAccess}=useAuthorization()
   const navigate = useNavigate();
   const snackbar = useSnackbar();
   const { mutate, isLoading } = useMutation({
@@ -80,14 +82,19 @@ const AccountantDetaileTabs = (props: Props) => {
       return res?.data;
     },
   } as any);
+  function isUserAccountant(){
+    if(hasMenuAccess(["accountant-showmenu"]))
+      return true
+    else return false
+  }
   const tabSteps = [
     {
       title: "تحصیلات",
-      com: <EDUGrid />,
+      com: <EDUGrid isUserAccountant={isUserAccountant()}/>,
     },
     {
       title: "نوع عضویت",
-      com: <MembershipTypeGrid />,
+      com: <MembershipTypeGrid isUserAccountant={isUserAccountant()}/>,
     },
   ];
 

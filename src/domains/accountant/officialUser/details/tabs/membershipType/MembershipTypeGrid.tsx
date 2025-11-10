@@ -19,9 +19,11 @@ import moment from "jalali-moment";
 import ConfirmBox from "components/confirmBox/ConfirmBox";
 import AddMembershipType from "./AddMembershipType";
 
-type Props = {};
+type Props = {
+  isUserAccountant: boolean;
+};
 
-const MembershipTypeGrid = ({}: Props) => {
+const MembershipTypeGrid = ({ isUserAccountant }: Props) => {
   const { id } = useParams();
   const Auth = useAuth();
   const snackbar = useSnackbar();
@@ -74,19 +76,20 @@ const MembershipTypeGrid = ({}: Props) => {
       headerAlign: "center",
       align: "center",
       renderCell: ({ row }: { row: any }) => {
-        return (
-          <TableActions
-            onEdit={() => {
-              // navigate(`${row.id}`, { state: { userData: row } });
-              setEditeData(row);
-              setAddModalFlag(true);
-            }}
-            onDelete={() => {
-              setDeleteData(row);
-              setDeleteFlag(true);
-            }}
-          />
-        );
+        if (!isUserAccountant)
+          return (
+            <TableActions
+              onEdit={() => {
+                // navigate(`${row.id}`, { state: { userData: row } });
+                setEditeData(row);
+                setAddModalFlag(true);
+              }}
+              onDelete={() => {
+                setDeleteData(row);
+                setDeleteFlag(true);
+              }}
+            />
+          );
       },
     },
   ];
@@ -128,13 +131,15 @@ const MembershipTypeGrid = ({}: Props) => {
           <Typography variant="h5">سوابق تغییر عضویت</Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"}>
-          <CreateNewItem
-            sx={{ mr: 2 }}
-            title="تغییر عضویت"
-            onClick={() => {
-              setAddModalFlag(true);
-            }}
-          />
+          {!isUserAccountant && (
+            <CreateNewItem
+              sx={{ mr: 2 }}
+              title="تغییر عضویت"
+              onClick={() => {
+                setAddModalFlag(true);
+              }}
+            />
+          )}
         </Box>
       </Grid>
 
@@ -196,6 +201,7 @@ const MembershipTypeGrid = ({}: Props) => {
               onSuccess: (res: any) => {
                 snackbar(`سابقه انتخاب شده با موفقیت حذف شد`, "success");
                 StatesData_refetch();
+                setDeleteFlag(false);
               },
               onError: () => {
                 snackbar("خطا در حذف ", "error");
@@ -203,7 +209,7 @@ const MembershipTypeGrid = ({}: Props) => {
             }
           )
         }
-        message={`آیا از حذف سابقه نوع عضویت  ${deleteData?.cdMembershipTypeName} مطمعین میباشید؟`}
+        message={`آیا از حذف سابقه نوع عضویت  ${deleteData?.cdServiceTypeName} مطمعین میباشید؟`}
         title={"درخواست حذف!"}
       />
     </Grid>

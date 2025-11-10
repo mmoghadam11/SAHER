@@ -19,9 +19,11 @@ import moment from "jalali-moment";
 import ConfirmBox from "components/confirmBox/ConfirmBox";
 import AddEDU from "./AddEDU";
 
-type Props = {};
+type Props = {
+  isUserAccountant: boolean;
+};
 
-const EDUGrid = ({}: Props) => {
+const EDUGrid = ({ isUserAccountant }: Props) => {
   const { id } = useParams();
   const Auth = useAuth();
   const snackbar = useSnackbar();
@@ -61,7 +63,9 @@ const EDUGrid = ({}: Props) => {
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
         if (row.educationCertificateDate)
-          return moment(new Date(row?.educationCertificateDate)).format("jYYYY/jMM/jDD");
+          return moment(new Date(row?.educationCertificateDate)).format(
+            "jYYYY/jMM/jDD"
+          );
         else return null;
       },
     },
@@ -72,19 +76,20 @@ const EDUGrid = ({}: Props) => {
       headerAlign: "center",
       align: "center",
       renderCell: ({ row }: { row: any }) => {
-        return (
-          <TableActions
-            onEdit={() => {
-              // navigate(`${row.id}`, { state: { userData: row } });
-              setEditeData(row);
-              setAddModalFlag(true);
-            }}
-            onDelete={() => {
-              setDeleteData(row);
-              setDeleteFlag(true);
-            }}
-          />
-        );
+        if (!isUserAccountant)
+          return (
+            <TableActions
+              onEdit={() => {
+                // navigate(`${row.id}`, { state: { userData: row } });
+                setEditeData(row);
+                setAddModalFlag(true);
+              }}
+              onDelete={() => {
+                setDeleteData(row);
+                setDeleteFlag(true);
+              }}
+            />
+          );
       },
     },
   ];
@@ -126,13 +131,15 @@ const EDUGrid = ({}: Props) => {
           <Typography variant="h5">سوابق تحصیلی</Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"}>
-          <CreateNewItem
-            sx={{ mr: 2 }}
-            title="سابقه تحصیلی جدید"
-            onClick={() => {
-              setAddModalFlag(true);
-            }}
-          />
+          {!isUserAccountant && (
+            <CreateNewItem
+              sx={{ mr: 2 }}
+              title="سابقه تحصیلی جدید"
+              onClick={() => {
+                setAddModalFlag(true);
+              }}
+            />
+          )}
         </Box>
       </Grid>
 
