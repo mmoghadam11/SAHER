@@ -5,7 +5,7 @@ import {
   ManageAccounts,
   Verified,
 } from "@mui/icons-material";
-import { Avatar, Box, Chip, Grid, Typography } from "@mui/material";
+import { Avatar, Box, Chip, Grid, IconButton, Typography } from "@mui/material";
 import { GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import BackButton from "components/buttons/BackButton";
@@ -60,6 +60,10 @@ const UsersGrid = (props: Props) => {
     },
     enabled: true,
   } as any);
+  useEffect(() => {
+    console.log("url",process.env.REACT_APP_Image_URL+"/files/"+"be69d0f0-46f7-4fe1-8bbe-ddb1cd829dca.jpg")
+  }, [])
+  
   const columns: GridColDef[] = [
     {
       field: "image",
@@ -67,9 +71,13 @@ const UsersGrid = (props: Props) => {
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
         const { avatarUrl } = UseGetProfileImage(row.username);
-          return (
+        return (
+          <IconButton
+          onClick={()=>{}}
+          >
             <Avatar
-              src={avatarUrl ?? undefined}
+              // src={avatarUrl ?? undefined}
+              src={process.env.REACT_APP_Image_URL+"/files/"+row?.imageUrl }
               sx={{
                 width: 40,
                 height: 40,
@@ -79,8 +87,8 @@ const UsersGrid = (props: Props) => {
             >
               <AccountCircle sx={{ width: 40, height: 40 }} color="inherit" />
             </Avatar>
-          );
-        
+          </IconButton>
+        );
       },
     },
     { field: "username", headerName: "نام کاربر", flex: 2 },

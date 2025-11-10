@@ -92,7 +92,7 @@ export default function AddUser(): JSX.Element {
         required: "کد ملی الزامی است",
         pattern: {
           value: /^[0-9]{10}$/,
-          message: "کد مالیاتی باید 10 رقمی باشد",
+          message: "کد ملی باید 10 رقمی باشد",
         },
       },
     },
