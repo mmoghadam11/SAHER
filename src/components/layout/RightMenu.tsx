@@ -293,7 +293,7 @@ const MENU_ITEMS: MenuItem[] = [
       {
         title: "کارتابل",
         url: "cartable",
-        access: ["administrator", "city-showmenu","township-showmenu"]
+        access: ["administrator", "city-showmenu","township-showmenu","accountant-showmenu"]
       },
       {
         title: "حق عضویت",

@@ -62,6 +62,7 @@ import AccountantDetaileTabs from "domains/accountant/officialUser/details/Detai
 import AllDisciplinaryOrderGrid from "domains/Institute/disciplinaryOrder/AllDisciplinaryOrderGrid";
 import AddCAOrganization from "domains/CAOrganization/AddCAOrganization";
 import CAOrganizationGrid from "domains/CAOrganization/CAOrganizationGrid";
+import AccountantUserDisciplinaryOrderDetaile from "domains/accountantUser/disciplinaryOrder/AccountantUserDisciplinaryOrderDetaile";
 
 const AppRoutes: React.FC = () => {
   const auth = useAuth();
@@ -111,10 +112,13 @@ const AppRoutes: React.FC = () => {
           <Route path="accountant-user">
             <Route path="cartable">
               <Route index element={<OfficialUserGrid />} />
+              <Route path="details/:id">
+                <Route index element={<AccountantDetaileTabs />} />
+              </Route>
               <Route path=":id" element={<AddOfficialUser />} />
             </Route>
             <Route path="disciplinary-order">
-              <Route index element={<AccountantDisciplinaryOrderGrid />} />
+              <Route index element={<AccountantUserDisciplinaryOrderDetaile />} />
               <Route
                 path=":id"
                 element={<AccountantDisciplinaryOrderDetaile />}
