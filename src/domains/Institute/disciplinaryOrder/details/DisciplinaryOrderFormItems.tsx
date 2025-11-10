@@ -2,9 +2,10 @@ import { FormItem } from "types/formItem";
 
 export const DisciplinaryOrderFormItems = (
   setValue: (name: any, val: any) => void,
-  options: any
-): FormItem[] => {
-  return [
+  options: any,
+  watchedValues?:any
+): FormItem[] => { 
+  const formItems:FormItem[]=[
     {
       name: "cdSubjectTypeId",
       inputType: "autocomplete",
@@ -127,17 +128,45 @@ export const DisciplinaryOrderFormItems = (
         value: "",
       },
     },
-    // {
-    //   name: "personnelCaId",
-    //   inputType: "autocomplete",
-    //   label: "نام شریک یا مدیر",
-    //   size: { md: 6 },
-    //   options: options?.personnelOptions?.map((item: any) => ({ 
-    //     value: item?.id, 
-    //     title: `${item?.firstName} ${item?.lastName} - ${item?.nationalCode}`
-    //   })) ?? [{ value: 0, title: "خالی" }],
-    //   storeValueAs: 'id',
-    //   rules: { required: "انتخاب پرسنل مربوطه الزامی است" },
-    // },
+    {
+      name: "Type",
+      inputType: "select",
+      label: "نوع حکم انتظامی",
+      size: { md: 6 },
+      options: 
+      // options?.orderTypeOptions?.map((item: any) => ({ 
+      //   value: item?.id, 
+      //   title: item?.value 
+      // })) ?? 
+      [
+        { value: 1, title: "حکم برای موسسه" },
+        { value: 2, title: "حکم برای حسابدار رسمی" },
+      ],
+      rules: { required: "انتخاب نوع حکم الزامی است" }, 
+    },
   ];
+
+  if (Number(watchedValues) === 1) {
+    formItems.push({
+      name: "auditingFirmId",
+      inputType: "autocomplete",
+      label: "موسسه",
+      size: { md: 6 }, 
+      options: options?.firmOptions?.map((item: any) => ({ value: item.id, title: item.name })) ?? [{ value: 0, title: "خالی" }],
+      storeValueAs: "id",
+      rules: { required: "انتخاب موسسه الزامی است" },
+    });
+  }else if (Number(watchedValues) === 2){
+    formItems.push({
+      name: "personCaId",
+      inputType: "autocomplete",
+      label: "حسابدار رسمی",
+      size: { md: 6 }, 
+      options: options?.firmOptions?.map((item: any) => ({ value: item.id, title: item.name })) ?? [{ value: 0, title: "خالی" }],
+      storeValueAs: "id",
+      rules: { required: "انتخاب حسابدار رسمی الزامی است" },
+    });
+  }
+
+  return formItems
 };
