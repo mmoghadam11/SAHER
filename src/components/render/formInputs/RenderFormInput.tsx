@@ -83,18 +83,19 @@ const RenderFormInput: React.FC<IRenderFormInput> = forwardRef((props, ref) => {
         ref={ref}
         name={name}
         label={label}
-        setDay={(day: any) => {
-          setValue(name, day);
-          // همچنین مقدار را به react-hook-form گزارش دهید
-          if (controllerField.onChange) {
-            controllerField.onChange(day);
-          }
-        }}
         // value={watch(name)}
         disabled={elementProps?.disabled}
         format={format}
         value={elementProps.value}
         {...elementProps}
+        setDay={(day: any) => {
+          // setValue(name, day);
+          elementProps.setDay()
+          // همچنین مقدار را به react-hook-form گزارش دهید
+          if (controllerField.onChange) {
+            controllerField.onChange(day);
+          } 
+        }}
         {...controllerField}
         error={errors?.[name]?.message}
         onChange={onChange??controllerField.onChange}
