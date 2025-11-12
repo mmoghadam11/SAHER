@@ -9,6 +9,8 @@ import "./CustomDatePicker.css";
 import moment from "jalali-moment";
 import "react-multi-date-picker/styles/backgrounds/bg-dark.css";
 import "react-multi-date-picker/styles/colors/green.css";
+import "react-multi-date-picker/styles/colors/brown.css";
+import "react-multi-date-picker/styles/colors/yellow.css";
 import { useTheme } from "@mui/material/styles";
 
 type Props = {
@@ -95,7 +97,7 @@ const CustomDatePicker: React.FC<IRenderFormInput> = forwardRef(
             locale={persian_fa}
             calendarPosition="bottom-right"
             containerClassName="date-input"
-            className={theme.palette.mode === "dark" ? "bg-dark green" : ""}
+            className={theme.palette.mode === "dark" ? "bg-dark brown" : ""}
             onChange={(date) => {
               let temp = date?.valueOf();
               if (!temp) return false;
