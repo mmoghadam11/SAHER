@@ -1,4 +1,11 @@
-import { Close, Key, ManageAccounts, Toc, Verified } from "@mui/icons-material";
+import {
+  Close,
+  Key,
+  ManageAccounts,
+  PictureAsPdf,
+  Toc,
+  Verified,
+} from "@mui/icons-material";
 import { Box, Chip, Grid, Typography } from "@mui/material";
 import { GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -20,6 +27,8 @@ import SearchPannel from "components/form/SearchPannel";
 import AddFinancial from "./AddDisciplinaryOrder";
 import moment from "jalali-moment";
 import AddDisciplinaryOrder from "./AddDisciplinaryOrder";
+import UploadPdfDialog from "domains/Institute/disciplinaryOrder/details/UploadPDFDialog";
+import ShowUploadedPDF from "./ShowUploadedPDF";
 
 type Props = {
   setActiveTab: React.Dispatch<React.SetStateAction<number>>;
@@ -30,6 +39,8 @@ const DisciplinaryOrderGrid = ({ setActiveTab }: Props) => {
   const Auth = useAuth();
   const snackbar = useSnackbar();
   const navigate = useNavigate();
+  const [basePDFData, setBasePDFData] = useState<editeObjectType | null>(null);
+  const [pdfFlag, setPdfFlag] = useState(false);
   const { isLoading, mutate, error } = useMutation({
     mutationFn: Auth?.serverCall,
   });
@@ -41,20 +52,20 @@ const DisciplinaryOrderGrid = ({ setActiveTab }: Props) => {
   const [filters, setFilters] = useState<any>({
     ...PAGINATION_DEFAULT_VALUE,
     personnelCaId: id,
-    nationalCode:Auth?.userInfo?.nationalCode
+    nationalCode: Auth?.userInfo?.nationalCode,
   });
-    const {
-      data: StatesData,
-      status: StatesData_status,
-      refetch: StatesData_refetch,
-    } = useQuery<any>({
-      queryKey: [`disciplinary-order/search${paramsSerializer(filters)}`],
-      queryFn: Auth?.getRequest,
-      select: (res: any) => {
-        return res?.data;
-      },
-      enabled: !!Auth?.userInfo?.nationalCode,
-    } as any);
+  const {
+    data: StatesData,
+    status: StatesData_status,
+    refetch: StatesData_refetch,
+  } = useQuery<any>({
+    queryKey: [`disciplinary-order/search${paramsSerializer(filters)}`],
+    queryFn: Auth?.getRequest,
+    select: (res: any) => {
+      return res?.data;
+    },
+    enabled: !!Auth?.userInfo?.nationalCode,
+  } as any);
   const columns: GridColDef[] = [
     {
       field: "subjectTypeName",
@@ -101,6 +112,18 @@ const DisciplinaryOrderGrid = ({ setActiveTab }: Props) => {
             //   setDeleteData(row);
             //   setDeleteFlag(true);
             // }}
+            onAdd={{
+              function: () => {
+                setBasePDFData(row);
+                setPdfFlag(true);
+              },
+              title: "پی دی اف",
+              icon: (
+                <PictureAsPdf
+                  color={row.hasAttachment ? "success" : "primary"}
+                />
+              ),
+            }}
           />
         );
       },
@@ -138,10 +161,10 @@ const DisciplinaryOrderGrid = ({ setActiveTab }: Props) => {
   const [deleteData, setDeleteData] = useState<any>(null);
   const [deleteFlag, setDeleteFlag] = useState(false);
   useEffect(() => {
-    setFilters((prev:any)=>({
+    setFilters((prev: any) => ({
       ...prev,
-      nationalCode:Auth.userInfo.nationalCode
-    }))
+      nationalCode: Auth.userInfo.nationalCode,
+    }));
   }, [Auth]);
   return (
     <Grid container item md={12} justifyContent="center">
@@ -221,6 +244,16 @@ const DisciplinaryOrderGrid = ({ setActiveTab }: Props) => {
         editeData={editeData}
         setEditeData={setEditeData}
       />
+      {pdfFlag && (
+        <ShowUploadedPDF
+          refetch={StatesData_refetch}
+          entityId={basePDFData?.id ?? ""}
+          onClose={() => {
+            setPdfFlag(false);
+          }}
+          open={pdfFlag}
+        />
+      )}
       <ConfirmBox
         open={deleteFlag}
         handleClose={() => {

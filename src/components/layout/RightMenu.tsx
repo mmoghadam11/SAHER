@@ -112,6 +112,11 @@ const MENU_ITEMS: MenuItem[] = [
     access: ["city-showmenu"],
     menuChildren: [
       {
+        title: "احکام انتظامی",
+        url: "disciplinary-order",
+        access: ["administrator", "city-showmenu","operator-showmenu"],
+      },
+      {
         title: "کارگروه",
         url: "workgroup",
         access: ["administrator", "city-showmenu"],
@@ -175,11 +180,6 @@ const MENU_ITEMS: MenuItem[] = [
         title: "درآمدهای فصلی",
         url: "financial-Statement",
         access: ["administrator", "city-showmenu"],
-      },
-      {
-        title: "احکام انتظامی",
-        url: "disciplinary-order",
-        access: ["administrator", "city-showmenu","operator-showmenu"],
       },
       {
         title: "آزمون رتبه بندی",
@@ -515,11 +515,11 @@ const RenderMenuWithChild: React.FC<RenderMenuWithChildProps> = ({
             ? theme.palette.primary.main
             : theme.palette.text.secondary,
           background: isChildActive
-            ? alpha(theme.palette.primary.main, 0.1)
+            ? alpha(theme.palette.primary.main, theme.palette.mode==="light"?0.1:0.3)
             : "transparent",
           transition: "all 0.2s ease-in-out",
           "&:hover": {
-            background: alpha(theme.palette.primary.main, 0.05),
+            background: alpha(theme.palette.primary.main,theme.palette.mode==="light"? 0.05:0.2),
             color: theme.palette.primary.main,
           },
         }}
@@ -584,7 +584,7 @@ const RenderMenuWithChild: React.FC<RenderMenuWithChildProps> = ({
                             theme.palette.primary.main,
                             0.8
                           )} 0%, ${theme.palette.primary.main} 100%)`
-                        : alpha(theme.palette.primary.main, 0.05),
+                        : alpha(theme.palette.primary.main,theme.palette.mode==="light"? 0.05:0.2),
                       color: isActive
                         ? theme.palette.primary.contrastText
                         : theme.palette.primary.main,
