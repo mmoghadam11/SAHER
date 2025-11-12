@@ -58,10 +58,10 @@ const UploadPdfDialog: React.FC<Props> = ({
     setValue,
     getValues,
   } = useForm<any>({
-  defaultValues: {
-    description: "بدوی", // <-- 💡 مقدار اولیه اینجا تنظیم شود
-  },
-});
+    defaultValues: {
+      description: "", // <-- 💡 مقدار اولیه اینجا تنظیم شود
+    },
+  });
   // استیت و Ref برای مدیریت فایل
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [PdfUrl, setPdfUrl] = useState<string | undefined>("");
@@ -69,20 +69,14 @@ const UploadPdfDialog: React.FC<Props> = ({
   const [selectedPDF, setSelectedPDF] = useState(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-
   const formItems = useMemo(
     () => [
       {
         name: "description",
-        inputType: "select",
-        label: "نوع حکم",
-        size: { md: 4 },
-        options:
-          [
-            { value: "بدوی", title: "بدوی" },
-            { value: "عالی", title: "عالی" },
-          ],
-        rules: { required: "انتخاب نوع حکم الزامی است" },
+        inputType: "text",
+        label: "توضیحات",
+        size: { md: 5 },
+        rules: { required: "توضیحات الزامی است" },
       },
     ],
     []
@@ -193,17 +187,6 @@ const UploadPdfDialog: React.FC<Props> = ({
   // Mutation برای آپلود فایل
   const { mutate, isLoading } = useMutation({
     mutationFn: Auth?.serverCallUpload, // استفاده از تابع آپلود سراسری
-    onSuccess: (res: any) => {
-      snackbar("فایل PDF با موفقیت آپلود شد", "success");
-      refetch?.(); // اجرای Callback
-      PDFList_refetch();
-      handleClearSelection();
-      //   uploadedPDF_refetch();
-      //   onClose(); // بستن دیالوگ
-    },
-    onError: () => {
-      snackbar("خطا در آپلود فایل", "error");
-    },
   });
   const { mutate: deleteMutate, isLoading: deleteIsLoading } = useMutation({
     mutationFn: Auth?.serverCall, // استفاده از تابع آپلود سراسری
@@ -275,13 +258,50 @@ const UploadPdfDialog: React.FC<Props> = ({
     );
 
     // 4. فراخوانی Mutate
-    mutate({
-      entity: `disciplinary-order/upload-order-file`, // ❗️
-      method: "post",
-      data: formData,
-    });
+    mutate(
+      {
+        entity: `disciplinary-order/upload-order-file`, // ❗️
+        method: "post",
+        data: formData,
+      },
+      {
+        onSuccess: (res: any) => {
+          snackbar("فایل PDF با موفقیت آپلود شد", "success");
+          refetch?.(); // اجرای Callback
+          PDFList_refetch();
+          handleClearSelection();
+          //   uploadedPDF_refetch();
+          //   onClose(); // بستن دیالوگ
+        },
+        onError: () => {
+          snackbar("خطا در آپلود فایل", "error");
+        },
+      }
+    );
   };
 
+  function noticOrdr(params:any) {
+    mutate(
+      {
+        entity: `disciplinary-order/notice-order?id=${entityId}`,
+        method: "post",
+        // data: formData,
+      },
+      {
+        onSuccess: (res: any) => {
+          snackbar("پیامک اطلاع رسانی ارسال شد ✉", "success");
+          refetch?.(); // اجرای Callback
+          PDFList_refetch();
+          handleClearSelection();
+          //   uploadedPDF_refetch();
+          //   onClose(); // بستن دیالوگ
+        },
+        onError: () => {
+          snackbar("خطا در ارسال پیامک ✉", "error");
+        },
+      }
+    );
+  }
   return (
     <Dialog
       open={open}
@@ -303,97 +323,96 @@ const UploadPdfDialog: React.FC<Props> = ({
       </DialogTitle>
 
       {/* 2. DialogContent (محتوای آپلودر) */}
-      
-        <DialogContent>
-          <Grid container justifyContent={"center"}>
-            <Grid item md={11} sm={11} xs={12}>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="application/pdf"
-                onChange={handleFileChange}
-                hidden
-              />
-              <Box
-                sx={{
-                  border: "1px dashed",
-                  borderColor: "divider",
-                  padding: 2,
-                  borderRadius: 1,
-                  mt: 1,
-                }}
-              >
-                <Stack spacing={2} direction="row" alignItems="center">
-                  <Button
-                    variant="outlined"
-                    onClick={handleChooseClick}
-                    startIcon={<PictureAsPdf />}
-                    disabled={isLoading}
-                  >
-                    انتخاب فایل PDF
-                  </Button>
 
-                  {selectedFile && (
-                    <Typography variant="body2" sx={{ flexGrow: 1 }} noWrap>
-                      {selectedFile.name}
-                    </Typography>
-                  )}
+      <DialogContent>
+        <Grid container justifyContent={"center"}>
+          <Grid item md={11} sm={11} xs={12}>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="application/pdf"
+              onChange={handleFileChange}
+              hidden
+            />
+            <Box
+              sx={{
+                border: "1px dashed",
+                borderColor: "divider",
+                padding: 2,
+                borderRadius: 1,
+                mt: 1,
+              }}
+            >
+              <Stack spacing={2} direction="row" alignItems="center">
+                <Button
+                  variant="outlined"
+                  onClick={handleChooseClick}
+                  startIcon={<PictureAsPdf />}
+                  disabled={isLoading}
+                >
+                  انتخاب فایل PDF
+                </Button>
 
-                  {selectedFile &&
-                    formItems?.map((item) => (
-                      <Grid item xs={12} md={item.size.md} key={item.name}>
-                        <Controller
-                          name={item.name}
-                          control={control}
-                          render={({ field }) => (
-                            <RenderFormInput
-                              controllerField={field}
-                              errors={errors}
-                              {...item}
-                              {...field}
-                              // value={description ?? "عالی"}
-                              
-                            />
-                          )}
-                        />
-                      </Grid>
-                    ))}
-                </Stack>
-
-                {!selectedFile && (
-                  <Typography
-                    variant="caption"
-                    color="text.secondary"
-                    sx={{ mt: 2, display: "block" }}
-                  >
-                    حداکثر حجم مجاز: {MAX_PDF_SIZE_MB} مگابایت
+                {selectedFile && (
+                  <Typography variant="body2" sx={{ flexGrow: 1 }} noWrap>
+                    {selectedFile.name}
                   </Typography>
                 )}
-              </Box>
-            </Grid>
-            <Grid item md={11} sm={11} xs={12}>
-              {PDFList_status === "success"&&!!PDFList?.content?.length &&  (
-                <TavanaDataGrid
-                  rows={PDFList?.content ?? []}
-                  columns={columns}
-                  filters={filters}
-                  setFilters={setFilters}
-                  rowCount={PDFList?.totalElements}
-                  getRowHeight={() => "auto"}
-                  autoHeight
-                  hideToolbar
-                />
-              ) }
-            </Grid>
-            <Grid item md={11} sm={11} xs={12}>
-              {!!PdfUrl && showPDFFlag && (
-                <MyPdfViewer PdfUrl={PdfUrl ?? ""} sx={{ width: "100%" }} />
+
+                {selectedFile &&
+                  formItems?.map((item) => (
+                    <Grid item xs={12} md={item.size.md} key={item.name}>
+                      <Controller
+                        name={item.name}
+                        control={control}
+                        render={({ field }) => (
+                          <RenderFormInput
+                            controllerField={field}
+                            errors={errors}
+                            {...item}
+                            {...field}
+                            // value={description ?? "عالی"}
+                          />
+                        )}
+                      />
+                    </Grid>
+                  ))}
+              </Stack>
+
+              {!selectedFile && (
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  sx={{ mt: 2, display: "block" }}
+                >
+                  حداکثر حجم مجاز: {MAX_PDF_SIZE_MB} مگابایت
+                </Typography>
               )}
-            </Grid>
+            </Box>
           </Grid>
-        </DialogContent>
-      
-        {/* // <DialogContent>
+          <Grid item md={11} sm={11} xs={12}>
+            {PDFList_status === "success" && !!PDFList?.content?.length && (
+              <TavanaDataGrid
+                rows={PDFList?.content ?? []}
+                columns={columns}
+                filters={filters}
+                setFilters={setFilters}
+                rowCount={PDFList?.totalElements}
+                getRowHeight={() => "auto"}
+                autoHeight
+                hideToolbar
+              />
+            )}
+          </Grid>
+          <Grid item md={11} sm={11} xs={12}>
+            {!!PdfUrl && showPDFFlag && (
+              <MyPdfViewer PdfUrl={PdfUrl ?? ""} sx={{ width: "100%" }} />
+            )}
+          </Grid>
+        </Grid>
+      </DialogContent>
+
+      {/* // <DialogContent>
         //   <input
         //     ref={fileInputRef}
         //     type="file"
@@ -457,11 +476,11 @@ const UploadPdfDialog: React.FC<Props> = ({
         )}
 
         <Box sx={!!PDFList?.content?.length ? { mr: 3 } : {}}>
-          {PdfUrl && (
+          {PdfUrl && showPDFFlag && (
             <Button
               variant="outlined"
               color="warning"
-              onClick={onClose}
+              onClick={noticOrdr}
               disabled={isLoading}
               sx={{ mr: 1 }}
             >

@@ -236,7 +236,7 @@ const ShowDisciplinaryOrder = ({
 
       <DialogContent
         // sx={editable ? { overflowx: "visible", overflowY: "auto" } : {}}
-        sx={editable ? { overflow: "visible" } : {}}
+        sx={editable ? { overflow: "visible"} : {}}
       >
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={3} mt={1}>

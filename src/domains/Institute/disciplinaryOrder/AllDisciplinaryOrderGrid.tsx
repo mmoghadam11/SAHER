@@ -1,6 +1,7 @@
 import {
   Article,
   BusinessCenter,
+  Close,
   Gavel,
   HistoryEdu,
   LibraryBooksOutlined,
@@ -9,6 +10,7 @@ import {
   ReceiptLong,
   Search,
   Settings,
+  Verified,
   Work,
 } from "@mui/icons-material";
 import {
@@ -159,6 +161,29 @@ const AllDisciplinaryOrderGrid = (props: Props) => {
       flex: 1,
       align: "center",
       cellClassName: () => "font-13",
+    },
+    {
+      field: "notificationStatus",
+      headerName: "ابلاغ",
+      flex: 1,
+      align: "center",
+      renderCell: ({ row }: { row: any }) => {
+        if(row?.notificationStatus)
+        return (<Verified color="secondary"/>);
+        else return (<Close />);
+      },
+    },
+    {
+      field: "fileTerminationDate",
+      headerName: "تاریخ ابلاغ",
+      flex: 1,
+      renderCell: ({ row }: { row: any }) => {
+        return (
+          <Typography variant="caption">
+            {moment(new Date(row?.fileTerminationDate)).format("jYYYY/jMM/jDD")}
+          </Typography>
+        );
+      },
     },
     {
       headerName: "عملیات",
