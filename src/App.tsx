@@ -16,6 +16,7 @@ import { CustomPalette, ThemeMode } from "./types";
 import { AdapterDateFnsJalali } from "@mui/x-date-pickers/AdapterDateFnsJalaliV3";
 import { LocalizationProvider } from "@mui/x-date-pickers/";
 import { faIR } from "@mui/x-date-pickers/locales";
+import GlobalStyles from "GlobalStyles";
 
 
 export const ColorModeContext = React.createContext({
@@ -138,6 +139,7 @@ function App() {
         <SnackbarProvider>
           <AuthProvider>
             <CssBaseline />
+            <GlobalStyles />
             <BrowserRouter>
               <QueryClientProvider client={queryClient}>
                 <MainProviderContext>
