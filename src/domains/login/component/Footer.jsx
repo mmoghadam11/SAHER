@@ -8,7 +8,9 @@ const Footer = () => {
       className="footer"
       sx={{
         color: (theme) => theme.palette.text.primary,
-        background: "linear-gradient(to left, #e9efff, #bac7e1)",
+        background: (theme) => theme.palette.mode==="light"?
+        "linear-gradient(to left, #e9efff, #bac7e1)"
+        :"linear-gradient(to left, #b97d62ff, #966d5bff)",
         py: 3,
         px: 2,
         display: "flex",

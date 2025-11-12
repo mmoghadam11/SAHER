@@ -74,15 +74,45 @@ function App() {
       },
     },
     dark: {
+      // primary: {
+      //   main: "#00b8a8ff", // Deep Orange 800
+      //   dark: "#009488ff", // Deep Orange 900
+      //   light: "#00dfccff", // Deep Orange 700
+      // },
       primary: {
-        main: "#009199",
-        dark: "#006368",
-        light: "#00bdc7",
+        main: "#af7357ff", // Deep Orange 800
+        dark: "#744d3cff", // Deep Orange 900
+        light: "#ad7f51ff", // Deep Orange 700
+      },
+      // secondary: {
+      //   main: "#ff2121ff", // Orange A200
+      //   light: "#ff6a6aff", // Orange A100
+      //   dark: "#ff3434ff", // Orange A400
+      // },
+      info: {
+        main: "#28856dff", // Orange A200
+        light: "#27b98dff", // Orange A100
+        dark: "#3c7261ff", // Orange A400
       },
       secondary: {
-        main: "#e7cb8c",
-        light: "#e7cb8c",
-        dark: "#e7cb8c",
+        main: '#ffc107', // Amber 500
+        light: '#ffd54f', // Amber 300
+        dark: '#ffa000', // Amber 700
+      },
+      success: {
+        main: '#66bb6a', // Green 400
+        light: '#81c784', // Green 300
+        dark: '#388e3c', // Green 700
+      },
+      warning: {
+        main: '#f57600ff', // Amber 500
+        light: '#ff904fff', // Amber 300
+        dark: '#f75a00ff', // Amber 700
+      },
+      error: {
+        main: '#ef5350', // Red 400
+        light: '#e57373', // Red 300
+        dark: '#d32f2f', // Red 700
       },
     },
   }), []);

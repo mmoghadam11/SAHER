@@ -20,6 +20,7 @@ import { Controller, useForm } from "react-hook-form";
 import { useAuth } from "hooks/useAuth";
 import { useErrorHandler } from "../../../hooks/useErrorHandler";
 import { isMobile } from "react-device-detect";
+import { useTheme } from "@emotion/react";
 
 // A single dynamic schema for validation
 const getValidationSchema = (mode) => {
@@ -439,13 +440,13 @@ const Login = () => {
         return "ورود";
     }
   };
-
+const theme=useTheme();
   return (
     <Grid
       container
       justifyContent={{ xs: "center", md: "right" }}
       alignItems="center"
-      sx={{ minHeight: "100vh", backgroundColor: "" }}
+      sx={{ minHeight: "100vh", backgroundColor: theme.palette.mode==="light"?"inherit":"#1c1c1c" }}
     >
       <Grid
         container
@@ -456,12 +457,12 @@ const Login = () => {
         spacing={3}
         alignContent="center"
       >
-        <Paper elevation={3} sx={{ p: 5, m: 1 }}>
+        <Paper elevation={3} sx={{backgroundColor: theme.palette.mode==="light"?"inherit":"#2b2b2bff" ,p: 5, m: 1 }}>
           <Grid item xs={12} textAlign="center">
             <Typography variant="h6" fontSize={"large"}>
               سامانه اطلاعات
             </Typography>
-            <Typography variant="h5" color="#023e8a">
+            <Typography variant="h5" color={theme.palette.mode==="light"?"#023e8a":theme.palette.primary.main}>
               حسابداران رسمی
             </Typography>
             <Box
@@ -533,7 +534,7 @@ const Login = () => {
          }}>
           {/* newlogin + P:7 */}
           <img
-            src="/assets/images/newLogo4.png"
+            src={theme.palette.mode==="light"?"/assets/images/newLogo4.png":"/assets/images/newLogoDark.jpg"}
             alt="center"
             style={{ width: "100%", height: "100%", objectFit: "cover" }}
           />
