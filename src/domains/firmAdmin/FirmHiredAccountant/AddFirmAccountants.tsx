@@ -324,8 +324,8 @@ export default function AddFirmAccountant(): JSX.Element {
             >
               <Grid item display={"flex"}>
                 <Inventory fontSize="large" />
-                <Typography variant="h5">
-                  فرم اطلاعات حسابداران موسسه
+                <Typography variant="h6">
+                  فرم اطلاعات حسابداران رسمی موسسه
                 </Typography>
               </Grid>
               <BackButton onBack={() => navigate(-1)} />
@@ -366,7 +366,7 @@ export default function AddFirmAccountant(): JSX.Element {
                   ) : searchResponse?.[0]?.previousFirmId === id ? (
                     <Chip
                       color="warning"
-                      label="این شخص جزو کارکنان حرفه ای شماست"
+                      label="این شخص جزو حسابداران رسمی شماست"
                       icon={<CrisisAlert />}
                     />
                   ) : (
