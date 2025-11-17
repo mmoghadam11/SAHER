@@ -26,6 +26,8 @@ const PasswordInput = ({ label, name, errors, controllerField, elementProps }) =
           </InputAdornment>
         ),
       }}
+      inputProps={{ style: { fontSize: 16 } }} // font size of input text
+      InputLabelProps={{ style:   { fontSize: 16 }  }}
       fullWidth
       size="small"
     />
