@@ -27,9 +27,11 @@ import paramsSerializer from "services/paramsSerializer";
 import { PAGINATION_DEFAULT_VALUE } from "shared/paginationValue";
 import ConfirmBox from "components/confirmBox/ConfirmBox";
 
-type Props = {};
+type Props = {
+  all?:boolean
+};
 
-const Firms4AccountantGrid = (props: Props) => {
+const Firms4AccountantGrid = ({all}: Props) => {
   const Auth = useAuth();
   const snackbar = useSnackbar();
   const navigate = useNavigate();
@@ -53,7 +55,7 @@ const Firms4AccountantGrid = (props: Props) => {
   } = useQuery<any>({
     // queryKey: [process.env.REACT_APP_API_URL + `/api/unit-allocations${paramsSerializer(filters)}`],
     // queryKey: [`/api/v1/common-type/find-all${paramsSerializer(filters)}`],
-    queryKey: [`firm/search-by-user${paramsSerializer(filters)}`],
+    queryKey: all?[`firm/search${paramsSerializer(filters)}`]:[`firm/search-by-user${paramsSerializer(filters)}`],
     queryFn: Auth?.getRequest,
     select: (res: any) => {
       return res?.data;
@@ -179,15 +181,15 @@ const Firms4AccountantGrid = (props: Props) => {
       >
         <Box display={"flex"}>
           <Article fontSize="large" />
-          <Typography variant="h5">موسسات شما</Typography>
+          <Typography variant="h5">{all?"لیست موسسات":"موسسات شما"}</Typography>
         </Box>
       </Grid>
-      {/* <SearchPannel<SearchData>
+      {all&&<SearchPannel<SearchData>
         searchItems={searchItems}
-        searchData={searchData}
+        searchData={searchData} 
         setSearchData={setSearchData}
         setFilters={setFilters}
-      /> */}
+      />}
       <Grid item md={11} sm={11} xs={12}>
         {StatesData_status === "success" ? (
           <TavanaDataGrid

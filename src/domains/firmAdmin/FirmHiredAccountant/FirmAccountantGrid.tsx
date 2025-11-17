@@ -31,7 +31,7 @@ import { useAuth } from "hooks/useAuth";
 import { useSnackbar } from "hooks/useSnackbar";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import paramsSerializer from "services/paramsSerializer";
 import { PAGINATION_DEFAULT_VALUE } from "shared/paginationValue";
 import ConfirmBox from "components/confirmBox/ConfirmBox";
@@ -39,11 +39,12 @@ import moment from "jalali-moment";
 import TerminateCooprationModal from "./components/TerminateCooprationModal";
 import { FormItem } from "types/formItem";
 
-type Props = {};
+type Props = {all?:boolean};
 
-const FirmAccountantGrid = (props: Props) => {
+const FirmAccountantGrid = ({all}: Props) => {
   const Auth = useAuth();
   const { id } = useParams();
+  const {state} =useLocation();
   const snackbar = useSnackbar();
   const navigate = useNavigate();
   const { isLoading, mutate, error } = useMutation({
@@ -73,17 +74,17 @@ const FirmAccountantGrid = (props: Props) => {
     },
     enabled: true,
   } as any);
-  const {
-    data: rankOptions,
-    status: rankOptions_status,
-    refetch: rankOptions_refetch,
-  } = useQuery<any>({
-    queryKey: [`common-data/find-by-type-all?typeId=25`],
-    queryFn: Auth?.getRequest,
-    select: (res: any) => {
-      return res?.data;
-    },
-  } as any);
+  // const {
+  //   data: selectecFirm,
+  //   status: selectecFirm_status,
+  //   refetch: selectecFirm_refetch,
+  // } = useQuery<any>({
+  //   queryKey: [`firm/search?id=${id}`],
+  //   queryFn: Auth?.getRequest,
+  //   select: (res: any) => {
+  //     return res?.data;
+  //   },
+  // } as any);
   const columns: GridColDef[] = [
     // {
     //   field: "personnelFirstName",
@@ -292,7 +293,7 @@ const FirmAccountantGrid = (props: Props) => {
       >
         <Box display={"flex"}>
           <Article fontSize="large" />
-          <Typography variant="h5">حسابداران شاغل در موسسه</Typography>
+          <Typography variant="h5">حسابداران شاغل در موسسه {state?.firmData?.name}</Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"}>
           {/* <Button
@@ -304,11 +305,11 @@ const FirmAccountantGrid = (props: Props) => {
           >
             افزودن کارکنان حرفه ای
           </Button> */}
-          <CreateNewItem
+          {!all&&<CreateNewItem
             sx={{ mr: 2 }}
             title="افزودن حسابدار رسمی"
             onClick={() => navigate("new", { state: { editable: true } })}
-          />
+          />}
           <BackButton onBack={() => navigate(-1)} />
         </Box>
       </Grid>

@@ -151,6 +151,12 @@ const MENU_ITEMS: MenuItem[] = [
         access: ["administrator", "city-showmenu"],
       },
       {
+        title: "حسابداران شاغل در موسسه",
+        // url: "personnels",
+        url: "hired-accountants",
+        access: ["administrator", "city-showmenu","township-showmenu"],
+      },
+      {
         title: "کارکنان حرفه‌ای موسسات",
         url: "persons",
         access: ["administrator", "city-showmenu"],

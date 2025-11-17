@@ -150,6 +150,13 @@ const AppRoutes: React.FC = () => {
                 <Route path=":staffId" element={<PartnerDataModal />} />
               </Route>
             </Route>
+            <Route path="hired-accountants">
+              <Route index element={<Firms4AccountantGrid all/>} />
+              <Route path=":id">
+                <Route index element={<FirmAccountantGrid all/>} />
+                <Route path=":staffId" element={<AddFirmAccountant />} />
+              </Route>
+            </Route>
             <Route path="exam-applicants" element={<Welcome />} />
             <Route path="membership-fee" element={<Welcome />} />
             <Route path="contracts-concluded">
@@ -159,11 +166,6 @@ const AppRoutes: React.FC = () => {
             <Route path="financial-Statement">
               <Route index element={<InstituteFinancialStatementGrid />} />
               <Route path=":id" element={<FinancialStatementDetaile />} />
-            </Route>
-            <Route path="disciplinary-order">
-              {/* <Route index element={<InstituteDisciplinaryOrderGrid />} /> */}
-              <Route index element={<AllDisciplinaryOrderGrid/>} />
-              <Route path=":id" element={<DisciplinaryOrderDetaile />} />
             </Route>
           </Route>
           <Route path="FirmAdmin">
@@ -198,6 +200,11 @@ const AppRoutes: React.FC = () => {
             </Route>
           </Route>
           <Route path="IACPA">
+            <Route path="disciplinary-order">
+              {/* <Route index element={<InstituteDisciplinaryOrderGrid />} /> */}
+              <Route index element={<AllDisciplinaryOrderGrid/>} />
+              <Route path=":id" element={<DisciplinaryOrderDetaile />} />
+            </Route>
             <Route path="workgroup">
               <Route index element={<WorkgroupGrid />} />
               <Route path=":id" element={<AddWorkgroup />} />
