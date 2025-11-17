@@ -168,21 +168,21 @@ const AllDisciplinaryOrderGrid = (props: Props) => {
       flex: 1,
       align: "center",
       renderCell: ({ row }: { row: any }) => {
-        if(row?.notificationStatus)
-        return (<Verified color="secondary"/>);
-        else return (<Close />);
+        if (row?.notificationStatus) return <Verified color="secondary" />;
+        else return <Close />;
       },
     },
     {
-      field: "fileTerminationDate",
+      field: "notificationDate",
       headerName: "تاریخ ابلاغ",
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
-        return (
-          <Typography variant="caption">
-            {moment(new Date(row?.fileTerminationDate)).format("jYYYY/jMM/jDD")}
-          </Typography>
-        );
+        if (row?.notificationDate)
+          return (
+            <Typography variant="caption">
+              {moment(new Date(row?.notificationDate)).format("jYYYY/jMM/jDD")}
+            </Typography>
+          );
       },
     },
     {
@@ -310,9 +310,9 @@ const AllDisciplinaryOrderGrid = (props: Props) => {
       inputType: "autocomplete",
       label: "دارای ضمیمه",
       size: { md: 3 },
-      options:  [
+      options: [
         { value: "true", title: "میباشد" },
-        { value: "false", title: "نمیباشد"}
+        { value: "false", title: "نمیباشد" },
       ],
       storeValueAs: "id",
     },

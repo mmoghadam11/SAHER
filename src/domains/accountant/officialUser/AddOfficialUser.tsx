@@ -9,12 +9,14 @@ import {
   Paper,
   Container,
   Grid,
+  Avatar,
+  IconButton,
 } from "@mui/material";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { FullInstituteType } from "types/institute";
 
 // کامپوننت‌های مربوط به هر دسته اطلاعات
-import { Check, Inventory } from "@mui/icons-material";
+import { AccountCircle, Check, Inventory } from "@mui/icons-material";
 import RenderFormInput from "components/render/formInputs/RenderFormInput";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAuth } from "hooks/useAuth";
@@ -33,6 +35,7 @@ import { StatusFormItems } from "./forms/StatusFormItems";
 import { ProfessionalFormItems } from "./forms/ProfessionalFormItems";
 import { MembershipFormItems } from "./forms/MembershipFormItems";
 import RenderFormDisplay from "components/render/formInputs/RenderFormDisplay";
+import ProfileDialog from "components/ProfileDialog";
 
 export default function AddOfficialUser(): JSX.Element {
   const { id } = useParams();
@@ -59,7 +62,7 @@ export default function AddOfficialUser(): JSX.Element {
   const { mutate, isLoading } = useMutation({
     mutationFn: Auth?.serverCall,
   });
-
+  const [profileDialogFlag, setProfileDialogFlag] = useState(false);
   const {
     data: cityOptions,
     status: cityOptions_status,
@@ -228,21 +231,33 @@ export default function AddOfficialUser(): JSX.Element {
     },
   } as any);
   const {
-      data: serviceTypeOptions,
-      status: serviceTypeOptions_status,
-      refetch: serviceTypeOptions_refetch,
-    } = useQuery<any>({
-      queryKey: [`common-data/find-by-type-all?typeId=49`],
-      queryFn: Auth?.getRequest,
-      select: (res: any) => {
-        return res?.data;
-      },
-    } as any);
+    data: orderOptions,
+    status: orderOptionsOptions_status,
+    refetch: orderOptionsOptions_refetch,
+  } = useQuery<any>({
+    queryKey: [`common-data/find-by-type-all?typeId=47`],
+    queryFn: Auth?.getRequest,
+    select: (res: any) => {
+      return res?.data;
+    },
+  } as any);
+  const {
+    data: serviceTypeOptions,
+    status: serviceTypeOptions_status,
+    refetch: serviceTypeOptions_refetch,
+  } = useQuery<any>({
+    queryKey: [`common-data/find-by-type-all?typeId=49`],
+    queryFn: Auth?.getRequest,
+    select: (res: any) => {
+      return res?.data;
+    },
+  } as any);
 
   // تعریف نوع برای هر مرحله
   interface FormStep {
     name: string;
     formItems: FormItem[];
+    profile?: any;
   }
 
   // آرایه مراحل و آیتم‌های فرم
@@ -255,12 +270,32 @@ export default function AddOfficialUser(): JSX.Element {
         genderOptions,
         marriageOptions,
         religionOptions,
-        serviceTypeOptions
+        serviceTypeOptions,
+        orderOptions,
       }),
+      profile: (
+        <IconButton onClick={() => setProfileDialogFlag(true)}>
+          <Avatar
+            src={
+              process.env.REACT_APP_Image_URL +
+              "/files/" +
+              state?.accountantData?.profileImageUrl
+            }
+            sx={{
+              width: 50,
+              height: 50,
+              border: "2px solid",
+              borderColor: "divider",
+            }}
+          >
+            <AccountCircle sx={{ width: 50, height: 50 }} color="inherit" />
+          </Avatar>
+        </IconButton>
+      ),
     },
     {
       name: "اطلاعات عضویت",
-      formItems: MembershipFormItems(setValue, { membershipType, rankOptions}),
+      formItems: MembershipFormItems(setValue, { membershipType, rankOptions }),
     },
     {
       name: "اطلاعات تماس",
@@ -305,7 +340,7 @@ export default function AddOfficialUser(): JSX.Element {
       formItems: ProfessionalFormItems(setValue, { firmOptions, cityOptions }),
     },
   ];
-  
+
   const onSubmit = (data: FullInstituteType) => {
     console.log("lastForm=>", data);
     mutate(
@@ -420,69 +455,87 @@ export default function AddOfficialUser(): JSX.Element {
                     فرم اطلاعات عمومی حسابداران رسمی
                   </Typography>
                 </Grid>
-                <BackButton onBack={() => navigate("/accountant/official-users",{state:{searchFilters:state?.searchFilters}})} />
+                <BackButton
+                  onBack={() =>
+                    navigate("/accountant/official-users", {
+                      state: { searchFilters: state?.searchFilters },
+                    })
+                  }
+                />
               </Grid>
-              {state?.editable?(
-                formSteps.filter(item=>item.name!=="تحصیلات").map((stepItem, stepIndex) => (
-                <Grid item container md={12} spacing={2} key={stepIndex}>
-                  <Grid item md={12} width={"100vw"}>
-                    <FancyTicketDivider />
-                  </Grid>
-                  <Grid item md={12}>
-                    <Typography variant="h6" fontSize={"large"}>
-                      {stepItem?.name}
-                    </Typography>
-                  </Grid>
-                  {stepItem?.formItems?.map((item) => (
-                    <Grid item xs={12} md={item.size.md} key={item.name}>
-                        <Controller
-                          name={item.name}
-                          control={control}
-                          rules={item.rules}
-                          disabled={!state?.editable}
-                          render={({ field }) => (
-                            <RenderFormInput
-                              controllerField={field}
-                              errors={errors}
-                              {...item}
-                              // value={formData[item.name]}
-                              value={getValues()[item.name] ?? ""}
-                              onChange={(
-                                e: React.ChangeEvent<HTMLInputElement>
-                              ) => {
-                                // handleInputChange(item.name, e.target.value);
-                                field.onChange(e);
-                              }}
+
+              {state?.editable
+                ? formSteps
+                    .filter((item) => item.name !== "تحصیلات")
+                    .map((stepItem, stepIndex) => (
+                      <Grid item container md={12} spacing={2} key={stepIndex}>
+                        <Grid item md={12} width={"100vw"}>
+                          <FancyTicketDivider />
+                        </Grid>
+                        <Grid
+                          item
+                          md={12}
+                          display={"flex"}
+                          justifyContent={"space-between"}
+                        >
+                          <Typography variant="h6" fontSize={"large"}>
+                            {stepItem?.name}
+                          </Typography>
+                          {stepItem?.profile ? stepItem.profile : null}
+                        </Grid>
+                        {stepItem?.formItems?.map((item) => (
+                          <Grid item xs={12} md={item.size.md} key={item.name}>
+                            <Controller
+                              name={item.name}
+                              control={control}
+                              rules={item.rules}
+                              disabled={!state?.editable}
+                              render={({ field }) => (
+                                <RenderFormInput
+                                  controllerField={field}
+                                  errors={errors}
+                                  {...item}
+                                  // value={formData[item.name]}
+                                  value={getValues()[item.name] ?? ""}
+                                  onChange={(
+                                    e: React.ChangeEvent<HTMLInputElement>
+                                  ) => {
+                                    // handleInputChange(item.name, e.target.value);
+                                    field.onChange(e);
+                                  }}
+                                />
+                              )}
                             />
-                          )}
-                        />
+                          </Grid>
+                        ))}
+                      </Grid>
+                    ))
+                : formSteps.map((stepItem, stepIndex) => (
+                    <Grid item container md={12} spacing={2} key={stepIndex}>
+                      <Grid item md={12} width={"100vw"}>
+                        <FancyTicketDivider />
+                      </Grid>
+                      <Grid
+                        item
+                        md={12}
+                        display={"flex"}
+                        justifyContent={"space-between"}
+                      >
+                        <Typography variant="h6" fontSize={"large"}>
+                          {stepItem?.name}
+                        </Typography>
+                        {stepItem?.profile ? stepItem.profile : null}
+                      </Grid>
+                      {stepItem?.formItems?.map((item) => (
+                        <Grid item xs={12} md={item.size.md} key={item.name}>
+                          <RenderFormDisplay
+                            item={item}
+                            value={getValues(item.name)}
+                          />
+                        </Grid>
+                      ))}
                     </Grid>
                   ))}
-                </Grid>
-              ))
-              ):(
-                formSteps.map((stepItem, stepIndex) => (
-                <Grid item container md={12} spacing={2} key={stepIndex}>
-                  <Grid item md={12} width={"100vw"}>
-                    <FancyTicketDivider />
-                  </Grid>
-                  <Grid item md={12}>
-                    <Typography variant="h6" fontSize={"large"}>
-                      {stepItem?.name}
-                    </Typography>
-                  </Grid>
-                  {stepItem?.formItems?.map((item) => (
-                    <Grid item xs={12} md={item.size.md} key={item.name}>
-                        <RenderFormDisplay
-                          item={item}
-                          value={getValues(item.name)}
-                        />
-                    </Grid>
-                  ))}
-                </Grid>
-              ))
-              )
-              }
               {state?.editable && (
                 <Grid
                   item
@@ -505,6 +558,13 @@ export default function AddOfficialUser(): JSX.Element {
           </form>
         </Paper>
       </Grid>
+      <ProfileDialog
+        onClose={() => {
+          setProfileDialogFlag(false);
+        }}
+        open={profileDialogFlag}
+        currentAvatarUrl={state?.accountantData?.profileImageUrl ?? ""}
+      />
     </Grid>
   );
 }

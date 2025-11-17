@@ -196,7 +196,7 @@ const VerticalTable: React.FC<VerticalTableProps> = ({
                   align={column.headerAlign as any}
                   sx={{
                     fontWeight: "bold",
-                    backgroundColor: theme.palette.grey[100],
+                    backgroundColor: theme.palette.mode==="light"?theme.palette.grey[100]:theme.palette.grey[700],
                     position: "sticky",
                     left: 0,
                     zIndex: theme.zIndex.appBar,

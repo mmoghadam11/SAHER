@@ -240,6 +240,23 @@ export const useDisciplinaryOrderForm = ({
         size: { md: 12 },
       },
       {
+        name: "recordDate",
+        inputType: "date",
+        label: "تاریخ صورتجلسه",
+        size: { md: 4 },
+        // rules: { required: "تاریخ صورتجلسه الزامی است" },
+        elementProps: {
+          setDay: (value: any) => setValue("fileCreationDate", value),
+        },
+      },
+      {
+        name: "recordNumber",
+        inputType: "text",
+        label: "شماره صورتجلسه",
+        size: { md: 4 },
+        // rules: { required: "تاریخ صورتجلسه الزامی است" },
+      },
+      {
         name: "orderNumber",
         inputType: "text",
         label: "شماره حکم",
@@ -250,37 +267,38 @@ export const useDisciplinaryOrderForm = ({
         },
       },
       {
-        name: "receiptDate",
+        name: "orderDate",
         inputType: "date",
-        label: "تاریخ دریافت حکم",
+        label: "تاریخ حکم",
         size: { md: 4 },
-        rules: { required: "تاریخ دریافت حکم الزامی است" },
+        rules: { required: "تاریخ حکم الزامی است" },
         elementProps: {
           setDay: (value: any) => {
-            setValue("receiptDate", value);
+            setValue("orderDate", value);
           },
         },
       },
-      {
-        name: "fileCreationDate",
-        inputType: "date",
-        label: "تاریخ تشکیل پرونده",
-        size: { md: 4 },
-        rules: { required: "تاریخ تشکیل پرونده الزامی است" },
-        elementProps: {
-          setDay: (value: any) => setValue("fileCreationDate", value),
-        },
-      },
-      {
-        name: "fileTerminationDate",
-        inputType: "date",
-        label: "تاریخ خاتمه پرونده",
-        size: { md: 4 },
-        rules: {},
-        elementProps: {
-          setDay: (value: any) => setValue("fileTerminationDate", value),
-        },
-      },
+      
+      // {
+      //   name: "fileCreationDate",
+      //   inputType: "date",
+      //   label: "تاریخ تشکیل پرونده",
+      //   size: { md: 4 },
+      //   rules: { required: "تاریخ تشکیل پرونده الزامی است" },
+      //   elementProps: {
+      //     setDay: (value: any) => setValue("fileCreationDate", value),
+      //   },
+      // },
+      // {
+      //   name: "fileTerminationDate",
+      //   inputType: "date",
+      //   label: "تاریخ خاتمه پرونده",
+      //   size: { md: 4 },
+      //   rules: {},
+      //   elementProps: {
+      //     setDay: (value: any) => setValue("fileTerminationDate", value),
+      //   },
+      // },
     ];
 
     // جستجوی فیلد بر اساس نام cdRespondenTypeId
@@ -288,7 +306,7 @@ export const useDisciplinaryOrderForm = ({
       (item) => item.name === "cdRespondenTypeId"
     );
     const targetIndex2 = baseItems.findIndex(
-      (item) => item.name === "receiptDate"
+    (item) => item.name === "orderDate"
     );
     const targetIndexcdOrderTypeId = baseItems.findIndex(
       (item) => item.name === "cdOrderTypeId"

@@ -1,10 +1,18 @@
-import { Article, Search, Settings, Toc } from "@mui/icons-material";
 import {
+  AccountCircle,
+  Article,
+  Search,
+  Settings,
+  Toc,
+} from "@mui/icons-material";
+import {
+  Avatar,
   Box,
   Button,
   Dialog,
   DialogTitle,
   Grid,
+  IconButton,
   Modal,
   Paper,
   Typography,
@@ -29,6 +37,9 @@ import moment from "jalali-moment";
 import { FormItem } from "types/formItem";
 import NewSearchPannel from "components/form/NewSearchPannel";
 import { useAuthorization } from "hooks/useAutorization";
+import { isMobile } from "react-device-detect";
+import VerticalTable from "components/dataGrid/VerticalTable";
+import ProfileDialog from "../../../components/ProfileDialog";
 
 type Props = {};
 
@@ -79,6 +90,36 @@ const OfficialUserGrid = (props: Props) => {
     enabled: !!Auth.userInfo,
   } as any);
   const columns: GridColDef[] = [
+    {
+      field: "image",
+      headerName: "پروفایل",
+      flex: 1,
+      renderCell: ({ row }: { row: any }) => {
+        return (
+          <IconButton onClick={() => {
+            setEditeData(row);
+            setProfileDialogFlag(true);
+          }}>
+            <Avatar
+              // src={avatarUrl ?? undefined}
+              src={
+                process.env.REACT_APP_Image_URL +
+                "/files/" +
+                row?.profileImageUrl
+              }
+              sx={{
+                width: 40,
+                height: 40,
+                border: "2px solid",
+                borderColor: "divider",
+              }}
+            >
+              <AccountCircle sx={{ width: 40, height: 40 }} color="inherit" />
+            </Avatar>
+          </IconButton>
+        );
+      },
+    },
     // {
     //   field: "firstName",
     //   headerName: "نام حسابدار رسمی",
@@ -146,6 +187,11 @@ const OfficialUserGrid = (props: Props) => {
     {
       field: "cdServiceTypeName",
       headerName: "وضعیت فعالیت",
+      flex: 1,
+    },
+    {
+      field: "cdDisciplinaryOrderStatusName",
+      headerName: "وضعیت انتظامی",
       flex: 1,
     },
     {
@@ -307,15 +353,9 @@ const OfficialUserGrid = (props: Props) => {
     //   storeValueAs: "id",
     // },
   ];
-  type editeObjectType = {
-    id: number;
-    value: string;
-    key: string;
-    typeId: number;
-    typeName: string;
-  };
-  const [editeData, setEditeData] = useState<editeObjectType | null>(null);
-  const [addModalFlag, setAddModalFlag] = useState(false);
+  
+  const [editeData, setEditeData] = useState<any>(null);
+  const [profileDialogFlag, setProfileDialogFlag] = useState(false);
   const [deleteData, setDeleteData] = useState<any>(null);
   const [deleteFlag, setDeleteFlag] = useState(false);
   const [searchData, setSearchData] = useState({
@@ -372,7 +412,7 @@ const OfficialUserGrid = (props: Props) => {
               onClick={() => navigate("new", { state: { editable: true } })}
             />
           )}
-          
+
           <BackButton onBack={() => navigate(-1)} />
         </Box>
       </Grid>
@@ -387,19 +427,34 @@ const OfficialUserGrid = (props: Props) => {
 
       <Grid item md={11} sm={11} xs={12}>
         {StatesData_status === "success" && !!StatesData ? (
-          <TavanaDataGrid
-            rows={StatesData?.content}
-            columns={columns}
-            filters={filters}
-            setFilters={setFilters}
-            rowCount={StatesData?.totalElements}
-            getRowHeight={() => "auto"}
-            autoHeight
-            hideToolbar
-          />
+          isMobile ? (
+            <VerticalTable
+              rows={StatesData?.content}
+              columns={columns}
+              filters={filters}
+              setFilters={setFilters}
+              rowCount={StatesData?.totalElements}
+            />
+          ) : (
+            <TavanaDataGrid
+              rows={StatesData?.content}
+              columns={columns}
+              filters={filters}
+              setFilters={setFilters}
+              rowCount={StatesData?.totalElements}
+              getRowHeight={() => "auto"}
+              autoHeight
+              hideToolbar
+            />
+          )
         ) : null}
       </Grid>
 
+      <ProfileDialog
+      onClose={()=>{setProfileDialogFlag(false)}}
+      open={profileDialogFlag}
+      currentAvatarUrl={editeData?.profileImageUrl??""}
+      />
       <ConfirmBox
         open={deleteFlag}
         handleClose={() => {

@@ -114,4 +114,16 @@ export const BasicFormItems = (
       })) ?? [{ value: 0, title: "خالی" }],
     rules: { required: "وضعیت فعالیت الزامی است" },
   },
+  {
+    name: "cdDisciplinaryOrderId",
+    inputType: "select",
+    label: "وضعیت انتظامی",
+    size: { md: 4 },
+    options: options?.orderOptions?.map((item: any) => ({
+        value: item.id,
+        title: item.value,
+      })) ?? [{ value: 0, title: "خالی" }],
+    // rules: { required: "وضعیت فعالیت الزامی است" },
+    elementProps:{disabled:true}
+  },
 ];

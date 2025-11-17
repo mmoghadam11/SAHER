@@ -24,7 +24,7 @@ export const MembershipFormItems = (
     label: "نوع عضویت",
     size: { md: 4 },
     options: options?.membershipType?.map((item: any) => ({ value: item?.id, title: item?.value })) ?? [{ value: 0, title: "خالی" }],
-    rules: { required: "انتخاب نوع عضویت الزامی است" },
+    // rules: { required: "انتخاب نوع عضویت الزامی است" },
     elementProps:{
       disabled:true
     }
