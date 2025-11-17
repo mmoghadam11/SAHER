@@ -140,13 +140,12 @@ export const useDisciplinaryOrderForm = ({
       personnelCaId:
         cdRespondenTypeId === 397 ? restOfData.personnelCaId : null,
     };
-
   };
   useEffect(() => {
     if (startDate && endDate) {
-      const diff = new Date(endDate).getDate()-new Date(startDate).getDate() ;
+      const diff = new Date(endDate).getDate() - new Date(startDate).getDate();
       // const days = moment(endDate).diff(moment(startDate), "days");
-      const days = moment(endDate).diff(moment(startDate), "months");
+      const days = moment(endDate).diff(moment(startDate), "jMonth");
       setValue("orderDuration", days);
     } else {
       setValue("orderDuration", null);
@@ -188,6 +187,13 @@ export const useDisciplinaryOrderForm = ({
         ],
         rules: { required: "انتخاب نوع حکم الزامی است" },
       },
+      // {
+      //   name: "subject",
+      //   inputType: "text",
+      //   label: "موضوع",
+      //   size: { md: 6 },
+      //   rules: { required: "موضوع الزامی است" },
+      // },
       {
         name: "cdSubjectTypeId",
         inputType: "autocomplete",
@@ -278,7 +284,7 @@ export const useDisciplinaryOrderForm = ({
           },
         },
       },
-      
+
       // {
       //   name: "fileCreationDate",
       //   inputType: "date",
@@ -306,7 +312,7 @@ export const useDisciplinaryOrderForm = ({
       (item) => item.name === "cdRespondenTypeId"
     );
     const targetIndex2 = baseItems.findIndex(
-    (item) => item.name === "orderDate"
+      (item) => item.name === "orderDate"
     );
     const targetIndexcdOrderTypeId = baseItems.findIndex(
       (item) => item.name === "cdOrderTypeId"
@@ -367,7 +373,7 @@ export const useDisciplinaryOrderForm = ({
             inputType: "date",
             label: "تاریخ شروع حکم",
             size: { md: 4 },
-            rules: { required: "تاریخ شروع الزامی است" },
+            // rules: { required: "تاریخ شروع الزامی است" },
             elementProps: {
               setDay: (value: any) => setValue("startDate", value),
             },
@@ -377,7 +383,19 @@ export const useDisciplinaryOrderForm = ({
             inputType: "date",
             label: "تاریخ پایان حکم",
             size: { md: 4 },
-            rules: {},
+            rules: {
+              validate: (value: any, formValues: any) => {
+                const start = formValues?.startDate;
+                if (!value || !start) return true; // اگر هر کدام خالی بود، ایرادی ندارد
+                const endTime = new Date(value).getTime();
+                const startTime = new Date(start).getTime();
+
+                return (
+                  endTime >= startTime ||
+                  "تاریخ پایان نمی‌تواند قبل از تاریخ شروع باشد"
+                );
+              },
+            },
             elementProps: {
               setDay: (value: any) => setValue("endDate", value),
             },
@@ -392,9 +410,9 @@ export const useDisciplinaryOrderForm = ({
           inputType: "text",
           label: "مدت زمان حکم (ماه)",
           size: { md: 6 },
-          elementProps:{
+          elementProps: {
             disabled: true,
-          }
+          },
         });
       }
     }

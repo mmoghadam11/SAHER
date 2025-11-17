@@ -136,11 +136,12 @@ const AllDisciplinaryOrderGrid = (props: Props) => {
       headerName: "تاریخ شروع",
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
-        return (
-          <Typography variant="caption">
-            {moment(new Date(row?.startDate)).format("jYYYY/jMM/jDD")}
-          </Typography>
-        );
+        if (!!row?.startDate)
+          return (
+            <Typography variant="caption">
+              {moment(new Date(row?.startDate)).format("jYYYY/jMM/jDD")}
+            </Typography>
+          );
       },
     },
     {

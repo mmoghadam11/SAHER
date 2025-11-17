@@ -157,7 +157,7 @@ const ShowDisciplinaryOrder = ({
       reset({
         ...editeData,
         cdRespondenTypeId: initialRespondenType,
-        cdClaimantTypeId: !!editeData?.startDate ? 399 : 398,
+        // cdClaimantTypeId: !!editeData?.startDate ? 399 : 398,
       });
     } else {
       // حالت جدید: مقادیر پیش‌فرض
