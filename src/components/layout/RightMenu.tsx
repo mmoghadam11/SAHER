@@ -109,7 +109,7 @@ const MENU_ITEMS: MenuItem[] = [
     icon: <AccountBalance />,
     title: "جامعه",
     url: "/IACPA",
-    access: ["city-showmenu"],
+    access: ["city-showmenu","operator-showmenu"],
     menuChildren: [
       {
         title: "احکام انتظامی",
@@ -138,7 +138,7 @@ const MENU_ITEMS: MenuItem[] = [
     icon: <BusinessCenter />,
     title: "موسسات",
     url: "/institutions",
-    access: ["city-showmenu","operator-showmenu"],
+    access: ["city-showmenu"],
     menuChildren: [
       {
         title: "اطلاعات موسسات",
@@ -161,11 +161,11 @@ const MENU_ITEMS: MenuItem[] = [
         url: "persons",
         access: ["administrator", "city-showmenu"],
       },
-      // {
-      //   title: "کارکنان حرفه‌ای موسسات",
-      //   url: "personnels",
-      //   access: ["administrator", "city-showmenu"],
-      // },
+      {
+        title: "آموزش مستمر",
+        url: "EDU",
+        access: ["administrator", "city-showmenu"],
+      },
       {
         //ثابت و متغیر دارد
         title: "حق عضویت موسسه",
@@ -227,15 +227,20 @@ const MENU_ITEMS: MenuItem[] = [
         access: ["administrator", "city-showmenu","township-showmenu"],
       },
       {
+        title: "آموزش مستمر",
+        url: "EDU",
+        access: ["administrator", "city-showmenu"],
+      },
+      {
         title: "آزمون رتبه بندی",
         url: "rating-test",
         access: ["administrator", "city-showmenu"],
       },
-      {
-        title: "دوره های آموزشی",
-        url: "EDU",
-        access: ["administrator", "city-showmenu","township-showmenu"],
-      },
+      // {
+      //   title: "دوره های آموزشی",
+      //   url: "EDU",
+      //   access: ["administrator", "city-showmenu","township-showmenu"],
+      // },
       {
         //ثابت و متغیر دارد
         title: "حق عضویت موسسه",
@@ -315,6 +320,11 @@ const MENU_ITEMS: MenuItem[] = [
         title: "احکام انتظامی",
         url: "disciplinary-order",
         access: ["administrator","city-showmenu","township-showmenu","accountant-showmenu"],
+      },
+      {
+        title: "آموزش مستمر",
+        url: "EDU",
+        access: ["administrator", "city-showmenu","accountant-showmenu"],
       },
       {
         title: "گزارشات",

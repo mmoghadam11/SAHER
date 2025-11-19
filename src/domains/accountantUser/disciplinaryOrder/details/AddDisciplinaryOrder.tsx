@@ -3,6 +3,9 @@ import {
   ChangeCircle,
   GavelOutlined,
   Close,
+  Add,
+  Delete,
+  Search,
 } from "@mui/icons-material";
 import {
   Dialog,
@@ -13,6 +16,16 @@ import {
   Button,
   IconButton,
   Box,
+  CircularProgress,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Tooltip,
 } from "@mui/material";
 import RenderFormInput from "components/render/formInputs/RenderFormInput";
 import React, { useEffect, useState } from "react";
@@ -76,7 +89,7 @@ const AddDisciplinaryOrder = ({
     setEditeData(null);
     setResponsibleTyping(true);
     reset({
-      orderType:null,
+      orderType: null,
       cdRespondenTypeId: null, // نوع پاسخ‌دهنده
       cdSubjectTypeId: "", // موضوع
       auditingFirmId: undefined, // موسسه (اگر وجود داشته باشد)
@@ -114,7 +127,7 @@ const AddDisciplinaryOrder = ({
     });
   };
   // فراخوانی هوک سفارشی با تمام منطق
-  const { formItems } = useDisciplinaryOrderForm({
+  const { formItems,listLogic } = useDisciplinaryOrderForm({
     editeData,
     watch,
     setValue,
@@ -122,6 +135,17 @@ const AddDisciplinaryOrder = ({
     responsibleTyping,
     setResponsibleTyping,
   });
+  const {
+    searchKey,
+    setSearchKey,
+    orderSubjectOptions,
+    isSearching,
+    handleSearchClick,
+    selectedItems,
+    setSelectedItems,
+    handleAddItem,
+    handleRemoveItem,
+  } = listLogic;
 
   useEffect(() => {
     if (!!editeData) {
@@ -135,11 +159,15 @@ const AddDisciplinaryOrder = ({
       }
 
       // reset کردن فرم با داده‌های editeData و نوع پاسخ‌دهنده تعیین شده
-      reset({ ...editeData, cdRespondenTypeId: initialRespondenType,cdClaimantTypeId:!!editeData?.startDate?399:398 });
+      reset({
+        ...editeData,
+        cdRespondenTypeId: initialRespondenType,
+        cdClaimantTypeId: !!editeData?.startDate ? 399 : 398,
+      });
     } else {
       // حالت جدید: مقادیر پیش‌فرض
       reset({
-        orderType:null,
+        orderType: null,
         cdRespondenTypeId: null,
         cdSubjectTypeId: "",
         auditingFirmId: null,
@@ -168,7 +196,11 @@ const AddDisciplinaryOrder = ({
           <Box display="flex" textAlign="center" alignItems="center" gap={1}>
             <GavelOutlined fontSize="large" />
             <Typography variant="h6">
-              {!editable? "مشاهده حکم انتظامی":editeData ? `ویرایش حکم انتظامی` : `ایجاد حکم انتظامی جدید`}
+              {!editable
+                ? "مشاهده حکم انتظامی"
+                : editeData
+                ? `ویرایش حکم انتظامی`
+                : `ایجاد حکم انتظامی جدید`}
             </Typography>
           </Box>
           <IconButton onClick={handleClose} size="small">
@@ -177,7 +209,7 @@ const AddDisciplinaryOrder = ({
         </Box>
       </DialogTitle>
 
-      <DialogContent sx={{p:4}}>
+      <DialogContent sx={{ p: 4 }}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={3} mt={1}>
             {formItems.map((item) => (
@@ -208,7 +240,83 @@ const AddDisciplinaryOrder = ({
                 />
               </Grid>
             ))}
+            {(
+              <Grid container item xs={12} spacing={2}>
+                
 
+                {/* ستون راست: لیست انتخاب شده‌ها */}
+                <Grid item xs={12} md={12}>
+                  <Paper
+                    variant="outlined"
+                    sx={{
+                      p: 2,
+                      height: "100%",
+                      bgcolor: (theme) =>
+                        theme.palette.mode === "light"
+                          ? "#f9f9f9"
+                          : "#494949ff",
+                    }}
+                  >
+                    <Typography
+                      variant="subtitle1"
+                      gutterBottom
+                      sx={{ fontWeight: "bold", color: "primary.main" }}
+                    >
+                      لیست نهایی موضوعات تخلف 
+                    </Typography>
+
+                    <TableContainer sx={{ maxHeight: 365 }}>
+                      <Table stickyHeader size="small">
+                        <TableHead>
+                          <TableRow>
+                            <TableCell align="center">ردیف</TableCell>
+                            <TableCell align="center">نام</TableCell>
+                            {/* <TableCell align="center">حذف</TableCell> */}
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {selectedItems && selectedItems.length > 0 ? (
+                            selectedItems.map((row: any, index: number) => (
+                              <TableRow key={index}>
+                                <TableCell>
+                                    {row.key}
+                                </TableCell>
+                                <TableCell>
+                                  <Tooltip title={row.value}>
+                                    {row.value}
+                                  </Tooltip>
+                                </TableCell>
+                                {/* <TableCell align="center">
+                                  <Tooltip title="حذف">
+                                    <IconButton
+                                      color="error"
+                                      size="small"
+                                      onClick={() => handleRemoveItem(row.id)}
+                                    >
+                                      <Delete fontSize="small" />
+                                    </IconButton>
+                                  </Tooltip>
+                                </TableCell> */}
+                              </TableRow>
+                            ))
+                          ) : (
+                            <TableRow>
+                              <TableCell
+                                colSpan={3}
+                                align="center"
+                                sx={{ color: "text.secondary" }}
+                              >
+                                هنوز موردی اضافه نشده است
+                              </TableCell>
+                            </TableRow>
+                          )}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </Paper>
+                </Grid>
+              </Grid>
+            )}
             <Grid item xs={12} display="flex" justifyContent="flex-end" mt={2}>
               <Button variant="outlined" onClick={handleClose} sx={{ mr: 2 }}>
                 بازگشت
@@ -236,6 +344,5 @@ const AddDisciplinaryOrder = ({
     </Dialog>
   );
 };
-
 
 export default AddDisciplinaryOrder;

@@ -6,7 +6,7 @@ import {
   Toc,
   Verified,
 } from "@mui/icons-material";
-import { Box, Chip, Grid, Typography } from "@mui/material";
+import { Box, Chip, Grid, List, ListItem, ListItemText, Tooltip, Typography } from "@mui/material";
 import { GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import BackButton from "components/buttons/BackButton";
@@ -69,9 +69,46 @@ const DisciplinaryOrderGrid = ({ setActiveTab }: Props) => {
   const columns: GridColDef[] = [
     {
       field: "subjectTypeName",
-      headerName: "موضوع",
-      flex: 2.2,
-      cellClassName: () => "font-13",
+      headerName: "ردیف موضوع",
+      // flex: 2.2,
+      flex: 1,
+      renderCell: ({ row }: { row: any }) => {
+        return (
+          <Box
+            sx={{
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            <List dense disablePadding>
+              {row?.subjectTypeList?.map((SItem: any, SIndex: number) => (
+                <ListItem
+                key={SIndex}
+                  sx={{
+                    py: 0,
+                    my: 0,
+                    overflow: "hidden",
+                    whiteSpace: "nowrap",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  <Tooltip title={SItem?.value}>
+                    <ListItemText
+                      primaryTypographyProps={{
+                        variant: "caption",
+                        noWrap: true,
+                        sx: { textOverflow: "ellipsis" },
+                      }}
+                    >
+                      {SItem?.key}
+                    </ListItemText>
+                  </Tooltip>
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        );
+      },
     },
     {
       field: "claimantTypeName",

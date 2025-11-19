@@ -9,6 +9,8 @@ import { useSnackbar } from "hooks/useSnackbar";
 import { FormItem } from "types/formItem";
 import paramsSerializer from "services/paramsSerializer";
 import moment from "jalali-moment";
+import * as jalali from 'jalali-moment';
+import jalaliMonthDiff from "components/jalali/Diff";
 
 // --- توابع کمکی ---
 const mapAccountantOption = (item: any) => ({
@@ -58,6 +60,8 @@ export const useDisciplinaryOrderForm = ({
   const startDate = watch("startDate");
   const endDate = watch("endDate");
 
+  const [searchKey, setSearchKey] = useState("");
+  const [selectedItems, setSelectedItems] = useState<any[]>([]);
   const [responsibleSearch, setResponsibleSearch] = useState("");
   const debouncedResponsible = useDebounce(responsibleSearch, 400);
 
@@ -114,11 +118,34 @@ export const useDisciplinaryOrderForm = ({
     select: (res: any) => res?.data,
   } as any);
 
-  const { data: orderSubjectOptions } = useQuery<any>({
-    queryKey: [`common-data/find-by-type-all?typeId=48`],
+  const { data: orderSubjectOptions,refetch: searchRefetch, isFetching:isSearching } = useQuery<any>({
+    // queryKey: [`common-data/find-by-type-all?typeId=48`],
+    queryKey: [`common-data/find-by-key?typeId=48&key=${searchKey}`],
     queryFn: Auth?.getRequest,
     select: (res: any) => res?.data,
+    enabled: false,
   } as any);
+  const handleSearchClick = () => {
+    if (searchKey.length >= 1) {
+      searchRefetch();
+    }
+  };
+  useEffect(() => {
+    if (editeData && editeData.subjectTypeList) {
+      // فرض بر این است که دیتای سرور آرایه‌ای به نام relatedPersonnels دارد
+      setSelectedItems(editeData.subjectTypeList);
+    }
+  }, [editeData]);
+  const handleAddItem = (item: any) => {
+    // جلوگیری از تکراری بودن
+    const exists = selectedItems.find((i) => i.id === item.id);
+    if (!exists) {
+      setSelectedItems((prev) => [...prev, item]);
+    }
+  };
+  const handleRemoveItem = (id: any) => {
+    setSelectedItems((prev) => prev.filter((i) => i.id !== id));
+  };
 
   const { data: workgroupOptions } = useQuery<any>({
     queryKey: [`workgroup/search-all`],
@@ -139,14 +166,19 @@ export const useDisciplinaryOrderForm = ({
         cdRespondenTypeId === 396 ? restOfData.auditingFirmId : null,
       personnelCaId:
         cdRespondenTypeId === 397 ? restOfData.personnelCaId : null,
+      // ✅ اضافه کردن آرایه انتخاب شده به دیتای نهایی
+      // معمولاً فقط ID ها را به سرور می‌فرستیم
+      selectedSubjects: selectedItems.map(item => item.id),
     };
+    return submissionData;
   };
   useEffect(() => {
     if (startDate && endDate) {
       const diff = new Date(endDate).getDate() - new Date(startDate).getDate();
       // const days = moment(endDate).diff(moment(startDate), "days");
-      const days = moment(endDate).diff(moment(startDate), "jMonth");
-      setValue("orderDuration", days);
+      const days = moment(endDate).diff(moment(startDate), "month");
+      const MonthDiff:number = jalaliMonthDiff(moment(startDate), moment(endDate));
+      setValue("orderDuration", MonthDiff);
     } else {
       setValue("orderDuration", null);
     }
@@ -194,19 +226,23 @@ export const useDisciplinaryOrderForm = ({
       //   size: { md: 6 },
       //   rules: { required: "موضوع الزامی است" },
       // },
-      {
-        name: "cdSubjectTypeId",
-        inputType: "autocomplete",
-        label: "موضوع",
-        size: { md: 6 },
-        options:
-          orderSubjectOptions?.map((item: any) => ({
-            value: item?.id,
-            title: item?.value,
-          })) ?? [],
-        storeValueAs: "id",
-        rules: { required: "موضوع الزامی است" },
-      },
+      // {
+      //   name: "cdSubjectTypeId",
+      //   inputType: "autocomplete",
+      //   label: "ردیف - موضوع تخلف",
+      //   size: { md: 6 },
+      //   options:
+      //     orderSubjectOptions?.map((item: any) => ({
+      //       value: item?.id,
+      //       title: `${item?.key} - ${item?.value}`,
+      //       key:item.key
+      //     })) ?? [],
+      //   storeValueAs: "id",
+      //   // elementProps:{
+      //   //   multiple:true
+      //   // },
+      //   rules: { required: "موضوع الزامی است" },
+      // },
       {
         name: "claimant",
         inputType: "text",
@@ -284,6 +320,44 @@ export const useDisciplinaryOrderForm = ({
           },
         },
       },
+      {
+            name: "startDate",
+            inputType: "date",
+            label: "تاریخ شروع حکم",
+            size: { md: 4 },
+            // rules: { required: "تاریخ شروع الزامی است" },
+            elementProps: {
+              setDay: (value: any) => setValue("startDate", value),
+            },
+          },
+          {
+            name: "endDate",
+            inputType: "date",
+            label: "تاریخ پایان حکم",
+            size: { md: 4 },
+            rules: {
+              validate: (value: any, formValues: any) => {
+                const start = formValues?.startDate;
+                if (!value || !start) return true; // اگر هر کدام خالی بود، ایرادی ندارد
+                const endTime = new Date(value).getTime();
+                const startTime = new Date(start).getTime();
+
+                return (
+                  endTime >= startTime ||
+                  "تاریخ پایان نمی‌تواند قبل از تاریخ شروع باشد"
+                );
+              },
+            },
+            elementProps: {
+              setDay: (value: any) => setValue("endDate", value),
+            },
+          },
+      {
+        name: "titleDivider2",
+        inputType: "titleDivider",
+        label: "",
+        size: { md: 12 },
+      },
 
       // {
       //   name: "fileCreationDate",
@@ -311,9 +385,9 @@ export const useDisciplinaryOrderForm = ({
     const targetIndex = baseItems.findIndex(
       (item) => item.name === "cdRespondenTypeId"
     );
-    const targetIndex2 = baseItems.findIndex(
-      (item) => item.name === "orderDate"
-    );
+    // const targetIndex2 = baseItems.findIndex(
+    //   (item) => item.name === "orderDate"
+    // );
     const targetIndexcdOrderTypeId = baseItems.findIndex(
       (item) => item.name === "cdOrderTypeId"
     );
@@ -363,46 +437,46 @@ export const useDisciplinaryOrderForm = ({
         });
       }
     }
-    if (targetIndex2 > -1) {
-      if (watched === 399) {
-        baseItems.splice(
-          targetIndex2 + 1,
-          0,
-          {
-            name: "startDate",
-            inputType: "date",
-            label: "تاریخ شروع حکم",
-            size: { md: 4 },
-            // rules: { required: "تاریخ شروع الزامی است" },
-            elementProps: {
-              setDay: (value: any) => setValue("startDate", value),
-            },
-          },
-          {
-            name: "endDate",
-            inputType: "date",
-            label: "تاریخ پایان حکم",
-            size: { md: 4 },
-            rules: {
-              validate: (value: any, formValues: any) => {
-                const start = formValues?.startDate;
-                if (!value || !start) return true; // اگر هر کدام خالی بود، ایرادی ندارد
-                const endTime = new Date(value).getTime();
-                const startTime = new Date(start).getTime();
+    // if (targetIndex2 > -1) {
+    //   if (watched === 399) {
+    //     baseItems.splice(
+    //       targetIndex2 + 1,
+    //       0,
+    //       {
+    //         name: "startDate",
+    //         inputType: "date",
+    //         label: "تاریخ شروع حکم",
+    //         size: { md: 4 },
+    //         // rules: { required: "تاریخ شروع الزامی است" },
+    //         elementProps: {
+    //           setDay: (value: any) => setValue("startDate", value),
+    //         },
+    //       },
+    //       {
+    //         name: "endDate",
+    //         inputType: "date",
+    //         label: "تاریخ پایان حکم",
+    //         size: { md: 4 },
+    //         rules: {
+    //           validate: (value: any, formValues: any) => {
+    //             const start = formValues?.startDate;
+    //             if (!value || !start) return true; // اگر هر کدام خالی بود، ایرادی ندارد
+    //             const endTime = new Date(value).getTime();
+    //             const startTime = new Date(start).getTime();
 
-                return (
-                  endTime >= startTime ||
-                  "تاریخ پایان نمی‌تواند قبل از تاریخ شروع باشد"
-                );
-              },
-            },
-            elementProps: {
-              setDay: (value: any) => setValue("endDate", value),
-            },
-          }
-        );
-      }
-    }
+    //             return (
+    //               endTime >= startTime ||
+    //               "تاریخ پایان نمی‌تواند قبل از تاریخ شروع باشد"
+    //             );
+    //           },
+    //         },
+    //         elementProps: {
+    //           setDay: (value: any) => setValue("endDate", value),
+    //         },
+    //       }
+    //     );
+    //   }
+    // }
     if (targetIndexcdOrderTypeId > -1) {
       if (startDate && endDate) {
         baseItems.splice(targetIndexcdOrderTypeId + 1, 0, {
@@ -437,5 +511,16 @@ export const useDisciplinaryOrderForm = ({
 
   return {
     formItems,
+    listLogic: {
+      searchKey,
+      setSearchKey,
+      orderSubjectOptions,
+      isSearching,
+      handleSearchClick,
+      selectedItems,
+      setSelectedItems,
+      handleAddItem,
+      handleRemoveItem,
+    }
   };
 };

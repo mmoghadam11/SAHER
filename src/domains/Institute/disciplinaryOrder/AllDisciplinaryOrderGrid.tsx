@@ -20,6 +20,9 @@ import {
   Dialog,
   DialogTitle,
   Grid,
+  List,
+  ListItem,
+  ListItemText,
   Modal,
   Paper,
   Tooltip,
@@ -118,12 +121,49 @@ const AllDisciplinaryOrderGrid = (props: Props) => {
           );
       },
     },
-    { field: "subject", headerName: "شخصیت", flex: 1.2 },
+    { field: "subject", headerName: "نام شخصیت", flex: 1.2 },
     {
       field: "subjectTypeName",
-      headerName: "موضوع",
-      flex: 2.2,
-      cellClassName: () => "font-13",
+      headerName: "ردیف موضوع",
+      // flex: 2.2,
+      flex: 1,
+      renderCell: ({ row }: { row: any }) => {
+        return (
+          <Box
+            sx={{
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            <List dense disablePadding>
+              {row?.subjectTypeList?.map((SItem: any, SIndex: number) => (
+                <ListItem
+                key={SIndex}
+                  sx={{
+                    py: 0,
+                    my: 0,
+                    overflow: "hidden",
+                    whiteSpace: "nowrap",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  <Tooltip title={SItem?.value}>
+                    <ListItemText
+                      primaryTypographyProps={{
+                        variant: "caption",
+                        noWrap: true,
+                        sx: { textOverflow: "ellipsis" },
+                      }}
+                    >
+                      {SItem?.key}
+                    </ListItemText>
+                  </Tooltip>
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        );
+      },
     },
     {
       field: "claimantTypeName",
@@ -326,7 +366,7 @@ const AllDisciplinaryOrderGrid = (props: Props) => {
     typeName: string;
   };
   const [editeData, setEditeData] = useState<editeObjectType | null>(null);
-  const [basePDFData, setBasePDFData] = useState<editeObjectType | null>(null);
+  const [basePDFData, setBasePDFData] = useState<any>(null);
   const [editable, setEditable] = useState<boolean>(
     authFunctions?.hasPermission("disciplinary-order-edit")
   );
@@ -436,6 +476,7 @@ const AllDisciplinaryOrderGrid = (props: Props) => {
         <UploadPdfDialog
           refetch={StatesData_refetch}
           entityId={basePDFData?.id ?? ""}
+          notificationStatus={basePDFData?.notificationStatus ?? null}
           onClose={() => {
             setPdfFlag(false);
           }}

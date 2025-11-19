@@ -3,6 +3,9 @@ import {
   ChangeCircle,
   GavelOutlined,
   Close,
+  Add,
+  Delete,
+  Search,
 } from "@mui/icons-material";
 import {
   Dialog,
@@ -13,6 +16,16 @@ import {
   Button,
   IconButton,
   Box,
+  CircularProgress,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Tooltip,
 } from "@mui/material";
 import RenderFormInput from "components/render/formInputs/RenderFormInput";
 import React, { useEffect, useState } from "react";
@@ -70,7 +83,7 @@ const ShowDisciplinaryOrder = ({
       );
       setResponsibleTyping(true);
       refetch();
-      handleClose()
+      handleClose();
     },
     onError: () => {
       snackbar("خطا در ثبت حکم انتظامی", "error");
@@ -95,9 +108,15 @@ const ShowDisciplinaryOrder = ({
       endDate: null,
       fileCreationDate: null,
       fileTerminationDate: null,
+      setSelectedItems:null,
+      recordDate:null,
+      recordNumber:null,
+      orderDate:null,
     });
+    setSearchKey("")
+    setSelectedItems([]);
     setPdfUrl("");
-    setPdfViewFlag(false)
+    setPdfViewFlag(false);
   };
   const onSubmit = (data: any) => {
     const { cdRespondenTypeId, ...restOfData } = data; // حذف cdRespondenTypeId
@@ -110,6 +129,8 @@ const ShowDisciplinaryOrder = ({
         cdRespondenTypeId === 396 ? restOfData.auditingFirmId : null,
       personnelCaId:
         cdRespondenTypeId === 397 ? restOfData.personnelCaId : null,
+      // ✅ ارسال لیست آیتم‌های جدول پایین
+      cdSubjectTypeId: selectedItems.map((i: any) => i.id),
     };
 
     console.log("submissionData", submissionData);
@@ -121,7 +142,7 @@ const ShowDisciplinaryOrder = ({
     });
   };
   // فراخوانی هوک سفارشی با تمام منطق
-  const { formItems } = useDisciplinaryOrderForm({
+  const { formItems, listLogic } = useDisciplinaryOrderForm({
     editeData,
     watch,
     setValue,
@@ -129,19 +150,18 @@ const ShowDisciplinaryOrder = ({
     responsibleTyping,
     setResponsibleTyping,
   });
-
   const {
-    data: uploadedPDF,
-    status: uploadedPDF_status,
-    refetch: uploadedPDF_refetch,
-  } = useQuery<any>({
-    queryKey: [`disciplinary-order/download-order-file?id=${editeData?.id}`],
-    queryFn: Auth?.getRequestDownloadFile,
-    select: (res: any) => {
-      return res;
-    },
-    enabled: !!editeData,
-  } as any);
+    searchKey,
+    setSearchKey,
+    orderSubjectOptions,
+    isSearching,
+    handleSearchClick,
+    selectedItems,
+    setSelectedItems,
+    handleAddItem,
+    handleRemoveItem,
+  } = listLogic;
+  
   useEffect(() => {
     if (!!editeData) {
       let initialRespondenType = undefined;
@@ -176,39 +196,16 @@ const ShowDisciplinaryOrder = ({
         endDate: null,
         fileCreationDate: null,
         fileTerminationDate: null,
+        setSelectedItems:null,
+        recordDate:null,
+        recordNumber:null,
+        orderDate:null,
       });
+      setSearchKey("");
+      setSelectedItems([]);
     }
   }, [editeData, reset]);
-  useEffect(() => {
-    let objectUrl: string | null = null;
-
-    // 1. چک کنید که داده‌ی تصویر وجود دارد و از نوع Blob است
-    if (
-      uploadedPDF &&
-      uploadedPDF instanceof Blob &&
-      uploadedPDF.type.startsWith("application/pdf")
-    ) {
-      // 2. یک URL موقت از Blob بسازید
-      objectUrl = URL.createObjectURL(uploadedPDF);
-      // 3. URL ساخته شده را در استیت قرار دهید
-      setPdfUrl(objectUrl);
-    }
-    //   if (image && image instanceof Blob&&!image.type.startsWith("image/")) {
-    //     // 2. یک URL موقت از Blob بسازید
-    //     objectUrl = "";
-    //     // 3. URL ساخته شده را در استیت قرار دهید
-    //     setAvatarUrl(objectUrl);
-    //   }
-
-    // 4. (مهم) تابع پاک‌سازی:
-    // این تابع زمانی اجرا می‌شود که کامپوننت unmount شود یا 'image' تغییر کند
-    return () => {
-      if (objectUrl) {
-        // URL موقت قبلی را از حافظه مرورگر پاک می‌کند
-        URL.revokeObjectURL(objectUrl);
-      }
-    };
-  }, [uploadedPDF]);
+  
   return (
     <Dialog
       open={addModalFlag}
@@ -235,8 +232,8 @@ const ShowDisciplinaryOrder = ({
       </DialogTitle>
 
       <DialogContent
-        // sx={editable ? { overflowx: "visible", overflowY: "auto" } : {}}
-        sx={editable ? { overflow: "visible"} : {}}
+      // sx={editable ? { overflowx: "visible", overflowY: "auto" } : {}}
+      // sx={editable ? { overflow: "visible"} : {}}
       >
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={3} mt={1}>
@@ -268,25 +265,167 @@ const ShowDisciplinaryOrder = ({
                 />
               </Grid>
             ))}
-            {!editable && !!PdfUrl &&(
-              <Grid item xs={12}>
-                <PdfUploadForm
-                  PdfViewFlag={PdfViewFlag}
-                  entityId={editeData?.id ?? ""}
-                  onViewClick={() => {
-                    setPdfViewFlag((prev) => !prev);
-                  }}
-                  refetch={uploadedPDF_refetch}
-                  existingPdfUrl={PdfUrl ?? ""}
-                />
-              </Grid>
-            )}
+            {editable && (
+              <Grid container item xs={12} spacing={2}>
+                {/* ستون چپ: جستجو و نتایج */}
+                <Grid item xs={12} md={6}>
+                  <Paper variant="outlined" sx={{ p: 2, height: "100%" }}>
+                    <Typography
+                      variant="subtitle1"
+                      gutterBottom
+                      sx={{ fontWeight: "bold" }}
+                    >
+                      جستجو و افزودن ردیف موضوع تخلف
+                    </Typography>
 
-            {PdfViewFlag && !!PdfUrl && (
-              <Grid item xs={12}>
-                <MyPdfViewer PdfUrl={PdfUrl} sx={{width: "100%"}}/>
+                    {/* باکس جستجو */}
+                    <Box display="flex" gap={1} mb={2}>
+                      <TextField
+                        label="ردیف موضوع را وارد کنید"
+                        size="small"
+                        fullWidth
+                        value={searchKey}
+                        onChange={(e) => setSearchKey(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            handleSearchClick();
+                          }
+                        }}
+                      />
+                      <Button
+                        variant="contained"
+                        onClick={handleSearchClick}
+                        disabled={isSearching}
+                      >
+                        {isSearching ? (
+                          <CircularProgress size={24} color="inherit" />
+                        ) : (
+                          <Search />
+                        )}
+                      </Button>
+                    </Box>
+
+                    {/* جدول نتایج جستجو */}
+                    <TableContainer sx={{ maxHeight: 300 }}>
+                      <Table stickyHeader size="small">
+                        <TableHead>
+                          <TableRow>
+                            <TableCell>نام</TableCell>
+                            <TableCell align="center">افزودن</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {orderSubjectOptions ? (
+                            // orderSubjectOptions?.map((row: any, index: number) => (
+                            <TableRow key={1} hover>
+                              <TableCell>
+                                <Tooltip title={orderSubjectOptions.value}>
+                                  <Typography variant="caption">
+                                    {orderSubjectOptions.value}
+                                  </Typography>
+                                </Tooltip>
+                              </TableCell>
+                              <TableCell align="center">
+                                <IconButton
+                                  color="primary"
+                                  size="small"
+                                  onClick={() =>
+                                    handleAddItem(orderSubjectOptions)
+                                  }
+                                >
+                                  <Add />
+                                </IconButton>
+                              </TableCell>
+                            </TableRow>
+                          ) : (
+                            // ))
+                            <TableRow>
+                              <TableCell colSpan={3} align="center">
+                                {isSearching
+                                  ? "در حال جستجو..."
+                                  : "موردی یافت نشد / جستجو کنید"}
+                              </TableCell>
+                            </TableRow>
+                          )}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </Paper>
+                </Grid>
+
+                {/* ستون راست: لیست انتخاب شده‌ها */}
+                <Grid item xs={12} md={6}>
+                  <Paper
+                    variant="outlined"
+                    sx={{
+                      p: 2,
+                      height: "100%",
+                      bgcolor: (theme) =>
+                        theme.palette.mode === "light"
+                          ? "#f9f9f9"
+                          : "#494949ff",
+                    }}
+                  >
+                    <Typography
+                      variant="subtitle1"
+                      gutterBottom
+                      sx={{ fontWeight: "bold", color: "primary.main" }}
+                    >
+                      لیست نهایی (انتخاب شده) موضوعات تخلف
+                    </Typography>
+
+                    <TableContainer sx={{ maxHeight: 365 }}>
+                      <Table stickyHeader size="small">
+                        <TableHead>
+                          <TableRow>
+                            <TableCell>نام</TableCell>
+                            <TableCell align="center">حذف</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {selectedItems && selectedItems.length > 0 ? (
+                            selectedItems.map((row: any, index: number) => (
+                              <TableRow key={index}>
+                                <TableCell>
+                                  <Tooltip title={row.value}>
+                                    {row.value}
+                                  </Tooltip>
+                                </TableCell>
+                                <TableCell align="center">
+                                  <Tooltip title="حذف">
+                                    <IconButton
+                                      color="error"
+                                      size="small"
+                                      onClick={() => handleRemoveItem(row.id)}
+                                    >
+                                      <Delete fontSize="small" />
+                                    </IconButton>
+                                  </Tooltip>
+                                </TableCell>
+                              </TableRow>
+                            ))
+                          ) : (
+                            <TableRow>
+                              <TableCell
+                                colSpan={3}
+                                align="center"
+                                sx={{ color: "text.secondary" }}
+                              >
+                                هنوز موردی اضافه نشده است
+                              </TableCell>
+                            </TableRow>
+                          )}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </Paper>
+                </Grid>
               </Grid>
             )}
+            
+
+            
             <Grid item xs={12} display="flex" justifyContent="flex-end" mt={2}>
               <Button variant="outlined" onClick={handleClose} sx={{ mr: 2 }}>
                 بازگشت
