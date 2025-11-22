@@ -278,10 +278,10 @@ const AddDisciplinaryOrder = ({
                           {selectedItems && selectedItems.length > 0 ? (
                             selectedItems.map((row: any, index: number) => (
                               <TableRow key={index}>
-                                <TableCell>
+                                <TableCell align="center">
                                     {row.key}
                                 </TableCell>
-                                <TableCell>
+                                <TableCell align="center">
                                   <Tooltip title={row.value}>
                                     {row.value}
                                   </Tooltip>
