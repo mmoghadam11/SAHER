@@ -41,6 +41,7 @@ import FirmContractGrid from "./tabs/firnContract/FirmContractGrid";
 import PublicationGrid from "./tabs/publication/PublicationGrid";
 import BranchGrid from "./tabs/branchs/BranchGrid";
 import AddressGrid from "./tabs/address/AddressGrid";
+import MoneyLundringGrid from "./tabs/moneyLundringManager/MoneyLundringGrid";
 
 type Props = {};
 interface FormItem {
@@ -97,6 +98,10 @@ const DetaileTabs = (props: Props) => {
       com: <DirectorGrid setActiveTab={setActiveTab} />,
     },
     {
+      title: "مدیر مبارزه با پولشویی",
+      com: <MoneyLundringGrid setActiveTab={setActiveTab} />,
+    },
+    {
       title: "آموزشی",
       com: <EduInfoGrid setActiveTab={setActiveTab} />,
     },
@@ -107,7 +112,7 @@ const DetaileTabs = (props: Props) => {
     {
       // title: "آموزش مستمر حرفه ای",
       title: "سوابق مستمر آموزشی",
-      com: <ContinuingEducationGrid setActiveTab={setActiveTab} />,
+      com: <ContinuingEducationGrid />,
     },
     // {
     //   title: "قراردادها",
