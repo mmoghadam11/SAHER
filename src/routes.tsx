@@ -63,6 +63,9 @@ import AllDisciplinaryOrderGrid from "domains/Institute/disciplinaryOrder/AllDis
 import AddCAOrganization from "domains/CAOrganization/AddCAOrganization";
 import CAOrganizationGrid from "domains/CAOrganization/CAOrganizationGrid";
 import AccountantUserDisciplinaryOrderDetaile from "domains/accountantUser/disciplinaryOrder/AccountantUserDisciplinaryOrderDetaile";
+import Firms4EDUGrid from "domains/Institute/EDU/Firms4EDUGrid";
+import ContinuingEducationGrid from "domains/Institute/EDU/continuingEducation/ContinuingEducationGrid";
+import NewLogin from "domains/login/pages/NewLogin";
 
 const AppRoutes: React.FC = () => {
   const auth = useAuth();
@@ -157,6 +160,13 @@ const AppRoutes: React.FC = () => {
                 <Route path=":staffId" element={<AddFirmAccountant />} />
               </Route>
             </Route>
+            <Route path="EDU">
+              <Route index element={<Firms4EDUGrid all/>} />
+              <Route path=":id">
+                <Route index element={<ContinuingEducationGrid/>} />
+                <Route path=":staffId" element={<AddFirmAccountant />} />
+              </Route>
+            </Route>
             <Route path="exam-applicants" element={<Welcome />} />
             <Route path="membership-fee" element={<Welcome />} />
             <Route path="contracts-concluded">
@@ -195,6 +205,13 @@ const AppRoutes: React.FC = () => {
               <Route index element={<Firms4AccountantGrid />} />
               <Route path=":id">
                 <Route index element={<FirmAccountantGrid />} />
+                <Route path=":staffId" element={<AddFirmAccountant />} />
+              </Route>
+            </Route>
+            <Route path="EDU">
+              <Route index element={<Firms4EDUGrid />} />
+              <Route path=":id">
+                <Route index element={<ContinuingEducationGrid/>} />
                 <Route path=":staffId" element={<AddFirmAccountant />} />
               </Route>
             </Route>
@@ -237,7 +254,8 @@ const AppRoutes: React.FC = () => {
       <Route path="logout" element={<LogoutPage />} />
       <Route
         path="login"
-        element={isUserLoggedIn ? <Navigate to="/" /> : <Login />}
+        // element={isUserLoggedIn ? <Navigate to="/" /> : <Login />}
+        element={isUserLoggedIn ? <Navigate to="/" /> : <NewLogin />}
       />
       <Route path="404" element={<NotFound />} />
       <Route path="*" element={<Navigate to="login" />} />

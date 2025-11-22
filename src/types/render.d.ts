@@ -10,7 +10,7 @@ interface IBaseInput<TInputTypes> {
   gridProps?: GridProps;
 }
 
-export type TOption = MenuItemProps | { title: any; value: any };
+export type TOption = MenuItemProps | { title: any; value: any,key?:any };
 interface IText extends IBaseInput<"text" | "password"> {
   elementProps?: TextFieldProps;
 }

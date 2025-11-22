@@ -15,4 +15,6 @@ export interface FormItem {
   status?: string;
   refetch?: () => void;
   skipClientFilter?: boolean
+
+  Defaultfont?:boolean
 }

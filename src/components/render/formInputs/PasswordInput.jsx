@@ -2,7 +2,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
 import React, { useState } from "react";
 
-const PasswordInput = ({ label, name, errors, controllerField, elementProps }) => {
+const PasswordInput = ({ label, name, errors, Defaultfont=false,controllerField, elementProps }) => {
   const [showPassword, setShowPassword] = useState(false);
   return (
     <TextField
@@ -26,8 +26,8 @@ const PasswordInput = ({ label, name, errors, controllerField, elementProps }) =
           </InputAdornment>
         ),
       }}
-      inputProps={{ style: { fontSize: 16 } }} // font size of input text
-      InputLabelProps={{ style:   { fontSize: 16 }  }}
+      inputProps={{ style: !Defaultfont?{ fontSize: 16 }:null }} // font size of input text
+      InputLabelProps={{ style: !Defaultfont?{ fontSize: 16 }:null  }}
       fullWidth
       size="small"
     />
