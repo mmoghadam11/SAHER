@@ -9,14 +9,14 @@ import { useSnackbar } from "hooks/useSnackbar";
 import { FormItem } from "types/formItem";
 import paramsSerializer from "services/paramsSerializer";
 import moment from "jalali-moment";
-import * as jalali from 'jalali-moment';
+import * as jalali from "jalali-moment";
 import jalaliMonthDiff from "components/jalali/Diff";
 
 // --- توابع کمکی ---
 const mapAccountantOption = (item: any) => ({
   value: item?.id,
   title: `${item?.firstName ?? ""} ${item?.lastName ?? ""} - ${
-    item?.nationalCode ?? ""
+    item?.membershipNo ?? ""
   }`.trim(),
 });
 
@@ -24,7 +24,7 @@ const buildPersonnelFiltersFromText = (q: string | undefined | null) => {
   const s = (q ?? "").trim();
   if (s.length < 2) return null;
   // اگر فقط عدد باشد، بر اساس کد ملی جستجو کن
-  if (/^\d+$/.test(s)) return { nationalCode: s };
+  if (/^\d+$/.test(s)) return { membershipNo: s };
   // اگر متن و شامل فاصله باشد، سعی کن بر اساس نام و نام خانوادگی جستجو کنی
   const parts = s.split(/\s+/);
   if (parts.length >= 2) {
@@ -56,6 +56,7 @@ export const useDisciplinaryOrderForm = ({
   const snackbar = useSnackbar();
 
   const watchedTypeOrder = watch("cdRespondenTypeId");
+  const watchedAccountantMemberShip = watch("cdMembershipTypeId");
   const watched = watch("cdClaimantTypeId");
   const startDate = watch("startDate");
   const endDate = watch("endDate");
@@ -82,7 +83,7 @@ export const useDisciplinaryOrderForm = ({
     queryKey: [`firm/search-all`],
     queryFn: Auth?.getRequest,
     select: (res: any) => res?.data,
-    enabled: watchedTypeOrder === 396,
+    // enabled: watchedTypeOrder === 396,
   } as any);
 
   // 👇 اصلاح شد: تنظیم درست queryFn برای ارسال URL شامل فیلترها به API
@@ -117,8 +118,17 @@ export const useDisciplinaryOrderForm = ({
     queryFn: Auth?.getRequest,
     select: (res: any) => res?.data,
   } as any);
+  const { data: membershipType } = useQuery<any>({
+    queryKey: [`common-data/find-by-type-all?typeId=26`],
+    queryFn: Auth?.getRequest,
+    select: (res: any) => res?.data,
+  } as any);
 
-  const { data: orderSubjectOptions,refetch: searchRefetch, isFetching:isSearching } = useQuery<any>({
+  const {
+    data: orderSubjectOptions,
+    refetch: searchRefetch,
+    isFetching: isSearching,
+  } = useQuery<any>({
     // queryKey: [`common-data/find-by-type-all?typeId=48`],
     queryKey: [`common-data/find-by-key?typeId=48&key=${searchKey}`],
     queryFn: Auth?.getRequest,
@@ -168,7 +178,7 @@ export const useDisciplinaryOrderForm = ({
         cdRespondenTypeId === 397 ? restOfData.personnelCaId : null,
       // ✅ اضافه کردن آرایه انتخاب شده به دیتای نهایی
       // معمولاً فقط ID ها را به سرور می‌فرستیم
-      selectedSubjects: selectedItems.map(item => item.id),
+      selectedSubjects: selectedItems.map((item) => item.id),
     };
     return submissionData;
   };
@@ -177,7 +187,10 @@ export const useDisciplinaryOrderForm = ({
       const diff = new Date(endDate).getDate() - new Date(startDate).getDate();
       // const days = moment(endDate).diff(moment(startDate), "days");
       const days = moment(endDate).diff(moment(startDate), "month");
-      const MonthDiff:number = jalaliMonthDiff(moment(startDate), moment(endDate));
+      const MonthDiff: number = jalaliMonthDiff(
+        moment(startDate),
+        moment(endDate)
+      );
       setValue("orderDuration", MonthDiff);
     } else {
       setValue("orderDuration", null);
@@ -321,37 +334,37 @@ export const useDisciplinaryOrderForm = ({
         },
       },
       {
-            name: "startDate",
-            inputType: "date",
-            label: "تاریخ شروع حکم",
-            size: { md: 4 },
-            // rules: { required: "تاریخ شروع الزامی است" },
-            elementProps: {
-              setDay: (value: any) => setValue("startDate", value),
-            },
-          },
-          {
-            name: "endDate",
-            inputType: "date",
-            label: "تاریخ پایان حکم",
-            size: { md: 4 },
-            rules: {
-              validate: (value: any, formValues: any) => {
-                const start = formValues?.startDate;
-                if (!value || !start) return true; // اگر هر کدام خالی بود، ایرادی ندارد
-                const endTime = new Date(value).getTime();
-                const startTime = new Date(start).getTime();
+        name: "startDate",
+        inputType: "date",
+        label: "تاریخ شروع حکم",
+        size: { md: 4 },
+        // rules: { required: "تاریخ شروع الزامی است" },
+        elementProps: {
+          setDay: (value: any) => setValue("startDate", value),
+        },
+      },
+      {
+        name: "endDate",
+        inputType: "date",
+        label: "تاریخ پایان حکم",
+        size: { md: 4 },
+        rules: {
+          validate: (value: any, formValues: any) => {
+            const start = formValues?.startDate;
+            if (!value || !start) return true; // اگر هر کدام خالی بود، ایرادی ندارد
+            const endTime = new Date(value).getTime();
+            const startTime = new Date(start).getTime();
 
-                return (
-                  endTime >= startTime ||
-                  "تاریخ پایان نمی‌تواند قبل از تاریخ شروع باشد"
-                );
-              },
-            },
-            elementProps: {
-              setDay: (value: any) => setValue("endDate", value),
-            },
+            return (
+              endTime >= startTime ||
+              "تاریخ پایان نمی‌تواند قبل از تاریخ شروع باشد"
+            );
           },
+        },
+        elementProps: {
+          setDay: (value: any) => setValue("endDate", value),
+        },
+      },
       {
         name: "titleDivider2",
         inputType: "titleDivider",
@@ -408,33 +421,67 @@ export const useDisciplinaryOrderForm = ({
           rules: { required: "انتخاب موسسه الزامی است" },
         });
       } else if (watchedTypeOrder === 397) {
-        baseItems.splice(targetIndex + 1, 0, {
-          name: "personnelCaId", // 👇 اصلاح شد: نام فیلد 'personnelCaId' شد
-          inputType: "autocomplete",
-          label: "حسابدار رسمی",
-          size: { md: 6 },
-          options: accountants?.map(mapAccountantOption) ?? [],
-          storeValueAs: "id",
-          rules: { required: "انتخاب حسابدار رسمی الزامی است" },
-          skipClientFilter: true,
-          elementProps: {
-            onInputChange: (_: any, v: string, reason: string) => {
-              if (reason === "input") {
-                setResponsibleTyping(true);
-                setResponsibleSearch(v);
-              }
-              if (reason === "clear") {
-                setResponsibleTyping(true);
-                setResponsibleSearch("");
-              }
+        baseItems.splice(
+          targetIndex + 1,
+          0,
+          {
+            name: "personnelCaId", // 👇 اصلاح شد: نام فیلد 'personnelCaId' شد
+            inputType: "autocomplete",
+            label: "حسابدار رسمی",
+            size: { md: 6 },
+            options: accountants?.map(mapAccountantOption) ?? [],
+            storeValueAs: "id",
+            rules: { required: "انتخاب حسابدار رسمی الزامی است" },
+            skipClientFilter: true,
+            elementProps: {
+              onInputChange: (_: any, v: string, reason: string) => {
+                if (reason === "input") {
+                  setResponsibleTyping(true);
+                  setResponsibleSearch(v);
+                }
+                if (reason === "clear") {
+                  setResponsibleTyping(true);
+                  setResponsibleSearch("");
+                }
+              },
+              loading: isAccountantsFetching,
+              noOptionsText:
+                responsibleSearch.trim().length < 2 && responsibleTyping
+                  ? "برای جستجو حداقل ۲ کاراکتر وارد کنید"
+                  : "موردی یافت نشد",
             },
-            loading: isAccountantsFetching,
-            noOptionsText:
-              responsibleSearch.trim().length < 2 && responsibleTyping
-                ? "برای جستجو حداقل ۲ کاراکتر وارد کنید"
-                : "موردی یافت نشد",
           },
-        });
+          {
+            name: "cdMembershipTypeId",
+            inputType: "select",
+            label: "وضعیت حسابدار رسمی",
+            size: { md: 6 },
+            options: membershipType?.map((item: any) => ({
+              value: item?.id,
+              title: item?.value,
+            })) ?? [{ value: 0, title: "خالی" }],
+            rules: { required: "انتخاب وضعیت الزامی است" },
+          },
+        );
+        if (watchedAccountantMemberShip===63||watchedAccountantMemberShip===64){
+          baseItems.splice(
+          targetIndex + 3,
+          0,
+          {
+            name: "auditingFirmIdCurrent",
+            inputType: "autocomplete",
+            label: "موسسه",
+            size: { md: 6 },
+            options:
+              firmOptions?.map((item: any) => ({
+                value: item.id,
+                title: item.name,
+              })) ?? [],
+            storeValueAs: "id",
+            // rules: { required: "انتخاب موسسه الزامی است" },
+          }
+        );
+        }
       }
     }
     // if (targetIndex2 > -1) {
@@ -496,6 +543,7 @@ export const useDisciplinaryOrderForm = ({
     watchedTypeOrder,
     watched,
     endDate,
+    watchedAccountantMemberShip,
     startDate,
     accountants,
     isAccountantsFetching,
@@ -521,6 +569,6 @@ export const useDisciplinaryOrderForm = ({
       setSelectedItems,
       handleAddItem,
       handleRemoveItem,
-    }
+    },
   };
 };
