@@ -4,25 +4,74 @@ import TavanaSpinner from "components/spinner/TavanaSpinner";
 import { useAuth } from "hooks/useAuth";
 import Layout from "components/layout/Layout";
 import { Outlet } from "react-router-dom";
-import { Grid, Typography } from "@mui/material";
+import {
+  alpha,
+  Box,
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  Grid,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import Carousel from "components/Carousel/Carousel";
+import EmblaCarousel from "components/Carousel/EmblaCarouselWithScaleAndLazy";
+import { useAuthorization } from "hooks/useAutorization";
+import { AccountBalance, BusinessCenter, People } from "@mui/icons-material";
+import HangOverMenu from "components/HangOverMenu";
 interface CarouselItem {
+  id: number;
   title: string;
   image: string;
   description: string;
 }
+interface MenuItem {
+  title: string;
+  icon?: React.ReactElement;
+  url: string;
+  description: string;
+  access?: string[];
+}
+const menuItems: MenuItem[] = [
+  {
+    title: "احکام انتظامی",
+    url: "IACPA/disciplinary-order",
+    access: ["administrator", "city-showmenu"],
+    description: "مدیریت کلی احکام انتظامی",
+    icon: <AccountBalance />,
+  },
+  {
+    title: "اطلاعات موسسات",
+    url: "institutions/information",
+    access: ["administrator", "city-showmenu"],
+    description: "انتخاب و بررسی موسسات",
+    icon: <BusinessCenter />,
+  },
+  {
+    title: "حسابداران رسمی",
+    url: "accountant/official-users",
+    access: ["administrator", "city-showmenu"],
+    description: "بررسی حسابدارن رسمی",
+    icon: <People />,
+  },
+];
 const carouselItems: CarouselItem[] = [
   {
+    id: 1,
     title: "عنوان اول",
     image: "https://picsum.photos/800/400?random=1",
     description: "توضیحات مربوط به آیتم اول",
   },
   {
+    id: 2,
     title: "عنوان دوم",
     image: "https://picsum.photos/800/400?random=2",
     description: "توضیحات مربوط به آیتم دوم",
   },
   {
+    id: 3,
     title: "عنوان سوم",
     image: "https://picsum.photos/800/400?random=3",
     description: "توضیحات مربوط به آیتم سوم",
@@ -30,6 +79,8 @@ const carouselItems: CarouselItem[] = [
 ];
 function Welcome() {
   const Auth = useAuth();
+  const theme = useTheme();
+  const authFunctions = useAuthorization();
   return (
     <Grid container justifyContent={"center"}>
       <Grid item md={11}>
@@ -43,7 +94,12 @@ function Welcome() {
           height={300}
         />
       </Grid> */}
-
+      {/**@description EmblaCarousel */}
+      {/* <Grid item md={11}>
+        <EmblaCarousel slides={carouselItems}/>
+      </Grid> */}
+      {/**@description hangover */}
+      {/* <HangOverMenu/> */}
     </Grid>
   );
 }
