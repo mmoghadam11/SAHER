@@ -26,6 +26,7 @@ import AppendRole from "./components/AppendRole";
 import AppendFirm from "./components/AppendFirm";
 import SearchPannel from "components/form/SearchPannel";
 import { UseGetProfileImage } from "hooks/useGetProfileImage";
+import ProfileDialog from "components/ProfileDialog";
 
 type Props = {};
 
@@ -41,6 +42,8 @@ const UsersGrid = (props: Props) => {
     formState: { errors },
     control,
   } = useForm();
+  const [currentAvatarUrl, setCurrentAvatarUrl] = useState<string>("")
+  const [openProfile, setOpenProfile] = useState<boolean>(false)
   const [filters, setFilters] = useState<any>({
     ...PAGINATION_DEFAULT_VALUE,
     name: "",
@@ -73,7 +76,10 @@ const UsersGrid = (props: Props) => {
         const { avatarUrl } = UseGetProfileImage(row.username);
         return (
           <IconButton
-          onClick={()=>{}}
+          onClick={()=>{
+            setCurrentAvatarUrl(row?.imageUrl)
+            setOpenProfile(true)
+          }}
           >
             <Avatar
               // src={avatarUrl ?? undefined}
@@ -282,6 +288,11 @@ const UsersGrid = (props: Props) => {
           )
         ) : null}
       </Grid>
+      <ProfileDialog
+      open={openProfile}
+      onClose={()=>setOpenProfile(false)}
+      currentAvatarUrl={currentAvatarUrl}
+      />
       <AppendRole
         refetch={StatesData_refetch}
         appendRoleFlag={appendRoleFlag}

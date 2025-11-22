@@ -62,9 +62,9 @@ const CommonData = (props: Props) => {
     disabled: true,
   } as any);
   const columns: GridColDef[] = [
+    { field: "key", headerName: "کلید", flex: 1 },
     { field: "value", headerName: "عنوان", flex: 2 },
     // { field: "typeName", headerName: "نوع", flex: 2 },
-    { field: "key", headerName: "کلید", flex: 2 },
     // { field: "apartmentPriceInRials", headerName: "نوع", flex: 1.5 },
     // { field: "differencePrice", headerName: "شرح", flex: 1.5 },
     // { field: "memberSelectionOrder", headerName: "اولویت عضو", flex: 1 },

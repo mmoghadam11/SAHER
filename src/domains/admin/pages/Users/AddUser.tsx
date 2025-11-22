@@ -69,7 +69,7 @@ export default function AddUser(): JSX.Element {
       name: "firstname",
       inputType: "text",
       label: "نام",
-      size: { md: 4 },
+      size: { md: 3 },
       rules: {
         required: "نام الزامی است",
       },
@@ -78,7 +78,7 @@ export default function AddUser(): JSX.Element {
       name: "lastname",
       inputType: "text",
       label: "نام خانوادگی",
-      size: { md: 4 },
+      size: { md: 3 },
       rules: {
         required: "نام خانوادگی الزامی است",
       },
@@ -87,7 +87,7 @@ export default function AddUser(): JSX.Element {
       name: "nationalCode",
       inputType: "text",
       label: "کد ملی",
-      size: { md: 4 },
+      size: { md: 3 },
       rules: {
         required: "کد ملی الزامی است",
         pattern: {
@@ -100,9 +100,22 @@ export default function AddUser(): JSX.Element {
       name: "username",
       inputType: "text",
       label: "نام کاربری",
-      size: { md: 4 },
+      size: { md: 3 },
       rules: {
         required: "نام کاربری الزامی است",
+      },
+    },
+    {
+      name: "mobileNumber",
+      inputType: "text",
+      label: "شماره موبایل",
+      size: { md: 4 },
+      rules: {
+        required: "شماره موبایل الزامی است",
+        pattern: {
+          value: /^09\d{9}$/,
+          message: "شماره موبایل باید 11 رقم و با 09 شروع شود",
+        },
       },
     },
     {

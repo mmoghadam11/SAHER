@@ -77,29 +77,29 @@ const AddModal = ({
 
   const formItems: FormItem[] = [
     {
-      name: "value",
-      inputType: "text",
-      label: "عنوان",
-      size: { md: 6 },
-      rules: {
-        required: "عنوان الزامی است",
-        minLength: {
-          value: 2,
-          message: "عنوان باید حداقل ۲ کاراکتر باشد",
-        },
-      },
-    },
-    {
       name: "key",
       inputType: "text",
       label: "کلید",
-      size: { md: 6 },
+      size: { md: 4 },
       rules: {
         required: "کلید الزامی است",
         pattern: {
           value: /^[a-zA-Z0-9_-]+$/,
           message:
-            "کلید باید فقط شامل حروف انگلیسی، اعداد، خط تیره و زیرخط باشد",
+          "کلید باید فقط شامل حروف انگلیسی، اعداد، خط تیره و زیرخط باشد",
+        },
+      },
+    },
+    {
+      name: "value",
+      inputType: "text",
+      label: "عنوان",
+      size: { md: 8 },
+      rules: {
+        required: "عنوان الزامی است",
+        minLength: {
+          value: 2,
+          message: "عنوان باید حداقل ۲ کاراکتر باشد",
         },
       },
     },
