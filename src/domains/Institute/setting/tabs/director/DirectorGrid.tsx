@@ -18,6 +18,7 @@ import VerticalTable from "components/dataGrid/VerticalTable";
 import { isMobile } from "react-device-detect";
 import SearchPannel from "components/form/SearchPannel";
 import AddDirectorModal from "./AddDirectorModal";
+import { useAuthorization } from "hooks/useAutorization";
 
 type Props = {
   setActiveTab: React.Dispatch<React.SetStateAction<number>>;
@@ -26,6 +27,7 @@ type Props = {
 const DirectorGrid = ({ setActiveTab }: Props) => {
   const { id } = useParams();
   const Auth = useAuth();
+  const { hasPermission } = useAuthorization();
   const snackbar = useSnackbar();
   const navigate = useNavigate();
   const { isLoading, mutate, error } = useMutation({
@@ -63,19 +65,20 @@ const DirectorGrid = ({ setActiveTab }: Props) => {
       headerAlign: "center",
       align: "center",
       renderCell: ({ row }: { row: any }) => {
-        return (
-          <TableActions
-            onEdit={() => {
-              // navigate(`${row.id}`, { state: { userData: row } });
-              setEditeData(row);
-              setAddModalFlag(true)
-            }}
-            onDelete={() => {
-              setDeleteData(row);
-              setDeleteFlag(true);
-            }}
-          />
-        );
+        if (!hasPermission("supervisor"))
+          return (
+            <TableActions
+              onEdit={() => {
+                // navigate(`${row.id}`, { state: { userData: row } });
+                setEditeData(row);
+                setAddModalFlag(true);
+              }}
+              onDelete={() => {
+                setDeleteData(row);
+                setDeleteFlag(true);
+              }}
+            />
+          );
       },
     },
   ];
@@ -163,16 +166,18 @@ const DirectorGrid = ({ setActiveTab }: Props) => {
           <Typography variant="h5">لیست مدیران عامل</Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"}>
-          <CreateNewItem
-            sx={{ mr: 2 }}
-            name="مدیرعامل"
-            // onClick={() => navigate("new")}
-            onClick={() => {
-              // navigate("new")
-              // setActiveTab(1);
-              setAddModalFlag(true)
-            }}
-          />
+          {!hasPermission("supervisor") && (
+            <CreateNewItem
+              sx={{ mr: 2 }}
+              name="مدیرعامل"
+              // onClick={() => navigate("new")}
+              onClick={() => {
+                // navigate("new")
+                // setActiveTab(1);
+                setAddModalFlag(true);
+              }}
+            />
+          )}
         </Box>
       </Grid>
       {/* <SearchPannel<SearchData>
@@ -199,7 +204,7 @@ const DirectorGrid = ({ setActiveTab }: Props) => {
               setFilters={setFilters}
               rowCount={StatesData?.totalElements}
               // rowHeight={25}
-              getRowHeight={() => "auto"}
+              // getRowHeight={() => "auto"}
               autoHeight
               hideToolbar
               // slots={{ toolbar: GridToolbar }}

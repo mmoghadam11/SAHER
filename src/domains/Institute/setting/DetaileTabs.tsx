@@ -27,11 +27,10 @@ import { useSnackbar } from "hooks/useSnackbar";
 import FancyTicketDivider from "components/FancyTicketDivider";
 import BackButton from "components/buttons/BackButton";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import Director from "./tabs/director/Director";
 import { getBasicInfoItems } from "../forms/BasicInfo";
 import { MiniInfoItems } from "./forms/MiniInfo";
 import moment from "jalali-moment";
-import DirectorGrid from "./tabs/director/DiretorGrid";
+import DirectorGrid from "./tabs/director/DirectorGrid";
 import { isMobile } from "react-device-detect";
 import { TOption } from "types/render";
 import EduInfoGrid from "./tabs/eduInfo/EduInfoGrid";
@@ -101,19 +100,19 @@ const DetaileTabs = (props: Props) => {
       title: "مدیر مبارزه با پولشویی",
       com: <MoneyLundringGrid setActiveTab={setActiveTab} />,
     },
-    {
-      title: "آموزشی",
-      com: <EduInfoGrid setActiveTab={setActiveTab} />,
-    },
+    // {
+    //   title: "آموزشی",
+    //   com: <EduInfoGrid setActiveTab={setActiveTab} />,
+    // },
     // {
     //   title: "مالی",
     //   com: <FinancialStatementsGrid setActiveTab={setActiveTab} />,
     // },
-    {
-      // title: "آموزش مستمر حرفه ای",
-      title: "سوابق مستمر آموزشی",
-      com: <ContinuingEducationGrid />,
-    },
+    // {
+    //   // title: "آموزش مستمر حرفه ای",
+    //   title: "سوابق مستمر آموزشی",
+    //   com: <ContinuingEducationGrid />,
+    // },
     // {
     //   title: "قراردادها",
     //   com: <FirmContractGrid />,

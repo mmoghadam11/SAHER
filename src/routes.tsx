@@ -66,6 +66,8 @@ import AccountantUserDisciplinaryOrderDetaile from "domains/accountantUser/disci
 import Firms4EDUGrid from "domains/Institute/EDU/Firms4EDUGrid";
 import ContinuingEducationGrid from "domains/Institute/EDU/continuingEducation/ContinuingEducationGrid";
 import NewLogin from "domains/login/pages/NewLogin";
+import CertifiedAccountantEDUGrid from "domains/accountantUser/edu/CertifiedAccountantEDUGrid";
+import DirectorDisciplinaryOrderDetails from "domains/firmDirector/DirectorDisciplinaryOrderDetails";
 
 const AppRoutes: React.FC = () => {
   const auth = useAuth();
@@ -112,6 +114,18 @@ const AppRoutes: React.FC = () => {
               />
             </Route>
           </Route>
+          <Route path="/director">
+            <Route path="disciplinary-order">
+              <Route
+                index
+                element={<DirectorDisciplinaryOrderDetails />}
+              />
+              <Route
+                path=":id"
+                element={<AccountantDisciplinaryOrderDetaile />}
+              />
+            </Route>
+          </Route>
           <Route path="accountant-user">
             <Route path="cartable">
               <Route index element={<OfficialUserGrid />} />
@@ -121,11 +135,21 @@ const AppRoutes: React.FC = () => {
               <Route path=":id" element={<AddOfficialUser />} />
             </Route>
             <Route path="disciplinary-order">
-              <Route index element={<AccountantUserDisciplinaryOrderDetaile />} />
+              <Route
+                index
+                element={<AccountantUserDisciplinaryOrderDetaile />}
+              />
               <Route
                 path=":id"
                 element={<AccountantDisciplinaryOrderDetaile />}
               />
+            </Route>
+            <Route path="EDU">
+              <Route index element={<CertifiedAccountantEDUGrid />} />
+              {/* <Route
+                path=":id"
+                element={<AccountantDisciplinaryOrderDetaile />}
+              /> */}
             </Route>
           </Route>
           <Route path="institutions">
@@ -154,16 +178,16 @@ const AppRoutes: React.FC = () => {
               </Route>
             </Route>
             <Route path="hired-accountants">
-              <Route index element={<Firms4AccountantGrid all/>} />
+              <Route index element={<Firms4AccountantGrid all />} />
               <Route path=":id">
-                <Route index element={<FirmAccountantGrid all/>} />
+                <Route index element={<FirmAccountantGrid all />} />
                 <Route path=":staffId" element={<AddFirmAccountant />} />
               </Route>
             </Route>
             <Route path="EDU">
-              <Route index element={<Firms4EDUGrid all/>} />
+              <Route index element={<Firms4EDUGrid all />} />
               <Route path=":id">
-                <Route index element={<ContinuingEducationGrid/>} />
+                <Route index element={<ContinuingEducationGrid />} />
                 <Route path=":staffId" element={<AddFirmAccountant />} />
               </Route>
             </Route>
@@ -211,7 +235,7 @@ const AppRoutes: React.FC = () => {
             <Route path="EDU">
               <Route index element={<Firms4EDUGrid />} />
               <Route path=":id">
-                <Route index element={<ContinuingEducationGrid/>} />
+                <Route index element={<ContinuingEducationGrid />} />
                 <Route path=":staffId" element={<AddFirmAccountant />} />
               </Route>
             </Route>
@@ -219,7 +243,7 @@ const AppRoutes: React.FC = () => {
           <Route path="IACPA">
             <Route path="disciplinary-order">
               {/* <Route index element={<InstituteDisciplinaryOrderGrid />} /> */}
-              <Route index element={<AllDisciplinaryOrderGrid/>} />
+              <Route index element={<AllDisciplinaryOrderGrid />} />
               <Route path=":id" element={<DisciplinaryOrderDetaile />} />
             </Route>
             <Route path="workgroup">
