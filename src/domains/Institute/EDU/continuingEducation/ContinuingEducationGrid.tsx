@@ -1,5 +1,6 @@
 import {
   Close,
+  FileDownload,
   Key,
   ManageAccounts,
   People,
@@ -8,6 +9,7 @@ import {
 } from "@mui/icons-material";
 import {
   Box,
+  Button,
   Chip,
   CircularProgress,
   Grid,
@@ -40,14 +42,13 @@ const ContinuingEducationGrid = (Props: Props) => {
   const Auth = useAuth();
   const snackbar = useSnackbar();
   const navigate = useNavigate();
-  const { isLoading, mutate, error } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: Auth?.serverCall,
   });
-  const {
-    handleSubmit,
-    formState: { errors },
-    control,
-  } = useForm();
+  const { isLoading: Download_isLoading, mutate: Download_mutate } =
+    useMutation({
+      mutationFn: Auth?.serverCallGetFile,
+    });
   const [filters, setFilters] = useState<any>({
     ...PAGINATION_DEFAULT_VALUE,
     auditingFirmId: id,
@@ -64,18 +65,14 @@ const ContinuingEducationGrid = (Props: Props) => {
     },
     enabled: true,
   } as any);
-  // const {
-  //   data: StatesData,
-  //   status: StatesData_status,
-  //   refetch: StatesData_refetch,
-  // } = useQuery<any>({
-  //   queryKey: [`firm-prof-edu/find-by-firm${paramsSerializer(filters)}`],
-  //   queryFn: Auth?.getRequest,
-  //   select: (res: any) => {
-  //     return res?.data;
-  //   },
-  //   enabled: true,
-  // } as any);
+  const { data: instituteTerms } = useQuery<any>({
+    queryKey: [`firm-prof-edu-personnel/report/find-term-by-firm?firmId=${id}`],
+    queryFn: Auth?.getRequest,
+    select: (res: any) => {
+      return res?.data;
+    },
+    enabled: !!id,
+  } as any);
   const columns: GridColDef[] = [
     {
       field: "cdTermNameValue",
@@ -91,17 +88,19 @@ const ContinuingEducationGrid = (Props: Props) => {
     },
     { field: "personnelFirstName", headerName: "نام", flex: 1.5 },
     { field: "personnelLastName", headerName: "نام خانوادگی", flex: 1.5 },
-    { field: "termDuration", headerName: "مدت دوره(روز)", flex: 1 },
-    { field: "attendanceDuration", headerName: "مدت حضور شخص(روز)", flex: 1 },
+    { field: "termDuration", headerName: "مدت دوره(ساعت)", flex: 1 },
+    { field: "attendanceDuration", headerName: "مدت حضور شخص(ساعت)", flex: 1 },
     {
       field: "termDate",
       headerName: "تاریخ شروع",
       flex: 1.5,
       renderCell: ({ row }: { row: any }) => {
+        const [date, time] = row?.termDateFr?.split(" ") ?? [null, null];
         if (!!row?.termDate)
           return (
             <Typography variant="caption">
-              {moment(new Date(row?.termDate)).format("jYYYY/jMM/jDD")}
+              {/* {moment(new Date(row?.termDate)).format("jYYYY/jMM/jDD")} */}
+              {date?.replaceAll("-", "/") ?? null}
             </Typography>
           );
       },
@@ -136,53 +135,6 @@ const ContinuingEducationGrid = (Props: Props) => {
     //   },
     // },
   ];
-  // const columns: GridColDef[] = [
-  //   { field: "cdTermNameValue", headerName: "نام دوره آموزشی", flex: 1 },
-  //   { field: "cdEducationTypeValue", headerName: "نوع آموزش", flex: 1 },
-  //   { field: "termDuration", headerName: "مدت زمان ترم آموزشی(روز)", flex: 1 },
-  //   {
-  //     field: "termDate",
-  //     headerName: "تاریخ ترم",
-  //     flex: 1,
-  //     renderCell: ({ row }: { row: any }) => {
-  //       if (!!row?.termDate)
-  //         return (
-  //           <Typography>
-  //             {moment(new Date(row?.termDate)).format("jYYYY/jMM/jDD")}
-  //           </Typography>
-  //         );
-  //     },
-  //   },
-  //   {
-  //     headerName: "عملیات",
-  //     field: "action",
-  //     flex: 1,
-  //     headerAlign: "center",
-  //     align: "center",
-  //     renderCell: ({ row }: { row: any }) => {
-  //       return (
-  //         <TableActions
-  //           // onEdit={() => {
-  //           //   // navigate(`${row.id}`, { state: { userData: row } });
-  //           //   setEditeData(row);
-  //           //   setAddModalFlag(true);
-  //           // }}
-  //           // onDelete={() => {
-  //           //   setDeleteData(row);
-  //           //   setDeleteFlag(true);
-  //           // }}
-  //           onManage={{
-  //             icon: <People/>,
-  //             title: "شرکت کنندگان",
-  //             function: () => {
-  //               setSelectecBranchData(row);
-  //             },
-  //           }}
-  //         />
-  //       );
-  //     },
-  //   },
-  // ];
 
   type editeObjectType = {
     id: number;
@@ -201,16 +153,27 @@ const ContinuingEducationGrid = (Props: Props) => {
   });
   const searchItems: FormItem[] = [
     {
+      name: "cdTermId",
+      inputType: "autocomplete",
+      label: "دوره",
+      size: { md: 2.4 },
+      options: instituteTerms?.map((item: any) => ({
+        value: item.id,
+        title: item.value,
+      })) ?? [{ value: 0, title: "خالی" }],
+      storeValueAs: "id",
+    },
+    {
       name: "personnelLastName",
       inputType: "text",
       label: "نام خانوادگی",
-      size: { md: 2.6 },
+      size: { md: 2.2 },
     },
     {
       name: "personnelNationalCode",
       inputType: "text",
       label: "کد ملی",
-      size: { md: 2.6 },
+      size: { md: 2.2 },
     },
     {
       name: "termDateFrom",
@@ -225,7 +188,7 @@ const ContinuingEducationGrid = (Props: Props) => {
         },
         value: "",
       },
-      size: { md: 3.2 },
+      size: { md: 2.6 },
     },
     {
       name: "termDateTo",
@@ -240,7 +203,7 @@ const ContinuingEducationGrid = (Props: Props) => {
         },
         value: "",
       },
-      size: { md: 3.2 },
+      size: { md: 2.6 },
     },
     // {
     //   name: "termDateFrom",
@@ -257,7 +220,34 @@ const ContinuingEducationGrid = (Props: Props) => {
     console.log(filters);
   }, [filters]);
   function SumOfDays() {
-    return StatesData?.content?.reduce((total:number, input:any) => total + input.termDuration, 0)
+    return StatesData?.content?.reduce(
+      (total: number, input: any) => total + input.termDuration,
+      0
+    );
+  }
+  function getExcel() {
+    Download_mutate(
+      {
+        entity: `firm-prof-edu-personnel/export${paramsSerializer(filters)}`,
+        method: "get",
+      },
+      {
+        onSuccess: (res: any) => {
+          if (res && res instanceof Blob) {
+            const url = URL.createObjectURL(res);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "گزارش_دوره_های_آموزشی.xlsx";
+            a.click();
+            URL.revokeObjectURL(url);
+          }
+          snackbar(`فایل اکسل با موفقیت دانلود شد`, "success");
+        },
+        onError: () => {
+          snackbar("خطا در دریافت اکسل ", "error");
+        },
+      }
+    );
   }
   return (
     <Grid container item md={12} justifyContent="center">
@@ -297,30 +287,49 @@ const ContinuingEducationGrid = (Props: Props) => {
         setFilters={setFilters}
       />
       {/* </Grid> */}
-      {/* {StatesData_status === "success" && (
-          <Grid  item md={11} sm={11} xs={12}>
-            <Paper elevation={1} sx={{ width: "100%",p:2 }}>
-              <Typography>مجموع ساعات: {SumOfDays()}</Typography>
-            </Paper>
-          </Grid>
-        )} */}
+      {StatesData_status === "success" && (
+        <Grid
+          item
+          md={11}
+          sm={11}
+          xs={12}
+          display={"flex"}
+          gap={2}
+          alignItems={"center"}
+        >
+          {/* <Paper elevation={1} sx={{ width: "100%",p:2,display:"flex" }}> */}
+          <Button
+            variant="outlined"
+            // size="small"
+            color="success"
+            endIcon={<FileDownload />}
+            onClick={getExcel}
+          >
+            دریافت خروجی اکسل
+          </Button>
+          <Typography variant="body2">
+            مجموع ساعات: {StatesData?.summary} ساعت
+          </Typography>
+          {/* </Paper> */}
+        </Grid>
+      )}
       <Grid item md={11} sm={11} xs={12}>
         {StatesData_status === "success" ? (
           isMobile ? (
             <VerticalTable
-              rows={StatesData?.content}
+              rows={StatesData?.page?.content}
               columns={columns}
               filters={filters}
               setFilters={setFilters}
-              rowCount={StatesData?.totalElements}
+              rowCount={StatesData?.page?.totalElements}
             />
           ) : (
             <TavanaDataGrid
-              rows={StatesData?.content}
+              rows={StatesData?.page?.content}
               columns={columns}
               filters={filters}
               setFilters={setFilters}
-              rowCount={StatesData?.totalElements}
+              rowCount={StatesData?.page?.totalElements}
               getRowHeight={() => "auto"}
               autoHeight
               hideToolbar
@@ -348,7 +357,7 @@ const ContinuingEducationGrid = (Props: Props) => {
           </Typography>
         )}
       </Grid>
-        
+
       <AddContiniuingEdu
         refetch={StatesData_refetch}
         addModalFlag={addModalFlag}
@@ -356,7 +365,7 @@ const ContinuingEducationGrid = (Props: Props) => {
         editeData={editeData}
         setEditeData={setEditeData}
       />
-      
+
       <ConfirmBox
         open={deleteFlag}
         handleClose={() => {

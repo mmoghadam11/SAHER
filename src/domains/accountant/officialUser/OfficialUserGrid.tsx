@@ -1,6 +1,7 @@
 import {
   AccountCircle,
   Article,
+  FileDownload,
   Search,
   Settings,
   Toc,
@@ -52,11 +53,19 @@ const OfficialUserGrid = (props: Props) => {
   const { isLoading, mutate, error } = useMutation({
     mutationFn: Auth?.serverCall,
   });
+  const { isLoading: Download_isLoading, mutate: Download_mutate } =
+    useMutation({
+      mutationFn: Auth?.serverCallGetFile,
+    });
   const {
     handleSubmit,
     formState: { errors },
     control,
   } = useForm();
+  const [excelFilters, setExcelFilters] = useState<any>({
+    ...state?.searchFilters,
+    // code: "",
+  });
   const [filters, setFilters] = useState<any>({
     ...PAGINATION_DEFAULT_VALUE,
     ...state?.searchFilters,
@@ -358,27 +367,33 @@ const OfficialUserGrid = (props: Props) => {
   });
   useEffect(() => {
     console.log(filters);
+    console.log("excelFilters",excelFilters);
+    setExcelFilters(()=>{
+      const{page=0,size=10,...other}={...filters}
+      return other
+    })
   }, [filters]);
 
-  function searching() {
-    mutate(
+  function getExcel() {
+    Download_mutate(
       {
-        entity: `/api/v1/common-data/search`,
-        method: "post",
-        //   data:
+        entity: `certified-accountant/export${paramsSerializer(excelFilters)}`,
+        method: "get",
       },
       {
         onSuccess: (res: any) => {
-          if (res?.status == 200 && res?.data) {
-            snackbar(
-              "واحد های انتخابی با موفقیت به لیست شما افزوده شد.",
-              "success"
-            );
-            // navigate('/unitselection', { state: {from: "add-unit", noBack: noBack} })
-          } else snackbar("خطا در افزودن واحد ها به لیست", "error");
+          if (res && res instanceof Blob) {
+            const url = URL.createObjectURL(res);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "گزارش_حسابدارن_رسمی.xlsx";
+            a.click();
+            URL.revokeObjectURL(url);
+          }
+          snackbar(`فایل اکسل با موفقیت دانلود شد`, "success");
         },
-        onError: (err) => {
-          snackbar("خطا در افزودن واحد ها به لیست", "error");
+        onError: () => {
+          snackbar("خطا در دریافت اکسل ", "error");
         },
       }
     );
@@ -419,6 +434,17 @@ const OfficialUserGrid = (props: Props) => {
         setFilters={setFilters}
       />
 
+      <Grid item md={11} sm={11} xs={12} display={"flex"}>
+        <Button
+          variant="outlined"
+          // size="small"
+          color="success"
+          endIcon={<FileDownload />}
+          onClick={getExcel}
+        >
+          دریافت خروجی اکسل
+        </Button>
+      </Grid>
       <Grid item md={11} sm={11} xs={12}>
         {StatesData_status === "success" && !!StatesData ? (
           isMobile ? (
