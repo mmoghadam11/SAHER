@@ -45,7 +45,7 @@ type Props = {};
 
 const OfficialUserGrid = (props: Props) => {
   const Auth = useAuth();
-  const { hasMenuAccess } = useAuthorization();
+  const { hasPermission } = useAuthorization();
   const snackbar = useSnackbar();
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -59,9 +59,6 @@ const OfficialUserGrid = (props: Props) => {
   } = useForm();
   const [filters, setFilters] = useState<any>({
     ...PAGINATION_DEFAULT_VALUE,
-    nationalCode: hasMenuAccess(["accountant-showmenu"])
-      ? Auth.userInfo.nationalCode
-      : "",
     ...state?.searchFilters,
     // code: "",
   });
@@ -96,16 +93,15 @@ const OfficialUserGrid = (props: Props) => {
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
         return (
-          <IconButton onClick={() => {
-            setEditeData(row);
-            setProfileDialogFlag(true);
-          }}>
+          <IconButton
+            onClick={() => {
+              setEditeData(row);
+              setProfileDialogFlag(true);
+            }}
+          >
             <Avatar
               // src={avatarUrl ?? undefined}
-              src={
-                process.env.REACT_APP_Image_URL +
-                row?.profileImageUrl
-              }
+              src={process.env.REACT_APP_Image_URL + row?.profileImageUrl}
               sx={{
                 width: 40,
                 height: 40,
@@ -200,7 +196,7 @@ const OfficialUserGrid = (props: Props) => {
       headerAlign: "center",
       align: "center",
       renderCell: ({ row }: { row: any }) => {
-        if (!hasMenuAccess(["accountant-showmenu"]))
+        if (!hasPermission("supervisor"))
           return (
             <TableActions
               onEdit={() => {
@@ -352,7 +348,7 @@ const OfficialUserGrid = (props: Props) => {
     //   storeValueAs: "id",
     // },
   ];
-  
+
   const [editeData, setEditeData] = useState<any>(null);
   const [profileDialogFlag, setProfileDialogFlag] = useState(false);
   const [deleteData, setDeleteData] = useState<any>(null);
@@ -404,7 +400,7 @@ const OfficialUserGrid = (props: Props) => {
           <Typography variant="h5">حسابداران رسمی</Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"}>
-          {!hasMenuAccess(["accountant-showmenu"]) && (
+          {!hasPermission("supervisor") && (
             <CreateNewItem
               sx={{ mr: 2 }}
               name="حسابدار رسمی"
@@ -415,14 +411,13 @@ const OfficialUserGrid = (props: Props) => {
           <BackButton onBack={() => navigate(-1)} />
         </Box>
       </Grid>
-      {!hasMenuAccess(["accountant-showmenu"]) && (
-        <NewSearchPannel<SearchData>
-          searchItems={searchItems}
-          searchData={searchData}
-          setSearchData={setSearchData}
-          setFilters={setFilters}
-        />
-      )}
+
+      <NewSearchPannel<SearchData>
+        searchItems={searchItems}
+        searchData={searchData}
+        setSearchData={setSearchData}
+        setFilters={setFilters}
+      />
 
       <Grid item md={11} sm={11} xs={12}>
         {StatesData_status === "success" && !!StatesData ? (
@@ -441,7 +436,7 @@ const OfficialUserGrid = (props: Props) => {
               filters={filters}
               setFilters={setFilters}
               rowCount={StatesData?.totalElements}
-              getRowHeight={() => "auto"}
+              getRowHeight={() => (hasPermission("supervisor") ? null : "auto")}
               autoHeight
               hideToolbar
             />
@@ -450,9 +445,11 @@ const OfficialUserGrid = (props: Props) => {
       </Grid>
 
       <ProfileDialog
-      onClose={()=>{setProfileDialogFlag(false)}}
-      open={profileDialogFlag}
-      currentAvatarUrl={editeData?.profileImageUrl??""}
+        onClose={() => {
+          setProfileDialogFlag(false);
+        }}
+        open={profileDialogFlag}
+        currentAvatarUrl={editeData?.profileImageUrl ?? ""}
       />
       <ConfirmBox
         open={deleteFlag}

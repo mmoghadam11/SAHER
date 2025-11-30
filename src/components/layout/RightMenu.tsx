@@ -276,12 +276,12 @@ const MENU_ITEMS: MenuItem[] = [
     icon: <People />,
     title: "حسابداران رسمی",
     url: "/accountant",
-    access: ["city-showmenu"],
+    access: ["city-showmenu","allAccountants_showmenu"],
     menuChildren: [
       {
         title: "حسابداران رسمی",
         url: "official-users",
-        access: ["administrator", "city-showmenu"]},
+        access: ["administrator", "city-showmenu","allAccountants_showmenu"]},
       {
         title: "حق عضویت",
         url: "membershipFee",
