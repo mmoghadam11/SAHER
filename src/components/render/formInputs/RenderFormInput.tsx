@@ -13,6 +13,8 @@ import {
   FormControlLabel,
   Checkbox,
   CircularProgress,
+  Slider,
+  useTheme,
 } from "@mui/material";
 import ErrorHandler from "components/errorHandler/ErrorHandler";
 import React, { forwardRef } from "react";
@@ -41,6 +43,7 @@ const RenderFormInput: React.FC<IRenderFormInput> = forwardRef((props, ref) => {
     placeholder,
     Defaultfont = false,
   } = props;
+  const theme=useTheme();
   if (props.inputType === "text") {
     return (
       <TextField
@@ -71,6 +74,7 @@ const RenderFormInput: React.FC<IRenderFormInput> = forwardRef((props, ref) => {
         errors={errors?.[name]?.message}
         controllerField={controllerField}
         elementProps={elementProps}
+        Defaultfont={Defaultfont}
       />
     );
   }
@@ -90,15 +94,15 @@ const RenderFormInput: React.FC<IRenderFormInput> = forwardRef((props, ref) => {
         {...elementProps}
         setDay={(day: any) => {
           // setValue(name, day);
-          elementProps.setDay()
+          elementProps.setDay();
           // همچنین مقدار را به react-hook-form گزارش دهید
           if (controllerField.onChange) {
             controllerField.onChange(day);
-          } 
+          }
         }}
         {...controllerField}
         error={errors?.[name]?.message}
-        onChange={onChange??controllerField.onChange}
+        onChange={onChange ?? controllerField.onChange}
       />
       //   <Box sx={{ width: "100%" }}>
       //   <Box
@@ -199,88 +203,90 @@ const RenderFormInput: React.FC<IRenderFormInput> = forwardRef((props, ref) => {
   //   );
   // }
   if (props.inputType === "autocomplete") {
-      let {
-         options = [],
-         status,
-         refetch,
-         customOnChange,
-         externalValue,
-         storeValueAs = "object",
-         skipClientFilter = false, // <-- این را اضافه کنید
-         inlineLoading = false,      // <-- این را اضافه کنید
-      } = props;
+    let {
+      options = [],
+      status,
+      refetch,
+      customOnChange,
+      externalValue,
+      storeValueAs = "object",
+      skipClientFilter = false, // <-- این را اضافه کنید
+      inlineLoading = false, // <-- این را اضافه کنید
+    } = props;
 
-      // اگر inlineLoading فعال باشد، به‌جای return LoadingState، اسپینر داخلی نشان می‌دهیم
-      const loading = props?.elementProps?.loading ?? status === "loading";
+    // اگر inlineLoading فعال باشد، به‌جای return LoadingState، اسپینر داخلی نشان می‌دهیم
+    const loading = props?.elementProps?.loading ?? status === "loading";
 
-      // رفتار قدیمی را نگه‌می‌داریم مگر اینکه inlineLoading=true شود
-      if (!inlineLoading) {
-         if (status === "loading") return <LoadingState label={label} />;
-         if (status === "error" && refetch)
-            return <ErrorState label={label} refetch={refetch} />;
-      }
+    // رفتار قدیمی را نگه‌می‌داریم مگر اینکه inlineLoading=true شود
+    if (!inlineLoading) {
+      if (status === "loading") return <LoadingState label={label} />;
+      if (status === "error" && refetch)
+        return <ErrorState label={label} refetch={refetch} />;
+    }
 
-      return (
-         <Autocomplete
-            ref={ref}
-            {...controllerField}
-            {...elementProps} // شامل onInputChange, noOptionsText, ...
-            options={options}
-            loading={loading} // <-- اینجا از loading استفاده کنید
-            getOptionLabel={(option: TOption) => {
-               if (typeof option !== "object") {
-                  let result = options.find((op: TOption) => op?.value === option);
-                  return result?.title || "";
-               }
-               return option?.title || "";
+    return (
+      <Autocomplete
+        ref={ref}
+        {...controllerField}
+        {...elementProps} // شامل onInputChange, noOptionsText, ...
+        options={options}
+        loading={loading} // <-- اینجا از loading استفاده کنید
+        getOptionLabel={(option: TOption) => {
+          if (typeof option !== "object") {
+            let result = options.find((op: TOption) => op?.value === option);
+            return result?.title || "";
+          }
+          return option?.title || "";
+        }}
+        filterOptions={(ops, state) => {
+          if (skipClientFilter) return ops; // <--
+          //@ts-ignore
+          return ops?.filter((op: TOption) => 
+             op?.title?.includes(state?.inputValue)
+          );
+        }}
+        value={controllerField?.value || null}
+        onChange={(event, newValue: any, reason) => {
+          let valueToStore = newValue;
+          if (storeValueAs === "id") {
+            valueToStore = newValue ? newValue.value : null;
+          }
+          if (customOnChange) {
+            customOnChange(event, newValue, reason);
+          }
+          controllerField.onChange(valueToStore);
+        }}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            variant="outlined"
+            label={label}
+            error={Boolean(errors?.[name]?.message)}
+            helperText={errors?.[name]?.message}
+            size="medium"
+            InputProps={{ // <-- این بخش اسپینر داخلی را اضافه می‌کند
+              ...params.InputProps,
+              //  style: { height: 40 },
+              style: { height: 45 },
+              endAdornment: (
+                <>
+                  {loading ? (
+                    <CircularProgress color="inherit" size={16} />
+                  ) : null}
+                  {params.InputProps.endAdornment}
+                </>
+              ),
             }}
-            filterOptions={(ops, state) => {
-               if (skipClientFilter) return ops; // <-- این منطق را اضافه کنید
-               //@ts-ignore
-               return ops?.filter((op: TOption) =>
-                  op?.title?.includes(state?.inputValue)
-               );
-            }}
-            value={controllerField?.value || null}
-            onChange={(event, newValue: any, reason) => {
-               let valueToStore = newValue;
-               if (storeValueAs === "id") {
-                  valueToStore = newValue ? newValue.value : null;
-               }
-               if (customOnChange) {
-                  customOnChange(event, newValue, reason);
-               }
-               controllerField.onChange(valueToStore);
-            }}
-            renderInput={(params) => (
-               <TextField
-                  {...params}
-                  variant="outlined"
-                  label={label}
-                  error={Boolean(errors?.[name]?.message)}
-                  helperText={errors?.[name]?.message}
-                  size="medium"
-                  InputProps={{ // <-- این بخش اسپینر داخلی را اضافه می‌کند
-                     ...params.InputProps,
-                    //  style: { height: 40 },
-                     style: { height: 45 },
-                     endAdornment: (
-                        <>
-                           {loading ? <CircularProgress color="inherit" size={16} /> : null}
-                           {params.InputProps.endAdornment}
-                        </>
-                     ),
-                  }}
-               />
-            )}
-            isOptionEqualToValue={(option: any, value: any) => {
-               if (!value) return false;
-               if (storeValueAs === "object") return option.value === value.value;
-               else return option.value === value;
-            }}
-         />
-      );
-   }
+          />
+        )}
+        isOptionEqualToValue={(option: any, value: any) => {
+          if (!value) return false;
+          if (storeValueAs === "object") return option.value === value.value;
+          else return option.value === value;
+        }}
+      />
+    );
+  }
 
   if (props.inputType === "select") {
     let { options, status, refetch } = props;
@@ -323,8 +329,7 @@ const RenderFormInput: React.FC<IRenderFormInput> = forwardRef((props, ref) => {
     );
   }
   if (props.inputType === "titleDivider") {
-    if(label==="")
-      return <TicketDivider/>
+    if (label === "") return <TicketDivider />;
     return (
       <Box width="100%">
         <Typography>{label}</Typography>
@@ -373,6 +378,50 @@ const RenderFormInput: React.FC<IRenderFormInput> = forwardRef((props, ref) => {
           </FormHelperText>
         )}
       </FormGroup>
+    );
+  }
+  if (props.inputType === "rangeSlider") {
+    const formatDate = (ts: any) => moment(ts).format("jYYYY/jMM/jDD");
+    return (
+      <Box sx={{height:"100%",position: 'relative',display:"flex",justifyContent:"center",width: "100%",px:1,borderRadius:1,border:"1.5px solid",borderColor:theme.palette.mode==="light"?"rgba(0, 0, 0, 0.23)":"rgba(255, 255, 255, 0.23)"}}>
+        <Typography p={0.5} bgcolor={theme.palette.mode==="light"?theme.palette.background.paper:"#252525"} position='absolute' top={-14} left={8} variant="caption">{label}:</Typography>
+        <Slider
+          name={name}
+          aria-label={label}
+          sx={{
+            mt:1,
+            width:"80%",
+            "& .MuiSlider-thumb": { mr: -2 },
+          }}
+          {...controllerField}
+          {...elementProps}
+          value={(controllerField.value ?? [0, 100]).map((v: any) =>
+            typeof v === "string" ? moment(v).valueOf() : v
+          )} // اگر خالی بود مقدار اولیه بده
+          onChange={(_, newValue: number[]) => {
+            const isoValues = newValue.map((v) =>
+              moment(v).toDate().toISOString()
+            );
+            controllerField.onChange(isoValues);
+            // controllerField.onChange(newValue);
+          }}
+          min={elementProps?.min ?? 0}
+          max={elementProps?.max ?? 100}
+          valueLabelFormat={(v) => moment(v).format("jYYYY/jMM/jDD")}
+          valueLabelDisplay="auto"
+          size="small"
+        />
+        {elementProps?.withText && (
+          <Box>
+            <Typography variant="caption">
+              از: {formatDate(controllerField?.value?.[0])}
+            </Typography>
+            <Typography variant="caption">
+              تا: {formatDate(controllerField?.value?.[1])}
+            </Typography>
+          </Box>
+        )}
+      </Box>
     );
   }
 
