@@ -135,13 +135,19 @@ const NewLogin = () => {
             JSON.stringify(result.permission || [])
           );
           localStorage.setItem(
+            "director",
+            result.userResponsibility.director || false
+          );
+          localStorage.setItem(
             "accessMenu",
-            JSON.stringify(result.accessMenu || [])
+            JSON.stringify(result.userResponsibility.director?[...result.accessMenu,"director-showmenu"]:result.accessMenu?? [])
           );
           setUserInfo({
+            userId:result.id,
             firstName: result.firstName,
             lastName: result.lastName,
             nationalCode: result.nationalCode,
+            mobileNumber:result.mobileNumber,
           });
           // window.location.pathname = "/welcome";
         }
@@ -263,13 +269,19 @@ const NewLogin = () => {
             JSON.stringify(result.permission || [])
           );
           localStorage.setItem(
+            "director",
+            result.userResponsibility.director || false
+          );
+          localStorage.setItem(
             "accessMenu",
-            JSON.stringify(result.accessMenu || [])
+            JSON.stringify(result.userResponsibility.director?[...result.accessMenu,"director-showmenu"]:result.accessMenu?? [])
           );
           setUserInfo({
+            userId:result.id,
             firstName: result.firstName,
             lastName: result.lastName,
             nationalCode: result.nationalCode,
+            mobileNumber:result.mobileNumber,
           });
           // window.location.pathname = "/welcome";
         }
@@ -405,7 +417,7 @@ const NewLogin = () => {
         return (
           <Grid container item spacing={2} justifyContent="center">
             {formItems1.map((item) => (
-              <Grid item xs={12} md={item.size.md} key={item.name}>
+              <Grid item xs={11} md={item.size.md} key={item.name}>
                 <Controller
                   name={item.name}
                   control={control}
@@ -431,7 +443,7 @@ const NewLogin = () => {
         return (
           <Grid container item spacing={2} justifyContent="center">
             {formItems1.map((item) => (
-              <Grid item xs={12} md={item.size.md} key={item.name}>
+              <Grid item xs={11} md={item.size.md} key={item.name}>
                 <Controller
                   name={item.name}
                   control={control}
@@ -457,7 +469,7 @@ const NewLogin = () => {
         return (
           <Grid container item spacing={2} justifyContent="center">
             {formItems2.map((item) => (
-              <Grid item xs={12} md={item.size.md} key={item.name}>
+              <Grid item xs={11} md={item.size.md} key={item.name}>
                 <Controller
                   name={item.name}
                   control={control}
@@ -583,6 +595,7 @@ const NewLogin = () => {
       justifyContent={{ xs: "center", md: "right" }}
       alignItems="center"
       sx={{
+        width:"100vw",
         minHeight: "100vh",
         backgroundColor: theme.palette.mode === "light" ? "inherit" : "#1c1c1c",
       }}
@@ -591,10 +604,13 @@ const NewLogin = () => {
         container
         item
         md={4}
-        xs={11}
+        xs={10}
         sm={8}
-        spacing={3}
+        // spacing={3}
         alignContent="center"
+        mb={{xs:5,md:1}}
+        justifyContent={"center"}
+        display={"flex"}
       >
         <Paper
           elevation={3}
@@ -679,9 +695,9 @@ const NewLogin = () => {
                         <Button onClick={() => setFormMode("FORGOT_PASSWORD")}>
                           رمز عبور خود را فراموش کرده اید؟
                         </Button>
-                        {/* <Button onClick={() => setFormMode("LOGIN")}>
+                        <Button onClick={() => setFormMode("LOGIN")}>
                           ورود با روش قدیمی
-                        </Button> */}
+                        </Button>
                       </Box>
                     )}
                   </Grid>

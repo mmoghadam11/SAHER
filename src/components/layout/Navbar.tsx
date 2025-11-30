@@ -11,7 +11,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import MenuIcon from "@mui/icons-material/Menu";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
-import { ChangeCircle, Logout, ManageAccounts } from "@mui/icons-material";
+import { ChangeCircle, Logout, ManageAccounts, ManageAccountsRounded, Password } from "@mui/icons-material";
 import { DRAWER_WIDTH } from "./Layout";
 import { useAuth } from "hooks/useAuth";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -26,6 +26,7 @@ import { mainProviderContext } from "context/MainProviderContext";
 import UploadAvatarSimpleDialog from "./UploadAvatarSimpleDialog";
 import { useQuery } from "@tanstack/react-query";
 import paramsSerializer from "services/paramsSerializer";
+import UserProfile from "./UserProfile";
 
 interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
@@ -63,6 +64,7 @@ const Navbar: React.FC<Props> = ({ open, hideRightMenu, handleDrawerOpen }) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
+  const [openProfile, setOpenProfile] = useState(false);
   const [openAvatar, setOpenAvatar] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | undefined>("");
 
@@ -166,7 +168,7 @@ const Navbar: React.FC<Props> = ({ open, hideRightMenu, handleDrawerOpen }) => {
           <Button
             className="account-menu-btn"
             sx={{ mt: 1, color: (theme) => theme.palette.text.primary }}
-            color="warning"
+            color="info"
             variant="contained"
             endIcon={<AccountCircleIcon fontSize="large" />}
             onClick={() => setOpenAvatar(true)}
@@ -176,7 +178,18 @@ const Navbar: React.FC<Props> = ({ open, hideRightMenu, handleDrawerOpen }) => {
           <Button
             className="account-menu-btn"
             sx={{ mt: 1, color: (theme) => theme.palette.text.primary }}
-            color="warning"
+            color="primary"
+            variant="contained"
+            // endIcon={<ManageAccountsRounded fontSize="large" />}
+            endIcon={<Password fontSize="large" />}
+            onClick={() => setOpenProfile(true)}
+          >
+            رمز عبور
+          </Button>
+          <Button
+            className="account-menu-btn"
+            sx={{ mt: 1, color: (theme) => theme.palette.text.primary }}
+            color="primary"
             variant="contained"
             endIcon={<Logout />}
             onClick={Auth?.logout}
@@ -340,6 +353,10 @@ const Navbar: React.FC<Props> = ({ open, hideRightMenu, handleDrawerOpen }) => {
           // بسته به پاسخ سرور آدرس نهایی را ست کنید
           setAvatarUrl(data?.url ?? data?.avatarUrl);
         }}
+      />
+      <UserProfile
+        open={openProfile}
+        onClose={() => setOpenProfile(false)}
       />
     </>
   );

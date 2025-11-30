@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import TavanaSpinner from "components/spinner/TavanaSpinner";
 import { useAuth } from "hooks/useAuth";
 import Layout from "components/layout/Layout";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import {
   alpha,
   Box,
@@ -38,6 +38,21 @@ const menuItems: MenuItem[] = [
     title: "احکام انتظامی",
     url: "IACPA/disciplinary-order",
     access: ["administrator", "city-showmenu"],
+    description: "مدیریت کلی احکام انتظامی",
+    icon: <AccountBalance />,
+  },
+  {
+    title: "احکام انتظامی",
+    // url: "accountant-user/cartable",
+    url: "accountant-user/disciplinary-order",
+    access: ["accountant-showmenu"],
+    description: "مدیریت کلی احکام انتظامی",
+    icon: <AccountBalance />,
+  },
+  {
+    title: "کارتابل",
+    url: "accountant-user/cartable",
+    access: ["accountant-showmenu"],
     description: "مدیریت کلی احکام انتظامی",
     icon: <AccountBalance />,
   },
@@ -80,8 +95,9 @@ function HangOverMenu() {
   const Auth = useAuth();
   const theme = useTheme();
   const authFunctions = useAuthorization();
+  const navigate=useNavigate();
   return (
-    <Grid container justifyContent={"center"}>
+    <Grid container item md={12} justifyContent={"center"}>
       {/* <Grid item md={4}>
         <Carousel
           items={carouselItems}
@@ -95,79 +111,84 @@ function HangOverMenu() {
         <EmblaCarousel slides={carouselItems}/>
       </Grid> */}
       {/**@description hangover */}
-      <Grid
-              container
+      <Box
+        // display={"flex"}
+        justifyContent={"space-around"}
+        sx={{
+          width:"90%",
+          height: "17vh",
+          backgroundColor:`${alpha(theme.palette.primary.main, 0.4)}`,
+          // backgroundColor: theme.palette.primary.light,
+          // border:`2px dashed ${theme.palette.primary.main}`,
+          overflow: "visible",
+          // position: "relative",
+          borderRadius: "5px",
+        }}
+      >
+        <Box p={1} mb={-1} width={"100%"} display={"flex"} justifyContent={"center"}>
+          <Typography variant="h5" color={"white"}>پر کاربرد های شما</Typography>
+        </Box>
+        <Grid container display={"flex"} width={"100%"}>
+          {menuItems
+          ?.filter((item) => {
+            // return item.access?.includes(access?.accessMenu[0]);
+            return authFunctions?.hasMenuAccess(item.access);
+          })
+          ?.map((item, index) => (
+            <Grid
               item
-              md={11}
-              justifyContent={"space-around"}
-              spacing={4}
+              md={4}
               sx={{
-                height: "14vh",
-                // backgroundColor:`${alpha(theme.palette.primary.main, 0.3)}`,
-                backgroundColor: theme.palette.primary.light,
-                overflow: "visible",
                 // position: "relative",
-                borderRadius: "5px",
+                display: "flex",
+                justifyContent: "center",
               }}
             >
-              {menuItems
-                ?.filter((item) => {
-                  // return item.access?.includes(access?.accessMenu[0]);
-                  return authFunctions?.hasMenuAccess(item.access);
-                })
-                ?.map((item, index) => (
-                  <Grid
-                    item
-                    md={4}
+              <Card
+                sx={{
+                  borderRadius: "5px",
+                  position: "relative",
+                  top: "18px", // کارت از پایین گرید بیرون می‌زند بدون افزایش ارتفاع
+                  // width: "100%",
+                  height: "20vh",
+                  // aspectRatio: "15/16",
+                }}
+              >
+                {/* <CardHeader title={item.title} /> */}
+                <CardContent
+                // sx={{ height: "100%" }}
+                >
+                  <Box display={"flex"} gap={1}>
+                    {item.icon}
+                    <Typography gutterBottom variant="h6" component="div">
+                      {item.title}
+                    </Typography>
+                  </Box>
+                  <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                    {item.description}
+                  </Typography>
+                </CardContent>
+                <CardActions>
+                  <Button onClick={()=>{navigate(item.url)}} variant="contained">مشاهده</Button>
+                  <Typography
+                    variant="body2"
                     sx={{
-                      // position: "relative",
-                      display: "flex",
-                      justifyContent: "center",
+                      position: "absolute",
+                      bottom: 22,
+                      right: 16,
+                      // color: slide.image ? "white" : "text.secondary",
+                      zIndex: 2,
                     }}
                   >
-                    <Card
-                      sx={{
-                        borderRadius:"5px",
-                        position: "relative",
-                        top: "18px", // کارت از پایین گرید بیرون می‌زند بدون افزایش ارتفاع
-                        // width: "100%",
-                        maxHeight: "30vh",
-                        // aspectRatio: "15/16",
-                      }}
-                    >
-                      {/* <CardHeader title={item.title} /> */}
-                      <CardContent 
-                      // sx={{ height: "100%" }}
-                      >
-                        <Box display={"flex"} gap={1}>
-                          {item.icon}
-                          <Typography gutterBottom variant="h6" component="div">
-                            {item.title}
-                          </Typography>
-                        </Box>
-                        <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                          {item.description}
-                        </Typography>
-                      </CardContent>
-                      <CardActions>
-                        <Button>مشاهده</Button>
-                        <Typography
-                          variant="body2"
-                          sx={{
-                            position: "absolute",
-                            bottom: 16,
-                            right: 16,
-                            // color: slide.image ? "white" : "text.secondary",
-                            zIndex: 2,
-                          }}
-                        >
-                          {index + 1} / {carouselItems.length}
-                        </Typography>
-                      </CardActions>
-                    </Card>
-                  </Grid>
-                ))}
+                    {index + 1} / {carouselItems.length}
+                  </Typography>
+                </CardActions>
+              </Card>
             </Grid>
+          ))}
+        </Grid>
+        
+      </Box>
     </Grid>
   );
 }

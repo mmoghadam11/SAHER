@@ -1,14 +1,14 @@
 import axios from "axios";
 
 // export const BASE_URL = "http://192.168.1.149:8085/api/" || process.env.REACT_APP_API_URL;
-export const BASE_URL = process.env.REACT_APP_API_URL || "http://192.168.4.54:8085/api/fish/";
-export const BASE_URL_V2 = process.env.REACT_APP_API_URL || "http://192.168.4.54:8085/api/fish/" ;
+export const BASE_URL = process.env.REACT_APP_API_URL || "/api/v1/";
+export const BASE_URL_V2 = process.env.REACT_APP_API_URL || "http://192.168.100.31:8085/api/v1/" ;
 
 export const api = axios.create({
-  baseURL: BASE_URL+"/api/",
-  headers: {
-    "Content-Type": "application/json",
-  },
+  baseURL: BASE_URL,
+  // headers: {
+  //   "Content-Type": "application/json",
+  // },
 });
 
 export const apiV2 = axios.create({
@@ -18,8 +18,5 @@ export const apiV2 = axios.create({
   },
 });
 export const apiUpload = axios.create({
-  baseURL: BASE_URL+"/api/",
-  // headers: {
-  //   // "Content-Type": "multipart/form-data",
-  // },
+  baseURL: BASE_URL,
 });

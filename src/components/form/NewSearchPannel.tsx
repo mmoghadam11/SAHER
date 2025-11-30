@@ -48,13 +48,14 @@ function NewSearchPannel<T extends Record<string, any>>({
         // همچنین مقدار react-hook-form را هم reset کنید
         if (item.inputType === "autocomplete") {
           setValue(item.name, null); // برای autocomplete مقدار null قرار دهید
-        } else {
+        }else if(item.inputType === "rangeSlider")
+          setValue(item.name, []);
+         else {
           setValue(item.name, ""); // برای سایر فیلدها string خالی
         }
     //   }
     });
 
-    console.log("resetData",resetData)
     setSearchData(resetData);
     setFilters((prev: any) => ({
       ...prev,
@@ -62,7 +63,6 @@ function NewSearchPannel<T extends Record<string, any>>({
     }));
   };
   const handleSearch = (data: any) => {
-    console.log("data", data);
     // ایجاد فیلترها به صورت داینامیک بر اساس searchItems
     const newFilters: Record<string, any> = {};
 
@@ -82,7 +82,6 @@ function NewSearchPannel<T extends Record<string, any>>({
     }));
   };
   useEffect(() => {
-    console.log("editeData=>", getValues());
     if (searchData !== null) {
       reset({
         ...searchData,
