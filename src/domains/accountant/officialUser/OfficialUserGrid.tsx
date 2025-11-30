@@ -104,7 +104,6 @@ const OfficialUserGrid = (props: Props) => {
               // src={avatarUrl ?? undefined}
               src={
                 process.env.REACT_APP_Image_URL +
-                "/files/" +
                 row?.profileImageUrl
               }
               sx={{
@@ -249,15 +248,15 @@ const OfficialUserGrid = (props: Props) => {
                   },
                 });
               }}
-              onManage={{
-                title: "جزئیات حسابدار رسمی",
-                function: () => {
-                  navigate(`details/${row.id}`, {
-                    state: { accountantData: row, searchFilters: filters },
-                  });
-                },
-                icon: <Toc />,
-              }}
+              // onManage={{
+              //   title: "جزئیات حسابدار رسمی",
+              //   function: () => {
+              //     navigate(`details/${row.id}`, {
+              //       state: { accountantData: row, searchFilters: filters },
+              //     });
+              //   },
+              //   icon: <Toc />,
+              // }}
             />
           );
       },

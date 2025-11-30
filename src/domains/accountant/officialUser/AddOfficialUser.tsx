@@ -278,7 +278,6 @@ export default function AddOfficialUser(): JSX.Element {
           <Avatar
             src={
               process.env.REACT_APP_Image_URL +
-              "/files/" +
               state?.accountantData?.profileImageUrl
             }
             sx={{
