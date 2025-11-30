@@ -68,6 +68,9 @@ import ContinuingEducationGrid from "domains/Institute/EDU/continuingEducation/C
 import NewLogin from "domains/login/pages/NewLogin";
 import CertifiedAccountantEDUGrid from "domains/accountantUser/edu/CertifiedAccountantEDUGrid";
 import DirectorDisciplinaryOrderDetails from "domains/firmDirector/DirectorDisciplinaryOrderDetails";
+import AccountantOfficialUserGrid from "domains/accountantUser/officialUser/AccountantOfficialUserGrid";
+import AddAccountantOfficialUser from "domains/accountantUser/officialUser/AddAccountantOfficialUser";
+import Accountant_DetaileTabs from "domains/accountantUser/officialUser/details/Accountant_DetaileTabs";
 
 const AppRoutes: React.FC = () => {
   const auth = useAuth();
@@ -128,11 +131,11 @@ const AppRoutes: React.FC = () => {
           </Route>
           <Route path="accountant-user">
             <Route path="cartable">
-              <Route index element={<OfficialUserGrid />} />
+              <Route index element={<AccountantOfficialUserGrid />} />
               <Route path="details/:id">
-                <Route index element={<AccountantDetaileTabs />} />
+                <Route index element={<Accountant_DetaileTabs />} />
               </Route>
-              <Route path=":id" element={<AddOfficialUser />} />
+              <Route path=":id" element={<AddAccountantOfficialUser />} />
             </Route>
             <Route path="disciplinary-order">
               <Route
