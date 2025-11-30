@@ -1,4 +1,11 @@
-import { Close, Key, ManageAccounts, Toc, Verified } from "@mui/icons-material";
+import {
+  Close,
+  Key,
+  ManageAccounts,
+  PersonRemove,
+  Toc,
+  Verified,
+} from "@mui/icons-material";
 import { Box, Chip, Grid, Typography } from "@mui/material";
 import { GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -18,6 +25,8 @@ import VerticalTable from "components/dataGrid/VerticalTable";
 import { isMobile } from "react-device-detect";
 import SearchPannel from "components/form/SearchPannel";
 import AddDirectorModal from "./AddMoneyLundringModal";
+import TerminateCooprationModal from "./TerminateCooprationModal";
+import moment from "jalali-moment";
 
 type Props = {
   setActiveTab: React.Dispatch<React.SetStateAction<number>>;
@@ -38,14 +47,14 @@ const MoneyLundringGrid = ({ setActiveTab }: Props) => {
   } = useForm();
   const [filters, setFilters] = useState<any>({
     ...PAGINATION_DEFAULT_VALUE,
-    firm: id,
+    auditingFirmId: id,
   });
   const {
     data: StatesData,
     status: StatesData_status,
     refetch: StatesData_refetch,
   } = useQuery<any>({
-    queryKey: [`firm-director/find-by-firm${paramsSerializer(filters)}`],
+    queryKey: [`money-laundering/search${paramsSerializer(filters)}`],
     queryFn: Auth?.getRequest,
     select: (res: any) => {
       return res?.data;
@@ -53,9 +62,20 @@ const MoneyLundringGrid = ({ setActiveTab }: Props) => {
     enabled: true,
   } as any);
   const columns: GridColDef[] = [
-    { field: "firstName", headerName: "نام", flex: 1 },
-    { field: "lastName", headerName: "نام خانوادگی", flex: 1 },
-    { field: "nationalCode", headerName: "کد ملی", flex: 1 },
+    { field: "personnelFirstName", headerName: "نام", flex: 1 },
+    { field: "personnelLastName", headerName: "نام خانوادگی", flex: 1 },
+    { field: "personnelNationalCode", headerName: "کد ملی", flex: 1 },
+    {
+      field: "endDate",
+      headerName: "تاریخ خاتمه",
+      flex: 1,
+      renderCell: ({ row }: { row: any }) => {
+        if (row?.endDate)
+          return moment(new Date(row?.endDate)).format(
+            "jYYYY/jMM/jDD"
+          );
+      },
+    },
     {
       headerName: "عملیات",
       field: "action",
@@ -63,16 +83,25 @@ const MoneyLundringGrid = ({ setActiveTab }: Props) => {
       headerAlign: "center",
       align: "center",
       renderCell: ({ row }: { row: any }) => {
+        if(row.active)
         return (
           <TableActions
             onEdit={() => {
               // navigate(`${row.id}`, { state: { userData: row } });
               setEditeData(row);
-              setAddModalFlag(true)
+              setAddModalFlag(true);
             }}
-            onDelete={() => {
-              setDeleteData(row);
-              setDeleteFlag(true);
+            // onDelete={() => {
+            //   setDeleteData(row);
+            //   setDeleteFlag(true);
+            // }}
+            onManage={{
+              title: "پایان همکاری",
+              function: () => {
+                setDeleteData(row);
+                setDeleteFlag(true);
+              },
+              icon: <PersonRemove color="error" />,
             }}
           />
         );
@@ -170,7 +199,7 @@ const MoneyLundringGrid = ({ setActiveTab }: Props) => {
             onClick={() => {
               // navigate("new")
               // setActiveTab(1);
-              setAddModalFlag(true)
+              setAddModalFlag(true);
             }}
           />
         </Box>
@@ -199,7 +228,7 @@ const MoneyLundringGrid = ({ setActiveTab }: Props) => {
               setFilters={setFilters}
               rowCount={StatesData?.totalElements}
               // rowHeight={25}
-              getRowHeight={() => "auto"}
+              // getRowHeight={() => "auto"}
               autoHeight
               hideToolbar
               // slots={{ toolbar: GridToolbar }}
@@ -219,7 +248,14 @@ const MoneyLundringGrid = ({ setActiveTab }: Props) => {
         editeData={editeData}
         setEditeData={setEditeData}
       />
-      <ConfirmBox
+      <TerminateCooprationModal
+        addModalFlag={deleteFlag}
+        setAddModalFlag={setDeleteFlag}
+        editeData={deleteData}
+        setEditeData={setDeleteData}
+        refetch={StatesData_refetch}
+      />
+      {/* <ConfirmBox
         open={deleteFlag}
         handleClose={() => {
           setDeleteFlag(false);
@@ -228,12 +264,15 @@ const MoneyLundringGrid = ({ setActiveTab }: Props) => {
         handleSubmit={() =>
           mutate(
             {
-              entity: `firm-director/remove/${deleteData?.id}`,
+              entity: `money-laundering/delete/${deleteData?.id}`,
               method: "delete",
             },
             {
               onSuccess: (res: any) => {
-                snackbar(`کاربر انتخاب شده با موفقیت حذف شد`, "success");
+                snackbar(
+                  `مدیر مبارزه با پولشویی انتخاب شده با موفقیت حذف شد`,
+                  "success"
+                );
                 StatesData_refetch();
               },
               onError: () => {
@@ -244,7 +283,7 @@ const MoneyLundringGrid = ({ setActiveTab }: Props) => {
         }
         message={`آیا از حذف ${deleteData?.firstName} ${deleteData?.lastName} مطمعین میباشید؟`}
         title={"درخواست حذف!"}
-      />
+      /> */}
     </Grid>
   );
 };

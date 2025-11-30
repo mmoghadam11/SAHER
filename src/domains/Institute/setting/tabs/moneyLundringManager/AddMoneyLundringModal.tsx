@@ -131,14 +131,14 @@ const AddMoneyLundringModal = ({
   const onSubmit = (data: FormData) => {
     mutate(
       {
-        entity: `firm-director/${!!editeData ? "update" : "save"}`,
+        entity: `money-laundering/${!!editeData ? "update" : "save"}`,
         // entity: `firm-director/save`,
         method: !!editeData ? "put" : "post",
         // method:  "post",
         data: {
           ...data,
-          active: true,
-          firmId:id,
+          // active: true,
+          auditingFirmId:id,
         },
       },
       {
@@ -146,11 +146,11 @@ const AddMoneyLundringModal = ({
           console.log("res=>",res)
           if (!!editeData)
             snackbar(
-              `به روز رسانی موسسه انتخاب شده با موفقیت انجام شد`,
+              `به روز رسانی مدیر مبارزه با پولشویی انتخاب شده با موفقیت انجام شد`,
               "success"
             );
           else 
-            snackbar(`مدیر جدید با موفقیت افزوده شد`, "success");
+            snackbar(`مدیر مبارزه با پولشویی جدید با موفقیت افزوده شد`, "success");
           refetch();
           //   handleClose();
         },
