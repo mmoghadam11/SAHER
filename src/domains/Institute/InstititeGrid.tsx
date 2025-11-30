@@ -26,11 +26,13 @@ import { useNavigate, useParams } from "react-router-dom";
 import paramsSerializer from "services/paramsSerializer";
 import { PAGINATION_DEFAULT_VALUE } from "shared/paginationValue";
 import ConfirmBox from "components/confirmBox/ConfirmBox";
+import { useAuthorization } from "hooks/useAutorization";
 
 type Props = {};
 
 const InstititeGrid = (props: Props) => {
   const Auth = useAuth();
+  const { hasMenuAccess,hasPermission } = useAuthorization();
   const snackbar = useSnackbar();
   const navigate = useNavigate();
   const { isLoading, mutate, error } = useMutation({
@@ -103,6 +105,25 @@ const InstititeGrid = (props: Props) => {
       headerAlign: "center",
       align: "center",
       renderCell: ({ row }: { row: any }) => {
+        if(hasPermission("supervisor"))
+        return (
+          <TableActions
+            onView={() => {
+              setEditeData(row);
+              setAddModalFlag(true);
+              navigate(`${row.id}`, {
+                state: { firmData: row, editable: false },
+              });
+            }}
+            onManage={{
+              title: "جزئیات موسسه",
+              function: () => {
+                navigate(`details/${row.id}`, { state: { firmData: row } });
+              },
+              icon: <Toc />,
+            }}
+          />
+        );
         return (
           <TableActions
             onEdit={() => {
@@ -218,11 +239,11 @@ const InstititeGrid = (props: Props) => {
           <Typography variant="h5">موسسات</Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"}>
-          <CreateNewItem
+          {!hasPermission("supervisor")&&<CreateNewItem
             sx={{ mr: 2 }}
             name="موسسه"
             onClick={() => navigate("new", { state: { editable: true } })}
-          />
+          />}
           <BackButton onBack={() => navigate(-1)} />
         </Box>
       </Grid>
