@@ -23,10 +23,7 @@ import { useParams } from "react-router-dom";
 interface FormData {
   id?: any;
   name: string;
-  code: string;
-  provinceId: string;
-  provinceName: string;
-  province?: any;
+  persianName: string;
 }
 
 interface FormItem {
@@ -68,22 +65,29 @@ const AddRole = ({
     reset,
   } = useForm<FormData>();
 
-  const [formData, setFormData] = useState<FormData>(
-    !!editeData
-      ? editeData
-      : {
-          name: "",
-        }
-  );
+  
 
   const formItems: FormItem[] = [
     {
       name: "name",
       inputType: "text",
       label: "نام نقش",
-      size: { md: 12 },
+      size: { md: 6 },
       rules: {
         required: "نام نقش الزامی است",
+        minLength: {
+          value: 2,
+          message: "نام نقش باید حداقل ۲ کاراکتر باشد",
+        },
+      },
+    },
+    {
+      name: "persianName",
+      inputType: "text",
+      label: "نام فارسی",
+      size: { md: 6 },
+      rules: {
+        required: "نام فارسی الزامی است",
         minLength: {
           value: 2,
           message: "نام نقش باید حداقل ۲ کاراکتر باشد",
@@ -94,42 +98,32 @@ const AddRole = ({
 
   useEffect(() => {
     if (editeData !== null) {
-      setFormData(editeData);
       reset({
+        id:editeData?.id,
         name: editeData.name || "",
+        persianName: editeData.persianName || "",
       });
     }
+    else reset({})
   }, [editeData, addModalFlag]);
-  useEffect(() => {
-    console.log("formData=>", formData);
-  }, [formData]);
+  
 
   const handleClose = () => {
     setAddModalFlag(false);
-    reset();
-    setFormData({
-      name: "",
-      code: "",
-      provinceName: "",
-      provinceId: "",
-    });
+    reset({});
     setEditeData(null);
     // setTimeout(() => setEditeData(null), 500);
   };
 
-  const handleInputChange = (fieldName: keyof FormData, value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      [fieldName]: value,
-    }));
-  };
+  
 
   const onSubmit = (data: FormData) => {
+    // console.log("data",data)
     mutate(
       {
         entity: `role/${!!editeData ? "update" : "add"}`,
         method: !!editeData ? "put" : "post",
-        data: formData,
+        data: data,
       },
       {
         onSuccess: (res: any) => {
@@ -140,7 +134,7 @@ const AddRole = ({
             );
           else snackbar(`ایجاد نقش جدید با موفقیت انجام شد`, "success");
           refetch();
-          //   handleClose();
+            handleClose();
         },
         onError: () => {
           snackbar("خطا در انجام عملیات", "error");
@@ -179,9 +173,9 @@ const AddRole = ({
                       controllerField={field}
                       errors={errors}
                       {...item}
-                      value={formData[item.name]}
+                      // value={formData[item.name]}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                        handleInputChange(item.name, e.target.value);
+                        // handleInputChange(item.name, e.target.value);
                         field.onChange(e);
                       }}
                     />

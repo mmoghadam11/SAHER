@@ -27,6 +27,7 @@ import AppendFirm from "./components/AppendFirm";
 import SearchPannel from "components/form/SearchPannel";
 import { UseGetProfileImage } from "hooks/useGetProfileImage";
 import ProfileDialog from "components/ProfileDialog";
+import { FormItem } from "types/formItem";
 
 type Props = {};
 
@@ -63,8 +64,20 @@ const UsersGrid = (props: Props) => {
     },
     enabled: true,
   } as any);
+  const {
+    data: roles,
+    status: roles_status,
+    refetch: roles_refetch,
+  } = useQuery<any>({
+    queryKey: [`role/find-by-name?size=10&page=1`],
+    queryFn: Auth?.getRequest,
+    select: (res: any) => {
+      return res?.data?.content;
+    },
+    enabled: true,
+  } as any);
   useEffect(() => {
-    console.log("url",process.env.REACT_APP_Image_URL+"/files/"+"be69d0f0-46f7-4fe1-8bbe-ddb1cd829dca.jpg")
+    console.log("url",process.env.REACT_APP_Image_URL+"be69d0f0-46f7-4fe1-8bbe-ddb1cd829dca.jpg")
   }, [])
   
   const columns: GridColDef[] = [
@@ -83,7 +96,7 @@ const UsersGrid = (props: Props) => {
           >
             <Avatar
               // src={avatarUrl ?? undefined}
-              src={process.env.REACT_APP_Image_URL+"/files/"+row?.imageUrl }
+              src={process.env.REACT_APP_Image_URL+row?.imageUrl }
               sx={{
                 width: 40,
                 height: 40,
@@ -151,37 +164,37 @@ const UsersGrid = (props: Props) => {
     name: string;
     code: string;
   }
-  type searchType = {
-    name: string;
-    inputType: string;
-    label: string;
-    size: any;
-  };
-  const searchItems: searchType[] = [
+  
+  const searchItems: FormItem[] = [
     {
       name: "firstname",
       inputType: "text",
       label: "نام",
-      size: { md: 4 },
+      size: { md: 3 },
     },
     {
       name: "lastname",
       inputType: "text",
       label: "نام خانوادگی",
-      size: { md: 4 },
+      size: { md: 3 },
     },
     {
       name: "nationalCode",
       inputType: "text",
       label: "کدملی",
-      size: { md: 4 },
+      size: { md: 3 },
     },
-    // {
-    //   name: "code",
-    //   inputType: "text",
-    //   label: "کد کاربر",
-    //   size: { md: 4 },
-    // },
+    {
+      name: "searchRolePersianName",
+      inputType: "autocomplete",
+      label: "نقش",
+      size: { md: 3 },
+      options: roles?.map((item: any) => ({
+        id: item.persianName,
+        value: item.persianName,
+      })) ?? [{ value: 0, title: "خالی" }],
+      storeValueAs: "id",
+    },
   ];
   type editeObjectType = {
     id: number;
@@ -203,29 +216,6 @@ const UsersGrid = (props: Props) => {
     console.log(filters);
   }, [filters]);
 
-  function searching() {
-    mutate(
-      {
-        entity: `/api/v1/common-data/search`,
-        method: "post",
-        //   data:
-      },
-      {
-        onSuccess: (res: any) => {
-          if (res?.status == 200 && res?.data) {
-            snackbar(
-              "واحد های انتخابی با موفقیت به لیست شما افزوده شد.",
-              "success"
-            );
-            // navigate('/unitselection', { state: {from: "add-unit", noBack: noBack} })
-          } else snackbar("خطا در افزودن واحد ها به لیست", "error");
-        },
-        onError: (err) => {
-          snackbar("خطا در افزودن واحد ها به لیست", "error");
-        },
-      }
-    );
-  }
   return (
     <Grid container justifyContent="center">
       <Grid

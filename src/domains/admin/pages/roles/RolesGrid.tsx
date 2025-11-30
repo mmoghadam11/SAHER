@@ -54,7 +54,8 @@ const RolesGrid = (props: Props) => {
     enabled: true,
   } as any);
   const columns: GridColDef[] = [
-    { field: "name", headerName: "نام نقش", flex: 2 },
+    { field: "name", headerName: "نام نقش", flex: 1.5 },
+    { field: "persianName", headerName: "نام فارسی", flex: 1.5 },
     {
       headerName: "عملیات",
       field: "action",
@@ -101,6 +102,12 @@ const RolesGrid = (props: Props) => {
       label: "نام نقش",
       size: { md: 4 },
     },
+    // {
+    //   name: "persianName",
+    //   inputType: "text",
+    //   label: "نام فارسی",
+    //   size: { md: 4 },
+    // },
   ];
   type editeObjectType = {
     id: number;

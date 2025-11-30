@@ -31,9 +31,11 @@ export interface ISelectedUser {
 }
 
 export interface ILoggedInUser {
+  userId:string;
   firstName: string;
   lastName: string;
   nationalCode:string;
+  mobileNumber:string;
 }
 // export interface ILoggedInUser {
 //   firstName: string;
