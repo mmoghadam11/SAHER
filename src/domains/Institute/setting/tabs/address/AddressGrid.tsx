@@ -18,12 +18,14 @@ import { isMobile } from "react-device-detect";
 import moment from "jalali-moment";
 import ConfirmBox from "components/confirmBox/ConfirmBox";
 import AddAddress from "./AddAddress";
+import { useAuthorization } from "hooks/useAutorization";
 
 type Props = {};
 
 const AddressGrid = ({}: Props) => {
   const { id } = useParams();
   const Auth = useAuth();
+  const { hasPermission } = useAuthorization();
   const snackbar = useSnackbar();
   const navigate = useNavigate();
   const { isLoading, mutate, error } = useMutation({
@@ -73,19 +75,20 @@ const AddressGrid = ({}: Props) => {
       headerAlign: "center",
       align: "center",
       renderCell: ({ row }: { row: any }) => {
-        return (
-          <TableActions
-            onEdit={() => {
-              // navigate(`${row.id}`, { state: { userData: row } });
-              setEditeData(row);
-              setAddModalFlag(true);
-            }}
-            onDelete={() => {
-              setDeleteData(row);
-              setDeleteFlag(true);
-            }}
-          />
-        );
+        if (!hasPermission("supervisor"))
+          return (
+            <TableActions
+              onEdit={() => {
+                // navigate(`${row.id}`, { state: { userData: row } });
+                setEditeData(row);
+                setAddModalFlag(true);
+              }}
+              onDelete={() => {
+                setDeleteData(row);
+                setDeleteFlag(true);
+              }}
+            />
+          );
       },
     },
   ];
@@ -127,16 +130,18 @@ const AddressGrid = ({}: Props) => {
           <Typography variant="h5">لیست آدرس ها</Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"}>
-          <CreateNewItem
-            sx={{ mr: 2 }}
-            name="آدرس"
-            // onClick={() => navigate("new")}
-            onClick={() => {
-              // navigate("new")
-              // setActiveTab(1);
-              setAddModalFlag(true);
-            }}
-          />
+          {!hasPermission("supervisor") && (
+            <CreateNewItem
+              sx={{ mr: 2 }}
+              name="آدرس"
+              // onClick={() => navigate("new")}
+              onClick={() => {
+                // navigate("new")
+                // setActiveTab(1);
+                setAddModalFlag(true);
+              }}
+            />
+          )}
         </Box>
       </Grid>
 
@@ -157,7 +162,7 @@ const AddressGrid = ({}: Props) => {
               filters={filters}
               setFilters={setFilters}
               rowCount={StatesData?.totalElements}
-              getRowHeight={() => "auto"}
+              getRowHeight={() => !hasPermission("supervisor") ?"auto":null}
               autoHeight
               hideToolbar
               // slots={{ toolbar: GridToolbar }}

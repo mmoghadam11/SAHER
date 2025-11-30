@@ -27,6 +27,7 @@ import SearchPannel from "components/form/SearchPannel";
 import AddDirectorModal from "./AddMoneyLundringModal";
 import TerminateCooprationModal from "./TerminateCooprationModal";
 import moment from "jalali-moment";
+import { useAuthorization } from "hooks/useAutorization";
 
 type Props = {
   setActiveTab: React.Dispatch<React.SetStateAction<number>>;
@@ -35,6 +36,7 @@ type Props = {
 const MoneyLundringGrid = ({ setActiveTab }: Props) => {
   const { id } = useParams();
   const Auth = useAuth();
+  const{hasPermission}=useAuthorization();
   const snackbar = useSnackbar();
   const navigate = useNavigate();
   const { isLoading, mutate, error } = useMutation({
@@ -83,7 +85,7 @@ const MoneyLundringGrid = ({ setActiveTab }: Props) => {
       headerAlign: "center",
       align: "center",
       renderCell: ({ row }: { row: any }) => {
-        if(row.active)
+        if(row.active&&!hasPermission("supervisor"))
         return (
           <TableActions
             onEdit={() => {
@@ -192,6 +194,7 @@ const MoneyLundringGrid = ({ setActiveTab }: Props) => {
           <Typography variant="h5">لیست مدیران مبارزه با پولشویی</Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"}>
+          {!hasPermission("supervisor") &&
           <CreateNewItem
             sx={{ mr: 2 }}
             name="مدیر"
@@ -201,7 +204,7 @@ const MoneyLundringGrid = ({ setActiveTab }: Props) => {
               // setActiveTab(1);
               setAddModalFlag(true);
             }}
-          />
+          />}
         </Box>
       </Grid>
       {/* <SearchPannel<SearchData>
@@ -228,7 +231,7 @@ const MoneyLundringGrid = ({ setActiveTab }: Props) => {
               setFilters={setFilters}
               rowCount={StatesData?.totalElements}
               // rowHeight={25}
-              // getRowHeight={() => "auto"}
+              // getRowHeight={() => !hasPermission("supervisor") ?"auto":null}
               autoHeight
               hideToolbar
               // slots={{ toolbar: GridToolbar }}

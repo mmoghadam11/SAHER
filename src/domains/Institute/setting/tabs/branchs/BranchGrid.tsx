@@ -1,4 +1,12 @@
-import { Close, Diversity3, Key, ManageAccounts, Map, Toc, Verified } from "@mui/icons-material";
+import {
+  Close,
+  Diversity3,
+  Key,
+  ManageAccounts,
+  Map,
+  Toc,
+  Verified,
+} from "@mui/icons-material";
 import { Box, Chip, Grid, Typography } from "@mui/material";
 import { GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -20,12 +28,14 @@ import ConfirmBox from "components/confirmBox/ConfirmBox";
 import AddBranch from "./AddBranch";
 import BranchAddressGrid from "./BranchAddressGrid";
 import BranchPartnerGrid from "./partner/BranchPartnerGrid";
+import { useAuthorization } from "hooks/useAutorization";
 
 type Props = {};
 
 const BranchGrid = ({}: Props) => {
   const { id } = useParams();
   const Auth = useAuth();
+  const { hasPermission } = useAuthorization();
   const snackbar = useSnackbar();
   const navigate = useNavigate();
   const { isLoading, mutate, error } = useMutation({
@@ -85,35 +95,36 @@ const BranchGrid = ({}: Props) => {
       headerAlign: "center",
       align: "center",
       renderCell: ({ row }: { row: any }) => {
-        return (
-          <TableActions
-            onEdit={() => {
-              // navigate(`${row.id}`, { state: { userData: row } });
-              setEditeData(row);
-              setAddModalFlag(true);
-            }}
-            onDelete={() => {
-              setDeleteData(row);
-              setDeleteFlag(true);
-            }}
-            onManage={{
-              icon:<Map/>,
-              title: "آدرس ها",
-              function: () => {
-                setSelectecBranchData(row);
-                setGridFlag(1);
-              },
-            }}
-            onAdd={{
-              icon:<Diversity3 color="action"/>,
-              title: "شرکا",
-              function: () => {
-                setSelectecBranchData(row);
-                setGridFlag(2);
-              },
-            }}
-          />
-        );
+        if (!hasPermission("supervisor"))
+          return (
+            <TableActions
+              onEdit={() => {
+                // navigate(`${row.id}`, { state: { userData: row } });
+                setEditeData(row);
+                setAddModalFlag(true);
+              }}
+              onDelete={() => {
+                setDeleteData(row);
+                setDeleteFlag(true);
+              }}
+              onManage={{
+                icon: <Map />,
+                title: "آدرس ها",
+                function: () => {
+                  setSelectecBranchData(row);
+                  setGridFlag(1);
+                },
+              }}
+              onAdd={{
+                icon: <Diversity3 color="action" />,
+                title: "شرکا",
+                function: () => {
+                  setSelectecBranchData(row);
+                  setGridFlag(2);
+                },
+              }}
+            />
+          );
       },
     },
   ];
@@ -126,7 +137,8 @@ const BranchGrid = ({}: Props) => {
     typeName: string;
   };
   const [editeData, setEditeData] = useState<editeObjectType | null>(null);
-  const [selectecBranchData, setSelectecBranchData] =useState<editeObjectType | null>(null);
+  const [selectecBranchData, setSelectecBranchData] =
+    useState<editeObjectType | null>(null);
   const [addModalFlag, setAddModalFlag] = useState(false);
   const [gridFlag, setGridFlag] = useState(0);
   const [appendFirmFlag, setAppendFirmFlag] = useState(false);
@@ -157,16 +169,15 @@ const BranchGrid = ({}: Props) => {
           <Typography variant="h5">لیست شعبه ها</Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"}>
-          <CreateNewItem
-            sx={{ mr: 2 }}
-            name="شعبه"
-            // onClick={() => navigate("new")}
-            onClick={() => {
-              // navigate("new")
-              // setActiveTab(1);
-              setAddModalFlag(true);
-            }}
-          />
+          {!hasPermission("supervisor") && (
+            <CreateNewItem
+              sx={{ mr: 2 }}
+              name="شعبه"
+              onClick={() => {
+                setAddModalFlag(true);
+              }}
+            />
+          )}
         </Box>
       </Grid>
 
@@ -187,7 +198,9 @@ const BranchGrid = ({}: Props) => {
               filters={filters}
               setFilters={setFilters}
               rowCount={StatesData?.totalElements}
-              getRowHeight={() => "auto"}
+              getRowHeight={() =>
+                !hasPermission("supervisor") ? "auto" : null
+              }
               autoHeight
               hideToolbar
               // slots={{ toolbar: GridToolbar }}
@@ -204,12 +217,20 @@ const BranchGrid = ({}: Props) => {
           </Typography>
         )}
       </Grid>
-        {!!selectecBranchData && gridFlag===1 ? (
-          <BranchAddressGrid selectedBranch={selectecBranchData} setSelectecBranchData={setSelectecBranchData} />
-        ):!!selectecBranchData && gridFlag===2&&(
-          <BranchPartnerGrid selectedBranch={selectecBranchData} setSelectecBranchData={setSelectecBranchData} />
+      {!!selectecBranchData && gridFlag === 1 ? (
+        <BranchAddressGrid
+          selectedBranch={selectecBranchData}
+          setSelectecBranchData={setSelectecBranchData}
+        />
+      ) : (
+        !!selectecBranchData &&
+        gridFlag === 2 && (
+          <BranchPartnerGrid
+            selectedBranch={selectecBranchData}
+            setSelectecBranchData={setSelectecBranchData}
+          />
         )
-        }
+      )}
       <AddBranch
         refetch={StatesData_refetch}
         addModalFlag={addModalFlag}

@@ -204,7 +204,7 @@ const DirectorGrid = ({ setActiveTab }: Props) => {
               setFilters={setFilters}
               rowCount={StatesData?.totalElements}
               // rowHeight={25}
-              // getRowHeight={() => "auto"}
+              getRowHeight={() => !hasPermission("supervisor") ?"auto":null}
               autoHeight
               hideToolbar
               // slots={{ toolbar: GridToolbar }}

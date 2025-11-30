@@ -1,5 +1,3 @@
-
-
 import { Close, Key, ManageAccounts, Toc, Verified } from "@mui/icons-material";
 import { Box, Chip, Grid, Typography } from "@mui/material";
 import { GridColDef, GridToolbar } from "@mui/x-data-grid";
@@ -21,6 +19,7 @@ import { isMobile } from "react-device-detect";
 import SearchPannel from "components/form/SearchPannel";
 import moment from "jalali-moment";
 import AddPublication from "./AddPublication";
+import { useAuthorization } from "hooks/useAutorization";
 
 type Props = {
   setActiveTab?: React.Dispatch<React.SetStateAction<number>>;
@@ -29,6 +28,7 @@ type Props = {
 const PublicationGrid = ({ setActiveTab }: Props) => {
   const { id } = useParams();
   const Auth = useAuth();
+  const { hasPermission } = useAuthorization();
   const snackbar = useSnackbar();
   const navigate = useNavigate();
   const { isLoading, mutate, error } = useMutation({
@@ -65,7 +65,9 @@ const PublicationGrid = ({ setActiveTab }: Props) => {
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
         return (
-          <Typography>{moment(new Date(row?.publishDate)).format("jYYYY/jMM/jDD")}</Typography>
+          <Typography>
+            {moment(new Date(row?.publishDate)).format("jYYYY/jMM/jDD")}
+          </Typography>
         );
       },
     },
@@ -76,19 +78,20 @@ const PublicationGrid = ({ setActiveTab }: Props) => {
       headerAlign: "center",
       align: "center",
       renderCell: ({ row }: { row: any }) => {
-        return (
-          <TableActions
-            onEdit={() => {
-              // navigate(`${row.id}`, { state: { userData: row } });
-              setEditeData(row);
-              setAddModalFlag(true);
-            }}
-            onDelete={() => {
-              setDeleteData(row);
-              setDeleteFlag(true);
-            }}
-          />
-        );
+        if (!hasPermission("supervisor"))
+          return (
+            <TableActions
+              onEdit={() => {
+                // navigate(`${row.id}`, { state: { userData: row } });
+                setEditeData(row);
+                setAddModalFlag(true);
+              }}
+              onDelete={() => {
+                setDeleteData(row);
+                setDeleteFlag(true);
+              }}
+            />
+          );
       },
     },
   ];
@@ -176,16 +179,18 @@ const PublicationGrid = ({ setActiveTab }: Props) => {
           <Typography variant="h5">لیست انتشارات</Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"}>
-          <CreateNewItem
-            sx={{ mr: 2 }}
-            name="نشریه"
-            // onClick={() => navigate("new")}
-            onClick={() => {
-              // navigate("new")
-              // setActiveTab(1);
-              setAddModalFlag(true);
-            }}
-          />
+          {!hasPermission("supervisor") && (
+            <CreateNewItem
+              sx={{ mr: 2 }}
+              name="نشریه"
+              // onClick={() => navigate("new")}
+              onClick={() => {
+                // navigate("new")
+                // setActiveTab(1);
+                setAddModalFlag(true);
+              }}
+            />
+          )}
         </Box>
       </Grid>
       {/* <SearchPannel<SearchData>
@@ -212,7 +217,9 @@ const PublicationGrid = ({ setActiveTab }: Props) => {
               setFilters={setFilters}
               rowCount={StatesData?.totalElements}
               // rowHeight={25}
-              getRowHeight={() => "auto"}
+              getRowHeight={() =>
+                !hasPermission("supervisor") ? "auto" : null
+              }
               autoHeight
               hideToolbar
               // slots={{ toolbar: GridToolbar }}
@@ -259,7 +266,11 @@ const PublicationGrid = ({ setActiveTab }: Props) => {
             }
           )
         }
-        message={`آیا از حذف نشریه ${deleteData?.cdContractTypeName} واقع در تاریخ ${moment(deleteData?.contractPreparationDate).format("jYYYY/jMM/jDD")} مطمعین میباشید؟`}
+        message={`آیا از حذف نشریه ${
+          deleteData?.cdContractTypeName
+        } واقع در تاریخ ${moment(deleteData?.contractPreparationDate).format(
+          "jYYYY/jMM/jDD"
+        )} مطمعین میباشید؟`}
         title={"درخواست حذف!"}
       />
     </Grid>
