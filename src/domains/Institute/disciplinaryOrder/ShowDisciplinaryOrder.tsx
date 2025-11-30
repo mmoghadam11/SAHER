@@ -108,22 +108,26 @@ const ShowDisciplinaryOrder = ({
       endDate: null,
       fileCreationDate: null,
       fileTerminationDate: null,
-      setSelectedItems:null,
-      recordDate:null,
-      recordNumber:null,
-      orderDate:null,
+      setSelectedItems: null,
+      recordDate: null,
+      recordNumber: null,
+      orderDate: null,
     });
-    setSearchKey("")
+    setSearchKey("");
     setSelectedItems([]);
     setPdfUrl("");
     setPdfViewFlag(false);
   };
   const onSubmit = (data: any) => {
+    if (selectedItems.length === 0) {
+      snackbar("لیست موضوعات تخلف خالی میباشد", "error");
+      return 0;
+    }
     const { cdRespondenTypeId, ...restOfData } = data; // حذف cdRespondenTypeId
     const { orderDuration, ...formData } = data; // حذف orderDuration
 
     const submissionData = {
-      ...formData,
+      ...data,
       // فقط فیلد مربوط به نوع پاسخ‌دهنده انتخاب شده را ارسال کن
       auditingFirmId:
         cdRespondenTypeId === 396 ? restOfData.auditingFirmId : null,
@@ -134,12 +138,12 @@ const ShowDisciplinaryOrder = ({
     };
 
     console.log("submissionData", submissionData);
-
-    mutate({
-      entity: `disciplinary-order/${!!editeData ? "update" : "save"}`,
-      method: !!editeData ? "put" : "post",
-      data: submissionData,
-    });
+    if (selectedItems.length > 0)
+      mutate({
+        entity: `disciplinary-order/${!!editeData ? "update" : "save"}`,
+        method: !!editeData ? "put" : "post",
+        data: submissionData,
+      });
   };
   // فراخوانی هوک سفارشی با تمام منطق
   const { formItems, listLogic } = useDisciplinaryOrderForm({
@@ -161,7 +165,7 @@ const ShowDisciplinaryOrder = ({
     handleAddItem,
     handleRemoveItem,
   } = listLogic;
-  
+
   useEffect(() => {
     if (!!editeData) {
       let initialRespondenType = undefined;
@@ -196,16 +200,16 @@ const ShowDisciplinaryOrder = ({
         endDate: null,
         fileCreationDate: null,
         fileTerminationDate: null,
-        setSelectedItems:null,
-        recordDate:null,
-        recordNumber:null,
-        orderDate:null,
+        setSelectedItems: null,
+        recordDate: null,
+        recordNumber: null,
+        orderDate: null,
       });
       setSearchKey("");
       setSelectedItems([]);
     }
   }, [editeData, reset]);
-  
+
   return (
     <Dialog
       open={addModalFlag}
@@ -423,9 +427,7 @@ const ShowDisciplinaryOrder = ({
                 </Grid>
               </Grid>
             )}
-            
 
-            
             <Grid item xs={12} display="flex" justifyContent="flex-end" mt={2}>
               <Button variant="outlined" onClick={handleClose} sx={{ mr: 2 }}>
                 بازگشت

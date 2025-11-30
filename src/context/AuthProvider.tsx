@@ -22,9 +22,11 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
   const snackbar = useSnackbar();
   const [token, setToken] = useSessionStorage("token");
   const [userInfo, setUserInfo] = useLocalStorage<ILoggedInUser>("userInfo", {
+    userId: "",
     firstName: "",
     lastName: "",
     nationalCode: "",
+    mobileNumber: "",
     // fatherName: "",
     // projectKey: "",
     // previous_price: "",
@@ -72,7 +74,8 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
             "",
             "",
             "",
-            // "",
+            "",
+            "",
             // "",
             // "",
             // "",
@@ -189,14 +192,15 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
     data = { test: 1 },
   }: TServerCall) => {
     try {
-      const apiUrl = process.env.REACT_APP_API_URL || 'http://192.168.100.95:8086/api/v1/';
       let requestOptions = {
-        url: convertArabicCharToPersian( apiUrl + entity),
+        // url: convertArabicCharToPersian( apiUrl + entity),
+        url: convertArabicCharToPersian( entity),
         method,
         headers: {
+          "Content-Type": "application/json",
           Authorization: "Bearer " + (localToken || token),
         },
-        redirect: "follow",
+        // redirect: "follow",
         ...(data && { data: convertArabicCharToPersian(JSON.stringify(data)) }),
       };
       let response = await api({ ...requestOptions });
@@ -249,9 +253,8 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
     data ,
   }: TServerCall) => {
     try {
-      const apiUrl = process.env.REACT_APP_API_URL || 'http://192.168.100.95:8086/api/v1/';
       let requestOptions = {
-        url: convertArabicCharToPersian( apiUrl + entity),
+        url: convertArabicCharToPersian( entity),
         method,
         headers: {
           Authorization: "Bearer " + (localToken || token),
@@ -282,9 +285,8 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
     data
   }: TServerCall) => {
     try {
-      const apiUrl = process.env.REACT_APP_API_URL || 'http://192.168.100.95:8086/api/v1/';
       let requestOptions = {
-        url: convertArabicCharToPersian( apiUrl + entity),
+        url: convertArabicCharToPersian( entity),
         method,
         headers: {
           Authorization: "Bearer " + (localToken || token),
@@ -346,9 +348,11 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
   }
 
   function setContract(
+    userId:any,
     firstName: any,
     lastName: any,
     nationalCode: any,
+    mobileNumber:any,
     // fatherName: any,
     // projectKey: any,
     // previous_price: any,
@@ -363,9 +367,11 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
     // systemStep?: string
   ) {
     setUserInfo({
+      userId:userId,
       firstName: firstName,
       lastName: lastName,
       nationalCode: nationalCode,
+      mobileNumber:mobileNumber,
       // fatherName: fatherName,
       // projectKey: projectKey,
       // previous_price: previous_price,
@@ -389,14 +395,17 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
     setToken(null);
     localStorage.removeItem("username");
     localStorage.removeItem("permission");
+    localStorage.removeItem("director");
     localStorage.removeItem("accessMenu");
     localStorage.removeItem("refreshToken");
     // پاک کردن تمام sessionStorage
     // sessionStorage.clear();
     setUserInfo({
+      userId:"",
       firstName: "",
       lastName: "",
       nationalCode: "",
+      mobileNumber: "",
       // fatherName: "",
       // projectKey: "",
       // previous_price: "",

@@ -2,6 +2,8 @@ import {
   Article,
   BusinessCenter,
   Close,
+  DoneAll,
+  FileDownload,
   Gavel,
   HistoryEdu,
   LibraryBooksOutlined,
@@ -51,6 +53,8 @@ import { useAuthorization } from "hooks/useAutorization";
 import NewSearchPannel from "components/form/NewSearchPannel";
 import PdfUploadForm from "./details/PdfUploadForm";
 import UploadPdfDialog from "./details/UploadPDFDialog";
+import { isMobile } from "react-device-detect";
+import VerticalTable from "components/dataGrid/VerticalTable";
 
 type Props = {};
 
@@ -62,6 +66,34 @@ const AllDisciplinaryOrderGrid = (props: Props) => {
   const { isLoading, mutate, error } = useMutation({
     mutationFn: Auth?.serverCall,
   });
+  const { isLoading: Download_isLoading, mutate: Download_mutate } =
+    useMutation({
+      mutationFn: Auth?.serverCallGetFile,
+    });
+  function getExcel() {
+    Download_mutate(
+      {
+        entity: `disciplinary-order/export`,
+        method: "get",
+      },
+      {
+        onSuccess: (res: any) => {
+          if (res && res instanceof Blob) {
+            const url = URL.createObjectURL(res);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "گزارش_احکام_انتظامی.xlsx";
+            a.click();
+            URL.revokeObjectURL(url);
+          }
+          snackbar(`فایل اکسل با موفقیت دانلود شد`, "success");
+        },
+        onError: () => {
+          snackbar("خطا در دریافت اکسل ", "error");
+        },
+      }
+    );
+  }
   const {
     handleSubmit,
     formState: { errors },
@@ -124,6 +156,7 @@ const AllDisciplinaryOrderGrid = (props: Props) => {
     { field: "subject", headerName: "نام شخصیت", flex: 1.2 },
     {
       field: "subjectTypeName",
+      align: "center",
       headerName: "ردیف موضوع",
       // flex: 2.2,
       flex: 1,
@@ -138,7 +171,7 @@ const AllDisciplinaryOrderGrid = (props: Props) => {
             <List dense disablePadding>
               {row?.subjectTypeList?.map((SItem: any, SIndex: number) => (
                 <ListItem
-                key={SIndex}
+                  key={SIndex}
                   sx={{
                     py: 0,
                     my: 0,
@@ -168,6 +201,12 @@ const AllDisciplinaryOrderGrid = (props: Props) => {
     {
       field: "claimantTypeName",
       headerName: "نوع حکم",
+      flex: 1,
+      cellClassName: () => "font-13",
+    },
+    {
+      field: "orderNumber",
+      headerName: "شماره حکم",
       flex: 1,
       cellClassName: () => "font-13",
     },
@@ -209,21 +248,71 @@ const AllDisciplinaryOrderGrid = (props: Props) => {
       flex: 1,
       align: "center",
       renderCell: ({ row }: { row: any }) => {
-        if (row?.notificationStatus) return <Verified color="secondary" />;
-        else return <Close />;
+        if (row?.notificationStatus){
+          const [date, time] = row?.notificationDateFr?.split(" ")??[null,null];
+          return (
+            <Box
+              display={"flex"}
+              flexDirection={"column"}
+              alignItems={"center"}
+            >
+              <Verified color="secondary" />
+              <Tooltip title={row?.notificationDateFr+" (تاریخ ابلاغ)"}>
+                <Typography variant="caption">
+                  {/* {moment(new Date(row?.notificationDate)).format(
+                    "jYYYY/jMM/jDD"
+                  )} */}
+                  {date?.replaceAll("-", "/")??null}
+                </Typography>
+              </Tooltip>
+            </Box>
+          );
+        }
+          
+        else return <Close color="disabled" />;
       },
     },
+    // {
+    //   field: "notificationDate",
+    //   headerName: "تاریخ ابلاغ",
+    //   flex: 1,
+    //   renderCell: ({ row }: { row: any }) => {
+    //     if (row?.notificationDate)
+    //       return (
+    //         <Typography variant="caption">
+    //           {moment(new Date(row?.notificationDate)).format("jYYYY/jMM/jDD")}
+    //         </Typography>
+    //       );
+    //   },
+    // },
     {
-      field: "notificationDate",
-      headerName: "تاریخ ابلاغ",
+      field: "seen",
+      headerName: "مشاهده شده",
       flex: 1,
+      align: "center",
       renderCell: ({ row }: { row: any }) => {
-        if (row?.notificationDate)
+        if (row?.seen){
+          const [date, time] = row?.seenDateFr?.split(" ")??[null,null];
           return (
-            <Typography variant="caption">
-              {moment(new Date(row?.notificationDate)).format("jYYYY/jMM/jDD")}
-            </Typography>
+            <Box
+              display={"flex"}
+              flexDirection={"column"}
+              alignItems={"center"}
+            >
+              <DoneAll color="success" />
+              {row?.seenDate && (
+                <Tooltip title={row?.seenDateFr+" (تاریخ مشاهده)"}>
+                  <Typography variant="caption">
+                    {/* {moment(new Date(row?.seenDate)).format("jYYYY/jMM/jDD")} */}
+                    {date?.replaceAll("-", "/")??null}
+                  </Typography>
+                </Tooltip>
+              )}
+            </Box>
           );
+        }
+          
+        return <Close color="disabled" />;
       },
     },
     {
@@ -270,6 +359,18 @@ const AllDisciplinaryOrderGrid = (props: Props) => {
               onView={() => {
                 setEditeData(row);
                 setAddModalFlag(true);
+              }}
+              onAdd={{
+                function: () => {
+                  setBasePDFData(row);
+                  setPdfFlag(true);
+                },
+                title: "پی دی اف",
+                icon: (
+                  <PictureAsPdf
+                    color={row.hasAttachment ? "success" : "primary"}
+                  />
+                ),
               }}
             />
           );
@@ -322,13 +423,13 @@ const AllDisciplinaryOrderGrid = (props: Props) => {
       name: "subject",
       inputType: "text",
       label: "شخصیت",
-      size: { md: 3 },
+      size: { md: 4 },
     },
     {
       name: "cdOrderTypeId",
       inputType: "autocomplete",
       label: "نوع تنبیه",
-      size: { md: 3 },
+      size: { md: 4 },
       options: orderTypeOptions?.map((item: any) => ({
         value: item.id,
         title: item.value,
@@ -339,7 +440,7 @@ const AllDisciplinaryOrderGrid = (props: Props) => {
       name: "workgroupId",
       inputType: "autocomplete",
       label: "کارگروه",
-      size: { md: 3 },
+      size: { md: 4 },
       options: workgroupOptions?.map((item: any) => ({
         value: item.id,
         title: item.name,
@@ -347,15 +448,38 @@ const AllDisciplinaryOrderGrid = (props: Props) => {
       storeValueAs: "id",
     },
     {
+      name: "cdSubjectTypeKey",
+      inputType: "text",
+      label: "ردیف موضوع",
+      size: { md: 3 },
+    },
+    {
       name: "hasAttachment",
       inputType: "autocomplete",
-      label: "دارای ضمیمه",
+      label: "دارای پیوست",
       size: { md: 3 },
       options: [
         { value: "true", title: "میباشد" },
         { value: "false", title: "نمیباشد" },
       ],
       storeValueAs: "id",
+    },
+    {
+      name: "cdClaimantTypeId",
+      inputType: "autocomplete",
+      label: "نوع حکم",
+      size: { md: 3 },
+      options: [
+        { value: "398", title: "بدوی" },
+        { value: "399", title: "عالی" },
+      ],
+      storeValueAs: "id",
+    },
+    {
+      name: "orderNumber",
+      inputType: "text",
+      label: "شماره حکم",
+      size: { md: 3 },
     },
   ];
   type editeObjectType = {
@@ -442,18 +566,41 @@ const AllDisciplinaryOrderGrid = (props: Props) => {
         setSearchData={setSearchData}
         setFilters={setFilters}
       />
+      {StatesData_status === "success" && (
+        <Grid item md={11} sm={11} xs={12}>
+          <Button
+            variant="outlined"
+            // size="small"
+            color="success"
+            endIcon={<FileDownload />}
+            onClick={getExcel}
+          >
+            دریافت خروجی اکسل
+          </Button>
+        </Grid>
+      )}
       <Grid item md={11} sm={11} xs={12}>
         {StatesData_status === "success" ? (
-          <TavanaDataGrid
-            rows={StatesData?.content}
-            columns={columns}
-            filters={filters}
-            setFilters={setFilters}
-            rowCount={StatesData?.totalElements}
-            getRowHeight={() => "auto"}
-            autoHeight
-            hideToolbar
-          />
+          isMobile ? (
+            <VerticalTable
+              rows={StatesData?.content}
+              columns={columns}
+              filters={filters}
+              setFilters={setFilters}
+              rowCount={StatesData?.totalElements}
+            />
+          ) : (
+            <TavanaDataGrid
+              rows={StatesData?.content}
+              columns={columns}
+              filters={filters}
+              setFilters={setFilters}
+              rowCount={StatesData?.totalElements}
+              getRowHeight={() => "auto"}
+              autoHeight
+              hideToolbar
+            />
+          )
         ) : null}
       </Grid>
       <ShowDisciplinaryOrder

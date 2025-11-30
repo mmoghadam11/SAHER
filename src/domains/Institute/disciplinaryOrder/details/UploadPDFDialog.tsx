@@ -29,6 +29,7 @@ import TableActions from "components/table/TableActions";
 import { GridColDef } from "@mui/x-data-grid";
 import { Controller, useForm } from "react-hook-form";
 import RenderFormInput from "components/render/formInputs/RenderFormInput";
+import { useAuthorization } from "hooks/useAutorization";
 
 // Props برای دیالوگ جدید
 type Props = {
@@ -38,6 +39,7 @@ type Props = {
   entityId: string | number;
   // یک Callback برای زمانی که آپلود با موفقیت انجام شد
   refetch?: () => void;
+  notificationStatus?: boolean;
 };
 
 const MAX_PDF_SIZE_MB = 10; // حداکثر حجم مجاز
@@ -47,6 +49,7 @@ const UploadPdfDialog: React.FC<Props> = ({
   onClose,
   entityId,
   refetch,
+  notificationStatus,
 }) => {
   const Auth = useAuth();
   const snackbar = useSnackbar();
@@ -68,6 +71,7 @@ const UploadPdfDialog: React.FC<Props> = ({
   const [showPDFFlag, setShowPDFFlag] = useState<boolean>(false);
   const [selectedPDF, setSelectedPDF] = useState(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const authFunctions = useAuthorization();
 
   const formItems = useMemo(
     () => [
@@ -91,20 +95,51 @@ const UploadPdfDialog: React.FC<Props> = ({
       headerAlign: "center",
       align: "center",
       renderCell: ({ row }: { row: any }) => {
-        return (
-          <TableActions
-            onView={() => {
-              setSelectedPDF(row.id);
-              setShowPDFFlag((prev) => !prev);
-            }}
-            onDelete={() => {
-              deleteMutate({
-                entity: `disciplinary-order/remove-order-image?id=${row.id}`, // ❗️
-                method: "delete",
-              });
-            }}
-          />
-        );
+        if (!notificationStatus)
+          return (
+            <TableActions
+              onView={() => {
+                setSelectedPDF(row.id);
+                setShowPDFFlag((prev) => !prev);
+              }}
+              onDelete={() => {
+                deleteMutate({
+                  entity: `disciplinary-order/remove-order-image?id=${row.id}`, // ❗️
+                  method: "delete",
+                });
+              }}
+            />
+          );
+        else
+          if(authFunctions?.hasPermission("disciplinary-order-edit"))
+          return (
+            <TableActions
+              onView={() => {
+                setSelectedPDF(row.id);
+                setShowPDFFlag((prev) => !prev);
+              }}
+              onDelete={() => {
+                deleteMutate({
+                  entity: `disciplinary-order/remove-order-image?id=${row.id}`, // ❗️
+                  method: "delete",
+                });
+              }}
+            />
+          );
+          else return (
+            <TableActions
+              onView={() => {
+                setSelectedPDF(row.id);
+                setShowPDFFlag((prev) => !prev);
+              }}
+              // onDelete={() => {
+              //   deleteMutate({
+              //     entity: `disciplinary-order/remove-order-image?id=${row.id}`, // ❗️
+              //     method: "delete",
+              //   });
+              // }}
+            />
+          );
       },
     },
   ];
@@ -280,7 +315,7 @@ const UploadPdfDialog: React.FC<Props> = ({
     );
   };
 
-  function noticOrdr(params:any) {
+  function noticOrdr(params: any) {
     mutate(
       {
         entity: `disciplinary-order/notice-order?id=${entityId}`,
@@ -326,70 +361,72 @@ const UploadPdfDialog: React.FC<Props> = ({
 
       <DialogContent>
         <Grid container justifyContent={"center"}>
-          <Grid item md={11} sm={11} xs={12}>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="application/pdf"
-              onChange={handleFileChange}
-              hidden
-            />
-            <Box
-              sx={{
-                border: "1px dashed",
-                borderColor: "divider",
-                padding: 2,
-                borderRadius: 1,
-                mt: 1,
-              }}
-            >
-              <Stack spacing={2} direction="row" alignItems="center">
-                <Button
-                  variant="outlined"
-                  onClick={handleChooseClick}
-                  startIcon={<PictureAsPdf />}
-                  disabled={isLoading}
-                >
-                  انتخاب فایل PDF
-                </Button>
+          {!notificationStatus && authFunctions?.hasPermission("disciplinary-order-edit")&& (
+            <Grid item md={11} sm={11} xs={12}>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="application/pdf"
+                onChange={handleFileChange}
+                hidden
+              />
+              <Box
+                sx={{
+                  border: "1px dashed",
+                  borderColor: "divider",
+                  padding: 2,
+                  borderRadius: 1,
+                  mt: 1,
+                }}
+              >
+                <Stack spacing={2} direction="row" alignItems="center">
+                  <Button
+                    variant="outlined"
+                    onClick={handleChooseClick}
+                    startIcon={<PictureAsPdf />}
+                    disabled={isLoading}
+                  >
+                    انتخاب فایل PDF
+                  </Button>
 
-                {selectedFile && (
-                  <Typography variant="body2" sx={{ flexGrow: 1 }} noWrap>
-                    {selectedFile.name}
+                  {selectedFile && (
+                    <Typography variant="body2" sx={{ flexGrow: 1 }} noWrap>
+                      {selectedFile.name}
+                    </Typography>
+                  )}
+
+                  {selectedFile &&
+                    formItems?.map((item) => (
+                      <Grid item xs={12} md={item.size.md} key={item.name}>
+                        <Controller
+                          name={item.name}
+                          control={control}
+                          render={({ field }) => (
+                            <RenderFormInput
+                              controllerField={field}
+                              errors={errors}
+                              {...item}
+                              {...field}
+                              // value={description ?? "عالی"}
+                            />
+                          )}
+                        />
+                      </Grid>
+                    ))}
+                </Stack>
+
+                {!selectedFile && (
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    sx={{ mt: 2, display: "block" }}
+                  >
+                    حداکثر حجم مجاز: {MAX_PDF_SIZE_MB} مگابایت
                   </Typography>
                 )}
-
-                {selectedFile &&
-                  formItems?.map((item) => (
-                    <Grid item xs={12} md={item.size.md} key={item.name}>
-                      <Controller
-                        name={item.name}
-                        control={control}
-                        render={({ field }) => (
-                          <RenderFormInput
-                            controllerField={field}
-                            errors={errors}
-                            {...item}
-                            {...field}
-                            // value={description ?? "عالی"}
-                          />
-                        )}
-                      />
-                    </Grid>
-                  ))}
-              </Stack>
-
-              {!selectedFile && (
-                <Typography
-                  variant="caption"
-                  color="text.secondary"
-                  sx={{ mt: 2, display: "block" }}
-                >
-                  حداکثر حجم مجاز: {MAX_PDF_SIZE_MB} مگابایت
-                </Typography>
-              )}
-            </Box>
-          </Grid>
+              </Box>
+            </Grid>
+          )}
           <Grid item md={11} sm={11} xs={12}>
             {PDFList_status === "success" && !!PDFList?.content?.length && (
               <TavanaDataGrid
@@ -476,7 +513,7 @@ const UploadPdfDialog: React.FC<Props> = ({
         )}
 
         <Box sx={!!PDFList?.content?.length ? { mr: 3 } : {}}>
-          {PdfUrl && showPDFFlag && (
+          {PdfUrl && showPDFFlag &&authFunctions?.hasPermission("disciplinary-order-edit")&& (
             <Button
               variant="outlined"
               color="warning"
@@ -495,6 +532,7 @@ const UploadPdfDialog: React.FC<Props> = ({
           >
             انصراف
           </Button>
+          {authFunctions?.hasPermission("disciplinary-order-edit")&&
           <Button
             variant="contained"
             startIcon={
@@ -508,7 +546,7 @@ const UploadPdfDialog: React.FC<Props> = ({
             disabled={isLoading || !selectedFile}
           >
             {isLoading ? "در حال آپلود..." : "آپلود"}
-          </Button>
+          </Button>}
         </Box>
       </DialogActions>
     </Dialog>

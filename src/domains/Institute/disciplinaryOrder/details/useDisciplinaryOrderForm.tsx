@@ -536,6 +536,13 @@ export const useDisciplinaryOrderForm = ({
           },
         });
       }
+      else
+        baseItems.splice(targetIndexcdOrderTypeId + 1, 0, {
+          name: "orderDuration",
+          inputType: "text",
+          label: "مدت زمان حکم (ماه)",
+          size: { md: 6 },
+        });
     }
     return baseItems;
   }, [

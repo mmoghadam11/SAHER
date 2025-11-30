@@ -138,12 +138,12 @@ const MENU_ITEMS: MenuItem[] = [
     icon: <BusinessCenter />,
     title: "موسسات",
     url: "/institutions",
-    access: ["city-showmenu"],
+    access: ["city-showmenu","allFirms_showmenu"],
     menuChildren: [
       {
         title: "اطلاعات موسسات",
         url: "information",
-        access: ["administrator", "city-showmenu"],
+        access: ["allFirms_showmenu", "city-showmenu"],
       },
       {
         title: "شرکای موسسه",
@@ -260,6 +260,19 @@ const MENU_ITEMS: MenuItem[] = [
     ],
   },
   {
+    icon: <BusinessCenter />,
+    title: "مدیرعامل موسسه",
+    url: "/director",
+    access: ["director-showmenu"],
+    menuChildren: [
+      {
+        title: "احکام انتظامی",
+        url: "disciplinary-order",
+        access: ["director-showmenu"],
+      },
+    ],
+  },
+  {
     icon: <People />,
     title: "حسابداران رسمی",
     url: "/accountant",
@@ -321,10 +334,15 @@ const MENU_ITEMS: MenuItem[] = [
         url: "disciplinary-order",
         access: ["administrator","city-showmenu","township-showmenu","accountant-showmenu"],
       },
+      // {
+      //   title: "سابقه آموزش مستمر",
+      //   url: "EDU",
+      //   access: ["administrator","city-showmenu","township-showmenu","accountant-showmenu"],
+      // },
       {
         title: "آموزش مستمر",
         url: "EDU",
-        access: ["administrator", "city-showmenu","accountant-showmenu"],
+        access: ["administrator", "city-showmenu"],
       },
       {
         title: "گزارشات",
