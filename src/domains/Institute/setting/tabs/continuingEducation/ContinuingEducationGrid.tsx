@@ -20,11 +20,9 @@ import moment from "jalali-moment";
 import ConfirmBox from "components/confirmBox/ConfirmBox";
 import BranchEDU from "./BranchEDU";
 
-type Props = {
-  setActiveTab: React.Dispatch<React.SetStateAction<number>>;
-};
+type Props = {};
 
-const ContinuingEducationGrid = ({ setActiveTab }: Props) => {
+const ContinuingEducationGrid = ( Props: Props) => {
   const { id } = useParams();
   const Auth = useAuth();
   const snackbar = useSnackbar();
