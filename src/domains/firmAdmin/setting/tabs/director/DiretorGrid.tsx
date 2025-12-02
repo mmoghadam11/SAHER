@@ -18,6 +18,7 @@ import VerticalTable from "components/dataGrid/VerticalTable";
 import { isMobile } from "react-device-detect";
 import SearchPannel from "components/form/SearchPannel";
 import AddDirectorModal from "./AddDirectorModal";
+import moment from "jalali-moment";
 
 type Props = {
   setActiveTab: React.Dispatch<React.SetStateAction<number>>;
@@ -53,9 +54,23 @@ const DirectorGrid = ({ setActiveTab }: Props) => {
     enabled: true,
   } as any);
   const columns: GridColDef[] = [
-    { field: "firstName", headerName: "نام مدیرعامل", flex: 1 },
-    { field: "lastName", headerName: "نام خانوادگی", flex: 1 },
+    { field: "firstName", headerName: "نام مدیرعامل", flex: 1.5 },
+    { field: "lastName", headerName: "نام خانوادگی", flex: 1.5 },
     { field: "nationalCode", headerName: "کد ملی", flex: 1 },
+    {
+      field: "startDate",
+      headerName: "تاریخ شروع مدیریت",
+      flex: 1,
+      // align: "center",
+      renderCell: ({ row }: { row: any }) => {
+        if (!!row?.startDate)
+          return (
+            <Typography variant="body2">
+              {moment(new Date(row?.startDate)).format("jYYYY/jMM/jDD")}
+            </Typography>
+          );
+      },
+    },
     // {
     //   headerName: "عملیات",
     //   field: "action",
@@ -196,7 +211,7 @@ const DirectorGrid = ({ setActiveTab }: Props) => {
               setFilters={setFilters}
               rowCount={StatesData?.totalElements}
               // rowHeight={25}
-              getRowHeight={() => "auto"}
+              // getRowHeight={() => "auto"}
               autoHeight
               hideToolbar
               // slots={{ toolbar: GridToolbar }}
