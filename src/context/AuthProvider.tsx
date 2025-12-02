@@ -62,32 +62,26 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
     if (!!ref) {
       axios
         .post(
-          process.env.REACT_APP_API_URL +
-            `/api/auth/refresh-token?refreshToken=${ref}`,
-          {}
+          process.env.REACT_APP_API_URL + `auth/refresh-token`,
+          { refreshToken: ref },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          }
         )
         .then((res) => res.data)
         .then((res) => {
           storeToken(res?.token);
-          storeRefreshToken(res?.token);
-          setContract(
-            "",
-            "",
-            "",
-            "",
-            "",
-            // "",
-            // "",
-            // "",
-            // "",
-            // null,
-            // null,
-            // null,
-            // false,
-            // false,
-            // false,
-            // ""
-          );
+          storeRefreshToken(res?.refresh_token);
+          // setContract(
+          //   "",
+          //   "",
+          //   "",
+          //   "",
+          //   "",
+          // );
           window.location.pathname = "/";
         })
         .catch(() => {
@@ -194,7 +188,7 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
     try {
       let requestOptions = {
         // url: convertArabicCharToPersian( apiUrl + entity),
-        url: convertArabicCharToPersian( entity),
+        url: convertArabicCharToPersian(entity),
         method,
         headers: {
           "Content-Type": "application/json",
@@ -215,7 +209,8 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
       }
     } catch (e: any) {
       if (e?.response?.status === 401) {
-        clearUserInfo();
+        refreshToken();
+        // clearUserInfo();
       }
       throw e.response || new Error(`خطا در انجام عملیات`);
     }
@@ -247,14 +242,10 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
       throw new Error(JSON.stringify(e) || `خطا در انجام عملیات`);
     }
   };
-  const serverCallUpload = async ({
-    entity,
-    method,
-    data ,
-  }: TServerCall) => {
+  const serverCallUpload = async ({ entity, method, data }: TServerCall) => {
     try {
       let requestOptions = {
-        url: convertArabicCharToPersian( entity),
+        url: convertArabicCharToPersian(entity),
         method,
         headers: {
           Authorization: "Bearer " + (localToken || token),
@@ -281,17 +272,17 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
   };
   const serverCallGetFile = async ({
     entity,
-    method="get",
-    data
+    method = "get",
+    data,
   }: TServerCall) => {
     try {
       let requestOptions = {
-        url: convertArabicCharToPersian( entity),
+        url: convertArabicCharToPersian(entity),
         method,
         headers: {
           Authorization: "Bearer " + (localToken || token),
         },
-        responseType: 'blob',
+        responseType: "blob",
         redirect: "follow",
         ...(data && { data: data }),
       };
@@ -348,11 +339,11 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
   }
 
   function setContract(
-    userId:any,
+    userId: any,
     firstName: any,
     lastName: any,
     nationalCode: any,
-    mobileNumber:any,
+    mobileNumber: any
     // fatherName: any,
     // projectKey: any,
     // previous_price: any,
@@ -367,11 +358,11 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
     // systemStep?: string
   ) {
     setUserInfo({
-      userId:userId,
+      userId: userId,
       firstName: firstName,
       lastName: lastName,
       nationalCode: nationalCode,
-      mobileNumber:mobileNumber,
+      mobileNumber: mobileNumber,
       // fatherName: fatherName,
       // projectKey: projectKey,
       // previous_price: previous_price,
@@ -401,7 +392,7 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
     // پاک کردن تمام sessionStorage
     // sessionStorage.clear();
     setUserInfo({
-      userId:"",
+      userId: "",
       firstName: "",
       lastName: "",
       nationalCode: "",
