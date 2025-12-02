@@ -202,6 +202,14 @@ const InstititeGrid = (props: Props) => {
     console.log(filters);
   }, [filters]);
 
+  const [filterModel, setFilterModel] = useState({
+    items: [],
+  });
+  const handleFilterChange = (newFilterModel: any) => {
+    setFilterModel(newFilterModel);
+    console.log("newFilterModel",newFilterModel)
+    // fetchData();  // با تغییر فیلتر، داده‌ها رو از سرور بگیر
+  };
   return (
     <Grid container justifyContent="center">
       <Grid
@@ -246,6 +254,8 @@ const InstititeGrid = (props: Props) => {
             getRowHeight={() => "auto"}
             autoHeight
             hideToolbar
+            // filterModel={filterModel}
+            // onFilterModelChange={handleFilterChange}
           />
         ) : null}
       </Grid>

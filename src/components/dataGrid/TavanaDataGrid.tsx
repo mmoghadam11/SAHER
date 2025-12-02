@@ -22,7 +22,7 @@ const TavanaDataGrid = (props: Props) => {
         <DataGrid
           sx={{
             "& .MuiTablePagination-actions": { direction: "rtl" },
-            "& .font-12": {fontSize: "12px"},
+            "& .font-12": { fontSize: "12px" },
             "& .font-13": {
               // fontWeight: 425,
               fontSize: "13px",
@@ -47,6 +47,21 @@ const TavanaDataGrid = (props: Props) => {
 
             toolbarColumns: "ستون ها",
             toolbarColumnsLabel: "ستون ها",
+
+            filterPanelAddFilter: "افزودن فیلتر",
+            filterPanelRemoveAll: "حذف همه فیلترها",
+            filterPanelLogicOperator: "عملگر منطقی",
+            filterPanelOperator: "عملگر",
+            filterPanelColumns: "ستون‌ها",
+            filterPanelInputLabel: "مقدار", // قبلاً filterPanelValue بود
+            filterPanelInputPlaceholder: "مقدار را وارد کنید",
+            filterOperatorContains: "شامل",
+            filterOperatorEquals: "برابر",
+            filterOperatorStartsWith: "شروع با",
+            filterOperatorEndsWith: "پایان با",
+            filterOperatorIsEmpty: "تهی",
+            filterOperatorIsNotEmpty: "ناتهی",
+            filterOperatorIsAnyOf: "یکی از",
 
             MuiTablePagination: {
               labelRowsPerPage: "تعداد ردیف",
