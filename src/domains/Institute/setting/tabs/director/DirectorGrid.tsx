@@ -1,25 +1,22 @@
-import { Close, Key, ManageAccounts, Toc, Verified } from "@mui/icons-material";
-import { Box, Chip, Grid, Typography } from "@mui/material";
-import { GridColDef, GridToolbar } from "@mui/x-data-grid";
+import { Toc } from "@mui/icons-material";
+import { Box, Grid, Typography } from "@mui/material";
+import { GridColDef } from "@mui/x-data-grid";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import BackButton from "components/buttons/BackButton";
 import CreateNewItem from "components/buttons/CreateNewItem";
 import TavanaDataGrid from "components/dataGrid/TavanaDataGrid";
 import TableActions from "components/table/TableActions";
 import { useAuth } from "hooks/useAuth";
 import { useSnackbar } from "hooks/useSnackbar";
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
 import paramsSerializer from "services/paramsSerializer";
 import { PAGINATION_DEFAULT_VALUE } from "shared/paginationValue";
 import ConfirmBox from "components/confirmBox/ConfirmBox";
 import VerticalTable from "components/dataGrid/VerticalTable";
 import { isMobile } from "react-device-detect";
-import SearchPannel from "components/form/SearchPannel";
 import AddDirectorModal from "./AddDirectorModal";
 import { useAuthorization } from "hooks/useAutorization";
 import moment from "jalali-moment";
+import { useParams } from "react-router-dom";
 
 type Props = {
   setActiveTab: React.Dispatch<React.SetStateAction<number>>;
@@ -30,15 +27,10 @@ const DirectorGrid = ({ setActiveTab }: Props) => {
   const Auth = useAuth();
   const { hasPermission } = useAuthorization();
   const snackbar = useSnackbar();
-  const navigate = useNavigate();
-  const { isLoading, mutate, error } = useMutation({
+  const {  mutate } = useMutation({
     mutationFn: Auth?.serverCall,
   });
-  const {
-    handleSubmit,
-    formState: { errors },
-    control,
-  } = useForm();
+  
   const [filters, setFilters] = useState<any>({
     ...PAGINATION_DEFAULT_VALUE,
     firm: id,
@@ -141,29 +133,6 @@ const DirectorGrid = ({ setActiveTab }: Props) => {
     console.log(filters);
   }, [filters]);
 
-  function searching() {
-    mutate(
-      {
-        entity: `/api/v1/common-data/search`,
-        method: "post",
-        //   data:
-      },
-      {
-        onSuccess: (res: any) => {
-          if (res?.status == 200 && res?.data) {
-            snackbar(
-              "واحد های انتخابی با موفقیت به لیست شما افزوده شد.",
-              "success"
-            );
-            // navigate('/unitselection', { state: {from: "add-unit", noBack: noBack} })
-          } else snackbar("خطا در افزودن واحد ها به لیست", "error");
-        },
-        onError: (err) => {
-          snackbar("خطا در افزودن واحد ها به لیست", "error");
-        },
-      }
-    );
-  }
   return (
     <Grid container justifyContent="center">
       <Grid
@@ -250,7 +219,7 @@ const DirectorGrid = ({ setActiveTab }: Props) => {
         handleSubmit={() =>
           mutate(
             {
-              entity: `firm-director/remove/${deleteData?.id}`,
+              entity: `firm-director/delete/${deleteData?.id}`,
               method: "delete",
             },
             {

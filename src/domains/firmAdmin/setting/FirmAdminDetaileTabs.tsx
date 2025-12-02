@@ -1,43 +1,28 @@
 import React, { useEffect, useMemo, useState } from "react";
 import {
-  Stepper,
-  Step,
-  StepLabel,
-  Button,
   Typography,
-  Box,
   Paper,
-  Container,
   Grid,
   Tabs,
   Tab,
   MenuItem,
   Select,
 } from "@mui/material";
-import { Controller, FormProvider, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { FullInstituteType } from "types/institute";
 
 // کامپوننت‌های مربوط به هر دسته اطلاعات
-import { Check, Inventory } from "@mui/icons-material";
+import { Inventory } from "@mui/icons-material";
 import RenderFormInput from "components/render/formInputs/RenderFormInput";
-import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAuth } from "hooks/useAuth";
-import { useSnackbar } from "hooks/useSnackbar";
 
-import FancyTicketDivider from "components/FancyTicketDivider";
 import BackButton from "components/buttons/BackButton";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import Director from "./tabs/director/Director";
-import { getBasicInfoItems } from "../forms/BasicInfo";
+import { useLocation, useNavigate } from "react-router-dom";
 import { MiniInfoItems } from "./forms/MiniInfo";
-import moment from "jalali-moment";
 import DirectorGrid from "./tabs/director/DiretorGrid";
 import { isMobile } from "react-device-detect";
 import { TOption } from "types/render";
-import EduInfoGrid from "./tabs/eduInfo/EduInfoGrid";
-import FinancialStatementsGrid from "./tabs/financial/FinancialStatementsGrid";
 import ContinuingEducationGrid from "./tabs/continuingEducation/ContinuingEducationGrid";
-import FirmContractGrid from "./tabs/firnContract/FirmContractGrid";
 import PublicationGrid from "./tabs/publication/PublicationGrid";
 import BranchGrid from "./tabs/branchs/BranchGrid";
 import AddressGrid from "./tabs/address/AddressGrid";
@@ -52,19 +37,10 @@ interface FormItem {
   options?: any[];
   elementProps?: any;
 }
-interface FormStep {
-  name: string;
-  formItems: FormItem[];
-}
 const FirmAdminDetaileTabs = (props: Props) => {
-  const { id } = useParams();
   const { state } = useLocation();
   const Auth = useAuth();
   const navigate = useNavigate();
-  const snackbar = useSnackbar();
-  const { mutate, isLoading } = useMutation({
-    mutationFn: Auth?.serverCall,
-  });
   const {
     handleSubmit,
     control,
@@ -80,21 +56,10 @@ const FirmAdminDetaileTabs = (props: Props) => {
     console.log("get=>", new Date(getValues()["registerDate"]).toISOString());
   }, [state?.firmData]);
 
-  const {
-    data: cityOptions,
-    status: cityOptions_status,
-    refetch: cityOptions_refetch,
-  } = useQuery<any>({
-    queryKey: [`city/search-all`],
-    queryFn: Auth?.getRequest,
-    select: (res: any) => {
-      return res?.data;
-    },
-  } as any);
   const tabSteps = [
     {
       title: "مدیرعامل",
-      com: <DirectorGrid setActiveTab={setActiveTab} />,
+      com: <DirectorGrid />,
     },
     // {
     //   title: "آموزشی",

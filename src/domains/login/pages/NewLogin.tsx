@@ -14,10 +14,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import axios from "axios";
 import { Refresh, Visibility, VisibilityOff } from "@mui/icons-material";
-import * as Yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
 import { useAuth } from "hooks/useAuth";
 import { useErrorHandler } from "../../../hooks/useErrorHandler";
@@ -31,14 +28,13 @@ import RenderFormInput from "components/render/formInputs/RenderFormInput";
 // A single dynamic schema for validation
 
 const NewLogin = () => {
-  const { storeToken, setContract, setUserInfo, storeRefreshToken } = useAuth();
+  const { storeToken, setUserInfo, storeRefreshToken } = useAuth();
   const { setNotification } = useErrorHandler();
 
   const [formMode, setFormMode] = useState("2FA1"); // 'LOGIN', 'FORGOT_PASSWORD', 'CHANGE_PASSWORD',2FA1,2FA2
   const [showPassword, setShowPassword] = useState(false);
   const [lockSendBtn, setLockSendBtn] = useState(false);
   const [captchaImage, setCaptchaImage] = useState();
-  const [secCode, setSecCode] = useState();
   const [refreshCount, setRefreshCount] = useState(0);
   const [tempToken, setTempToken] = useState("");
   const [sessionId, setSessionId] = useState(null);
@@ -50,7 +46,6 @@ const NewLogin = () => {
     handleSubmit,
     control,
     formState: { errors },
-    getValues,
     reset,
   } = useForm({
     // resolver: yupResolver(getValidationSchema(formMode)),
@@ -101,15 +96,15 @@ const NewLogin = () => {
 
     fetch(process.env.REACT_APP_API_URL + "auth/authenticate", requestOptions)
       .then((response) => {
-        if (response.status == 200) {
+        if (response.status === 200) {
           setNotification(200, "ورود موفق", "success");
-        } else if (response.status == 401) {
+        } else if (response.status === 401) {
           setNotification(401, "نام کاربری یا رمز عبور اشتباه است", "error");
-        } else if (response.status == 402) {
+        } else if (response.status === 402) {
           setNotification(402, "کد امنیتی اشتباه است", "error");
-        } else if (response.status == 412) {
+        } else if (response.status === 412) {
           setNotification(412, "کاربر فاقد نقش در سامانه است", "error");
-        } else if (response.status == 416) {
+        } else if (response.status === 416) {
           setNotification(416, "کاربر غیر فعال است", "error");
         } else {
           setNotification(404, "خطا در اتصال به سرور", "error");
@@ -117,7 +112,7 @@ const NewLogin = () => {
         return response.json();
       })
       .then(async (result) => {
-        if (result?.status == 201) {
+        if (result?.status === 201) {
           setTempToken(result.access_token);
           setChangePassword(true);
           setNotification(
@@ -177,19 +172,19 @@ const NewLogin = () => {
       requestOptions
     )
       .then((response) => {
-        if (response.status == 200) {
+        if (response.status === 200) {
           setLockSendBtn(false)
           setFormMode("2FA2");
           setNotification(200, "کد برای شما ارسال شد", "success");
-        } else if (response.status == 401) {
+        } else if (response.status === 401) {
           setNotification(401, "نام کاربری یا رمز عبور اشتباه است", "error");
-        } else if (response.status == 402) {
+        } else if (response.status === 402) {
           setNotification(402, "کد امنیتی اشتباه است", "error");
-        } else if (response.status == 412) {
+        } else if (response.status === 412) {
           setNotification(412, "کاربر فاقد نقش در سامانه است", "error");
-        } else if (response.status == 416) {
+        } else if (response.status === 416) {
           setNotification(416, "کاربر غیر فعال است", "error");
-        } else if (response.status == 404) {
+        } else if (response.status === 404) {
           setNotification(404, "خطا در اتصال به سرور", "error");
         } else {
           setNotification(500, "خطا در اطلاعات وارد شده", "error");
@@ -198,7 +193,7 @@ const NewLogin = () => {
         return response.json();
       })
       .then(async (result) => {
-        if (result?.status == 201) {
+        if (result?.status === 201) {
           setTempToken(result.access_token);
           setChangePassword(true);
           setNotification(
@@ -235,15 +230,15 @@ const NewLogin = () => {
       requestOptions
     )
       .then((response) => {
-        if (response.status == 200) {
+        if (response.status === 200) {
           setNotification(200, "ورود موفق", "success");
-        } else if (response.status == 401) {
+        } else if (response.status === 401) {
           setNotification(401, "نام کاربری یا رمز عبور اشتباه است", "error");
-        } else if (response.status == 402) {
+        } else if (response.status === 402) {
           setNotification(402, "کد امنیتی اشتباه است", "error");
-        } else if (response.status == 412) {
+        } else if (response.status === 412) {
           setNotification(412, "کاربر فاقد نقش در سامانه است", "error");
-        } else if (response.status == 416) {
+        } else if (response.status === 416) {
           setNotification(416, "کاربر غیر فعال است", "error");
         } else {
           setNotification(404, "کد وارد شده صحیح نمیباشد", "error");
@@ -251,7 +246,7 @@ const NewLogin = () => {
         return response.json();
       })
       .then(async (result) => {
-        if (result?.status == 201) {
+        if (result?.status === 201) {
           setTempToken(result.access_token);
           setChangePassword(true);
           setNotification(
@@ -316,9 +311,9 @@ const NewLogin = () => {
   //     requestOptions
   //   )
   //     .then((response) => {
-  //       if (response.status == 200) {
+  //       if (response.status === 200) {
   //         setNotification(200, "ورود موفق", "success");
-  //       } else if (response.status == 416) {
+  //       } else if (response.status === 416) {
   //         setNotification(416, "کاربر غیر فعال است", "error");
   //       } else {
   //         setNotification(404, "خطا در اتصال به سرور", "error");
@@ -369,9 +364,9 @@ const NewLogin = () => {
       requestOptions
     )
       .then((response: any) => {
-        if (response.status == 200) {
+        if (response.status === 200) {
           setNotification(200, response?.data, "success");
-        } else if (response.status == 401) {
+        } else if (response.status === 401) {
           setNotification(401, response?.data, "error");
         } else {
           setNotification(404, "خطا در اتصال به سرور", "error");

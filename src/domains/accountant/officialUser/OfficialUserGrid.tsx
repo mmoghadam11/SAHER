@@ -2,20 +2,14 @@ import {
   AccountCircle,
   Article,
   FileDownload,
-  Search,
-  Settings,
   Toc,
 } from "@mui/icons-material";
 import {
   Avatar,
   Box,
   Button,
-  Dialog,
-  DialogTitle,
   Grid,
   IconButton,
-  Modal,
-  Paper,
   Typography,
 } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
@@ -23,14 +17,12 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import BackButton from "components/buttons/BackButton";
 import CreateNewItem from "components/buttons/CreateNewItem";
 import TavanaDataGrid from "components/dataGrid/TavanaDataGrid";
-import SearchPannel from "components/form/SearchPannel";
-import RenderFormInput from "components/render/formInputs/RenderFormInput";
 import TableActions from "components/table/TableActions";
 import { useAuth } from "hooks/useAuth";
 import { useSnackbar } from "hooks/useSnackbar";
 import React, { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { useLocation, useNavigate } from "react-router-dom";
 import paramsSerializer from "services/paramsSerializer";
 import { PAGINATION_DEFAULT_VALUE } from "shared/paginationValue";
 import ConfirmBox from "components/confirmBox/ConfirmBox";
@@ -50,21 +42,15 @@ const OfficialUserGrid = (props: Props) => {
   const snackbar = useSnackbar();
   const navigate = useNavigate();
   const { state } = useLocation();
-  const { isLoading, mutate, error } = useMutation({
+  const {  mutate } = useMutation({
     mutationFn: Auth?.serverCall,
   });
   const { isLoading: Download_isLoading, mutate: Download_mutate } =
     useMutation({
       mutationFn: Auth?.serverCallGetFile,
     });
-  const {
-    handleSubmit,
-    formState: { errors },
-    control,
-  } = useForm();
   const [excelFilters, setExcelFilters] = useState<any>({
     ...state?.searchFilters,
-    // code: "",
   });
   const [filters, setFilters] = useState<any>({
     ...PAGINATION_DEFAULT_VALUE,
@@ -89,6 +75,18 @@ const OfficialUserGrid = (props: Props) => {
     refetch: StatesData_refetch,
   } = useQuery<any>({
     queryKey: [`certified-accountant/search${paramsSerializer(filters)}`],
+    queryFn: Auth?.getRequest,
+    select: (res: any) => {
+      return res?.data;
+    },
+    enabled: !!Auth.userInfo,
+  } as any);
+  const {
+    data: firmsData,
+    status: firmsData_status,
+    refetch: firmsData_refetch,
+  } = useQuery<any>({
+    queryKey: [`firm/search-all`],
     queryFn: Auth?.getRequest,
     select: (res: any) => {
       return res?.data;
@@ -298,25 +296,25 @@ const OfficialUserGrid = (props: Props) => {
       name: "lastName",
       inputType: "text",
       label: "نام خانوادگی",
-      size: { md: 2.4 },
+      size: { md: 4 },
     },
     {
       name: "nationalCode",
       inputType: "text",
       label: "کد ملی",
-      size: { md: 2.4 },
+      size: { md: 4 },
     },
     {
       name: "membershipNo",
       inputType: "text",
       label: "کد عضویت",
-      size: { md: 2.4 },
+      size: { md: 4 },
     },
     {
       name: "cdMembershipTypeId",
       inputType: "autocomplete",
       label: "نوع عضویت",
-      size: { md: 2.4 },
+      size: { md: 4 },
       options: membershipType?.map((item: any) => ({
         value: item.id,
         title: item.value,
@@ -327,10 +325,21 @@ const OfficialUserGrid = (props: Props) => {
       name: "cdServiceTypeId",
       inputType: "autocomplete",
       label: "وضعیت فعالیت",
-      size: { md: 2.4 },
+      size: { md: 4 },
       options: serviceTypeOptions?.map((item: any) => ({
         value: item.id,
         title: item.value,
+      })) ?? [{ value: 0, title: "خالی" }],
+      storeValueAs: "id",
+    },
+    {
+      name: "auditingFirmId",
+      inputType: "autocomplete",
+      label: "موسسات",
+      size: { md: 4 },
+      options: firmsData?.map((item: any) => ({
+        value: item.id,
+        title: item.name,
       })) ?? [{ value: 0, title: "خالی" }],
       storeValueAs: "id",
     },

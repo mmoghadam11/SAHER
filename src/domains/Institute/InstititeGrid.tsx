@@ -165,14 +165,14 @@ const InstititeGrid = (props: Props) => {
       label: "شناسه ملی",
       size: { md: 3 },
     },
+    // {
+    //   name: "qcRank",
+    //   inputType: "text",
+    //   label: "رتبه کنترل کیفیت",
+    //   size: { md: 3 },
+    // },
     {
-      name: "qcRank",
-      inputType: "text",
-      label: "رتبه کنترل کیفیت",
-      size: { md: 3 },
-    },
-    {
-      name: "cdFirmActivityStatusName",
+      name: "status",
       inputType: "autocomplete",
       label: "وضعیت فعالیت",
       size: { md: 3 },
@@ -259,7 +259,7 @@ const InstititeGrid = (props: Props) => {
         handleSubmit={() =>
           mutate(
             {
-              entity: `firm/remove/${deleteData?.id}`,
+              entity: `firm/delete/${deleteData?.id}`,
               method: "delete",
             },
             {
