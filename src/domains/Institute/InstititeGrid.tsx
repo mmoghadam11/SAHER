@@ -1,38 +1,28 @@
-import { Article, Search, Settings, Toc } from "@mui/icons-material";
-import {
-  Box,
-  Button,
-  Chip,
-  Dialog,
-  DialogTitle,
-  Grid,
-  Modal,
-  Paper,
-  Typography,
-} from "@mui/material";
+import { Article, Toc } from "@mui/icons-material";
+import { Box, Grid, Typography } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import BackButton from "components/buttons/BackButton";
 import CreateNewItem from "components/buttons/CreateNewItem";
 import TavanaDataGrid from "components/dataGrid/TavanaDataGrid";
 import SearchPannel from "components/form/SearchPannel";
-import RenderFormInput from "components/render/formInputs/RenderFormInput";
 import TableActions from "components/table/TableActions";
 import { useAuth } from "hooks/useAuth";
 import { useSnackbar } from "hooks/useSnackbar";
 import React, { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import paramsSerializer from "services/paramsSerializer";
 import { PAGINATION_DEFAULT_VALUE } from "shared/paginationValue";
 import ConfirmBox from "components/confirmBox/ConfirmBox";
 import { useAuthorization } from "hooks/useAutorization";
+import { FormItem } from "types/formItem";
 
 type Props = {};
 
 const InstititeGrid = (props: Props) => {
   const Auth = useAuth();
-  const { hasMenuAccess,hasPermission } = useAuthorization();
+  const { hasMenuAccess, hasPermission } = useAuthorization();
   const snackbar = useSnackbar();
   const navigate = useNavigate();
   const { isLoading, mutate, error } = useMutation({
@@ -53,8 +43,6 @@ const InstititeGrid = (props: Props) => {
     status: StatesData_status,
     refetch: StatesData_refetch,
   } = useQuery<any>({
-    // queryKey: [process.env.REACT_APP_API_URL + `/api/unit-allocations${paramsSerializer(filters)}`],
-    // queryKey: [`/api/v1/common-type/find-all${paramsSerializer(filters)}`],
     queryKey: [`firm/search${paramsSerializer(filters)}`],
     queryFn: Auth?.getRequest,
     select: (res: any) => {
@@ -71,7 +59,11 @@ const InstititeGrid = (props: Props) => {
     { field: "financeYear", headerName: "سال مالی", flex: 0.7 },
     { field: "nationalId", headerName: "شناسه ملی موسسه", flex: 1 },
     { field: "registerNo", headerName: "شماره ثبت", flex: 0.7 },
-    { field: "cdFirmActivityStatusName", headerName: "وضعیت فعالیت", flex: 0.7 },
+    {
+      field: "cdFirmActivityStatusName",
+      headerName: "وضعیت فعالیت",
+      flex: 0.7,
+    },
     // {
     //   field: "director",
     //   headerName: "مدیرعامل",
@@ -105,25 +97,25 @@ const InstititeGrid = (props: Props) => {
       headerAlign: "center",
       align: "center",
       renderCell: ({ row }: { row: any }) => {
-        if(hasPermission("supervisor"))
-        return (
-          <TableActions
-            onView={() => {
-              setEditeData(row);
-              setAddModalFlag(true);
-              navigate(`${row.id}`, {
-                state: { firmData: row, editable: false },
-              });
-            }}
-            onManage={{
-              title: "جزئیات موسسه",
-              function: () => {
-                navigate(`details/${row.id}`, { state: { firmData: row } });
-              },
-              icon: <Toc />,
-            }}
-          />
-        );
+        if (hasPermission("supervisor"))
+          return (
+            <TableActions
+              onView={() => {
+                setEditeData(row);
+                setAddModalFlag(true);
+                navigate(`${row.id}`, {
+                  state: { firmData: row, editable: false },
+                });
+              }}
+              onManage={{
+                title: "جزئیات موسسه",
+                function: () => {
+                  navigate(`details/${row.id}`, { state: { firmData: row } });
+                },
+                icon: <Toc />,
+              }}
+            />
+          );
         return (
           <TableActions
             onEdit={() => {
@@ -160,25 +152,36 @@ const InstititeGrid = (props: Props) => {
     name: string;
     code: string;
   }
-  type searchType = {
-    name: string;
-    inputType: string;
-    label: string;
-    size: any;
-  };
-  const searchItems: searchType[] = [
+  const searchItems: FormItem[] = [
     {
       name: "name",
       inputType: "text",
       label: "نام موسسه",
-      size: { md: 4 },
+      size: { md: 3 },
     },
-    // {
-    //   name: "code",
-    //   inputType: "text",
-    //   label: "کد موسسه",
-    //   size: { md: 4 },
-    // },
+    {
+      name: "nationalId",
+      inputType: "text",
+      label: "شناسه ملی",
+      size: { md: 3 },
+    },
+    {
+      name: "qcRank",
+      inputType: "text",
+      label: "رتبه کنترل کیفیت",
+      size: { md: 3 },
+    },
+    {
+      name: "cdFirmActivityStatusName",
+      inputType: "autocomplete",
+      label: "وضعیت فعالیت",
+      size: { md: 3 },
+      options: [
+        { id: "true", value: "فعال" },
+        { id: "false", value: "غیرفعال" },
+      ],
+      storeValueAs: "id",
+    },
   ];
   type editeObjectType = {
     id: number;
@@ -199,29 +202,6 @@ const InstititeGrid = (props: Props) => {
     console.log(filters);
   }, [filters]);
 
-  function searching() {
-    mutate(
-      {
-        entity: `/api/v1/common-data/search`,
-        method: "post",
-        //   data:
-      },
-      {
-        onSuccess: (res: any) => {
-          if (res?.status == 200 && res?.data) {
-            snackbar(
-              "واحد های انتخابی با موفقیت به لیست شما افزوده شد.",
-              "success"
-            );
-            // navigate('/unitselection', { state: {from: "add-unit", noBack: noBack} })
-          } else snackbar("خطا در افزودن واحد ها به لیست", "error");
-        },
-        onError: (err) => {
-          snackbar("خطا در افزودن واحد ها به لیست", "error");
-        },
-      }
-    );
-  }
   return (
     <Grid container justifyContent="center">
       <Grid
@@ -239,11 +219,13 @@ const InstititeGrid = (props: Props) => {
           <Typography variant="h5">موسسات</Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"}>
-          {!hasPermission("supervisor")&&<CreateNewItem
-            sx={{ mr: 2 }}
-            name="موسسه"
-            onClick={() => navigate("new", { state: { editable: true } })}
-          />}
+          {!hasPermission("supervisor") && (
+            <CreateNewItem
+              sx={{ mr: 2 }}
+              name="موسسه"
+              onClick={() => navigate("new", { state: { editable: true } })}
+            />
+          )}
           <BackButton onBack={() => navigate(-1)} />
         </Box>
       </Grid>
