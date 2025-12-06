@@ -1,4 +1,12 @@
-import { AddCircle, ChangeCircle, Map, Psychology } from "@mui/icons-material";
+import {
+  Add,
+  AddCircle,
+  ChangeCircle,
+  Delete,
+  Map,
+  Psychology,
+  Search,
+} from "@mui/icons-material";
 import {
   Dialog,
   DialogTitle,
@@ -11,6 +19,15 @@ import {
   Autocomplete,
   TextField,
   Chip,
+  CircularProgress,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Tooltip,
 } from "@mui/material";
 import { Close } from "@mui/icons-material";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -55,7 +72,7 @@ const AppendRole = ({
     getValues,
   } = useForm<FormData>();
 
-  const [formData, setFormData] = useState<FormData>(
+  const [formData, setFormData] = useState<any>(
     !!editeData ? editeData?.roleDtos : []
   );
   const {
@@ -94,11 +111,14 @@ const AppendRole = ({
 
   const onSubmit = (data: FormData) => {
     console.log("lastData=", data);
+    console.log("formData=", formData);
+    
     mutate(
       {
         entity: `user/modify-role?userId=${editeData?.id}`,
         method: "post",
-        data: [...data.roles],
+        // data: [...data.roles],
+        data: formData,
       },
       {
         onSuccess: (res: any) => {
@@ -119,7 +139,7 @@ const AppendRole = ({
   };
 
   return (
-    <Dialog open={appendRoleFlag} onClose={handleClose} fullWidth>
+    <Dialog open={appendRoleFlag} onClose={handleClose}  maxWidth={"md"}>
       <DialogTitle>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Box display={"flex"} textAlign={"center"} alignItems={"center"}>
@@ -137,7 +157,7 @@ const AppendRole = ({
       <DialogContent>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={3} mt={1}>
-            <Grid item xs={12} md={12}>
+            {/* <Grid item xs={12} md={12}>
               <Controller
                 name="roles"
                 control={control}
@@ -191,9 +211,144 @@ const AppendRole = ({
                   />
                 )}
               />
-              {/* <RenderFormDisplay item={rolesFormItem} value={getValues(rolesFormItem.name as any)} /> */}
-            </Grid>
+              <RenderFormDisplay item={rolesFormItem} value={getValues(rolesFormItem.name as any)} />
+            </Grid> */}
+            <Grid container item xs={12} spacing={2}>
+              {/* ستون چپ: جستجو و نتایج */}
+              <Grid item xs={12} md={6}>
+                <Paper variant="outlined" sx={{ p: 2, height: "100%" }}>
+                  {/* جدول نتایج جستجو */}
+                  <TableContainer sx={{ maxHeight: 300 }}>
+                    <Table stickyHeader size="small">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>نام</TableCell>
+                          <TableCell>کلید</TableCell>
+                          <TableCell align="center">افزودن</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {roleOptions ? (
+                          roleOptions?.map((row: any, index: number) => (
+                            <TableRow key={index} hover>
+                              <TableCell>
+                                <Typography variant="caption">
+                                  {row?.persianName}
+                                </Typography>
+                              </TableCell>
+                              <TableCell>
+                                <Typography variant="caption">
+                                  {row?.name}
+                                </Typography>
+                              </TableCell>
+                              <TableCell align="center">
+                                <IconButton
+                                  color="primary"
+                                  size="small"
+                                  onClick={() =>
+                                    setFormData((prev: any) => {
+                                      if (
+                                        prev.some(
+                                          (item: any) => row.id === item.id
+                                        )
+                                      ) {
+                                        snackbar(
+                                          "این نقش در لیست موجود میباشد",
+                                          "error"
+                                        );
+                                        return prev;
+                                      }
+                                      return [...prev, row];
+                                    })
+                                  }
+                                >
+                                  <Add />
+                                </IconButton>
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        ) : (
+                          // ))
+                          <TableRow>
+                            <TableCell colSpan={3} align="center">
+                              موردی یافت نشد
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Paper>
+              </Grid>
 
+              {/* ستون راست: لیست انتخاب شده‌ها */}
+              <Grid item xs={12} md={6}>
+                <Paper
+                  variant="outlined"
+                  sx={{
+                    p: 2,
+                    height: "100%",
+                    bgcolor: (theme) =>
+                      theme.palette.mode === "light" ? "#f9f9f9" : "#494949ff",
+                  }}
+                >
+                  <Typography
+                    variant="subtitle1"
+                    gutterBottom
+                    sx={{ fontWeight: "bold", color: "primary.main" }}
+                  >
+                    لیست نقش های کاربر
+                  </Typography>
+
+                  <TableContainer sx={{ maxHeight: 365 }}>
+                    <Table stickyHeader size="small">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>نام</TableCell>
+                          <TableCell>کلید</TableCell>
+                          <TableCell align="center">حذف</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {formData && formData.length > 0 ? (
+                          formData.map((row: any, index: number) => (
+                            <TableRow key={index}>
+                              <TableCell>
+                                {row.persianName}
+                              </TableCell>
+                              <TableCell>
+                                {row.name}
+                              </TableCell>
+                              <TableCell align="center">
+                                <Tooltip title="حذف">
+                                  <IconButton
+                                    color="error"
+                                    size="small"
+                                    onClick={() => setFormData((prev:any) => prev.filter((i:any) => i.id !== row.id))}
+                                  >
+                                    <Delete fontSize="small" />
+                                  </IconButton>
+                                </Tooltip>
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        ) : (
+                          <TableRow>
+                            <TableCell
+                              colSpan={3}
+                              align="center"
+                              sx={{ color: "text.secondary" }}
+                            >
+                              هنوز موردی اضافه نشده است
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Paper>
+              </Grid>
+            </Grid>
             <Grid item xs={12} display="flex" justifyContent="flex-end" mt={2}>
               <Button variant="outlined" onClick={handleClose} sx={{ mr: 2 }}>
                 بازگشت
