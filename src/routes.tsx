@@ -71,6 +71,7 @@ import DirectorDisciplinaryOrderDetails from "domains/firmDirector/DirectorDisci
 import AccountantOfficialUserGrid from "domains/accountantUser/officialUser/AccountantOfficialUserGrid";
 import AddAccountantOfficialUser from "domains/accountantUser/officialUser/AddAccountantOfficialUser";
 import Accountant_DetaileTabs from "domains/accountantUser/officialUser/details/Accountant_DetaileTabs";
+import DisciplinaryBasic from "domains/basic-data/disciplinary-order/DisciplinaryBasic";
 
 const AppRoutes: React.FC = () => {
   const auth = useAuth();
@@ -259,6 +260,7 @@ const AppRoutes: React.FC = () => {
             </Route>
           </Route>
           <Route path="basic-data">
+            <Route path="disciplinary-order" element={<DisciplinaryBasic />} />
             <Route path="persons">
               <Route index element={<PersonGrid />} />
               <Route path=":id" element={<AddPerson />} />

@@ -371,6 +371,11 @@ const MENU_ITEMS: MenuItem[] = [
     access: ["city-showmenu"],
     menuChildren: [
       {
+        title: "احکام انتظامی",
+        url: "disciplinary-order",
+        access: ["administrator", "city-showmenu"],
+      },
+      {
         title: "اطلاعات پایه کارکنان",
         url: "persons",
         access: ["administrator", "city-showmenu"],
