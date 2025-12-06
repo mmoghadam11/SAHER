@@ -26,6 +26,7 @@ import ContinuingEducationGrid from "./tabs/continuingEducation/ContinuingEducat
 import PublicationGrid from "./tabs/publication/PublicationGrid";
 import BranchGrid from "./tabs/branchs/BranchGrid";
 import AddressGrid from "./tabs/address/AddressGrid";
+import MoneyLundringGrid from "./tabs/moneyLundringManager/MoneyLundringGrid";
 
 type Props = {};
 interface FormItem {
@@ -61,6 +62,10 @@ const FirmAdminDetaileTabs = (props: Props) => {
       title: "مدیرعامل",
       com: <DirectorGrid />,
     },
+    {
+      title: "مدیر مبارزه با پولشویی",
+      com: <MoneyLundringGrid setActiveTab={setActiveTab} />,
+    },
     // {
     //   title: "آموزشی",
     //   com: <EduInfoGrid setActiveTab={setActiveTab} />,
@@ -69,11 +74,11 @@ const FirmAdminDetaileTabs = (props: Props) => {
     //   title: "مالی",
     //   com: <FinancialStatementsGrid setActiveTab={setActiveTab} />,
     // },
-    {
-      // title: "آموزش مستمر حرفه ای",
-      title: "سوابق مستمر آموزشی",
-      com: <ContinuingEducationGrid setActiveTab={setActiveTab} />,
-    },
+    // {
+    //   // title: "آموزش مستمر حرفه ای",
+    //   title: "سوابق مستمر آموزشی",
+    //   com: <ContinuingEducationGrid setActiveTab={setActiveTab} />,
+    // },
     // {
     //   title: "قراردادها",
     //   com: <FirmContractGrid />,
