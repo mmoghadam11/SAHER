@@ -13,17 +13,18 @@ import { PAGINATION_DEFAULT_VALUE } from "shared/paginationValue";
 import ConfirmBox from "components/confirmBox/ConfirmBox";
 import VerticalTable from "components/dataGrid/VerticalTable";
 import { isMobile } from "react-device-detect";
-import AddDirectorModal from "./AddSubjectModal";
+import AddDirectorModal from "./AddPunishmentModal";
 import { useAuthorization } from "hooks/useAutorization";
 import moment from "jalali-moment";
 import { useParams } from "react-router-dom";
-import AddSubjectModal from "./AddSubjectModal";
+import AddSubjectModal from "./AddPunishmentModal";
+import AddPunishmentModal from "./AddPunishmentModal";
 
 type Props = {
   // setActiveTab: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const SubjectGrid = ({  }: Props) => {
+const PunishmentGrid = ({  }: Props) => {
   const { id } = useParams();
   const Auth = useAuth();
   const { hasPermission } = useAuthorization();
@@ -41,7 +42,7 @@ const SubjectGrid = ({  }: Props) => {
     status: StatesData_status,
     refetch: StatesData_refetch,
   } = useQuery<any>({
-    queryKey: [`disciplinary-subject-base/search${paramsSerializer(filters)}`],
+    queryKey: [`disciplinary-order-base/search${paramsSerializer(filters)}`],
     queryFn: Auth?.getRequest,
     select: (res: any) => {
       return res?.data;
@@ -49,17 +50,11 @@ const SubjectGrid = ({  }: Props) => {
     enabled: true,
   } as any);
   const columns: GridColDef[] = [
-    { field: "subjectTitle", headerName: "موضوع", flex: 1.5 },
+    { field: "orderName", headerName: "موضوع", flex: 1.5 },
     { field: "code", headerName: "کد", flex: 1.5 },
-    { field: "auditingFirmUsed", headerName: "شامل موسسه", flex: 1,
+    { field: "contestable", headerName: "قابل اعتراض", flex: 1,
       renderCell: ({ row }: { row: any }) => {
-        if(row.auditingFirmUsed)return(<CheckCircle color="success"/>)
-          return(<Close color="error"/>)
-      },
-     },
-    { field: "cerifiedAccountantUsed", headerName: "شامل حسابداران رسمی", flex: 1,
-      renderCell: ({ row }: { row: any }) => {
-        if(row.cerifiedAccountantUsed)return(<CheckCircle color="success"/>)
+        if(row.contestable)return(<CheckCircle color="success"/>)
           return(<Close color="error"/>)
       },
      },
@@ -159,13 +154,13 @@ const SubjectGrid = ({  }: Props) => {
       >
         <Box display={"flex"}>
           <Toc fontSize="large" />
-          <Typography variant="h5">موضوعات احکام انتظامی</Typography>
+          <Typography variant="h5">تنبیهات احکام انتظامی</Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"}>
           {!hasPermission("supervisor") && (
             <CreateNewItem
               // sx={{ mr: 2 }}
-              name="موضوع انتظامی"
+              name="حکم انتظامی"
               // onClick={() => navigate("new")}
               onClick={() => {
                 // navigate("new")
@@ -215,7 +210,7 @@ const SubjectGrid = ({  }: Props) => {
           )
         ) : null}
       </Grid>
-      <AddSubjectModal
+      <AddPunishmentModal
         refetch={StatesData_refetch}
         addModalFlag={addModalFlag}
         setAddModalFlag={setAddModalFlag}
@@ -231,7 +226,7 @@ const SubjectGrid = ({  }: Props) => {
         handleSubmit={() =>
           mutate(
             {
-              entity: `disciplinary-subject-base/delete/${deleteData?.id}`,
+              entity: `disciplinary-order-base/delete/${deleteData?.id}`,
               method: "delete",
             },
             {
@@ -245,11 +240,11 @@ const SubjectGrid = ({  }: Props) => {
             }
           )
         }
-        message={`آیا از حذف ${deleteData?.subjectTitle} ${deleteData?.code} مطمعین میباشید؟`}
+        message={`آیا از حذف ${deleteData?.orderName} ${deleteData?.code} مطمعین میباشید؟`}
         title={"درخواست حذف!"}
       />
     </Grid>
   );
 };
 
-export default SubjectGrid;
+export default PunishmentGrid;

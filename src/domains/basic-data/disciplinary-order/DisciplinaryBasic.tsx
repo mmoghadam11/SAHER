@@ -31,6 +31,7 @@ import moment from "jalali-moment";
 import { isMobile } from "react-device-detect";
 import { TOption } from "types/render";
 import SubjectGrid from "./components/subject/SubjectGrid";
+import PunishmentGrid from "./components/basic/PunishmentGrid";
 
 
 type Props = {};
@@ -87,10 +88,10 @@ const DisciplinaryBasic = (props: Props) => {
       title: "موضوعات",
       com: <SubjectGrid  />,
     },
-    // {
-    //   title: "مدیر مبارزه با پولشویی",
-    //   com: <MoneyLundringGrid setActiveTab={setActiveTab} />,
-    // },
+    {
+      title: "تنبیهات",
+      com: <PunishmentGrid />,
+    },
   ];
 
 //   const formItems = useMemo(
@@ -173,7 +174,7 @@ const DisciplinaryBasic = (props: Props) => {
             sx={{
               mt: 2,
               mr: 1,
-              direction:"rtl"
+              // direction:"rtl"
               // maxWidth: "45vw",
               // direction: "rtl",
             }}

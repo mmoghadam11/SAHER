@@ -3,29 +3,29 @@ import { useAuth } from "hooks/useAuth";
 import { FormItem } from "types/formItem";
 import { FullInstituteType } from "types/institute";
 
-export const SubjectFormItems = (
+export const PunishmentFormItems = (
   setValue: (name: any, val: any) => void,
   // options: any
 ): FormItem[] => {
   return [
     {
-      name: "subjectTitle",
+      name: "orderName",
       inputType: "text",
-      label: "عنوان موضوع",
+      label: "عنوان تنبیه",
       size: { md: 6 },
       rules: { required: "عنوان موضوع الزامی است" },
     },
     {
       name: "code",
       inputType: "text",
-      label: "کد موضوع",
+      label: "کد تنبیه",
       size: { md: 6 },
       rules: { required: "عنوان موضوع الزامی است" },
     },
     {
-      name: "auditingFirmUsed",
+      name: "contestable",
       inputType: "select",
-      label: "شامل موسسات",
+      label: "قابل اعتراض",
       size: { md: 6 },
       options: [
         { value: "true", title: "✅ میباشد" },
@@ -35,25 +35,5 @@ export const SubjectFormItems = (
         required: "تایین این فیلد الزامی است",
       },
     },
-    {
-      name: "cerifiedAccountantUsed",
-      inputType: "select",
-      label: "شامل حسابداران رسمی",
-      size: { md: 6 },
-      options: [
-        { value: "true", title: "✅ میباشد" },
-        { value: "false", title: "❌ نمیباشد" },
-      ],
-      rules: {
-        required: "تایین این فیلد الزامی است",
-      },
-    },
-    // {
-    //   name: "logExtraInfo",
-    //   inputType: "text",
-    //   label: "توضیحات تکمیلی",
-    //   size: { md: 12 },
-    //   rules: { required: "عنوان موضوع الزامی است" },
-    // },
   ];
 };
