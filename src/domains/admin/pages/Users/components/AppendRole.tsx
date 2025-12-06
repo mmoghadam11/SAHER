@@ -27,8 +27,6 @@ interface FormData {
   roles: any[];
 }
 
-
-
 type Props = {
   refetch: () => void;
   appendRoleFlag: boolean;
@@ -54,10 +52,9 @@ const AppendRole = ({
     control,
     formState: { errors },
     reset,
-    getValues
+    getValues,
   } = useForm<FormData>();
 
- 
   const [formData, setFormData] = useState<FormData>(
     !!editeData ? editeData?.roleDtos : []
   );
@@ -81,36 +78,6 @@ const AppendRole = ({
       });
     }
   }, [editeData, appendRoleFlag]);
-   const rolesFormItem: FormItem = {
-  name: "roles",
-  inputType: "autocomplete",
-  label: "نقش‌ها",
-  size: { md: 12 }, // یا هر سایز دلخواه دیگر
-  rules: {
-    required: "انتخاب نقش الزامی است",
-    validate: (value:any) => value.length > 0 || "انتخاب حداقل یک نقش الزامی است",
-  },
-  
-  // 🔹 نکته کلیدی: تبدیل آپشن‌ها به فرمت استاندارد
-  // RenderFormDisplay انتظار ساختار { value, title } را دارد
-  options: roleOptions?.map((role: any) => ({
-    value: role.id, // یا خود آبجکت role اگر نیاز دارید
-    title: role.name,
-  })) ?? [],
-
-  // 🔹 مشخص کردن نوع ذخیره‌سازی مقدار
-  // چون مقدار ذخیره شده در فرم، یک آرایه از آبجکت‌هاست
-  storeValueAs: "object",
-
-  // 🔹 پاس دادن پراپرتی‌های خاص Autocomplete
-  elementProps: {
-    multiple: true,
-    limitTags: 2,
-    // filterSelectedOptions: true, // اگر نیاز بود
-    // getOptionLabel, isOptionEqualToValue و ... را می‌توان در RenderFormInput هندل کرد
-    // تا کامپوننت اصلی تمیز بماند.
-  },
-};
   useEffect(() => {
     console.log("formData=>", formData);
   }, [formData]);
@@ -191,7 +158,7 @@ const AppendRole = ({
                     renderTags={(value, getTagProps) =>
                       value.map((option, index) => (
                         <Chip
-                          label={option.name}
+                          label={option.persianName}
                           {...getTagProps({ index })}
                           //   disabled={index === 0} // 🔹 می‌توانید تگ خاصی را غیرفعال کنید
                           size="small"
@@ -200,7 +167,7 @@ const AppendRole = ({
                     }
                     renderOption={(props, option) => (
                       <li {...props} key={option.id}>
-                        {option.name}
+                        {option.persianName}
                       </li>
                     )}
                     renderInput={(params) => (
@@ -213,9 +180,11 @@ const AppendRole = ({
                     )}
                     options={roleOptions?.map((item: any) => ({
                       id: item.id,
-                      name: item.name,
+                      // name: item.name,
+                      persianName: item.persianName,
+                      name:item.name,
                     }))}
-                    getOptionLabel={(option) => option.name || ""}
+                    getOptionLabel={(option) => option.persianName || ""}
                     isOptionEqualToValue={(option, value) =>
                       option.id === value.id
                     }

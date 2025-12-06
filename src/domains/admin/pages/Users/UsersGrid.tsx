@@ -86,7 +86,7 @@ const UsersGrid = (props: Props) => {
       headerName: "پروفایل",
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
-        const { avatarUrl } = UseGetProfileImage(row.username);
+        // const { avatarUrl } = UseGetProfileImage(row.username);
         return (
           <IconButton
           onClick={()=>{
