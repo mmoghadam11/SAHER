@@ -1,5 +1,21 @@
-import { Close, Key, ManageAccounts, Toc, Verified } from "@mui/icons-material";
-import { Box, Chip, Grid, Typography } from "@mui/material";
+import {
+  Close,
+  DoneAll,
+  Key,
+  ManageAccounts,
+  Toc,
+  Verified,
+} from "@mui/icons-material";
+import {
+  Box,
+  Chip,
+  Grid,
+  List,
+  ListItem,
+  ListItemText,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import BackButton from "components/buttons/BackButton";
@@ -19,7 +35,7 @@ import { isMobile } from "react-device-detect";
 import SearchPannel from "components/form/SearchPannel";
 import AddFinancial from "./AddDisciplinaryOrder";
 import moment from "jalali-moment";
-import AddDisciplinaryOrder from "./AddDisciplinaryOrder";
+import ShowDisciplinaryOrder from "domains/Institute/disciplinaryOrder/ShowDisciplinaryOrder";
 
 type Props = {
   setActiveTab: React.Dispatch<React.SetStateAction<number>>;
@@ -55,18 +71,130 @@ const DisciplinaryOrderGrid = ({ setActiveTab }: Props) => {
     enabled: true,
   } as any);
   const columns: GridColDef[] = [
-    { field: "subjectTypeName", headerName: "حکم", flex: 1 },
+    {
+      field: "subjectTypeName",
+      align: "center",
+      headerName: "ردیف موضوع",
+      // flex: 2.2,
+      flex: 1,
+      renderCell: ({ row }: { row: any }) => {
+        return (
+          <Box
+            sx={{
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            <List dense disablePadding>
+              {row?.subjectTypeList?.map((SItem: any, SIndex: number) => (
+                <ListItem
+                  key={SIndex}
+                  sx={{
+                    py: 0,
+                    my: 0,
+                    overflow: "hidden",
+                    whiteSpace: "nowrap",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  <Tooltip title={SItem?.value}>
+                    <ListItemText
+                      primaryTypographyProps={{
+                        variant: "caption",
+                        noWrap: true,
+                        sx: { textOverflow: "ellipsis" },
+                      }}
+                    >
+                      {SItem?.key}
+                    </ListItemText>
+                  </Tooltip>
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        );
+      },
+    },
     { field: "claimant", headerName: "شاکی", flex: 1 },
     { field: "workgroupName", headerName: "کارگروه", flex: 1 },
-    { field: "cdOrderTypeValue", headerName: "نوع حکم", flex: 1 },
+    {
+      field: "claimantTypeName",
+      headerName: "نوع حکم",
+      flex: 1,
+      cellClassName: () => "font-13",
+    },
+    { field: "cdOrderTypeValue", headerName: "نوع تنبیه", flex: 1 },
     {
       field: "startDate",
       headerName: "تاریخ شروع",
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
         return (
-          <Typography>{moment(new Date(row?.startDate)).format("jYYYY/jMM/jDD")}</Typography>
+          <Typography>
+            {moment(new Date(row?.startDate)).format("jYYYY/jMM/jDD")}
+          </Typography>
         );
+      },
+    },
+    {
+      field: "notificationStatus",
+      headerName: "ابلاغ",
+      flex: 1,
+      align: "center",
+      renderCell: ({ row }: { row: any }) => {
+        if (row?.notificationStatus) {
+          const [date, time] = row?.notificationDateFr?.split(" ") ?? [
+            null,
+            null,
+          ];
+          return (
+            <Box
+              display={"flex"}
+              flexDirection={"column"}
+              alignItems={"center"}
+            >
+              <Verified color="secondary" />
+              <Tooltip title={row?.notificationDateFr + " (تاریخ ابلاغ)"}>
+                <Typography variant="caption">
+                  {/* {moment(new Date(row?.notificationDate)).format(
+                        "jYYYY/jMM/jDD"
+                      )} */}
+                  {date?.replaceAll("-", "/") ?? null}
+                </Typography>
+              </Tooltip>
+            </Box>
+          );
+        } else return <Close color="disabled" />;
+      },
+    },
+    {
+      field: "seen",
+      headerName: "مشاهده شده",
+      flex: 1,
+      align: "center",
+      renderCell: ({ row }: { row: any }) => {
+        if (row?.seen) {
+          const [date, time] = row?.seenDateFr?.split(" ") ?? [null, null];
+          return (
+            <Box
+              display={"flex"}
+              flexDirection={"column"}
+              alignItems={"center"}
+            >
+              <DoneAll color="success" />
+              {row?.seenDate && (
+                <Tooltip title={row?.seenDateFr + " (تاریخ مشاهده)"}>
+                  <Typography variant="caption">
+                    {/* {moment(new Date(row?.seenDate)).format("jYYYY/jMM/jDD")} */}
+                    {date?.replaceAll("-", "/") ?? null}
+                  </Typography>
+                </Tooltip>
+              )}
+            </Box>
+          );
+        }
+
+        return <Close color="disabled" />;
       },
     },
     {
@@ -78,14 +206,9 @@ const DisciplinaryOrderGrid = ({ setActiveTab }: Props) => {
       renderCell: ({ row }: { row: any }) => {
         return (
           <TableActions
-            onEdit={() => {
-              // navigate(`${row.id}`, { state: { userData: row } });
+            onView={() => {
               setEditeData(row);
               setAddModalFlag(true);
-            }}
-            onDelete={() => {
-              setDeleteData(row);
-              setDeleteFlag(true);
             }}
           />
         );
@@ -229,7 +352,8 @@ const DisciplinaryOrderGrid = ({ setActiveTab }: Props) => {
           </Typography>
         )}
       </Grid>
-      <AddDisciplinaryOrder
+      <ShowDisciplinaryOrder
+        editable={false}
         refetch={StatesData_refetch}
         addModalFlag={addModalFlag}
         setAddModalFlag={setAddModalFlag}
