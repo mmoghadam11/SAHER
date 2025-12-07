@@ -33,6 +33,20 @@ const buildPersonnelFiltersFromText = (q: string | undefined | null) => {
   // در غیر این صورت، بر اساس نام خانوادگی جستجو کن
   return { lastName: s };
 };
+const buildDICFiltersFromText = (q: string | undefined | null) => {
+  const s = (q ?? "").trim();
+  if (s.length < 2) return null;
+  // اگر فقط عدد باشد، بر اساس کد ملی جستجو کن
+  // if (/^\d+$/.test(s)) return { orderNo: s };
+   if (/^\d+$/.test(s)) return { orderNumber: s };
+  // اگر متن و شامل فاصله باشد، سعی کن بر اساس نام و نام خانوادگی جستجو کنی
+  // const parts = s.split(/\s+/);
+  // if (parts.length >= 2) {
+  //   return { firstName: parts[0], lastName: parts.slice(1).join(" ") };
+  // }
+  // در غیر این صورت، بر اساس نام خانوادگی جستجو کن
+  return { subject: s };
+};
 
 // --- Props هوک ---
 type HookProps = {
@@ -42,6 +56,8 @@ type HookProps = {
   reset: any;
   responsibleTyping: any;
   setResponsibleTyping: any;
+  DICTyping?:any;
+  setDICTyping?: any;
 };
 
 export const useDisciplinaryOrderForm = ({
@@ -51,6 +67,8 @@ export const useDisciplinaryOrderForm = ({
   reset,
   responsibleTyping,
   setResponsibleTyping,
+  DICTyping,
+  setDICTyping,
 }: HookProps) => {
   const Auth = useAuth();
   const snackbar = useSnackbar();
@@ -65,6 +83,8 @@ export const useDisciplinaryOrderForm = ({
   const [selectedItems, setSelectedItems] = useState<any[]>([]);
   const [responsibleSearch, setResponsibleSearch] = useState("");
   const debouncedResponsible = useDebounce(responsibleSearch, 400);
+  const [DICSearch, setDICSearch] = useState("");
+  const debouncedDIC = useDebounce(DICSearch, 400);
 
   // 👇 اصلاح شد: منطق تنظیم cdRespondenTypeId و reset برای حالت ویرایش
 
@@ -76,6 +96,13 @@ export const useDisciplinaryOrderForm = ({
     // در غیر این صورت، بر اساس متن جستجوی کاربر فیلتر کن
     return buildPersonnelFiltersFromText(debouncedResponsible);
   }, [debouncedResponsible, responsibleTyping, editeData?.personnelCaId]);
+  const DICFilters = useMemo(() => {
+    if (!DICTyping && editeData?.supremeId) {
+      return { id: editeData.supremeId };
+    }
+    // در غیر این صورت، بر اساس متن جستجوی کاربر فیلتر کن
+    return buildDICFiltersFromText(debouncedDIC);
+  }, [debouncedDIC, DICTyping, editeData?.supremeId]);
 
   // --- واکشی داده‌ها با فرمت درخواستی ---
 
@@ -102,6 +129,13 @@ export const useDisciplinaryOrderForm = ({
         Object.keys(responsibleFilters).length > 0,
       keepPreviousData: true,
     } as any);
+  const { data: basicOrders, isFetching: isBasicOrdersFetching} = useQuery<any>({
+    queryKey: [`disciplinary-order/primary-order-all${paramsSerializer(DICFilters)}`],
+    queryFn: Auth?.getRequest,
+    select: (res: any) => res?.data ?? [],
+    enabled: !!DICFilters,
+    keepPreviousData: true,
+  } as any);
 
   const { data: claimantTypeIdOptions } = useQuery<any>({
     queryKey: [`common-data/find-by-type-all?typeId=51`],
@@ -404,6 +438,9 @@ export const useDisciplinaryOrderForm = ({
     const targetIndexcdOrderTypeId = baseItems.findIndex(
       (item) => item.name === "cdOrderTypeId"
     );
+    const targetIndextitleDivider = baseItems.findIndex(
+      (item) => item.name === "titleDivider"
+    );
 
     if (targetIndex > -1) {
       if (watchedTypeOrder === 396) {
@@ -461,13 +498,13 @@ export const useDisciplinaryOrderForm = ({
               title: item?.value,
             })) ?? [{ value: 0, title: "خالی" }],
             rules: { required: "انتخاب وضعیت الزامی است" },
-          },
+          }
         );
-        if (watchedAccountantMemberShip===63||watchedAccountantMemberShip===64){
-          baseItems.splice(
-          targetIndex + 3,
-          0,
-          {
+        if (
+          watchedAccountantMemberShip === 63 ||
+          watchedAccountantMemberShip === 64
+        ) {
+          baseItems.splice(targetIndex + 3, 0, {
             name: "auditingFirmIdCurrent",
             inputType: "autocomplete",
             label: "موسسه",
@@ -479,51 +516,59 @@ export const useDisciplinaryOrderForm = ({
               })) ?? [],
             storeValueAs: "id",
             // rules: { required: "انتخاب موسسه الزامی است" },
-          }
-        );
+          });
         }
       }
     }
-    // if (targetIndex2 > -1) {
-    //   if (watched === 399) {
-    //     baseItems.splice(
-    //       targetIndex2 + 1,
-    //       0,
-    //       {
-    //         name: "startDate",
-    //         inputType: "date",
-    //         label: "تاریخ شروع حکم",
-    //         size: { md: 4 },
-    //         // rules: { required: "تاریخ شروع الزامی است" },
-    //         elementProps: {
-    //           setDay: (value: any) => setValue("startDate", value),
-    //         },
-    //       },
-    //       {
-    //         name: "endDate",
-    //         inputType: "date",
-    //         label: "تاریخ پایان حکم",
-    //         size: { md: 4 },
-    //         rules: {
-    //           validate: (value: any, formValues: any) => {
-    //             const start = formValues?.startDate;
-    //             if (!value || !start) return true; // اگر هر کدام خالی بود، ایرادی ندارد
-    //             const endTime = new Date(value).getTime();
-    //             const startTime = new Date(start).getTime();
-
-    //             return (
-    //               endTime >= startTime ||
-    //               "تاریخ پایان نمی‌تواند قبل از تاریخ شروع باشد"
-    //             );
-    //           },
-    //         },
-    //         elementProps: {
-    //           setDay: (value: any) => setValue("endDate", value),
-    //         },
-    //       }
-    //     );
-    //   }
-    // }
+    if (targetIndextitleDivider > -1) {
+      if (watched === 399) {
+        baseItems.splice(targetIndextitleDivider + 0.01, 0, 
+        //   {
+        //   name: "supremeId",
+        //   inputType: "autocomplete",
+        //   label: "حکم بدوی",
+        //   size: { md: 6 },
+        //   options:
+        //     basicOrders?.map((item: any) => ({
+        //       value: item?.id,
+        //       title: item?.name,
+        //     })) ?? [],
+        //   storeValueAs: "id",
+        //   // rules: { required: "انتخاب کارگروه الزامی است" },
+        // },
+        {
+            name: "supremeId", // 👇 اصلاح شد: نام فیلد 'personnelCaId' شد
+            inputType: "autocomplete",
+            label: "حکم بدوی قبلی",
+            size: { md: 6 },
+            options: basicOrders?.map((item: any) => ({
+              value: item?.id,
+              title: item?.subject+" "+item?.orderNumber,
+            })) ?? [],
+            storeValueAs: "id",
+            rules: { required: "انتخاب حکم بدوی الزامی است" },
+            skipClientFilter: true,
+            elementProps: {
+              onInputChange: (_: any, v: string, reason: string) => {
+                if (reason === "input") {
+                  setDICTyping(true);
+                  setDICSearch(v);
+                }
+                if (reason === "clear") {
+                  setDICTyping(true);
+                  setDICSearch("");
+                }
+              },
+              loading: isBasicOrdersFetching,
+              noOptionsText:
+                DICSearch.trim().length < 2 && responsibleTyping
+                  ? "برای جستجو حداقل ۲ کاراکتر وارد کنید"
+                  : "موردی یافت نشد",
+            },
+          },
+      );
+      }
+    }
     if (targetIndexcdOrderTypeId > -1) {
       if (startDate && endDate) {
         baseItems.splice(targetIndexcdOrderTypeId + 1, 0, {
@@ -535,8 +580,7 @@ export const useDisciplinaryOrderForm = ({
             disabled: true,
           },
         });
-      }
-      else
+      } else
         baseItems.splice(targetIndexcdOrderTypeId + 1, 0, {
           name: "orderDuration",
           inputType: "text",
@@ -554,7 +598,9 @@ export const useDisciplinaryOrderForm = ({
     startDate,
     accountants,
     isAccountantsFetching,
+    isBasicOrdersFetching,
     responsibleSearch,
+    DICSearch,
     responsibleTyping,
     firmOptions,
     orderTypeOptions,

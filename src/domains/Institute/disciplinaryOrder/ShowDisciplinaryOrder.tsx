@@ -70,6 +70,7 @@ const ShowDisciplinaryOrder = ({
     watch,
   } = useForm<any>();
   const [responsibleTyping, setResponsibleTyping] = useState(true);
+  const [DICTyping, setDICTyping] = useState(true);
   const [PdfUrl, setPdfUrl] = useState<string | undefined>("");
   const [PdfViewFlag, setPdfViewFlag] = useState<boolean>(false);
   const { mutate, isLoading } = useMutation({
@@ -82,6 +83,7 @@ const ShowDisciplinaryOrder = ({
         "success"
       );
       setResponsibleTyping(true);
+      setDICTyping(true);
       refetch();
       handleClose();
     },
@@ -93,6 +95,7 @@ const ShowDisciplinaryOrder = ({
     setAddModalFlag(false);
     setEditeData(null);
     setResponsibleTyping(true);
+    setDICTyping(true);
     reset({
       cdClaimantTypeId: null,
       cdRespondenTypeId: null, // نوع پاسخ‌دهنده
@@ -153,6 +156,8 @@ const ShowDisciplinaryOrder = ({
     reset,
     responsibleTyping,
     setResponsibleTyping,
+    DICTyping,
+    setDICTyping,
   });
   const {
     searchKey,
@@ -175,6 +180,7 @@ const ShowDisciplinaryOrder = ({
       } else if (editeData.personnelCaId) {
         initialRespondenType = 397;
         setResponsibleTyping(false);
+        setDICTyping(false);
       }
 
       // reset کردن فرم با داده‌های editeData و نوع پاسخ‌دهنده تعیین شده
