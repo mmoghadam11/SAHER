@@ -117,6 +117,11 @@ const MENU_ITEMS: MenuItem[] = [
         access: ["administrator", "city-showmenu","operator-showmenu"],
       },
       {
+        title: "احکام انتظامی(new)",
+        url: "disciplinary-order-new",
+        access: ["administrator", "city-showmenu"],
+      },
+      {
         title: "کارگروه",
         url: "workgroup",
         access: ["administrator", "city-showmenu"],
@@ -138,33 +143,33 @@ const MENU_ITEMS: MenuItem[] = [
     icon: <BusinessCenter />,
     title: "موسسات",
     url: "/institutions",
-    access: ["city-showmenu","allFirms_showmenu"],
+    access: ["city-showmenu","allFirms_showmenu","allFirmsBasic_showmenu"],
     menuChildren: [
       {
         title: "اطلاعات موسسات",
         url: "information",
-        access: ["allFirms_showmenu", "city-showmenu"],
+        access: ["allFirms_showmenu", "city-showmenu","allFirmsBasic_showmenu"],
       },
       {
         title: "شرکای موسسه",
         url: "partners",
-        access: ["administrator", "city-showmenu"],
+        access: ["administrator", "city-showmenu","allFirms_showmenu"],
       },
       {
         title: "حسابداران شاغل در موسسه",
         // url: "personnels",
         url: "hired-accountants",
-        access: ["administrator", "city-showmenu","township-showmenu"],
+        access: ["administrator", "city-showmenu","township-showmenu","allFirms_showmenu"],
       },
       {
         title: "کارکنان حرفه‌ای موسسات",
         url: "persons",
-        access: ["administrator", "city-showmenu"],
+        access: ["administrator", "city-showmenu","allFirms_showmenu"],
       },
       {
         title: "آموزش مستمر",
         url: "EDU",
-        access: ["administrator", "city-showmenu"],
+        access: ["administrator", "city-showmenu","allFirms_showmenu"],
       },
       {
         //ثابت و متغیر دارد

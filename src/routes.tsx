@@ -72,6 +72,8 @@ import AccountantOfficialUserGrid from "domains/accountantUser/officialUser/Acco
 import AddAccountantOfficialUser from "domains/accountantUser/officialUser/AddAccountantOfficialUser";
 import Accountant_DetaileTabs from "domains/accountantUser/officialUser/details/Accountant_DetaileTabs";
 import DisciplinaryBasic from "domains/basic-data/disciplinary-order/DisciplinaryBasic";
+import ShowDisciplinaryOrderPage from "domains/Institute/disciplinaryOrder/page/ShowDisciplinaryOrderPage";
+import AllDOGrid from "domains/Institute/disciplinaryOrder/newVersion/AllDOGrid";
 
 const AppRoutes: React.FC = () => {
   const auth = useAuth();
@@ -248,7 +250,12 @@ const AppRoutes: React.FC = () => {
             <Route path="disciplinary-order">
               {/* <Route index element={<InstituteDisciplinaryOrderGrid />} /> */}
               <Route index element={<AllDisciplinaryOrderGrid />} />
-              <Route path=":id" element={<DisciplinaryOrderDetaile />} />
+              <Route path=":id" element={<ShowDisciplinaryOrderPage editable={true}/>} />
+            </Route>
+            <Route path="disciplinary-order-new">
+              {/* <Route index element={<InstituteDisciplinaryOrderGrid />} /> */}
+              <Route index element={<AllDOGrid />} />
+              <Route path=":id" element={<ShowDisciplinaryOrderPage editable={true}/>} />
             </Route>
             <Route path="workgroup">
               <Route index element={<WorkgroupGrid />} />
