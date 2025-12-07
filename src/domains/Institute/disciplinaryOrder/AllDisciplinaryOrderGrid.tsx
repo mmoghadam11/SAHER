@@ -248,8 +248,11 @@ const AllDisciplinaryOrderGrid = (props: Props) => {
       flex: 1,
       align: "center",
       renderCell: ({ row }: { row: any }) => {
-        if (row?.notificationStatus){
-          const [date, time] = row?.notificationDateFr?.split(" ")??[null,null];
+        if (row?.notificationStatus) {
+          const [date, time] = row?.notificationDateFr?.split(" ") ?? [
+            null,
+            null,
+          ];
           return (
             <Box
               display={"flex"}
@@ -257,42 +260,27 @@ const AllDisciplinaryOrderGrid = (props: Props) => {
               alignItems={"center"}
             >
               <Verified color="secondary" />
-              <Tooltip title={row?.notificationDateFr+" (تاریخ ابلاغ)"}>
+              <Tooltip title={row?.notificationDateFr + " (تاریخ ابلاغ)"}>
                 <Typography variant="caption">
                   {/* {moment(new Date(row?.notificationDate)).format(
                     "jYYYY/jMM/jDD"
                   )} */}
-                  {date?.replaceAll("-", "/")??null}
+                  {date?.replaceAll("-", "/") ?? null}
                 </Typography>
               </Tooltip>
             </Box>
           );
-        }
-          
-        else return <Close color="disabled" />;
+        } else return <Close color="disabled" />;
       },
     },
-    // {
-    //   field: "notificationDate",
-    //   headerName: "تاریخ ابلاغ",
-    //   flex: 1,
-    //   renderCell: ({ row }: { row: any }) => {
-    //     if (row?.notificationDate)
-    //       return (
-    //         <Typography variant="caption">
-    //           {moment(new Date(row?.notificationDate)).format("jYYYY/jMM/jDD")}
-    //         </Typography>
-    //       );
-    //   },
-    // },
     {
       field: "seen",
       headerName: "مشاهده شده",
       flex: 1,
       align: "center",
       renderCell: ({ row }: { row: any }) => {
-        if (row?.seen){
-          const [date, time] = row?.seenDateFr?.split(" ")??[null,null];
+        if (row?.seen) {
+          const [date, time] = row?.seenDateFr?.split(" ") ?? [null, null];
           return (
             <Box
               display={"flex"}
@@ -301,17 +289,17 @@ const AllDisciplinaryOrderGrid = (props: Props) => {
             >
               <DoneAll color="success" />
               {row?.seenDate && (
-                <Tooltip title={row?.seenDateFr+" (تاریخ مشاهده)"}>
+                <Tooltip title={row?.seenDateFr + " (تاریخ مشاهده)"}>
                   <Typography variant="caption">
                     {/* {moment(new Date(row?.seenDate)).format("jYYYY/jMM/jDD")} */}
-                    {date?.replaceAll("-", "/")??null}
+                    {date?.replaceAll("-", "/") ?? null}
                   </Typography>
                 </Tooltip>
               )}
             </Box>
           );
         }
-          
+
         return <Close color="disabled" />;
       },
     },
@@ -365,19 +353,23 @@ const AllDisciplinaryOrderGrid = (props: Props) => {
               }}
               onAdd={{
                 function: () => {
-                  setBasePDFData(row);
-                  setPdfFlag(true);
+                  if (row.hasAttachment) {
+                    setBasePDFData(row);
+                    setPdfFlag(true);
+                  }
+                  else snackbar("این حکم پیوستی ندارد","warning")
                 },
                 title: "پی دی اف",
-                icon: (
+                icon: row.hasAttachment?(
                   <PictureAsPdf
                     color={row.hasAttachment ? "success" : "primary"}
                   />
-                ),
+                ):(<Close color="disabled" />),
               }}
             />
           );
-        else return (
+        else
+          return (
             <TableActions
               onView={() => {
                 setEditeData(row);

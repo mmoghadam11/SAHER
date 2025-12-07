@@ -104,10 +104,6 @@ const AllDOGrid = (props: Props) => {
     enabled: true,
   } as any);
   const columns: GridColDef[] = [
-    // { field: "name", headerName: "نام موسسه", flex: 2 },
-    // { field: "nationalId", headerName: "شناسه ملی موسسه", flex: 1 },
-    // { field: "registerNo", headerName: "شماره ثبت", flex: 1 },
-    // { field: "directorNationalCode", headerName: "کد ملی مدیرعامل", flex: 1 },
     {
       field: "respondenType",
       headerName: "نوع شخصیت حسابرس",
@@ -360,66 +356,16 @@ const AllDOGrid = (props: Props) => {
 
   const searchItems: FormItem[] = [
     {
-      name: "subject",
+      name: "accuserName",
       inputType: "text",
       label: "شخصیت",
       size: { md: 4 },
     },
     {
-      name: "cdOrderTypeId",
-      inputType: "autocomplete",
-      label: "نوع تنبیه",
-      size: { md: 4 },
-      options: orderTypeOptions?.map((item: any) => ({
-        value: item.id,
-        title: item.value,
-      })) ?? [{ value: 0, title: "خالی" }],
-      storeValueAs: "id",
-    },
-    {
-      name: "workgroupId",
-      inputType: "autocomplete",
-      label: "کارگروه",
-      size: { md: 4 },
-      options: workgroupOptions?.map((item: any) => ({
-        value: item.id,
-        title: item.name,
-      })) ?? [{ value: 0, title: "خالی" }],
-      storeValueAs: "id",
-    },
-    {
-      name: "cdSubjectTypeKey",
+      name: "referralNumber",
       inputType: "text",
-      label: "ردیف موضوع",
-      size: { md: 3 },
-    },
-    {
-      name: "hasAttachment",
-      inputType: "autocomplete",
-      label: "دارای پیوست",
-      size: { md: 3 },
-      options: [
-        { value: "true", title: "میباشد" },
-        { value: "false", title: "نمیباشد" },
-      ],
-      storeValueAs: "id",
-    },
-    {
-      name: "cdClaimantTypeId",
-      inputType: "autocomplete",
-      label: "نوع حکم",
-      size: { md: 3 },
-      options: [
-        { value: "398", title: "بدوی" },
-        { value: "399", title: "عالی" },
-      ],
-      storeValueAs: "id",
-    },
-    {
-      name: "orderNumber",
-      inputType: "text",
-      label: "شماره حکم",
-      size: { md: 3 },
+      label: "شماره ارجاع",
+      size: { md: 4 },
     },
   ];
   type editeObjectType = {

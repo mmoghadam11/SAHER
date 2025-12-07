@@ -71,7 +71,7 @@ const UploadPdfDialog: React.FC<Props> = ({
   const [showPDFFlag, setShowPDFFlag] = useState<boolean>(false);
   const [selectedPDF, setSelectedPDF] = useState(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const authFunctions = useAuthorization();
+  const { hasPermission } = useAuthorization();
 
   const formItems = useMemo(
     () => [
@@ -95,7 +95,10 @@ const UploadPdfDialog: React.FC<Props> = ({
       headerAlign: "center",
       align: "center",
       renderCell: ({ row }: { row: any }) => {
-        if (!notificationStatus)
+        if (
+          (!notificationStatus && !hasPermission("supervisor-pdf")) ||
+          hasPermission("disciplinary-order-edit")
+        )
           return (
             <TableActions
               onView={() => {
@@ -111,22 +114,7 @@ const UploadPdfDialog: React.FC<Props> = ({
             />
           );
         else
-          if(authFunctions?.hasPermission("disciplinary-order-edit"))
           return (
-            <TableActions
-              onView={() => {
-                setSelectedPDF(row.id);
-                setShowPDFFlag((prev) => !prev);
-              }}
-              onDelete={() => {
-                deleteMutate({
-                  entity: `disciplinary-order/remove-order-image?id=${row.id}`, // ❗️
-                  method: "delete",
-                });
-              }}
-            />
-          );
-          else return (
             <TableActions
               onView={() => {
                 setSelectedPDF(row.id);
@@ -361,7 +349,7 @@ const UploadPdfDialog: React.FC<Props> = ({
 
       <DialogContent>
         <Grid container justifyContent={"center"}>
-          {!notificationStatus && authFunctions?.hasPermission("disciplinary-order-edit")&& (
+          {!notificationStatus && hasPermission("disciplinary-order-edit") && (
             <Grid item md={11} sm={11} xs={12}>
               <input
                 ref={fileInputRef}
@@ -513,17 +501,19 @@ const UploadPdfDialog: React.FC<Props> = ({
         )}
 
         <Box sx={!!PDFList?.content?.length ? { mr: 3 } : {}}>
-          {PdfUrl && showPDFFlag &&authFunctions?.hasPermission("disciplinary-order-edit")&& (
-            <Button
-              variant="outlined"
-              color="warning"
-              onClick={noticOrdr}
-              disabled={isLoading}
-              sx={{ mr: 1 }}
-            >
-              ابلاغ حکم
-            </Button>
-          )}
+          {PdfUrl &&
+            showPDFFlag &&
+            hasPermission("disciplinary-order-edit") && (
+              <Button
+                variant="outlined"
+                color="warning"
+                onClick={noticOrdr}
+                disabled={isLoading}
+                sx={{ mr: 1 }}
+              >
+                ابلاغ حکم
+              </Button>
+            )}
           <Button
             variant="outlined"
             onClick={onClose}
@@ -532,21 +522,22 @@ const UploadPdfDialog: React.FC<Props> = ({
           >
             انصراف
           </Button>
-          {authFunctions?.hasPermission("disciplinary-order-edit")&&
-          <Button
-            variant="contained"
-            startIcon={
-              isLoading ? (
-                <CircularProgress size={20} color="inherit" />
-              ) : (
-                <CloudUpload />
-              )
-            }
-            onClick={handleUploadSubmit}
-            disabled={isLoading || !selectedFile}
-          >
-            {isLoading ? "در حال آپلود..." : "آپلود"}
-          </Button>}
+          {hasPermission("disciplinary-order-edit") && (
+            <Button
+              variant="contained"
+              startIcon={
+                isLoading ? (
+                  <CircularProgress size={20} color="inherit" />
+                ) : (
+                  <CloudUpload />
+                )
+              }
+              onClick={handleUploadSubmit}
+              disabled={isLoading || !selectedFile}
+            >
+              {isLoading ? "در حال آپلود..." : "آپلود"}
+            </Button>
+          )}
         </Box>
       </DialogActions>
     </Dialog>
