@@ -36,6 +36,7 @@ import SearchPannel from "components/form/SearchPannel";
 import AddFinancial from "./AddDisciplinaryOrder";
 import moment from "jalali-moment";
 import ShowDisciplinaryOrder from "domains/Institute/disciplinaryOrder/ShowDisciplinaryOrder";
+import AddDisciplinaryOrder from "./AddDisciplinaryOrder";
 
 type Props = {
   setActiveTab: React.Dispatch<React.SetStateAction<number>>;
@@ -352,7 +353,8 @@ const DisciplinaryOrderGrid = ({ setActiveTab }: Props) => {
           </Typography>
         )}
       </Grid>
-      <ShowDisciplinaryOrder
+      {/* <ShowDisciplinaryOrder */}
+      <AddDisciplinaryOrder
         editable={false}
         refetch={StatesData_refetch}
         addModalFlag={addModalFlag}
