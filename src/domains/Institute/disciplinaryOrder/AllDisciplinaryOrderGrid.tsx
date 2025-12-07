@@ -325,6 +325,9 @@ const AllDisciplinaryOrderGrid = (props: Props) => {
         if (authFunctions?.hasPermission("disciplinary-order-edit"))
           return (
             <TableActions
+              // onEdit={() => {
+              //   navigate(`${row.id}`)
+              // }}
               onEdit={() => {
                 setEditable(true);
                 setEditeData(row);
@@ -353,7 +356,7 @@ const AllDisciplinaryOrderGrid = (props: Props) => {
               }}
             />
           );
-        else
+        else if (authFunctions?.hasPermission("supervisor-pdf"))
           return (
             <TableActions
               onView={() => {
@@ -371,6 +374,14 @@ const AllDisciplinaryOrderGrid = (props: Props) => {
                     color={row.hasAttachment ? "success" : "primary"}
                   />
                 ),
+              }}
+            />
+          );
+        else return (
+            <TableActions
+              onView={() => {
+                setEditeData(row);
+                setAddModalFlag(true);
               }}
             />
           );
