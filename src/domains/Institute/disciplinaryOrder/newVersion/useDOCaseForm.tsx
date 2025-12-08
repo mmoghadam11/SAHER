@@ -89,12 +89,12 @@ export const useDOCaseForm = ({
 
   const responsibleFilters = useMemo(() => {
     // اگر در حالت نمایش داده ویرایشی هستیم و داده حسابدار رسمی وجود دارد، بر اساس ID فیلتر کن
-    if (!responsibleTyping && editeData?.personnelCaId) {
-      return { id: editeData.personnelCaId };
+    if (!responsibleTyping && editeData?.accuserId) {
+      return { id: editeData.accuserId };
     }
     // در غیر این صورت، بر اساس متن جستجوی کاربر فیلتر کن
     return buildPersonnelFiltersFromText(debouncedResponsible);
-  }, [debouncedResponsible, responsibleTyping, editeData?.personnelCaId]);
+  }, [debouncedResponsible, responsibleTyping, editeData?.accuserId]);
   const DICFilters = useMemo(() => {
     if (!DICTyping && editeData?.supremeId) {
       return { id: editeData.supremeId };
@@ -196,25 +196,7 @@ export const useDOCaseForm = ({
     select: (res: any) => res?.data,
   } as any);
 
-  // --- بقیه منطق هوک ---
 
-  // 👇 اصلاح شد: حذف cdPersonalityId از payload و تنظیم درست auditingFirmId/personnelCaId
-  const onSubmit = (data: any) => {
-    const { cdPersonalityId, ...restOfData } = data; // حذف cdPersonalityId
-
-    const submissionData = {
-      ...data,
-      // فقط فیلد مربوط به نوع پاسخ‌دهنده انتخاب شده را ارسال کن
-      auditingFirmId:
-        cdPersonalityId === 396 ? restOfData.auditingFirmId : null,
-      personnelCaId:
-        cdPersonalityId === 397 ? restOfData.personnelCaId : null,
-      // ✅ اضافه کردن آرایه انتخاب شده به دیتای نهایی
-      // معمولاً فقط ID ها را به سرور می‌فرستیم
-      selectedSubjects: selectedItems.map((item) => item.id),
-    };
-    return submissionData;
-  };
   useEffect(() => {
     if (startDate && endDate) {
       const diff = new Date(endDate).getDate() - new Date(startDate).getDate();
@@ -469,16 +451,5 @@ export const useDOCaseForm = ({
 
   return {
     formItems,
-    listLogic: {
-      searchKey,
-      setSearchKey,
-      orderSubjectOptions,
-      isSearching,
-      handleSearchClick,
-      selectedItems,
-      setSelectedItems,
-      handleAddItem,
-      handleRemoveItem,
-    },
   };
 };

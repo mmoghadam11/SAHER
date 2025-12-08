@@ -126,7 +126,7 @@ const AddMeeting = ({
     console.log("submissionData", submissionData);
     mutate({
       entity: `disciplinary-case/create-meeting`,
-      method: "post",
+      method: "put",
       data: submissionData,
     });
   };
@@ -168,7 +168,7 @@ const AddMeeting = ({
       {
         name: "boardMeetingDate",
         inputType: "date",
-        label: "تاریخ دعوتنامه",
+        label: "تاریخ تشکیل جلسه",
         size: { md: 6 },
         elementProps: {
           setDay: (value: any) => setValue("boardMeetingDate", value),
@@ -180,12 +180,12 @@ const AddMeeting = ({
 
   useEffect(() => {
     if (!!editeData) {
-      let initialRespondenType = undefined;
+      let cdPersonalityId = undefined;
 
       if (editeData.auditingFirmId) {
-        initialRespondenType = 396;
-      } else if (editeData.personnelCaId) {
-        initialRespondenType = 397;
+        cdPersonalityId = 396;
+      } else if (editeData.accuserId) {
+        cdPersonalityId = 397;
         setResponsibleTyping(false);
         setDICTyping(false);
       }

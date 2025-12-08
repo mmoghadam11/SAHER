@@ -168,7 +168,7 @@ const AllDOGrid = (props: Props) => {
         if (row?.disciplinaryCaseStage==="CASE_REVIEW")
           return (<Chip label={"اولیه"}/>);
         if (row?.disciplinaryCaseStage==="PRIMARY_MEETING_REQUESTED")
-          return (<Chip label={"دعوتنامه"}/>);
+          return (<Chip label={"دعوتنامه"} icon={<HistoryEdu fontSize="small"/>}/>);
       },
     },
     {

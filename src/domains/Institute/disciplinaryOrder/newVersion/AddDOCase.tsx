@@ -115,8 +115,6 @@ const AddDOCase = ({
       recordNumber: null,
       orderDate: null,
     });
-    setSearchKey("");
-    setSelectedItems([]);
     setPdfUrl("");
     setPdfViewFlag(false);
   };
@@ -133,14 +131,14 @@ const AddDOCase = ({
     };
 
     console.log("submissionData", submissionData);
-      mutate({
-        entity: `disciplinary-case/${!!editeData ? "update" : "save"}`,
-        method: !!editeData ? "put" : "post",
-        data: submissionData,
-      });
+    mutate({
+      entity: `disciplinary-case/${!!editeData ? "update" : "save"}`,
+      method: !!editeData ? "put" : "post",
+      data: submissionData,
+    });
   };
   // فراخوانی هوک سفارشی با تمام منطق
-  const { formItems, listLogic } = useDOCaseForm({
+  const { formItems } = useDOCaseForm({
     editeData,
     watch,
     setValue,
@@ -150,26 +148,10 @@ const AddDOCase = ({
     DICTyping,
     setDICTyping,
   });
-  const {
-    searchKey,
-    setSearchKey,
-    orderSubjectOptions,
-    isSearching,
-    handleSearchClick,
-    selectedItems,
-    setSelectedItems,
-    handleAddItem,
-    handleRemoveItem,
-  } = listLogic;
 
   useEffect(() => {
     if (!!editeData) {
-      let initialRespondenType = undefined;
-
-      if (editeData.auditingFirmId) {
-        initialRespondenType = 396;
-      } else if (editeData.personnelCaId) {
-        initialRespondenType = 397;
+      if (editeData.accuserId && editeData?.cdPersonalityId === 397) {
         setResponsibleTyping(false);
         setDICTyping(false);
       }
@@ -177,17 +159,16 @@ const AddDOCase = ({
       // reset کردن فرم با داده‌های editeData و نوع پاسخ‌دهنده تعیین شده
       reset({
         ...editeData,
-        cdRespondenTypeId: initialRespondenType,
         // cdClaimantTypeId: !!editeData?.startDate ? 399 : 398,
       });
     } else {
       // حالت جدید: مقادیر پیش‌فرض
       reset({
-        cdClaimantTypeId: null,
-        cdRespondenTypeId: null,
-        cdSubjectTypeId: "",
-        auditingFirmId: null,
-        personnelCaId: null,
+        complainant: null,
+        cdReferralTypeId: null,
+        referralId: "",
+        referralNumber: null,
+        referralDate: null,
         claimant: "",
         workgroupId: "",
         cdOrderTypeId: "",
@@ -202,8 +183,6 @@ const AddDOCase = ({
         recordNumber: null,
         orderDate: null,
       });
-      setSearchKey("");
-      setSelectedItems([]);
     }
   }, [editeData, reset]);
 
@@ -266,7 +245,6 @@ const AddDOCase = ({
                 />
               </Grid>
             ))}
-            
 
             <Grid item xs={12} display="flex" justifyContent="flex-end" mt={2}>
               <Button variant="outlined" onClick={handleClose} sx={{ mr: 2 }}>
