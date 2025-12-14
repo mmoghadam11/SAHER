@@ -70,10 +70,6 @@ const AddMeeting = ({
     getValues,
     watch,
   } = useForm<any>();
-  const [responsibleTyping, setResponsibleTyping] = useState(true);
-  const [DICTyping, setDICTyping] = useState(true);
-  const [PdfUrl, setPdfUrl] = useState<string | undefined>("");
-  const [PdfViewFlag, setPdfViewFlag] = useState<boolean>(false);
   const { mutate, isLoading } = useMutation({
     mutationFn: Auth?.serverCall,
     onSuccess: () => {
@@ -83,8 +79,6 @@ const AddMeeting = ({
           : `دعوتنامه جدید با موفقیت افزوده شد`,
         "success"
       );
-      setResponsibleTyping(true);
-      setDICTyping(true);
       refetch();
       handleClose();
     },
@@ -95,17 +89,13 @@ const AddMeeting = ({
   const handleClose = () => {
     setAddModalFlag(false);
     setEditeData(null);
-    setResponsibleTyping(true);
-    setDICTyping(true);
     reset({});
-    setPdfUrl("");
-    setPdfViewFlag(false);
   };
   const onSubmit = (data: any) => {
     const {
-      accuserPrimaryMeetingMumber,
+      accuserPrimaryMeetingNumber,
       accuserPrimaryMeetingDate,
-      boardPrimaryMeetingMumber,
+      boardPrimaryMeetingNumber,
       boardPrimaryMeetingDate,
       boardMeetingDate,
       ...restOfData
@@ -115,9 +105,9 @@ const AddMeeting = ({
     //   return 0;
     // }
     const submissionData = {
-      accuserPrimaryMeetingMumber,
+      accuserPrimaryMeetingNumber,
       accuserPrimaryMeetingDate,
-      boardPrimaryMeetingMumber,
+      boardPrimaryMeetingNumber,
       boardPrimaryMeetingDate,
       boardMeetingDate,
       disciplinaryCaseId: editeData?.id ?? null,
@@ -134,7 +124,7 @@ const AddMeeting = ({
   const formItems: FormItem[] = useMemo(
     () => [
       {
-        name: "accuserPrimaryMeetingMumber",
+        name: "accuserPrimaryMeetingNumber",
         inputType: "text",
         label: "شماره دعوتنامه",
         size: { md: 6 },
@@ -150,7 +140,7 @@ const AddMeeting = ({
         },
       },
       {
-        name: "boardPrimaryMeetingMumber",
+        name: "boardPrimaryMeetingNumber",
         inputType: "text",
         label: "شماره دعوتنامه هیئت بدوی انتظامی",
         size: { md: 6 },
@@ -180,16 +170,6 @@ const AddMeeting = ({
 
   useEffect(() => {
     if (!!editeData) {
-      let cdPersonalityId = undefined;
-
-      if (editeData.auditingFirmId) {
-        cdPersonalityId = 396;
-      } else if (editeData.accuserId) {
-        cdPersonalityId = 397;
-        setResponsibleTyping(false);
-        setDICTyping(false);
-      }
-
       // reset کردن فرم با داده‌های editeData و نوع پاسخ‌دهنده تعیین شده
       reset({
         ...editeData,
@@ -220,8 +200,8 @@ const AddMeeting = ({
       </DialogTitle>
 
       <DialogContent
-      // sx={editable ? { overflowx: "visible", overflowY: "auto" } : {}}
-      // sx={editable ? { overflow: "visible"} : {}}
+        // sx={editable ? { overflowx: "visible", overflowY: "auto" } : {}}
+        sx={{ overflow: "visible" }}
       >
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={3} mt={1}>

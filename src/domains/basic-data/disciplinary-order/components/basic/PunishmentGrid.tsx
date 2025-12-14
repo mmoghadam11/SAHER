@@ -52,9 +52,9 @@ const PunishmentGrid = ({  }: Props) => {
   const columns: GridColDef[] = [
     { field: "orderName", headerName: "موضوع", flex: 1.5 },
     { field: "code", headerName: "کد", flex: 1.5 },
-    { field: "contestable", headerName: "قابل اعتراض", flex: 1,
+    { field: "appealable", headerName: "قابل اعتراض", flex: 1,
       renderCell: ({ row }: { row: any }) => {
-        if(row.contestable)return(<CheckCircle color="success"/>)
+        if(row.appealable)return(<CheckCircle color="success"/>)
           return(<Close color="error"/>)
       },
      },

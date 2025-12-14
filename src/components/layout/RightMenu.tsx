@@ -27,6 +27,7 @@ import {
   Bungalow,
   AccountBalance,
   People,
+  Gavel,
 } from "@mui/icons-material";
 import { mainProviderContext } from "context/MainProviderContext";
 import { DRAWER_WIDTH, DrawerHeader } from "./Layout";
@@ -106,20 +107,33 @@ const Drawer = styled(MuiDrawer, {
 // Menu Data
 const MENU_ITEMS: MenuItem[] = [
   {
+    icon: <Gavel />,
+    title: "احکام انتظامی(new)",
+    url: "IACPA-disciplinary-order",
+    access: ["administrator", "city-showmenu"],
+    menuChildren: [
+      {
+        title: "پرونده‌های انتظامی",
+        url: "cases",
+        access: ["administrator", "city-showmenu"],
+      },
+      {
+        title: "احکام عالی انتظامی",
+        url: "final",
+        access: ["administrator", "city-showmenu"],
+      },
+    ],
+  },
+  {
     icon: <AccountBalance />,
     title: "جامعه",
     url: "/IACPA",
-    access: ["city-showmenu","operator-showmenu"],
+    access: ["city-showmenu", "operator-showmenu"],
     menuChildren: [
       {
         title: "احکام انتظامی",
         url: "disciplinary-order",
-        access: ["administrator", "city-showmenu","operator-showmenu"],
-      },
-      {
-        title: "احکام انتظامی(new)",
-        url: "disciplinary-order-new",
-        access: ["administrator", "city-showmenu"],
+        access: ["administrator", "city-showmenu", "operator-showmenu"],
       },
       {
         title: "کارگروه",
@@ -143,33 +157,42 @@ const MENU_ITEMS: MenuItem[] = [
     icon: <BusinessCenter />,
     title: "موسسات",
     url: "/institutions",
-    access: ["city-showmenu","allFirms_showmenu","allFirmsBasic_showmenu"],
+    access: ["city-showmenu", "allFirms_showmenu", "allFirmsBasic_showmenu"],
     menuChildren: [
       {
         title: "اطلاعات موسسات",
         url: "information",
-        access: ["allFirms_showmenu", "city-showmenu","allFirmsBasic_showmenu"],
+        access: [
+          "allFirms_showmenu",
+          "city-showmenu",
+          "allFirmsBasic_showmenu",
+        ],
       },
       {
         title: "شرکای موسسه",
         url: "partners",
-        access: ["administrator", "city-showmenu","allFirms_showmenu"],
+        access: ["administrator", "city-showmenu", "allFirms_showmenu"],
       },
       {
         title: "حسابداران شاغل در موسسه",
         // url: "personnels",
         url: "hired-accountants",
-        access: ["administrator", "city-showmenu","township-showmenu","allFirms_showmenu"],
+        access: [
+          "administrator",
+          "city-showmenu",
+          "township-showmenu",
+          "allFirms_showmenu",
+        ],
       },
       {
         title: "کارکنان حرفه‌ای موسسات",
         url: "persons",
-        access: ["administrator", "city-showmenu","allFirms_showmenu"],
+        access: ["administrator", "city-showmenu", "allFirms_showmenu"],
       },
       {
         title: "آموزش مستمر",
         url: "EDU",
-        access: ["administrator", "city-showmenu","allFirms_showmenu"],
+        access: ["administrator", "city-showmenu", "allFirms_showmenu"],
       },
       {
         //ثابت و متغیر دارد
@@ -218,18 +241,18 @@ const MENU_ITEMS: MenuItem[] = [
       {
         title: "شرکای موسسه",
         url: "partners",
-        access: ["administrator", "city-showmenu","township-showmenu"],
+        access: ["administrator", "city-showmenu", "township-showmenu"],
       },
       {
         title: "حسابداران شاغل در موسسه",
         // url: "personnels",
         url: "hired-accountants",
-        access: ["administrator", "city-showmenu","township-showmenu"],
+        access: ["administrator", "city-showmenu", "township-showmenu"],
       },
       {
         title: "کارکنان حرفه‌ای موسسه",
         url: "persons",
-        access: ["administrator", "city-showmenu","township-showmenu"],
+        access: ["administrator", "city-showmenu", "township-showmenu"],
       },
       {
         title: "آموزش مستمر",
@@ -250,7 +273,7 @@ const MENU_ITEMS: MenuItem[] = [
         //ثابت و متغیر دارد
         title: "حق عضویت موسسه",
         url: "membership-fee",
-        access: ["administrator", "city-showmenu","township-showmenu"],
+        access: ["administrator", "city-showmenu", "township-showmenu"],
       },
       {
         title: "قرارداد های حسابرسی",
@@ -275,41 +298,57 @@ const MENU_ITEMS: MenuItem[] = [
         url: "disciplinary-order",
         access: ["director-showmenu"],
       },
+      {
+        title: "احکام انتظامی(new)",
+        url: "disciplinary-order-new",
+        access: ["administrator", "city-showmenu"],
+      },
     ],
   },
   {
     icon: <People />,
     title: "حسابداران رسمی",
     url: "/accountant",
-    access: ["city-showmenu","allAccountants_showmenu"],
+    access: [
+      "city-showmenu",
+      "allAccountants_showmenu",
+      "allAccountantsBasic_showmenu",
+    ],
     menuChildren: [
       {
         title: "حسابداران رسمی",
         url: "official-users",
-        access: ["administrator", "city-showmenu","allAccountants_showmenu"]},
+        access: [
+          "administrator",
+          "city-showmenu",
+          "allAccountants_showmenu",
+          "allAccountantsBasic_showmenu",
+        ],
+      },
       {
         title: "حق عضویت",
         url: "membershipFee",
-        access: ["administrator", "city-showmenu"]},
+        access: ["administrator", "city-showmenu"],
+      },
       {
         title: "کارت عضویت",
         url: "membershipCard",
-        access: ["administrator","city-showmenu"],
+        access: ["administrator", "city-showmenu"],
       },
       {
         title: "پروانه‌کار شاغل انفرادی",
         url: "individualLicense",
-        access: ["administrator","city-showmenu"],
+        access: ["administrator", "city-showmenu"],
       },
       {
         title: "آموزش مستمر",
         url: "continuousEducation",
-        access: ["administrator","city-showmenu"],
+        access: ["administrator", "city-showmenu"],
       },
       {
         title: "احکام انتظامی",
         url: "disciplinary-order",
-        access: ["administrator","city-showmenu"],
+        access: ["administrator", "city-showmenu", "allAccountants_showmenu"],
       },
     ],
   },
@@ -317,17 +356,22 @@ const MENU_ITEMS: MenuItem[] = [
     icon: <People />,
     title: "حسابدار رسمی",
     url: "/accountant-user",
-    access: ["city-showmenu","accountant-showmenu"],
+    access: ["city-showmenu", "accountant-showmenu"],
     menuChildren: [
       {
         title: "کارتابل",
         url: "cartable",
-        access: ["administrator", "city-showmenu","township-showmenu","accountant-showmenu"]
+        access: [
+          "administrator",
+          "city-showmenu",
+          "township-showmenu",
+          "accountant-showmenu",
+        ],
       },
       {
         title: "حق عضویت",
         url: "membershipFee",
-        access: ["administrator", "city-showmenu","township-showmenu"]
+        access: ["administrator", "city-showmenu", "township-showmenu"],
       },
       // {
       //   title: "قراردادها",
@@ -337,7 +381,22 @@ const MENU_ITEMS: MenuItem[] = [
       {
         title: "احکام انتظامی",
         url: "disciplinary-order",
-        access: ["administrator","city-showmenu","township-showmenu","accountant-showmenu"],
+        access: [
+          "administrator",
+          "city-showmenu",
+          "township-showmenu",
+          "accountant-showmenu",
+        ],
+      },
+      {
+        title: "احکام انتظامی(new)",
+        url: "disciplinary-order-new",
+        access: [
+          "administrator",
+          "city-showmenu",
+          "township-showmenu",
+          "accountant-showmenu",
+        ],
       },
       // {
       //   title: "سابقه آموزش مستمر",
@@ -352,7 +411,7 @@ const MENU_ITEMS: MenuItem[] = [
       {
         title: "گزارشات",
         url: "continuousEducation",
-        access: ["administrator","city-showmenu","township-showmenu"],
+        access: ["administrator", "city-showmenu", "township-showmenu"],
       },
     ],
   },
@@ -559,11 +618,17 @@ const RenderMenuWithChild: React.FC<RenderMenuWithChildProps> = ({
             ? theme.palette.primary.main
             : theme.palette.text.secondary,
           background: isChildActive
-            ? alpha(theme.palette.primary.main, theme.palette.mode==="light"?0.1:0.3)
+            ? alpha(
+                theme.palette.primary.main,
+                theme.palette.mode === "light" ? 0.1 : 0.3
+              )
             : "transparent",
           transition: "all 0.2s ease-in-out",
           "&:hover": {
-            background: alpha(theme.palette.primary.main,theme.palette.mode==="light"? 0.05:0.2),
+            background: alpha(
+              theme.palette.primary.main,
+              theme.palette.mode === "light" ? 0.05 : 0.2
+            ),
             color: theme.palette.primary.main,
           },
         }}
@@ -628,7 +693,10 @@ const RenderMenuWithChild: React.FC<RenderMenuWithChildProps> = ({
                             theme.palette.primary.main,
                             0.8
                           )} 0%, ${theme.palette.primary.main} 100%)`
-                        : alpha(theme.palette.primary.main,theme.palette.mode==="light"? 0.05:0.2),
+                        : alpha(
+                            theme.palette.primary.main,
+                            theme.palette.mode === "light" ? 0.05 : 0.2
+                          ),
                       color: isActive
                         ? theme.palette.primary.contrastText
                         : theme.palette.primary.main,

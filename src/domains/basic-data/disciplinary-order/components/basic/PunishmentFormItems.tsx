@@ -23,7 +23,7 @@ export const PunishmentFormItems = (
       rules: { required: "عنوان موضوع الزامی است" },
     },
     {
-      name: "contestable",
+      name: "appealable",
       inputType: "select",
       label: "قابل اعتراض",
       size: { md: 6 },
