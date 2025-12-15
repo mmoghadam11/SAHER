@@ -9,7 +9,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import RenderFormInput from "components/render/formInputs/RenderFormInput";
-import React from "react";
+import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 type Props<T> = {
@@ -73,6 +73,15 @@ function SearchPannel<T extends Record<string, any>>({
       ...newFilters,
     }));
   };
+  useEffect(() => {
+      if (searchData !== null) {
+        reset({
+          ...searchData,
+        });
+      } else
+        reset({
+        });
+    }, [searchData]);
   return (
     <Grid item md={md} sm={11} xs={12}>
       <Paper elevation={3} sx={{ p: 3, mt: 1, mb: 2, width: "100%" }}>
