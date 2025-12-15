@@ -38,7 +38,7 @@ const buildDICFiltersFromText = (q: string | undefined | null) => {
   if (s.length < 2) return null;
   // اگر فقط عدد باشد، بر اساس کد ملی جستجو کن
   // if (/^\d+$/.test(s)) return { orderNo: s };
-   if (/^\d+$/.test(s)) return { orderNumber: s };
+  if (/^\d+$/.test(s)) return { orderNumber: s };
   // اگر متن و شامل فاصله باشد، سعی کن بر اساس نام و نام خانوادگی جستجو کنی
   // const parts = s.split(/\s+/);
   // if (parts.length >= 2) {
@@ -56,7 +56,7 @@ type HookProps = {
   reset: any;
   responsibleTyping: any;
   setResponsibleTyping: any;
-  DICTyping?:any;
+  DICTyping?: any;
   setDICTyping?: any;
 };
 
@@ -73,6 +73,7 @@ export const useDOCaseForm = ({
   const Auth = useAuth();
   const snackbar = useSnackbar();
 
+  const watchedReferralType = watch("cdReferralTypeId");
   const watchedTypeOrder = watch("cdPersonalityId");
   const watchedAccountantMemberShip = watch("currentCdMembershipTypeId");
   const startDate = watch("startDate");
@@ -128,13 +129,16 @@ export const useDOCaseForm = ({
         Object.keys(responsibleFilters).length > 0,
       keepPreviousData: true,
     } as any);
-  const { data: basicOrders, isFetching: isBasicOrdersFetching} = useQuery<any>({
-    queryKey: [`disciplinary-order/primary-order-all${paramsSerializer(DICFilters)}`],
-    queryFn: Auth?.getRequest,
-    select: (res: any) => res?.data ?? [],
-    enabled: !!DICFilters,
-    keepPreviousData: true,
-  } as any);
+  const { data: basicOrders, isFetching: isBasicOrdersFetching } =
+    useQuery<any>({
+      queryKey: [
+        `disciplinary-order/primary-order-all${paramsSerializer(DICFilters)}`,
+      ],
+      queryFn: Auth?.getRequest,
+      select: (res: any) => res?.data ?? [],
+      enabled: !!DICFilters,
+      keepPreviousData: true,
+    } as any);
 
   const { data: referralTypeOptions } = useQuery<any>({
     queryKey: [`common-data/find-by-type-all?typeId=53`],
@@ -196,7 +200,6 @@ export const useDOCaseForm = ({
     select: (res: any) => res?.data,
   } as any);
 
-
   useEffect(() => {
     if (startDate && endDate) {
       const diff = new Date(endDate).getDate() - new Date(startDate).getDate();
@@ -233,7 +236,7 @@ export const useDOCaseForm = ({
         label: "",
         size: { md: 12 },
       },
-      
+
       // {
       //   name: "subject",
       //   inputType: "text",
@@ -270,36 +273,35 @@ export const useDOCaseForm = ({
         inputType: "autocomplete",
         label: "نوع ارجاع دهنده",
         size: { md: 6 },
-        options:
-          referralTypeOptions?.map((item: any) => ({
-            value: item?.id,
-            title: item?.value,
-          })) ?? [
+        options: referralTypeOptions?.map((item: any) => ({
+          value: item?.id,
+          title: item?.value,
+        })) ?? [
           { value: 1, title: "کارگروه" },
           { value: 2, title: "هیئت عالی نظارت" },
         ],
         storeValueAs: "id",
         rules: { required: "انتخاب کارگروه الزامی است" },
       },
+      // {
+      //   name: "referralId",
+      //   inputType: "autocomplete",
+      //   label: "ارجاع دهنده",
+      //   size: { md: 6 },
+      //   options:
+      //     workgroupOptions?.map((item: any) => ({
+      //       value: item?.id,
+      //       title: item?.name,
+      //     })) ?? [],
+      //   storeValueAs: "id",
+      //   rules: { required: "انتخاب کارگروه الزامی است" },
+      // },
       {
-        name: "referralId",
-        inputType: "autocomplete",
-        label: "ارجاع دهنده",
-        size: { md: 6 },
-        options:
-          workgroupOptions?.map((item: any) => ({
-            value: item?.id,
-            title: item?.name,
-          })) ?? [],
-        storeValueAs: "id",
-        rules: { required: "انتخاب کارگروه الزامی است" },
-      },
-       {
         name: "referralNumber",
         inputType: "text",
-        label: "شمار ارجاع",
+        label: "شماره ارجاع",
         size: { md: 6 },
-        // rules: { required: "شاکی الزامی است" },
+        rules: { required: "شماره ارجاع الزامی است" },
       },
       {
         name: "referralDate",
@@ -309,8 +311,9 @@ export const useDOCaseForm = ({
         elementProps: {
           setDay: (value: any) => setValue("referralDate", value),
         },
+        rules: { required: "تاریخ ارجاع الزامی است" },
       },
-      
+
       {
         name: "titleDivider",
         inputType: "titleDivider",
@@ -318,38 +321,54 @@ export const useDOCaseForm = ({
         size: { md: 12 },
       },
       {
-        name: "recordDate",
+        name: "boardMeetingRecordDate",
         inputType: "date",
         label: "تاریخ صورتجلسه",
         size: { md: 4 },
-        // rules: { required: "تاریخ صورتجلسه الزامی است" },
+        rules: { required: "تاریخ صورتجلسه الزامی است" },
         elementProps: {
           setDay: (value: any) => setValue("fileCreationDate", value),
         },
       },
       {
-        name: "recordNumber",
+        name: "boardMeetingRecordNumber",
         inputType: "text",
         label: "شماره صورتجلسه",
         size: { md: 4 },
-        // rules: { required: "تاریخ صورتجلسه الزامی است" },
+        rules: { required: "شماره صورتجلسه الزامی است" },
       },
-    //   {
-    //     name: "titleDivider2",
-    //     inputType: "titleDivider",
-    //     label: "",
-    //     size: { md: 12 },
-    //   },
-
+        {
+          name: "titleDivider2",
+          inputType: "titleDivider",
+          label: "",
+          size: { md: 12 },
+        },
     ];
 
     // جستجوی فیلد بر اساس نام cdPersonalityId
     const targetIndex = baseItems.findIndex(
       (item) => item.name === "cdPersonalityId"
     );
-    
-   
-
+    const targetReferralTypeIndex = baseItems.findIndex(
+      (item) => item.name === "cdReferralTypeId"
+    );
+    if (targetReferralTypeIndex > -1) {
+      if (watchedReferralType === 1085) {
+        baseItems.splice(targetReferralTypeIndex + 1, 0, {
+          name: "referralId",
+          inputType: "autocomplete",
+          label: "ارجاع دهنده",
+          size: { md: 6 },
+          options:
+            workgroupOptions?.map((item: any) => ({
+              value: item?.id,
+              title: item?.name,
+            })) ?? [],
+          storeValueAs: "id",
+          rules: { required: "انتخاب کارگروه الزامی است" },
+        });
+      }
+    }
     if (targetIndex > -1) {
       if (watchedTypeOrder === 396) {
         baseItems.splice(targetIndex + 1, 0, {
@@ -431,6 +450,7 @@ export const useDOCaseForm = ({
     return baseItems;
   }, [
     editeData,
+    watchedReferralType,
     watchedTypeOrder,
     endDate,
     watchedAccountantMemberShip,
