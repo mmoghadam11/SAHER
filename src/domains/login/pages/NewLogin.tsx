@@ -591,7 +591,7 @@ const NewLogin = () => {
       alignItems="center"
       sx={{
         width:"100vw",
-        minHeight: "100vh",
+        minHeight: "100svh",
         backgroundColor: theme.palette.mode === "light" ? "inherit" : "#1c1c1c",
       }}
     >
