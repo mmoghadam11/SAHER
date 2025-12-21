@@ -91,8 +91,10 @@ function NewSearchPannel<T extends Record<string, any>>({
       });
   }, [searchData]);
   return (
-    <Grid item md={md} sm={11} xs={12}>
-      <Paper elevation={3} sx={{ p: 3, mt: 1, mb: 2, width: "100%" }}>
+    <Grid item md={md} sm={11} xs={12} 
+    // sx={{position:"sticky",top: 70,zIndex: 10,}}
+    >
+      <Paper elevation={3} sx={{ p: 3, mt: 1, mb: 2, width: "100%"}}>
         <form name="SearchPanel" onSubmit={handleSubmit(handleSearch)}>
           <Grid
             item
@@ -100,6 +102,7 @@ function NewSearchPannel<T extends Record<string, any>>({
             md={12}
             justifyContent={"space-between"}
             spacing={3}
+            // position={"sticky"}
           >
             <Grid item container md={9} spacing={2}>
               {searchItems.map((item, itemKey) => (
