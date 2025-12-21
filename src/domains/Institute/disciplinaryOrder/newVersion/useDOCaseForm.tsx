@@ -283,19 +283,19 @@ export const useDOCaseForm = ({
         storeValueAs: "id",
         rules: { required: "انتخاب کارگروه الزامی است" },
       },
-      // {
-      //   name: "referralId",
-      //   inputType: "autocomplete",
-      //   label: "ارجاع دهنده",
-      //   size: { md: 6 },
-      //   options:
-      //     workgroupOptions?.map((item: any) => ({
-      //       value: item?.id,
-      //       title: item?.name,
-      //     })) ?? [],
-      //   storeValueAs: "id",
-      //   rules: { required: "انتخاب کارگروه الزامی است" },
-      // },
+      {
+        name: "referralId",
+        inputType: "autocomplete",
+        label: "کارگروه",
+        size: { md: 6 },
+        options:
+          workgroupOptions?.map((item: any) => ({
+            value: item?.id,
+            title: item?.name,
+          })) ?? [],
+        storeValueAs: "id",
+        rules: { required: "انتخاب کارگروه الزامی است" },
+      },
       {
         name: "referralNumber",
         inputType: "text",
@@ -337,12 +337,12 @@ export const useDOCaseForm = ({
         size: { md: 4 },
         rules: { required: "شماره صورتجلسه الزامی است" },
       },
-        {
-          name: "titleDivider2",
-          inputType: "titleDivider",
-          label: "",
-          size: { md: 12 },
-        },
+      {
+        name: "titleDivider2",
+        inputType: "titleDivider",
+        label: "",
+        size: { md: 12 },
+      },
     ];
 
     // جستجوی فیلد بر اساس نام cdPersonalityId
@@ -352,23 +352,23 @@ export const useDOCaseForm = ({
     const targetReferralTypeIndex = baseItems.findIndex(
       (item) => item.name === "cdReferralTypeId"
     );
-    if (targetReferralTypeIndex > -1) {
-      if (watchedReferralType === 1085) {
-        baseItems.splice(targetReferralTypeIndex + 1, 0, {
-          name: "referralId",
-          inputType: "autocomplete",
-          label: "ارجاع دهنده",
-          size: { md: 6 },
-          options:
-            workgroupOptions?.map((item: any) => ({
-              value: item?.id,
-              title: item?.name,
-            })) ?? [],
-          storeValueAs: "id",
-          rules: { required: "انتخاب کارگروه الزامی است" },
-        });
-      }
-    }
+    // if (targetReferralTypeIndex > -1) {
+    //   if (watchedReferralType === 1085) {
+    //     baseItems.splice(targetReferralTypeIndex + 1, 0, {
+    //       name: "referralId",
+    //       inputType: "autocomplete",
+    //       label: "ارجاع دهنده",
+    //       size: { md: 6 },
+    //       options:
+    //         workgroupOptions?.map((item: any) => ({
+    //           value: item?.id,
+    //           title: item?.name,
+    //         })) ?? [],
+    //       storeValueAs: "id",
+    //       rules: { required: "انتخاب کارگروه الزامی است" },
+    //     });
+    //   }
+    // }
     if (targetIndex > -1) {
       if (watchedTypeOrder === 396) {
         baseItems.splice(targetIndex + 1, 0, {

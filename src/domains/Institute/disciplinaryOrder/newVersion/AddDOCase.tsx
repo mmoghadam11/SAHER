@@ -120,7 +120,7 @@ const AddDOCase = ({
     select: (res: any) => {
       return res.data;
     },
-    enabled: !!filters?.entityId,
+    enabled: !!filters?.entityId&&addModalFlag,
   } as any);
   const {
     data: letterPDF,

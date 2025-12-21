@@ -1,25 +1,24 @@
 import {
   BusinessCenter,
-  Cached,
-  ChromeReaderModeRounded,
   Close,
   DoneAll,
   Gavel,
-  GppGood,
   HistoryEdu,
   MarkEmailRead,
-  MenuBook,
-  PanTool,
   People,
   PictureAsPdf,
-  Undo,
   Verified,
 } from "@mui/icons-material";
-import { Box, Chip, Grid, Tooltip, Typography } from "@mui/material";
+import {
+  Box,
+  Chip,
+  Grid,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import BackButton from "components/buttons/BackButton";
-import CreateNewItem from "components/buttons/CreateNewItem";
 import TavanaDataGrid from "components/dataGrid/TavanaDataGrid";
 import TableActions from "components/table/TableActions";
 import { useAuth } from "hooks/useAuth";
@@ -31,21 +30,20 @@ import paramsSerializer from "services/paramsSerializer";
 import { PAGINATION_DEFAULT_VALUE } from "shared/paginationValue";
 import ConfirmBox from "components/confirmBox/ConfirmBox";
 import { FormItem } from "types/formItem";
-import moment from "jalali-moment";
 import { useAuthorization } from "hooks/useAutorization";
 import NewSearchPannel from "components/form/NewSearchPannel";
 import { isMobile } from "react-device-detect";
 import VerticalTable from "components/dataGrid/VerticalTable";
-import AddDOCase from "./AddDOCase";
-import AddMeeting from "./AddMeeting";
-import AddFirstStepOrder from "./AddFirstStepOrder";
-import PrRequest from "./protest/PrRequest";
-import PrResponse from "./protest/PrResponse";
-import Logs from "./components/Logs";
+import AddDOCase from "domains/Institute/disciplinaryOrder/newVersion/AddDOCase";
+import AddHMeeting from "domains/Institute/disciplinaryOrder/newVersion/highOrder/AddHMeeting";
+import AddHOrder from "domains/Institute/disciplinaryOrder/newVersion/highOrder/AddHOrder";
+import PrRequest from "domains/Institute/disciplinaryOrder/newVersion/protest/PrRequest";
+import PrResponse from "domains/Institute/disciplinaryOrder/newVersion/protest/PrResponse";
+
 
 type Props = {};
 
-const AllDOGrid = (props: Props) => {
+const AccountantAllHCases = (props: Props) => {
   const Auth = useAuth();
   const authFunctions = useAuthorization();
   const snackbar = useSnackbar();
@@ -61,11 +59,9 @@ const AllDOGrid = (props: Props) => {
   const [protestRequestFlag, setProtestRequestFlag] = useState(false);
   const [protestResponseFlag, setProtestResponseFlag] = useState(false);
   const [pdfFlag, setPdfFlag] = useState(false);
-  const [logFlag, setLogFlag] = useState(false);
   const [invitationFlag, setInvitationFlag] = useState(false);
   const [firstOrderFlag, setFirstOrderFlag] = useState(false);
-  const [deleteData, setDeleteData] = useState<any>(null);
-  const [deleteFlag, setDeleteFlag] = useState(false);
+
   const [searchData, setSearchData] = useState({
     name: "",
     code: "",
@@ -119,7 +115,7 @@ const AllDOGrid = (props: Props) => {
     status: StatesData_status,
     refetch: StatesData_refetch,
   } = useQuery<any>({
-    queryKey: [`disciplinary-case/search${paramsSerializer(filters)}`],
+    queryKey: [`disciplinary-supreme/search${paramsSerializer(filters)}`],
     queryFn: Auth?.getRequest,
     select: (res: any) => {
       return res?.data;
@@ -133,7 +129,7 @@ const AllDOGrid = (props: Props) => {
       flex: 1.2,
       align: "center",
       renderCell: ({ row }: { row: any }) => {
-        if (row?.cdPersonalityId === 397)
+        if (row?.primaryPersonalityName === "حسابدار رسمی")
           return (
             <Tooltip title="حسابدار رسمی">
               <Chip
@@ -144,7 +140,7 @@ const AllDOGrid = (props: Props) => {
               />
             </Tooltip>
           );
-        if (row?.cdPersonalityId === 396)
+        if (row?.primaryPersonalityName === "موسسه")
           return (
             <Tooltip title="موسسه">
               <Chip
@@ -157,7 +153,17 @@ const AllDOGrid = (props: Props) => {
           );
       },
     },
-    { field: "accuserName", headerName: "نام شخصیت", flex: 1.2 },
+    // {
+    //   field: "primaryPersonalityName",
+    //   headerName: "نوع شخصیت حسابرس",
+    //   flex: 1.2,
+    //   align: "center",
+    // },
+    {
+      field: "disciplinaryCaseAccuserName",
+      headerName: "نام شخصیت",
+      flex: 1.2,
+    },
     {
       field: "complainant",
       headerName: "شاکی",
@@ -165,97 +171,72 @@ const AllDOGrid = (props: Props) => {
       cellClassName: () => "font-13",
     },
     {
-      field: "referralNumber",
-      headerName: "شماره ارجاع",
+      field: "primaryOrderNumber",
+      headerName: "شماره حکم",
       flex: 1,
       cellClassName: () => "font-13",
     },
     {
-      field: "referralDate",
-      headerName: "تاریخ ارجاع",
+      field: "primaryOrderDateFr",
+      headerName: "تاریخ حکم بدوی",
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
-        if (!!row?.referralDate)
+        if (!!row?.primaryOrderDateFr) {
+          const [date, time] = row?.primaryOrderDateFr?.split(" ") ?? [
+            null,
+            null,
+          ];
           return (
-            <Typography variant="caption">
-              {moment(new Date(row?.referralDate)).format("jYYYY/jMM/jDD")}
-            </Typography>
+            <Tooltip title={row?.primaryOrderDateFr + " (تاریخ حکم بدوی)"}>
+              <Typography variant="caption">
+                {/* {moment(new Date(row?.notificationDate)).format(
+                                    "jYYYY/jMM/jDD"
+                                  )} */}
+                {date?.replaceAll("-", "/") ?? row?.primaryOrderDateFr}
+              </Typography>
+            </Tooltip>
           );
+        }
       },
     },
     {
-      field: "disciplinaryCaseStage",
+      field: "processStage",
       headerName: "وضعیت پرونده",
       flex: 1.5,
       align: "center",
       renderCell: ({ row }: { row: any }) => {
-        if (row?.disciplinaryCaseStage === "CASE_REVIEW")
-          return <Chip label={"اولیه بدوی"} color="info" />;
-        if (row?.disciplinaryCaseStage === "PRIMARY_MEETING_REQUESTED")
+        if (row?.processStage === "SUPREME_CREATED")
+          return <Chip label={"اولیه"} color="info" />;
+        if (row?.processStage === "SUPREME_METTING_REQUEST")
           return (
-            <Chip
-              label={"دعوتنامه"}
-              icon={<HistoryEdu sx={{ fontSize: "1rem" }} fontSize="small" />}
-            />
+            <Chip label={"دعوتنامه"} icon={<HistoryEdu fontSize="small" />} />
           );
-        if (row?.disciplinaryCaseStage === "PRIMARY_ORDER_DONE")
+        if (row?.processStage === "SUPREME_DONE")
           return (
             <Chip
-              label={"بدوی"}
+              label={"عالی"}
               color="info"
-              icon={<Gavel sx={{ fontSize: "1rem" }} fontSize="small" />}
-            />
-          );
-        if (row?.disciplinaryCaseStage === "NOTIFIED")
-          return (
-            <Chip
-              label={"ابلاغ"}
-              color={row?.protestOverTime ? "error" : "secondary"}
-              icon={
-                <MarkEmailRead sx={{ fontSize: "1rem" }} fontSize="small" />
-              }
+              icon={<Gavel fontSize="small" />}
             />
           );
 
-        if (row?.disciplinaryCaseStage === "PROTEST_REVIEW")
+        if (row?.processStage === "NOTIFIED")
           return (
             <Chip
-              label={"اعتراض"}
-              color="warning"
-              icon={<PanTool sx={{ fontSize: "1rem" }} fontSize="small" />}
-            />
-          );
-        if (row?.disciplinaryCaseStage === "PROTEST_ACCEPTED")
-          return (
-            <Chip
-              // label={"تایید اعتراض"}
-              label={"اولیه عالی"}
-              color="success"
-              icon={<GppGood sx={{ fontSize: "1rem" }} fontSize="small" />}
-            />
-          );
-        if (row?.disciplinaryCaseStage === "FINAL")
-          return (
-            <Chip
-              label={"قطعی بدوی"}
+              label={"ابلاغ"}
               color="secondary"
-              icon={
-                <Verified
-                  color="secondary"
-                  sx={{ fontSize: "1rem" }}
-                  fontSize="small"
-                />
-              }
+              icon={<MarkEmailRead fontSize="small" />}
+            />
+          );
+        if (row?.processStage === "FINAL" || row?.processStage === " قطعی ")
+          return (
+            <Chip
+              label={"قطعی"}
+              color="secondary"
+              icon={<Verified color="secondary" fontSize="small" />}
             />
           );
       },
-    },
-    {
-      field: "referralName",
-      headerName: "نام ارجاع دهنده",
-      flex: 1,
-      align: "center",
-      cellClassName: () => "font-13",
     },
     {
       field: "notificationStatus",
@@ -264,7 +245,10 @@ const AllDOGrid = (props: Props) => {
       align: "center",
       renderCell: ({ row }: { row: any }) => {
         if (row?.noticeDate) {
-          const [date, time] = row?.noticeDateFr?.split(" ") ?? [null, null];
+          const [date, time] = row?.noticeDateFr?.split(" ") ?? [
+            null,
+            null,
+          ];
           return (
             <Box
               display={"flex"}
@@ -273,11 +257,11 @@ const AllDOGrid = (props: Props) => {
             >
               <Verified color="secondary" />
               <Tooltip title={row?.noticeDateFr + " (تاریخ ابلاغ)"}>
-                {/* <Tooltip title={moment(new Date(row?.noticeDate)).format("hh:mm jYYYY/jMM/jDD")}> */}
-                <Typography variant="caption">
-                  {/* {moment(new Date(row?.noticeDate)).format("hh:mm a jYYYY/jMM/jDD")} */}
-                  {date?.replaceAll("-", "/") ?? null}
-                </Typography>
+              {/* <Tooltip title={moment(new Date(row?.noticeDate)).format("hh:mm jYYYY/jMM/jDD")}> */}
+              <Typography variant="caption">
+                {/* {moment(new Date(row?.noticeDate)).format("jYYYY/jMM/jDD")} */}
+                {date?.replaceAll("-", "/") ?? null}
+              </Typography>
               </Tooltip>
             </Box>
           );
@@ -290,7 +274,7 @@ const AllDOGrid = (props: Props) => {
       flex: 1,
       align: "center",
       renderCell: ({ row }: { row: any }) => {
-        if (row?.seen) {
+        if (row?.seenDateFr) {
           const [date, time] = row?.seenDateFr?.split(" ") ?? [null, null];
           return (
             <Box
@@ -301,7 +285,7 @@ const AllDOGrid = (props: Props) => {
               <DoneAll color="success" />
               {row?.seenDate && (
                 <Tooltip title={row?.seenDateFr + " (تاریخ مشاهده)"}>
-                  {/* <Tooltip
+                {/* <Tooltip
                   title={moment(new Date(row?.seenDate)).format(
                     "hh:mm jYYYY/jMM/jDD"
                   )}
@@ -327,18 +311,14 @@ const AllDOGrid = (props: Props) => {
       align: "center",
       renderCell: ({ row }: { row: any }) => {
         if (authFunctions?.hasPermission("disciplinary-order-edit")) {
-          if (row?.disciplinaryCaseStage === "CASE_REVIEW")
+          if (row?.processStage === "SUPREME_CREATED")
             return (
               <TableActions
-                onEdit={() => {
-                  setEditable(true);
-                  setEditeData(row);
-                  setAddModalFlag(true);
-                }}
-                onDelete={() => {
-                  setDeleteData(row);
-                  setDeleteFlag(true);
-                }}
+                // onEdit={() => {
+                //   setEditable(true);
+                //   setEditeData(row);
+                //   setAddModalFlag(true);
+                // }}
                 // onView={() => {
                 //   setEditable(false);
                 //   setEditeData(row);
@@ -350,7 +330,7 @@ const AllDOGrid = (props: Props) => {
                     setCaseData(row);
                     setInvitationFlag(true);
                   },
-                  title: "دعوتنامه",
+                  title: "ثبت دعوتنامه",
                   icon: (
                     <HistoryEdu
                       color={row.hasAttachment ? "success" : "primary"}
@@ -359,25 +339,16 @@ const AllDOGrid = (props: Props) => {
                 }}
               />
             );
-          else if (row?.disciplinaryCaseStage === "PRIMARY_MEETING_REQUESTED")
+          else if (row?.processStage === "SUPREME_METTING_REQUEST")
             return (
               <TableActions
-                onEdit={() => {
-                  setEditable(true);
-                  setEditeData(row);
-                  setAddModalFlag(true);
-                }}
-                onDelete={() => {
-                  setDeleteData(row);
-                  setDeleteFlag(true);
-                }}
                 onManage={{
                   function: () => {
                     setEditable(true);
                     setFirstOrderData(row);
                     setFirstOrderFlag(true);
                   },
-                  title: "حکم بدوی",
+                  title: "ثبت حکم عالی",
                   icon: (
                     // <Badge badgeContent={1} color="primary">
                     <Gavel color={"primary"} />
@@ -390,7 +361,7 @@ const AllDOGrid = (props: Props) => {
                     setCaseData(row);
                     setInvitationFlag(true);
                   },
-                  title: "دعوتنامه",
+                  title: "ویرایش دعوتنامه",
                   icon: (
                     <HistoryEdu
                       color={row.hasAttachment ? "success" : "primary"}
@@ -399,211 +370,53 @@ const AllDOGrid = (props: Props) => {
                 }}
               />
             );
-          else if (row?.disciplinaryCaseStage === "PRIMARY_ORDER_DONE")
+          else if (row?.processStage === "SUPREME_DONE")
             return (
               <TableActions
-                // onDelete={() => {
-                //   setDeleteData(row);
-                //   setDeleteFlag(true);
+                onManage={{
+                  function: () => {
+                    setEditable(true);
+                    setFirstOrderData(row);
+                    setFirstOrderFlag(true);
+                  },
+                  title: "ویرایش حکم عالی",
+                  icon: (
+                    // <Badge badgeContent={1} color="primary">
+                    <Gavel color={"primary"} />
+                    // </Badge>
+                  ),
+                }}
+              />
+            );
+          else if (row?.processStage === "NOTIFIED")
+            return (
+              <TableActions
+                
+              />
+            );
+          else if (
+            row?.processStage === "FINAL" ||
+            row?.processStage === " قطعی "
+          )
+            return (
+              <TableActions
+                // onView={() => {
+                //   setEditable(false);
+                //   setEditeData(row);
+                //   setAddModalFlag(true);
                 // }}
                 onManage={{
                   function: () => {
-                    setEditable(true);
+                    setEditable(false);
                     setFirstOrderData(row);
                     setFirstOrderFlag(true);
                   },
-                  title: "حکم بدوی",
+                  title: "مشاهده حکم عالی",
                   icon: (
                     // <Badge badgeContent={1} color="primary">
                     <Gavel color={"primary"} />
                     // </Badge>
                   ),
-                }}
-              />
-            );
-          else if (row?.disciplinaryCaseStage === "NOTIFIED") {
-            if (row.protestOverTime)
-              return (
-                <TableActions
-                  onAdd={{
-                    function: () => {
-                      mutate(
-                        {
-                          entity: `disciplinary-case/confirm-protest-overtime?id=${row.id}`,
-                          method: "put",
-                          //   data:
-                        },
-                        {
-                          onSuccess: (res: any) => {
-                            if (res?.status == 200 && res?.data) {
-                              snackbar(
-                                "پرونده به حالت قطعی تغیر یافت",
-                                "success"
-                              );
-                              StatesData_refetch();
-                            } else snackbar("خطا در تغیر پرونده", "error");
-                          },
-                          onError: (err) => {
-                            snackbar("خطا در تغیر پرونده", "error");
-                          },
-                        }
-                      );
-                    },
-                    title: "تبدیل به قطعی",
-                    icon: <Cached color={"primary"} />,
-                  }}
-                />
-              );
-            else
-              return (
-                <TableActions
-                  onManage={{
-                    function: () => {
-                      setEditable(true);
-                      setEditeData(row);
-                      setProtestRequestFlag(true);
-                    },
-                    title: "اعتراض به حکم بدوی",
-                    icon: (
-                      // <Badge badgeContent={1} color="primary">
-                      <PanTool color={"primary"} fontSize="small" />
-                      // </Badge>
-                    ),
-                  }}
-                />
-              );
-          } else if (row?.disciplinaryCaseStage === "PROTEST_REVIEW")
-            return (
-              <TableActions
-                onManage={{
-                  function: () => {
-                    setEditable(true);
-                    setEditeData(row);
-                    setProtestRequestFlag(true);
-                  },
-                  title: "ویرایش اعتراض",
-                  icon: (
-                    // <Badge badgeContent={1} color="primary">
-                    <PanTool color={"primary"} fontSize="small" />
-                    // </Badge>
-                  ),
-                }}
-                onAdd={{
-                  function: () => {
-                    setEditable(true);
-                    setEditeData(row);
-                    setProtestResponseFlag(true);
-                  },
-                  title: "پاسخ به اعتراض",
-                  icon: (
-                    // <Badge badgeContent={1} color="primary">
-                    <ChromeReaderModeRounded
-                      color={"primary"}
-                      fontSize="small"
-                    />
-                    // </Badge>
-                  ),
-                }}
-              />
-            );
-          else if (row?.disciplinaryCaseStage === "PROTEST_ACCEPTED") {
-            if (row.protestReverseble)
-              return (
-                <TableActions
-                  onAdd={{
-                    function: () => {
-                      setEditable(false);
-                      setEditeData(row);
-                      setProtestResponseFlag(true);
-                    },
-                    title: "پاسخ به اعتراض",
-                    icon: (
-                      // <Badge badgeContent={1} color="primary">
-                      <ChromeReaderModeRounded
-                        color={"primary"}
-                        fontSize="small"
-                      />
-                      // </Badge>
-                    ),
-                  }}
-                  onManage={{
-                    function: () => {
-                      mutate(
-                        {
-                          entity: `disciplinary-case/back-to-objection-review?id=${row.id}`,
-                          method: "put",
-                          //   data:
-                        },
-                        {
-                          onSuccess: (res: any) => {
-                            if (res?.status == 200 && res?.data) {
-                              snackbar(
-                                "پرونده به حالت اعتراض تغیر یافت",
-                                "success"
-                              );
-                              StatesData_refetch();
-                            } else
-                              snackbar("خطا در تغیر وضعیت پرونده", "error");
-                          },
-                          onError: (err) => {
-                            snackbar("خطا در تغیر وضعیت پرونده", "error");
-                          },
-                        }
-                      );
-                    },
-                    title: "بازگشت به وضعیت اعتراض",
-                    icon: <Undo color={"warning"} fontSize="small" />,
-                  }}
-                />
-              );
-            else
-              return (
-                <TableActions
-                  onAdd={{
-                    function: () => {
-                      setEditable(false);
-                      setEditeData(row);
-                      setProtestResponseFlag(true);
-                    },
-                    title: "مشاهده پاسخ به اعتراض",
-                    icon: (
-                      <ChromeReaderModeRounded
-                        color={"primary"}
-                        fontSize="small"
-                      />
-                    ),
-                  }}
-                />
-              );
-          } else if (row?.disciplinaryCaseStage === "FINAL")
-            return (
-              <TableActions
-                onView={() => {
-                  setEditable(false);
-                  setEditeData(row);
-                  setAddModalFlag(true);
-                }}
-                onManage={{
-                  function: () => {
-                    setEditable(false);
-                    setFirstOrderData(row);
-                    setFirstOrderFlag(true);
-                  },
-                  title: "حکم بدوی",
-                  icon: (
-                    // <Badge badgeContent={1} color="primary">
-                    <Gavel color={"primary"} />
-                    // </Badge>
-                  ),
-                }}
-                onAdd={{
-                  function: () => {
-                    setEditable(false);
-                    setEditeData(row);
-                    setLogFlag(true);
-                  },
-                  title: "'گزارشات",
-                  icon: <MenuBook color={"primary"} />,
                 }}
               />
             );
@@ -675,40 +488,22 @@ const AllDOGrid = (props: Props) => {
       name: "accuserName",
       inputType: "text",
       label: "شخصیت",
-      size: { md: 3 },
+      size: { md: 4 },
     },
     {
       name: "referralNumber",
       inputType: "text",
       label: "شماره ارجاع",
-      size: { md: 3 },
+      size: { md: 4 },
     },
     {
-      name: "protestOverTime",
-      inputType: "autocomplete",
+      name: "objectionTimeOver",
+      inputType: "select",
       label: "مهلت اعتراض",
-      size: { md: 3 },
-      storeValueAs: "id",
+      size: { md: 4 },
       options: [
         { value: "true", title: "گذشته" },
         { value: "false", title: "نگذشته" },
-      ],
-    },
-    {
-      name: "disciplinaryCaseStage",
-      inputType: "autocomplete",
-      label: "وضعیت",
-      size: { md: 3 },
-      storeValueAs: "id",
-      options: [
-        { value: "CASE_REVIEW", title: "اولیه" },
-        { value: "PRIMARY_MEETING_REQUESTED", title: "دعوتنامه" },
-        { value: "PRIMARY_ORDER_DONE", title: "حکم بدوی" },
-        { value: "NOTIFIED", title: "ابلاغ شده" },
-        { value: "PROTEST_REVIEW", title: "اعتراض شده" },
-        { value: "PROTEST_ACCEPTED", title: "اعتراض تایید شده" },
-        // { value: "PROTEST_REJECTED", title: "نگذشته" },
-        { value: "FINAL", title: "قطعی" },
       ],
     },
   ];
@@ -761,10 +556,10 @@ const AllDOGrid = (props: Props) => {
       >
         <Box display={"flex"}>
           <Gavel fontSize="large" />
-          <Typography variant="h5">پرونده‌های انتظامی بدوی</Typography>
+          <Typography variant="h5">پرونده‌های انتظامی عالی</Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"} gap={1}>
-          {authFunctions?.hasPermission("disciplinary-order-edit") && (
+          {/* {authFunctions?.hasPermission("disciplinary-order-edit") && (
             <CreateNewItem
               title="پرونده انتظامی جدید"
               onClick={() => {
@@ -773,7 +568,7 @@ const AllDOGrid = (props: Props) => {
                 setAddModalFlag(true);
               }}
             />
-          )}
+          )} */}
 
           <BackButton onBack={() => navigate(-1)} />
         </Box>
@@ -821,43 +616,31 @@ const AllDOGrid = (props: Props) => {
           )
         ) : null}
       </Grid>
-      {addModalFlag && (
-        <AddDOCase
-          editable={editable}
-          refetch={StatesData_refetch}
-          addModalFlag={addModalFlag}
-          setAddModalFlag={setAddModalFlag}
-          editeData={editeData}
-          setEditeData={setEditeData}
-        />
-      )}
-      {/* {pdfFlag && (
-        <UploadPdfDialog
-          refetch={StatesData_refetch}
-          entityId={basePDFData?.id ?? ""}
-          notificationStatus={basePDFData?.notificationStatus ?? null}
-          onClose={() => {
-            setPdfFlag(false);
-          }}
-          open={pdfFlag}
-        />
-      )} */}
+      {/* {editeData && ( */}
+      <AddDOCase
+        editable={false}
+        refetch={StatesData_refetch}
+        addModalFlag={addModalFlag}
+        setAddModalFlag={setAddModalFlag}
+        editeData={editeData}
+        setEditeData={setEditeData}
+      />
       {invitationFlag && (
-        <AddMeeting
+        <AddHMeeting
           refetch={StatesData_refetch}
           editeData={caseData}
           setEditeData={setCaseData}
-          editable={true}
+          editable={false}
           addModalFlag={invitationFlag}
           setAddModalFlag={setInvitationFlag}
         />
       )}
       {firstOrderData && (
-        <AddFirstStepOrder
+        <AddHOrder
           refetch={StatesData_refetch}
           editeData={firstOrderData}
           setEditeData={setFirstOrderData}
-          editable={editable}
+          editable={false}
           addModalFlag={firstOrderFlag}
           setAddModalFlag={setFirstOrderFlag}
         />
@@ -867,7 +650,7 @@ const AllDOGrid = (props: Props) => {
           refetch={StatesData_refetch}
           editeData={editeData}
           setEditeData={setEditeData}
-          editable={true}
+          editable={false}
           addModalFlag={protestRequestFlag}
           setAddModalFlag={setProtestRequestFlag}
         />
@@ -877,54 +660,14 @@ const AllDOGrid = (props: Props) => {
           refetch={StatesData_refetch}
           editeData={editeData}
           setEditeData={setEditeData}
-          editable={editable}
+          editable={false}
           addModalFlag={protestResponseFlag}
           setAddModalFlag={setProtestResponseFlag}
         />
       )}
-      {editeData && logFlag && (
-        <Logs
-          refetch={StatesData_refetch}
-          editeData={editeData}
-          setEditeData={setEditeData}
-          editable={editable}
-          addModalFlag={logFlag}
-          setAddModalFlag={setLogFlag}
-        />
-      )}
 
-      <ConfirmBox
-        open={deleteFlag}
-        handleClose={() => {
-          setDeleteFlag(false);
-          setDeleteData(null);
-        }}
-        handleSubmit={() =>
-          mutate(
-            {
-              entity: `disciplinary-case/delete/${deleteData?.id}`,
-              method: "delete",
-            },
-            {
-              onSuccess: (res: any) => {
-                snackbar(
-                  `پرونده انتظامی انتخاب شده با موفقیت حذف شد`,
-                  "success"
-                );
-                StatesData_refetch();
-                setDeleteFlag(false);
-              },
-              onError: () => {
-                snackbar("خطا در حذف ", "error");
-              },
-            }
-          )
-        }
-        message={`آیا از حذف پرونده انتظامی مورد نظر مطمعین میباشید؟`}
-        title={"درخواست حذف!"}
-      />
     </Grid>
   );
 };
 
-export default AllDOGrid;
+export default AccountantAllHCases;

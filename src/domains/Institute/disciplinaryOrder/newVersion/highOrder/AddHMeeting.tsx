@@ -1,4 +1,13 @@
-import { AddCircle, Check, ChromeReaderModeRounded, Close, PanTool } from "@mui/icons-material";
+import {
+  AddCircle,
+  ChangeCircle,
+  GavelOutlined,
+  Close,
+  Add,
+  Delete,
+  Search,
+  HistoryEdu,
+} from "@mui/icons-material";
 import {
   Dialog,
   DialogTitle,
@@ -8,11 +17,21 @@ import {
   Button,
   IconButton,
   Box,
+  CircularProgress,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Tooltip,
 } from "@mui/material";
 import RenderFormInput from "components/render/formInputs/RenderFormInput";
 import React, { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAuth } from "hooks/useAuth";
 import { useSnackbar } from "hooks/useSnackbar";
 import RenderFormDisplay from "components/render/formInputs/RenderFormDisplay";
@@ -29,7 +48,7 @@ type Props = {
   setEditeData: React.Dispatch<React.SetStateAction<any>>;
 };
 
-const PrResponse = ({
+const AddHMeeting = ({
   editable,
   addModalFlag,
   setAddModalFlag,
@@ -41,7 +60,6 @@ const PrResponse = ({
   // const { id } = useParams();
   const Auth = useAuth();
   const snackbar = useSnackbar();
-  const [response, setResponse] = useState("reject")
   const {
     handleSubmit,
     control,
@@ -51,16 +69,20 @@ const PrResponse = ({
     getValues,
     watch,
   } = useForm<any>();
-
   const { mutate, isLoading } = useMutation({
     mutationFn: Auth?.serverCall,
     onSuccess: () => {
-      snackbar(`پاسخ اعتراض با موفقیت ثبت شد`,"success");
+      snackbar(
+        !!editeData
+          ? `دعوتنامه با موفقیت به‌روزرسانی شد`
+          : `دعوتنامه جدید با موفقیت افزوده شد`,
+        "success"
+      );
       refetch();
       handleClose();
     },
     onError: () => {
-      snackbar("خطا در ثبت", "error");
+      snackbar("خطا در ثبت دعوتنامه", "error");
     },
   });
   const handleClose = () => {
@@ -70,20 +92,25 @@ const PrResponse = ({
   };
   const onSubmit = (data: any) => {
     const {
-      rejectionReason,
-      actionDate,
+      boardSupremeMeetingNumber,
+      boardSupremeMeetingDate,
+      meetingDate,
       ...restOfData
     } = data;
+    // if (selectedItems.length === 0) {
+    //   snackbar("لیست موضوعات تخلف خالی میباشد", "error");
+    //   return 0;
+    // }
     const submissionData = {
-      rejectionReason,
-      actionDate,
-      disciplinaryCaseId: editeData?.id ?? null,
+      boardSupremeMeetingNumber,
+      boardSupremeMeetingDate,
+      meetingDate,
+      supremeId: editeData?.id ?? null,
     };
 
     console.log("submissionData", submissionData);
-    console.log("response", response);
     mutate({
-      entity: `disciplinary-case/${response}-objection`,
+      entity: `disciplinary-supreme/create-meeting`,
       method: "put",
       data: submissionData,
     });
@@ -92,20 +119,31 @@ const PrResponse = ({
   const formItems: FormItem[] = useMemo(
     () => [
       {
-        name: "rejectionReason",
+        name: "boardSupremeMeetingNumber",
         inputType: "text",
-        label: "توضیحات",
-        size: { md: 8 },
-        // rules: { required: "شاکی الزامی است" },
+        label: "شماره دعوتنامه",
+        size: { md: 6 },
+        rules: { required: "شماره دعوتنامه الزامی است" },
       },
       {
-        name: "actionDate",
+        name: "boardSupremeMeetingDate",
         inputType: "date",
-        label: "تاریخ پاسخ",
-        size: { md: 4 },
+        label: "تاریخ دعوتنامه",
+        size: { md: 6 },
         elementProps: {
-          setDay: (value: any) => setValue("boardMeetingDate", value),
+          setDay: (value: any) => setValue("boardSupremeMeetingDate", value),
         },
+        rules: { required: "تاریخ دعوتنامه الزامی است" },
+      },
+      {
+        name: "meetingDate",
+        inputType: "date",
+        label: "تاریخ تشکیل جلسه",
+        size: { md: 6 },
+        elementProps: {
+          setDay: (value: any) => setValue("meetingDate", value),
+        },
+        rules: { required: "تاریخ تشکیل جلسه الزامی است" },
       },
     ],
     []
@@ -130,13 +168,11 @@ const PrResponse = ({
       maxWidth={"sm"}
       PaperProps={{ sx: { overflow: "visible" } }}
     >
-      <DialogTitle minWidth={"50vw"}>
-        <Box display="flex" justifyContent="space-between" alignItems="center" >
-          <Box display="flex" textAlign="center" alignItems="center" gap={1} >
-            <ChromeReaderModeRounded fontSize="medium" />
-            <Typography variant="body1" fontSize={"large"}>
-              پاسخ اعتراض به حکم انتظامی بدوی
-            </Typography>
+      <DialogTitle>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Box display="flex" textAlign="center" alignItems="center" gap={1}>
+            <HistoryEdu fontSize="large" />
+            <Typography variant="h6">دعوتنامه جلسه عالی</Typography>
           </Box>
           <IconButton onClick={handleClose} size="small">
             <Close />
@@ -179,36 +215,20 @@ const PrResponse = ({
               </Grid>
             ))}
 
-            <Grid item xs={12} display="flex" justifyContent="space-between" mt={2}>
+            <Grid item xs={12} display="flex" justifyContent="flex-end" mt={2}>
               <Button variant="outlined" onClick={handleClose} sx={{ mr: 2 }}>
                 بازگشت
               </Button>
-              <Box display={"flex"}>
-                {editable && (
-                <Button
-                  variant="contained"
-                  startIcon={<Check/>}
-                  type="submit"
-                  disabled={isLoading}
-                  onClick={()=>setResponse("accept")}
-                >
-                  {isLoading ? "در حال ثبت..." : "تایید"}
-                </Button>
-              )}
               {editable && (
                 <Button
                   variant="contained"
-                  color="error"
-                  startIcon={<Close />}
+                  startIcon={<AddCircle />}
                   type="submit"
                   disabled={isLoading}
-                  onClick={()=>setResponse("reject")}
                 >
-                  {isLoading ? "در حال ثبت..." : "رد درخواست"}
+                  {isLoading ? "در حال ثبت..." : "ثبت"}
                 </Button>
               )}
-              </Box>
-              
             </Grid>
           </Grid>
         </form>
@@ -217,4 +237,4 @@ const PrResponse = ({
   );
 };
 
-export default PrResponse;
+export default AddHMeeting;

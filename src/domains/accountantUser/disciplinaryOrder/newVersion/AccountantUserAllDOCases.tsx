@@ -120,12 +120,29 @@ const AccountantUserAllDOCases = (props: Props) => {
     name: "",
     accuserNationalCode: Auth?.userInfo?.nationalCode,
   });
+  const [supremeFilters, setSupremeFilters] = useState<any>({
+    ...PAGINATION_DEFAULT_VALUE,
+    name: "",
+    // disciplinaryCaseId: Auth?.userInfo?.nationalCode,
+  });
   const {
     data: StatesData,
     status: StatesData_status,
     refetch: StatesData_refetch,
   } = useQuery<any>({
     queryKey: [`disciplinary-case/search${paramsSerializer(filters)}`],
+    queryFn: Auth?.getRequest,
+    select: (res: any) => {
+      return res?.data;
+    },
+    enabled: !!Auth?.userInfo?.nationalCode && !!filters?.accuserNationalCode,
+  } as any);
+  const {
+    data: supremeData,
+    status: supremeData_status,
+    refetch: supremeData_refetch,
+  } = useQuery<any>({
+    queryKey: [`disciplinary-supreme/search${paramsSerializer(supremeFilters)}`],
     queryFn: Auth?.getRequest,
     select: (res: any) => {
       return res?.data;
@@ -208,14 +225,14 @@ const AccountantUserAllDOCases = (props: Props) => {
           return <Chip label={"اولیه"} color="info" />;
         if (row?.disciplinaryCaseStage === "PRIMARY_MEETING_REQUESTED")
           return (
-            <Chip label={"دعوتنامه"} icon={<HistoryEdu fontSize="small" />} />
+            <Chip label={"دعوتنامه"} icon={<HistoryEdu sx={{ fontSize: "1rem" }} fontSize="small" />} />
           );
         if (row?.disciplinaryCaseStage === "PRIMARY_ORDER_DONE")
           return (
             <Chip
               label={"بدوی"}
               color="info"
-              icon={<Gavel fontSize="small" />}
+              icon={<Gavel sx={{ fontSize: "1rem" }} fontSize="small" />}
             />
           );
         if (row?.disciplinaryCaseStage === "NOTIFIED")
@@ -223,7 +240,7 @@ const AccountantUserAllDOCases = (props: Props) => {
             <Chip
               label={"ابلاغ"}
               color="secondary"
-              icon={<MarkEmailRead fontSize="small" />}
+              icon={<MarkEmailRead sx={{ fontSize: "1rem" }} fontSize="small" />}
             />
           );
         if (row?.disciplinaryCaseStage === "PROTEST_REVIEW")
@@ -239,7 +256,7 @@ const AccountantUserAllDOCases = (props: Props) => {
             <Chip
               label={"تایید"}
               color="success"
-              icon={<GppGood fontSize="small" />}
+              icon={<GppGood sx={{ fontSize: "1rem" }} fontSize="small" />}
             />
           );
         if (row?.disciplinaryCaseStage === "PROTEST_REJECTED")
@@ -247,7 +264,7 @@ const AccountantUserAllDOCases = (props: Props) => {
             <Chip
               label={"رد"}
               color="error"
-              icon={<GppBad fontSize="small" />}
+              icon={<GppBad sx={{ fontSize: "1rem" }} fontSize="small" />}
             />
           );
         if (row?.disciplinaryCaseStage === "FINAL")
@@ -255,7 +272,7 @@ const AccountantUserAllDOCases = (props: Props) => {
             <Chip
               label={"قطعی"}
               color="secondary"
-              icon={<Verified color="secondary" fontSize="small" />}
+              icon={<Verified color="secondary" sx={{ fontSize: "1rem" }} fontSize="small" />}
             />
           );
       },
@@ -285,12 +302,12 @@ const AccountantUserAllDOCases = (props: Props) => {
               alignItems={"center"}
             >
               <Verified color="secondary" />
-              {/* <Tooltip title={row?.notificationDateFr + " (تاریخ ابلاغ)"}> */}
+              <Tooltip title={row?.noticeDateFr + " (تاریخ ابلاغ)"}>
               <Typography variant="caption">
-                {moment(new Date(row?.noticeDate)).format("jYYYY/jMM/jDD")}
-                {/* {date?.replaceAll("-", "/") ?? null} */}
+                {/* {moment(new Date(row?.noticeDate)).format("jYYYY/jMM/jDD")} */}
+                {date?.replaceAll("-", "/") ?? null}
               </Typography>
-              {/* </Tooltip> */}
+              </Tooltip>
             </Box>
           );
         } else return <Close color="disabled" />;
@@ -342,11 +359,11 @@ const AccountantUserAllDOCases = (props: Props) => {
           if (row?.disciplinaryCaseStage === "CASE_REVIEW")
             return (
               <TableActions
-                onView={() => {
-                  setEditable(false);
-                  setEditeData(row);
-                  setAddModalFlag(true);
-                }}
+                // onView={() => {
+                //   setEditable(false);
+                //   setEditeData(row);
+                //   setAddModalFlag(true);
+                // }}
               />
             );
           else if (row?.disciplinaryCaseStage === "PRIMARY_MEETING_REQUESTED")
@@ -396,6 +413,24 @@ const AccountantUserAllDOCases = (props: Props) => {
                 onManage={{
                   function: () => {
                     setEditable(false);
+                    setFirstOrderData(row);
+                    setFirstOrderFlag(true);
+                  },
+                  title: "حکم بدوی",
+                  icon: (
+                    // <Badge badgeContent={1} color="primary">
+                    <Gavel color={"primary"} />
+                    // </Badge>
+                  ),
+                }}
+              />
+            );
+          else if (row?.disciplinaryCaseStage === "PROTEST_REVIEW")
+            return (
+              <TableActions
+                onManage={{
+                  function: () => {
+                    setEditable(false);
                     setEditeData(row);
                     setProtestRequestFlag(true);
                   },
@@ -408,8 +443,6 @@ const AccountantUserAllDOCases = (props: Props) => {
                 }}
               />
             );
-          else if (row?.disciplinaryCaseStage === "PROTEST_REVIEW")
-            return <TableActions />;
           else if (row?.disciplinaryCaseStage === "PROTEST_ACCEPTED")
             return (
               <TableActions
@@ -419,13 +452,26 @@ const AccountantUserAllDOCases = (props: Props) => {
                     setProtestResponseFlag(true);
                     setEditable(false);
                   },
-                  title: "پاسخ به اعتراض",
+                  title: "مشاهده پاسخ اعتراض",
                   icon: (
                     // <Badge badgeContent={1} color="primary">
                     <ChromeReaderModeRounded
                       color={"primary"}
                       fontSize="small"
                     />
+                    // </Badge>
+                  ),
+                }}
+                onManage={{
+                  function: () => {
+                    setEditable(false);
+                    setFirstOrderData(row);
+                    setFirstOrderFlag(true);
+                  },
+                  title: "حکم بدوی",
+                  icon: (
+                    // <Badge badgeContent={1} color="primary">
+                    <Gavel color={"primary"} />
                     // </Badge>
                   ),
                 }}
@@ -559,9 +605,9 @@ const AccountantUserAllDOCases = (props: Props) => {
         m={2}
         mb={2}
       >
-        <Box display={"flex"}>
-          <Gavel fontSize="large" />
-          <Typography variant="h5">پرونده‌های انتظامی حسابدار</Typography>
+        <Box display={"flex"} alignItems={"center"} gap={1}>
+          <Gavel fontSize="medium" />
+          <Typography variant="h6">پرونده‌های انتظامی بدوی حسابدار</Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"} gap={1}>
           {/* <BackButton onBack={() => navigate(-1)} /> */}
@@ -603,6 +649,12 @@ const AccountantUserAllDOCases = (props: Props) => {
             />
           )
         ) : null}
+      </Grid>
+      <Grid py={2} item md={11} sm={11} xs={12}>
+        <Box display={"flex"} alignItems={"center"} gap={1}>
+          <Gavel fontSize="medium" />
+          <Typography variant="h6">احکام عالی حسابدار</Typography>
+        </Box>
       </Grid>
       <AddDOCase
         editable={editable}

@@ -64,7 +64,7 @@ const DisciplinaryOrderGrid = ({ setActiveTab }: Props) => {
     select: (res: any) => {
       return res?.data;
     },
-    enabled: !!Auth?.userInfo?.nationalCode,
+    enabled: !!Auth?.userInfo?.nationalCode&&!!filters?.nationalCode,
   } as any);
   const columns: GridColDef[] = [
     {

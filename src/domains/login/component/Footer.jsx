@@ -18,6 +18,8 @@ const Footer = () => {
         justifyContent: "center",
         alignItems: "center",
         textAlign: { xs: "center", md: "left" },
+        position:"fixed",
+        bottom:0
       }}
     >
       <Typography variant="body1" >

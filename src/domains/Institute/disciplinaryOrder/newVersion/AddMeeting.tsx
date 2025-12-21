@@ -126,25 +126,26 @@ const AddMeeting = ({
       {
         name: "accuserPrimaryMeetingNumber",
         inputType: "text",
-        label: "شماره دعوتنامه",
+        label: "شماره دعوتنامه (متهم)",
         size: { md: 6 },
-        // rules: { required: "شاکی الزامی است" },
+        rules: { required: "شماره دعوتنامه الزامی است" },
       },
       {
         name: "accuserPrimaryMeetingDate",
         inputType: "date",
-        label: "تاریخ دعوتنامه",
+        label: "تاریخ دعوتنامه (متهم)",
         size: { md: 6 },
         elementProps: {
           setDay: (value: any) => setValue("accuserPrimaryMeetingDate", value),
         },
+        rules: { required: "تاریخ دعوتنامه الزامی است" },
       },
       {
         name: "boardPrimaryMeetingNumber",
         inputType: "text",
         label: "شماره دعوتنامه هیئت بدوی انتظامی",
         size: { md: 6 },
-        // rules: { required: "شاکی الزامی است" },
+        rules: { required: "این فیلد الزامی است" },
       },
       {
         name: "boardPrimaryMeetingDate",
@@ -154,6 +155,7 @@ const AddMeeting = ({
         elementProps: {
           setDay: (value: any) => setValue("boardPrimaryMeetingDate", value),
         },
+        rules: { required: "این فیلد الزامی است" },
       },
       {
         name: "boardMeetingDate",
@@ -163,6 +165,7 @@ const AddMeeting = ({
         elementProps: {
           setDay: (value: any) => setValue("boardMeetingDate", value),
         },
+        rules: { required: "این فیلد الزامی است" },
       },
     ],
     []

@@ -25,7 +25,6 @@ import TavanaDataGrid from "components/dataGrid/TavanaDataGrid";
 import TableActions from "components/table/TableActions";
 import { GridColDef } from "@mui/x-data-grid";
 import MyPdfViewer from "components/pdfviewer/MyPdfViewer";
-import SubjectTable from "./components/SubjectTable";
 import TicketDivider from "components/FancyTicketDivider";
 
 // مسیر هوک را بر اساس ساختار پروژه خودتان تنظیم کنید
@@ -39,7 +38,7 @@ type Props = {
   setEditeData: React.Dispatch<React.SetStateAction<any>>;
 };
 
-const AddFirstStepOrder = ({
+const AddHOrder = ({
   editable,
   addModalFlag,
   setAddModalFlag,
@@ -51,7 +50,6 @@ const AddFirstStepOrder = ({
   // const { id } = useParams();
   const Auth = useAuth();
   const snackbar = useSnackbar();
-  const [selectedItems, setSelectedItems] = useState<any[]>([]);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [PdfUrl, setPdfUrl] = useState<string | undefined>("");
   const [showPDFFlag, setShowPDFFlag] = useState<boolean>(false);
@@ -78,7 +76,7 @@ const AddFirstStepOrder = ({
     refetch: PDFList_refetch,
   } = useQuery<any>({
     queryKey: [
-      `disciplinary-case/uploaded-order-file${paramsSerializer(filters)}`,
+      `disciplinary-supreme/uploaded-order-file${paramsSerializer(filters)}`,
     ],
     queryFn: Auth?.getRequest,
     select: (res: any) => {
@@ -96,7 +94,7 @@ const AddFirstStepOrder = ({
     status: uploadedPDF_status,
     refetch: uploadedPDF_refetch,
   } = useQuery<any>({
-    queryKey: [`disciplinary-case/download-order-file?id=${selectedPDF}`],
+    queryKey: [`disciplinary-supreme/download-order-file?id=${selectedPDF}`],
     queryFn: Auth?.getRequestDownloadFile,
     select: (res: any) => {
       return res;
@@ -154,9 +152,9 @@ const AddFirstStepOrder = ({
         }
       );
       setSelectedFile(file);
-
       objectUrl = URL.createObjectURL(uploadedPDF);
       setPdfUrl(objectUrl);
+      refetch()
     } else setPdfUrl("");
     //   if (uploadedPDF && uploadedPDF instanceof Blob&&!uploadedPDF.type.startsWith("image/")) {
     //     objectUrl = "";
@@ -195,7 +193,7 @@ const AddFirstStepOrder = ({
               }}
               onDelete={() => {
                 deleteMutate({
-                  entity: `disciplinary-case/remove-file?id=${row.id}`, // ❗️
+                  entity: `disciplinary-supreme/remove-file?id=${row.id}`, // ❗️
                   method: "delete",
                 });
               }}
@@ -229,18 +227,36 @@ const AddFirstStepOrder = ({
         label: "تاریخ حکم",
         size: { md: 6 },
         elementProps: {
-          setDay: (value: any) => setValue("accuserPrimaryMeetingDate", value),
+          setDay: (value: any) => setValue("orderDate", value),
         },
       },
       {
-        name: "orderDuration",
+        name: "startDate",
+        inputType: "date",
+        label: "تاریخ شروع حکم",
+        size: { md: 6 },
+        elementProps: {
+          setDay: (value: any) => setValue("startDate", value),
+        },
+      },
+      {
+        name: "endDate",
+        inputType: "date",
+        label: "تاریخ پایان حکم",
+        size: { md: 6 },
+        elementProps: {
+          setDay: (value: any) => setValue("endDate", value),
+        },
+      },
+      {
+        name: "orderDeadline",
         inputType: "text",
         label: "مدت حکم",
         size: { md: 6 },
         // rules: { required: "شاکی الزامی است" },
       },
       {
-        name: "disciplinaryOrderId",
+        name: "supremeOrderId",
         inputType: "select",
         label: "نوع تنبیه",
         size: { md: 6 },
@@ -251,13 +267,13 @@ const AddFirstStepOrder = ({
           })) ?? [],
         rules: { required: "انتخاب نوع حکم الزامی است" },
       },
-      {
-        name: "divider",
-        inputType: "titleDivider",
-        label: "",
-        size: { md: 12 },
-        // rules: { required: "شاکی الزامی است" },
-      },
+      // {
+      //   name: "divider",
+      //   inputType: "titleDivider",
+      //   label: "",
+      //   size: { md: 12 },
+      //   // rules: { required: "شاکی الزامی است" },
+      // },
     ],
     [orderTypeOptions]
   );
@@ -274,18 +290,7 @@ const AddFirstStepOrder = ({
     []
   );
 
-  function cheackDisciplinaryOrderId() {
-    return !orderTypeOptions?.find((item:any)=>item?.id===getValues("disciplinaryOrderId"))?.appealable
-  }
   useEffect(() => {
-    if (editeData && editeData.disciplinaryCaseSubjects) {
-      // فرض بر این است که دیتای سرور آرایه‌ای به نام relatedPersonnels دارد
-      setSelectedItems(editeData.disciplinaryCaseSubjects.map((item:any)=>({
-        ...item,
-        subjectTitle:item?.disciplinaryBaseSubjectTitle,
-        id:item?.subjectId??""
-      })));
-    }
     if (!!editeData) {
       reset({
         ...editeData,
@@ -326,8 +331,8 @@ const AddFirstStepOrder = ({
     if(!!PdfUrl && showPDFFlag){
       noticeMutate(
       {
-        entity: `disciplinary-case/notice-order?id=${editeData.id}`,
-        method: "post",
+        entity: `disciplinary-supreme/notice-order?id=${editeData.id}`,
+        method: "put",
       },
       {
         onSuccess: (res: any) => {
@@ -349,39 +354,41 @@ const AddFirstStepOrder = ({
       snackbar("ابتدا یک فایل PDF انتخاب کنید", "warning");
       return;
     }
-    console.log("selectedItems",selectedItems)
     const {
-      orderDate,
-      orderDuration,
-      disciplinaryOrderId,
       orderNumber,
+      orderDate,
+      startDate,
+      endDate,
+      orderDeadline,
       fileDescription,
+      supremeOrderId,
       ...restOfData
     } = data;
     const submissionData = {
-      orderDate,
-      orderDuration,
       orderNumber,
-      disciplinaryOrderId: disciplinaryOrderId ?? null,
-      disciplinaryCaseId: editeData?.id ?? null,
+      orderDate,
+      startDate,
+      endDate,
+      orderDeadline,
+      supremeOrderId,
       fileDescription,
-      subjectDtoList:selectedItems
+      supremeId: editeData?.id ?? null,
     };
 
     // 1. ساخت FormData
     const formData = new FormData();
-    formData.append("file", selectedFile);
+    formData.append("orderImage", selectedFile);
 
     // 3. تبدیل DTO به Blob و افزودن به FormData
     formData.append(
-      "data",
+      "dto",
       new Blob([JSON.stringify(submissionData)], { type: "application/json" })
     );
     // console.log("formData",formData)
     // 4. فراخوانی Mutate
     mutate(
       {
-        entity: `disciplinary-case/register-order`,
+        entity: `disciplinary-supreme/create-order`,
         method: "put",
         data: formData,
       },
@@ -411,7 +418,7 @@ const AddFirstStepOrder = ({
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Box display="flex" textAlign="center" alignItems="center" gap={1}>
             <Gavel fontSize="large" />
-            <Typography variant="h6">حکم بدوی پرونده</Typography>
+            <Typography variant="h6">حکم عالی پرونده</Typography>
           </Box>
           <IconButton onClick={handleClose} size="small">
             <Close />
@@ -454,16 +461,11 @@ const AddFirstStepOrder = ({
                 />
               </Grid>
             ))}
-            <SubjectTable
-            // editable={editable&&!PDFList?.content?.length}
-            editable={editable}
-            selectedItems={selectedItems}
-            setSelectedItems={setSelectedItems}
-            />
+
             <Grid item md={12}><TicketDivider/></Grid>
             
             <Grid container item md={12} justifyContent={"center"}>
-              {hasPermission("disciplinary-order-edit") && editable &&
+              {hasPermission("disciplinary-order-edit") &&
                 !PDFList?.content?.length && 
                 (
                   <Grid item md={12} sm={12} xs={12}>
@@ -564,7 +566,6 @@ const AddFirstStepOrder = ({
               <Button variant="outlined" onClick={handleClose} sx={{ mr: 2 }}>
                 بازگشت
               </Button>
-              {/* {(editable||cheackDisciplinaryOrderId()) && ( */}
               {editable && (
                 <Button
                   variant="contained"
@@ -583,4 +584,4 @@ const AddFirstStepOrder = ({
   );
 };
 
-export default AddFirstStepOrder;
+export default AddHOrder;
