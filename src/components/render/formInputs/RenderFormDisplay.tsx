@@ -321,14 +321,28 @@ export default function RenderFormDisplay({
         borderColor: "divider",
         p: 1.25,
         borderRadius: 1,
-        minHeight: 56,
+        minHeight: 46,
       }}
     >
       <Typography variant="caption" color="text.secondary">
         {label}
       </Typography>
-      <Box sx={{ mt: 0.75 , ml:1}}>{display}</Box>
-    </Box>
+      <Box sx={{ mt: 0.35 , ml:1}}>{display}</Box>
+    </Box> 
+    // <Box
+    //   sx={{
+    //     border: "1px solid",
+    //     borderColor: "divider",
+    //     p: 1.25,
+    //     borderRadius: 1,
+    //     minHeight: 56,
+    //   }}
+    // >
+    //   <Typography variant="caption" color="text.secondary">
+    //     {label}
+    //   </Typography>
+    //   <Box sx={{ mt: 0.75 , ml:1}}>{display}</Box>
+    // </Box>
   );
 }
 // export default RenderFormDisplay;
