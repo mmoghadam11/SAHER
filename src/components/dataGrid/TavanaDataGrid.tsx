@@ -4,18 +4,71 @@ import {
   DataGridProps,
   GridPaginationModel,
   GridToolbar,
+  GridToolbarColumnsButton,
+  GridToolbarContainer,
+  GridToolbarExport,
+  GridToolbarFilterButton,
 } from "@mui/x-data-grid";
-import { Grid } from "@mui/material";
+import { Badge, Grid } from "@mui/material";
 import { IQueryFilter } from "types/types";
 
 interface Props extends DataGridProps {
   setFilters?: React.Dispatch<React.SetStateAction<IQueryFilter>>;
   filters?: IQueryFilter;
   hideToolbar?: boolean;
+  FilterComponent?: React.ReactNode;
+  filterComponentProps?: any;
 }
-
+declare module "@mui/x-data-grid" {
+  interface FilterPanelPropsOverrides {
+    filters?: IQueryFilter;
+    setFilters?: React.Dispatch<React.SetStateAction<IQueryFilter>>;
+  }
+}
 const TavanaDataGrid = (props: Props) => {
-  const { setFilters, filters, hideToolbar = false } = props;
+  const {
+    setFilters,
+    filters,
+    hideToolbar = false,
+    FilterComponent,
+    filterComponentProps,
+  } = props;
+  const filterPanelStyles = {
+    // کلاس .MuiDataGrid-filterFormOperatorInput مربوط به سلکتور اوپراتور
+    "& .MuiDataGrid-filterFormOperatorInput": {
+      display: "none",
+    },
+    // این کد برای مرتب‌سازی است و باعث می‌شود فیلد مقدار تمام عرض موجود را بگیرد
+    "& .MuiDataGrid-filterForm": {
+      gridTemplateColumns: "1fr 1fr 1fr", // معمولاً ستون، اوپراتور، مقدار است
+      // در این حالت می‌توانیم آن را به 1fr 0fr 2fr تغییر دهیم
+      // اما راهکار ساده‌تر، حذف مستقیم کلاس است.
+    },
+  };
+  const getActiveFiltersCount = (filters: any) => {
+  if (!filters) return 0;
+  // فیلدهایی که نباید شمرده شوند مثل Pagination
+  const excludedKeys = ['page', 'size', 'sortBy', 'sortDir', 'count', 'totalElements'];
+  
+  return Object.keys(filters).filter(key => 
+    !excludedKeys.includes(key) && 
+    filters[key] !== "" && 
+    filters[key] !== null && 
+    filters[key] !== undefined
+  ).length;
+};
+  const CustomToolbar = ({ filtersCount }: { filtersCount: number }) => {
+    return (
+      <GridToolbarContainer>
+        <GridToolbarColumnsButton />
+        {/* اضافه کردن Badge دور دکمه فیلتر */}
+        <Badge badgeContent={filtersCount} color="primary" overlap="circular">
+          <GridToolbarFilterButton />
+        </Badge>
+        {/* <GridToolbarExport /> */}
+      </GridToolbarContainer>
+    );
+  };
   return (
     <Grid container spacing={0}>
       <Grid item xs={12} sx={{ minHeight: "200px" }}>
@@ -103,8 +156,30 @@ const TavanaDataGrid = (props: Props) => {
           })}
           {...props}
           slots={{
-            ...(hideToolbar ? {} : { toolbar: GridToolbar }),
+            // کل toolbar
+            // ...(hideToolbar ? {} : { toolbar: GridToolbar }),
+            ...(hideToolbar ? {} : { toolbar: CustomToolbar }),
             ...props?.slots,
+            ...(FilterComponent && {
+              filterPanel: () => <>{FilterComponent}</>,
+            }),
+          }}
+          slotProps={{
+            toolbar: {
+              filtersCount: getActiveFiltersCount(filters), // پاس دادن تعداد به تولبار
+            },
+            // filterPanel: {
+            //   sx: filterPanelStyles,
+            // },
+            filterPanel: {
+              sx: filterPanelStyles,
+              // ترکیب پروپ‌های استاندارد و پروپ‌های اختصاصی شما
+              filters: props.filters,
+              setFilters: props.setFilters,
+              ...filterComponentProps,
+              ...props.slotProps?.filterPanel,
+            } as any,
+            ...props?.slotProps,
           }}
         />
       </Grid>

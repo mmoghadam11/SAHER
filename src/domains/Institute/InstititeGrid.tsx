@@ -1,6 +1,10 @@
 import { Article, Toc } from "@mui/icons-material";
 import { Box, Grid, Typography } from "@mui/material";
-import { GridColDef } from "@mui/x-data-grid";
+import {
+  getGridStringOperators,
+  GridColDef,
+  GridFilterModel,
+} from "@mui/x-data-grid";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import BackButton from "components/buttons/BackButton";
 import CreateNewItem from "components/buttons/CreateNewItem";
@@ -17,6 +21,9 @@ import { PAGINATION_DEFAULT_VALUE } from "shared/paginationValue";
 import ConfirmBox from "components/confirmBox/ConfirmBox";
 import { useAuthorization } from "hooks/useAutorization";
 import { FormItem } from "types/formItem";
+import NewSearchPannel from "components/form/NewSearchPannel";
+import { title } from "process";
+import CustomFilterPanel from "components/form/CustomFilterPanel";
 
 type Props = {};
 
@@ -148,6 +155,16 @@ const InstititeGrid = (props: Props) => {
       },
     },
   ];
+  // const filteredColums = columns
+  //   .filter((item) => item.field !== "action")
+  //   .map((item) => ({
+  //     ...item,
+  //     // به جای ساخت دستی، از اپراتورهای خود دیتاگرید استفاده میکنیم
+  //     // و فقط آنهایی که میخواهیم (مثل contains) را نگه میداریم
+  //     filterOperators: getGridStringOperators().filter(
+  //       (operator) => operator.value === "contains"
+  //     ),
+  //   }));
   interface SearchData {
     name: string;
     code: string;
@@ -157,13 +174,13 @@ const InstititeGrid = (props: Props) => {
       name: "name",
       inputType: "text",
       label: "نام موسسه",
-      size: { md: 3 },
+      size: { md: 4 },
     },
     {
       name: "nationalId",
       inputType: "text",
       label: "شناسه ملی",
-      size: { md: 3 },
+      size: { md: 4 },
     },
     // {
     //   name: "qcRank",
@@ -175,10 +192,10 @@ const InstititeGrid = (props: Props) => {
       name: "status",
       inputType: "autocomplete",
       label: "وضعیت فعالیت",
-      size: { md: 3 },
+      size: { md: 4 },
       options: [
-        { id: "true", value: "فعال" },
-        { id: "false", value: "غیرفعال" },
+        { value: "true", title: "فعال" },
+        { value: "false", title: "غیرفعال" },
       ],
       storeValueAs: "id",
     },
@@ -199,17 +216,51 @@ const InstititeGrid = (props: Props) => {
     code: "",
   });
   useEffect(() => {
-    console.log(filters);
+    const { page, size, ...other } = filters;
+    console.log("filters",filters)
+    console.log("searchData",searchData)
+    // حذف فیلترهای خالی یا null
+    const activeFilters = Object.entries(other).filter(
+      ([key, value]) => value !== "" && value !== null && value !== undefined
+    );
+
+    const newItems = activeFilters.map(([key, value]) => ({
+      id: key, // باید unique باشه
+      field: key,
+      operator: "contains",
+      value: value,
+    }));
+
+    setFilterModel({
+      items: newItems ?? [],
+    });
   }, [filters]);
 
-  const [filterModel, setFilterModel] = useState({
+  const [filterModel, setFilterModel] = useState<GridFilterModel>({
     items: [],
   });
-  const handleFilterChange = (newFilterModel: any) => {
+  const handleFilterChange = (newFilterModel: any, event: any) => {
+    console.log("event", event);
+    if (newFilterModel?.items?.[0]?.value?.length < 3) return;
+    // if(!event || event.key !== "Enter")return
     setFilterModel(newFilterModel);
-    console.log("newFilterModel",newFilterModel)
+    console.log("newFilterModel", newFilterModel);
+    const Dfilters = newFilterModel?.items?.map(
+      (filterItem: any, filterIndex: number) => ({
+        [filterItem.field]: filterItem.value,
+      })
+    );
+    setFilters((prev: any) => ({
+      size: prev.size,
+      page: prev.page,
+      ...Dfilters.reduce((acc: any, cur: any) => ({ ...acc, ...cur }), {}),
+    }));
+    setSearchData({
+      ...Dfilters.reduce((acc: any, cur: any) => ({ ...acc, ...cur }), {}),
+    });
     // fetchData();  // با تغییر فیلتر، داده‌ها رو از سرور بگیر
   };
+
   return (
     <Grid container justifyContent="center">
       <Grid
@@ -237,7 +288,7 @@ const InstititeGrid = (props: Props) => {
           <BackButton onBack={() => navigate(-1)} />
         </Box>
       </Grid>
-      <SearchPannel<SearchData>
+      <NewSearchPannel<SearchData>
         searchItems={searchItems}
         searchData={searchData}
         setSearchData={setSearchData}
@@ -247,13 +298,22 @@ const InstititeGrid = (props: Props) => {
         {StatesData_status === "success" ? (
           <TavanaDataGrid
             rows={StatesData?.content}
+            // columns={[...filteredColums,columns.find(item=>item.field==="action")??[] as any]}
             columns={columns}
             filters={filters}
             setFilters={setFilters}
             rowCount={StatesData?.totalElements}
             getRowHeight={() => "auto"}
             autoHeight
-            hideToolbar
+            FilterComponent={
+              <CustomFilterPanel<SearchData>
+                searchItems={searchItems}
+                filters={filters}
+                setFilters={setFilters}
+              />
+            }
+            // hideToolbar
+            // filterMode="server"
             // filterModel={filterModel}
             // onFilterModelChange={handleFilterChange}
           />
