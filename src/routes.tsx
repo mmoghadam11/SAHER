@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { Component, useContext } from "react";
 import { Navigate, Outlet, Route, Routes, useNavigate } from "react-router-dom";
 import { useAuth } from "hooks/useAuth";
 import Layout from "components/layout/Layout";
@@ -74,11 +74,83 @@ import Accountant_DetaileTabs from "domains/accountantUser/officialUser/details/
 import DisciplinaryBasic from "domains/basic-data/disciplinary-order/DisciplinaryBasic";
 import ShowDisciplinaryOrderPage from "domains/Institute/disciplinaryOrder/page/ShowDisciplinaryOrderPage";
 import AllDOGrid from "domains/Institute/disciplinaryOrder/newVersion/AllDOGrid";
+import AccountantUserAllDOCases from "domains/accountantUser/disciplinaryOrder/newVersion/AccountantUserAllDOCases";
+import renderRoutes, { MenuItem } from "components/routeHelper/renderRoutes";
+import { url } from "inspector";
+import AllHCases from "domains/Institute/disciplinaryOrder/newVersion/highOrder/AllHCases";
 
 const AppRoutes: React.FC = () => {
   const auth = useAuth();
   const isUserLoggedIn = auth?.isUserLoggedIn ?? false;
-
+  const MENU_ITEMS: MenuItem[] = [
+    {
+      title: "احکام انتظامی(new)",
+      url: "/IACPA-disciplinary-order",
+      access: ["administrator", "city-showmenu","operator-showmenu"],
+      menuChildren: [
+        {
+          title: "پرونده‌های انتظامی",
+          url: "cases",
+          access: ["administrator", "city-showmenu","operator-showmenu"],
+          component: <AllDOGrid />,
+          menuChildren: [
+            {
+              url: ":id",
+              component: <ShowDisciplinaryOrderPage editable={true} />,
+            },
+          ],
+        },
+        {
+          title: "احکام عالی انتظامی",
+          url: "final",
+          access: ["administrator","city-showmenu","operator-showmenu"],
+          component: <AllHCases />,
+        },
+      ],
+    },
+    {
+      title: "جامعه",
+      url: "/IACPA",
+      access: ["city-showmenu", "operator-showmenu"],
+      menuChildren: [
+        {
+          title: "احکام انتظامی",
+          url: "disciplinary-order",
+          access: ["administrator", "city-showmenu", "operator-showmenu"],
+          component: <AllDisciplinaryOrderGrid />,
+          menuChildren: [
+            {
+              url: ":id",
+              component: <ShowDisciplinaryOrderPage editable={true} />,
+            },
+          ],
+        },
+        {
+          title: "کارگروه",
+          url: "workgroup",
+          access: ["administrator", "city-showmenu"],
+          component: <WorkgroupGrid />,
+          menuChildren: [
+            {
+              url: ":id",
+              component: <AddWorkgroup />,
+            },
+          ],
+        },
+        {
+          title: "پروانه",
+          url: "license",
+          access: ["administrator", "city-showmenu"],
+        },
+        {
+          title: "شاغلین سازمان حسابرسی",
+          url: "ca_organization",
+          access: ["administrator", "city-showmenu"],
+          component:<CAOrganizationGrid />
+        },
+      ],
+    },
+  ];
   return (
     <Routes>
       <Route element={<ProtectedRoute />}>
@@ -122,10 +194,7 @@ const AppRoutes: React.FC = () => {
           </Route>
           <Route path="/director">
             <Route path="disciplinary-order">
-              <Route
-                index
-                element={<DirectorDisciplinaryOrderDetails />}
-              />
+              <Route index element={<DirectorDisciplinaryOrderDetails />} />
               <Route
                 path=":id"
                 element={<AccountantDisciplinaryOrderDetaile />}
@@ -149,6 +218,13 @@ const AppRoutes: React.FC = () => {
                 path=":id"
                 element={<AccountantDisciplinaryOrderDetaile />}
               />
+            </Route>
+            <Route path="disciplinary-order-new">
+              <Route index element={<AccountantUserAllDOCases />} />
+              {/* <Route
+                path=":id"
+                element={<AccountantDisciplinaryOrderDetaile />}
+              /> */}
             </Route>
             <Route path="EDU">
               <Route index element={<CertifiedAccountantEDUGrid />} />
@@ -246,16 +322,22 @@ const AppRoutes: React.FC = () => {
               </Route>
             </Route>
           </Route>
-          <Route path="IACPA">
+
+          {renderRoutes(MENU_ITEMS)}
+          {/* <Route path="IACPA">
             <Route path="disciplinary-order">
-              {/* <Route index element={<InstituteDisciplinaryOrderGrid />} /> */}
               <Route index element={<AllDisciplinaryOrderGrid />} />
-              <Route path=":id" element={<ShowDisciplinaryOrderPage editable={true}/>} />
+              <Route
+                path=":id"
+                element={<ShowDisciplinaryOrderPage editable={true} />}
+              />
             </Route>
             <Route path="disciplinary-order-new">
-              {/* <Route index element={<InstituteDisciplinaryOrderGrid />} /> */}
               <Route index element={<AllDOGrid />} />
-              <Route path=":id" element={<ShowDisciplinaryOrderPage editable={true}/>} />
+              <Route
+                path=":id"
+                element={<ShowDisciplinaryOrderPage editable={true} />}
+              />
             </Route>
             <Route path="workgroup">
               <Route index element={<WorkgroupGrid />} />
@@ -263,9 +345,8 @@ const AppRoutes: React.FC = () => {
             </Route>
             <Route path="ca_organization">
               <Route index element={<CAOrganizationGrid />} />
-              {/* <Route path=":id" element={<AddCAOrganization />} /> */}
             </Route>
-          </Route>
+          </Route> */}
           <Route path="basic-data">
             <Route path="disciplinary-order" element={<DisciplinaryBasic />} />
             <Route path="persons">

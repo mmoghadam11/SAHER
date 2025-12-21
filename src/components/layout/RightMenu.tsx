@@ -110,17 +110,17 @@ const MENU_ITEMS: MenuItem[] = [
     icon: <Gavel />,
     title: "احکام انتظامی(new)",
     url: "IACPA-disciplinary-order",
-    access: ["administrator", "city-showmenu"],
+    access: ["administrator", "city-showmenu","operator-showmenu"],
     menuChildren: [
       {
-        title: "پرونده‌های انتظامی",
+        title: "پرونده‌های بدوی انتظامی",
         url: "cases",
-        access: ["administrator", "city-showmenu"],
+        access: ["administrator", "city-showmenu","operator-showmenu"],
       },
       {
         title: "احکام عالی انتظامی",
         url: "final",
-        access: ["administrator", "city-showmenu"],
+        access: ["administrator", "city-showmenu","operator-showmenu"],
       },
     ],
   },
