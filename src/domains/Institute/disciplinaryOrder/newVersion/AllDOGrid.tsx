@@ -706,7 +706,7 @@ const AllDOGrid = (props: Props) => {
         { value: "PRIMARY_ORDER_DONE", title: "حکم بدوی" },
         { value: "NOTIFIED", title: "ابلاغ شده" },
         { value: "PROTEST_REVIEW", title: "اعتراض شده" },
-        { value: "PROTEST_ACCEPTED", title: "اعتراض تایید شده" },
+        { value: "PROTEST_ACCEPTED", title: "ارجاع‌ به‌ عالی" },
         // { value: "PROTEST_REJECTED", title: "نگذشته" },
         { value: "FINAL", title: "قطعی" },
       ],
