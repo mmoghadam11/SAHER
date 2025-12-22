@@ -142,7 +142,7 @@ const AccountantUserDisciplinaryOrderDetaile = (props: Props) => {
         <Paper sx={{ width: "100%", p: 5 }}>
           <Grid item container md={12} spacing={2}>
             <Grid item md={12}>
-              <Typography variant="h6">اطلاعات کلی حسابدار</Typography>
+              <Typography variant="h6">اطلاعات کلی حسابدار رسمی</Typography>
             </Grid>
             {formItems?.map((item) => (
               <Grid item xs={12} md={item.size.md} key={item.name}>

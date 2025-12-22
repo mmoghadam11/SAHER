@@ -12,6 +12,7 @@ import {
   PanTool,
   People,
   PictureAsPdf,
+  ReceiptLong,
   Verified,
 } from "@mui/icons-material";
 import {
@@ -23,6 +24,7 @@ import {
   List,
   ListItem,
   ListItemText,
+  Paper,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -34,8 +36,8 @@ import TavanaDataGrid from "components/dataGrid/TavanaDataGrid";
 import TableActions from "components/table/TableActions";
 import { useAuth } from "hooks/useAuth";
 import { useSnackbar } from "hooks/useSnackbar";
-import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import React, { useEffect, useMemo, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import paramsSerializer from "services/paramsSerializer";
 import { PAGINATION_DEFAULT_VALUE } from "shared/paginationValue";
@@ -51,6 +53,8 @@ import PrResponse from "domains/Institute/disciplinaryOrder/newVersion/protest/P
 import AddDOCase from "domains/Institute/disciplinaryOrder/newVersion/AddDOCase";
 import AddMeeting from "domains/Institute/disciplinaryOrder/newVersion/AddMeeting";
 import AddFirstStepOrder from "domains/Institute/disciplinaryOrder/newVersion/AddFirstStepOrder";
+import RenderFormDisplay from "components/render/formInputs/RenderFormDisplay";
+import AccountantAllHCases from "../details/AccountantAllHCases";
 
 type Props = {};
 
@@ -142,7 +146,9 @@ const AccountantUserAllDOCases = (props: Props) => {
     status: supremeData_status,
     refetch: supremeData_refetch,
   } = useQuery<any>({
-    queryKey: [`disciplinary-supreme/search${paramsSerializer(supremeFilters)}`],
+    queryKey: [
+      `disciplinary-supreme/search${paramsSerializer(supremeFilters)}`,
+    ],
     queryFn: Auth?.getRequest,
     select: (res: any) => {
       return res?.data;
@@ -159,37 +165,37 @@ const AccountantUserAllDOCases = (props: Props) => {
     console.log("filters", filters);
   }, [filters]);
   const columns: GridColDef[] = [
-    {
-      field: "respondenType",
-      headerName: "نوع شخصیت حسابرس",
-      flex: 1.2,
-      align: "center",
-      renderCell: ({ row }: { row: any }) => {
-        if (row?.cdPersonalityId === 397)
-          return (
-            <Tooltip title="حسابدار رسمی">
-              <Chip
-                size="small"
-                label="حسابدار رسمی"
-                icon={<People fontSize="small" />}
-                color="info"
-              />
-            </Tooltip>
-          );
-        if (row?.cdPersonalityId === 396)
-          return (
-            <Tooltip title="موسسه">
-              <Chip
-                size="small"
-                label="موسسه"
-                icon={<BusinessCenter fontSize="small" />}
-                color="warning"
-              />
-            </Tooltip>
-          );
-      },
-    },
-    { field: "accuserName", headerName: "نام شخصیت", flex: 1.2 },
+    // {
+    //   field: "respondenType",
+    //   headerName: "نوع شخصیت حسابرس",
+    //   flex: 1.2,
+    //   align: "center",
+    //   renderCell: ({ row }: { row: any }) => {
+    //     if (row?.cdPersonalityId === 397)
+    //       return (
+    //         <Tooltip title="حسابدار رسمی">
+    //           <Chip
+    //             size="small"
+    //             label="حسابدار رسمی"
+    //             icon={<People fontSize="small" />}
+    //             color="info"
+    //           />
+    //         </Tooltip>
+    //       );
+    //     if (row?.cdPersonalityId === 396)
+    //       return (
+    //         <Tooltip title="موسسه">
+    //           <Chip
+    //             size="small"
+    //             label="موسسه"
+    //             icon={<BusinessCenter fontSize="small" />}
+    //             color="warning"
+    //           />
+    //         </Tooltip>
+    //       );
+    //   },
+    // },
+    // { field: "accuserName", headerName: "نام شخصیت", flex: 1.2 },
     {
       field: "complainant",
       headerName: "شاکی",
@@ -222,10 +228,13 @@ const AccountantUserAllDOCases = (props: Props) => {
       align: "center",
       renderCell: ({ row }: { row: any }) => {
         if (row?.disciplinaryCaseStage === "CASE_REVIEW")
-          return <Chip label={"اولیه"} color="info" />;
+          return <Chip label={"اولیه بدوی"} color="info" />;
         if (row?.disciplinaryCaseStage === "PRIMARY_MEETING_REQUESTED")
           return (
-            <Chip label={"دعوتنامه"} icon={<HistoryEdu sx={{ fontSize: "1rem" }} fontSize="small" />} />
+            <Chip
+              label={"دعوتنامه"}
+              icon={<HistoryEdu sx={{ fontSize: "1rem" }} fontSize="small" />}
+            />
           );
         if (row?.disciplinaryCaseStage === "PRIMARY_ORDER_DONE")
           return (
@@ -240,7 +249,9 @@ const AccountantUserAllDOCases = (props: Props) => {
             <Chip
               label={"ابلاغ"}
               color="secondary"
-              icon={<MarkEmailRead sx={{ fontSize: "1rem" }} fontSize="small" />}
+              icon={
+                <MarkEmailRead sx={{ fontSize: "1rem" }} fontSize="small" />
+              }
             />
           );
         if (row?.disciplinaryCaseStage === "PROTEST_REVIEW")
@@ -254,7 +265,7 @@ const AccountantUserAllDOCases = (props: Props) => {
         if (row?.disciplinaryCaseStage === "PROTEST_ACCEPTED")
           return (
             <Chip
-              label={"تایید"}
+              label={"ارجاع به عالی"}
               color="success"
               icon={<GppGood sx={{ fontSize: "1rem" }} fontSize="small" />}
             />
@@ -270,9 +281,15 @@ const AccountantUserAllDOCases = (props: Props) => {
         if (row?.disciplinaryCaseStage === "FINAL")
           return (
             <Chip
-              label={"قطعی"}
+              label={"قطعی بدوی"}
               color="secondary"
-              icon={<Verified color="secondary" sx={{ fontSize: "1rem" }} fontSize="small" />}
+              icon={
+                <Verified
+                  color="secondary"
+                  sx={{ fontSize: "1rem" }}
+                  fontSize="small"
+                />
+              }
             />
           );
       },
@@ -291,7 +308,7 @@ const AccountantUserAllDOCases = (props: Props) => {
       align: "center",
       renderCell: ({ row }: { row: any }) => {
         if (row?.noticeDate) {
-          const [date, time] = row?.notificationDateFr?.split(" ") ?? [
+          const [date, time] = row?.noticeDateFr?.split(" ") ?? [
             null,
             null,
           ];
@@ -302,52 +319,52 @@ const AccountantUserAllDOCases = (props: Props) => {
               alignItems={"center"}
             >
               <Verified color="secondary" />
-              <Tooltip title={row?.noticeDateFr + " (تاریخ ابلاغ)"}>
-              <Typography variant="caption">
-                {/* {moment(new Date(row?.noticeDate)).format("jYYYY/jMM/jDD")} */}
-                {date?.replaceAll("-", "/") ?? null}
-              </Typography>
+              <Tooltip title={row?.noticeDateFr }>
+                <Typography variant="caption">
+                  {/* {moment(new Date(row?.noticeDate)).format("jYYYY/jMM/jDD")} */}
+                  {date?.replaceAll("-", "/") ?? null}
+                </Typography>
               </Tooltip>
             </Box>
           );
         } else return <Close color="disabled" />;
       },
     },
-    {
-      field: "seen",
-      headerName: "مشاهده شده",
-      flex: 1,
-      align: "center",
-      renderCell: ({ row }: { row: any }) => {
-        if (row?.seen) {
-          const [date, time] = row?.seenDateFr?.split(" ") ?? [null, null];
-          return (
-            <Box
-              display={"flex"}
-              flexDirection={"column"}
-              alignItems={"center"}
-            >
-              <DoneAll color="success" />
-              {row?.seenDate && (
-                <Tooltip
-                  title={moment(new Date(row?.seenDate)).format(
-                    "HH:mm jYYYY/jMM/jDD"
-                  )}
-                >
-                  {/* <Tooltip title={row?.seenDateFr + " (تاریخ مشاهده)"}> */}
-                  <Typography variant="caption">
-                    {moment(new Date(row?.seenDate)).format("jYYYY/jMM/jDD")}
-                    {/* {date?.replaceAll("-", "/") ?? null} */}
-                  </Typography>
-                </Tooltip>
-              )}
-            </Box>
-          );
-        }
+    // {
+    //   field: "seen",
+    //   headerName: "مشاهده شده",
+    //   flex: 1,
+    //   align: "center",
+    //   renderCell: ({ row }: { row: any }) => {
+    //     if (row?.seen) {
+    //       const [date, time] = row?.seenDateFr?.split(" ") ?? [null, null];
+    //       return (
+    //         <Box
+    //           display={"flex"}
+    //           flexDirection={"column"}
+    //           alignItems={"center"}
+    //         >
+    //           <DoneAll color="success" />
+    //           {row?.seenDate && (
+    //             <Tooltip
+    //               title={moment(new Date(row?.seenDate)).format(
+    //                 "HH:mm jYYYY/jMM/jDD"
+    //               )}
+    //             >
+    //               {/* <Tooltip title={row?.seenDateFr + " (تاریخ مشاهده)"}> */}
+    //               <Typography variant="caption">
+    //                 {moment(new Date(row?.seenDate)).format("jYYYY/jMM/jDD")}
+    //                 {/* {date?.replaceAll("-", "/") ?? null} */}
+    //               </Typography>
+    //             </Tooltip>
+    //           )}
+    //         </Box>
+    //       );
+    //     }
 
-        return <Close color="disabled" />;
-      },
-    },
+    //     return <Close color="disabled" />;
+    //   },
+    // },
     {
       headerName: "عملیات",
       field: "action",
@@ -359,11 +376,11 @@ const AccountantUserAllDOCases = (props: Props) => {
           if (row?.disciplinaryCaseStage === "CASE_REVIEW")
             return (
               <TableActions
-                // onView={() => {
-                //   setEditable(false);
-                //   setEditeData(row);
-                //   setAddModalFlag(true);
-                // }}
+              // onView={() => {
+              //   setEditable(false);
+              //   setEditeData(row);
+              //   setAddModalFlag(true);
+              // }}
               />
             );
           else if (row?.disciplinaryCaseStage === "PRIMARY_MEETING_REQUESTED")
@@ -593,6 +610,42 @@ const AccountantUserAllDOCases = (props: Props) => {
       }
     );
   }
+  const { reset, getValues } = useForm<any>();
+  useEffect(() => {
+    reset(Auth.userInfo);
+  }, [Auth.userInfo]);
+  const formItems = useMemo(
+    () => [
+      {
+        name: "firstName",
+        inputType: "text",
+        label: "نام",
+        size: { md: 4 },
+        elementProps: {
+          disabled: true,
+        },
+      },
+      {
+        name: "lastName",
+        inputType: "text",
+        label: "نام خانوادگی",
+        size: { md: 4 },
+        elementProps: {
+          disabled: true,
+        },
+      },
+      {
+        name: "nationalCode",
+        inputType: "text",
+        label: "کد ملی",
+        size: { md: 4 },
+        elementProps: {
+          disabled: true,
+        },
+      },
+    ],
+    [getValues, Auth.userInfo]
+  );
   return (
     <Grid container justifyContent="center">
       <Grid
@@ -602,12 +655,66 @@ const AccountantUserAllDOCases = (props: Props) => {
         xs={12}
         display={"flex"}
         justifyContent={"space-between"}
+        mb={1}
+      >
+        <Grid item display={"flex"}>
+          <ReceiptLong fontSize={isMobile ? "medium" : "large"} />
+          <Typography variant={isMobile ? "body1" : "h5"}>
+            احکام انتظامی{" "}
+            {Auth?.userInfo?.firstName + " " + Auth?.userInfo?.lastName}
+          </Typography>
+        </Grid>
+        <Grid item display={"flex"}>
+          <BackButton onBack={() => navigate(-1)} />
+        </Grid>
+      </Grid>
+      <Grid item md={11}>
+        <Paper sx={{ width: "100%", p: 5 }}>
+          <Grid item container md={12} spacing={2}>
+            <Grid item md={12}>
+              <Typography variant="h6">اطلاعات کلی حسابدار رسمی</Typography>
+            </Grid>
+            {formItems?.map((item) => (
+              <Grid item xs={12} md={item.size.md} key={item.name}>
+                <Controller
+                  name={item.name}
+                  control={control}
+                  render={({ field }) => (
+                    // <RenderFormInput
+                    //   controllerField={field}
+                    //   errors={errors}
+                    //   {...item}
+                    //   {...field}
+                    //   onChange={(e: any) => {
+                    //     // if (!isNaN(e.target.value))
+                    //     setValue(item.name, e.target.value);
+                    //   }}
+                    //   value={getValues()[item.name] ?? ""}
+                    // />
+                    <RenderFormDisplay
+                      item={item}
+                      value={getValues()[item.name] ?? ""}
+                    />
+                  )}
+                />
+              </Grid>
+            ))}
+          </Grid>
+        </Paper>
+      </Grid>
+      <Grid
+        item
+        md={11}
+        sm={11}
+        xs={12}
+        display={"flex"}
+        justifyContent={"space-between"}
         m={2}
-        mb={2}
+        mt={4}
       >
         <Box display={"flex"} alignItems={"center"} gap={1}>
           <Gavel fontSize="medium" />
-          <Typography variant="h6">پرونده‌های انتظامی بدوی حسابدار</Typography>
+          <Typography variant="body1" fontWeight={"bold"}>پرونده‌های انتظامی بدوی حسابدار رسمی</Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"} gap={1}>
           {/* <BackButton onBack={() => navigate(-1)} /> */}
@@ -650,12 +757,7 @@ const AccountantUserAllDOCases = (props: Props) => {
           )
         ) : null}
       </Grid>
-      <Grid py={2} item md={11} sm={11} xs={12}>
-        <Box display={"flex"} alignItems={"center"} gap={1}>
-          <Gavel fontSize="medium" />
-          <Typography variant="h6">احکام عالی حسابدار</Typography>
-        </Box>
-      </Grid>
+      <AccountantAllHCases/>
       <AddDOCase
         editable={editable}
         refetch={StatesData_refetch}

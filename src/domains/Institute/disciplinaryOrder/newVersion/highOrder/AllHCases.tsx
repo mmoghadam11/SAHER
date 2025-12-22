@@ -513,15 +513,15 @@ const AllHCases = (props: Props) => {
 
   const searchItems: FormItem[] = [
     {
-      name: "accuserName",
+      name: "disciplinaryCaseAccuserName",
       inputType: "text",
       label: "شخصیت",
       size: { md: 4 },
     },
     {
-      name: "referralNumber",
+      name: "orderNumber",
       inputType: "text",
-      label: "شماره ارجاع",
+      label: "شماره حکم",
       size: { md: 4 },
     },
     {

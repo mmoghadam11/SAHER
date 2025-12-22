@@ -229,7 +229,7 @@ const AllDOGrid = (props: Props) => {
           return (
             <Chip
               // label={"تایید اعتراض"}
-              label={"اولیه عالی"}
+              label={"ارجاع‌به‌عالی"}
               color="success"
               icon={<GppGood sx={{ fontSize: "1rem" }} fontSize="small" />}
             />

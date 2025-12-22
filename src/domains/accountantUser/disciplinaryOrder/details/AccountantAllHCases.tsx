@@ -123,47 +123,41 @@ const AccountantAllHCases = (props: Props) => {
     enabled: true,
   } as any);
   const columns: GridColDef[] = [
-    {
-      field: "respondenType",
-      headerName: "نوع شخصیت حسابرس",
-      flex: 1.2,
-      align: "center",
-      renderCell: ({ row }: { row: any }) => {
-        if (row?.primaryPersonalityName === "حسابدار رسمی")
-          return (
-            <Tooltip title="حسابدار رسمی">
-              <Chip
-                size="small"
-                label="حسابدار رسمی"
-                icon={<People fontSize="small" />}
-                color="info"
-              />
-            </Tooltip>
-          );
-        if (row?.primaryPersonalityName === "موسسه")
-          return (
-            <Tooltip title="موسسه">
-              <Chip
-                size="small"
-                label="موسسه"
-                icon={<BusinessCenter fontSize="small" />}
-                color="warning"
-              />
-            </Tooltip>
-          );
-      },
-    },
     // {
-    //   field: "primaryPersonalityName",
+    //   field: "respondenType",
     //   headerName: "نوع شخصیت حسابرس",
     //   flex: 1.2,
     //   align: "center",
+    //   renderCell: ({ row }: { row: any }) => {
+    //     if (row?.primaryPersonalityName === "حسابدار رسمی")
+    //       return (
+    //         <Tooltip title="حسابدار رسمی">
+    //           <Chip
+    //             size="small"
+    //             label="حسابدار رسمی"
+    //             icon={<People fontSize="small" />}
+    //             color="info"
+    //           />
+    //         </Tooltip>
+    //       );
+    //     if (row?.primaryPersonalityName === "موسسه")
+    //       return (
+    //         <Tooltip title="موسسه">
+    //           <Chip
+    //             size="small"
+    //             label="موسسه"
+    //             icon={<BusinessCenter fontSize="small" />}
+    //             color="warning"
+    //           />
+    //         </Tooltip>
+    //       );
+    //   },
     // },
-    {
-      field: "disciplinaryCaseAccuserName",
-      headerName: "نام شخصیت",
-      flex: 1.2,
-    },
+    // {
+    //   field: "disciplinaryCaseAccuserName",
+    //   headerName: "نام شخصیت",
+    //   flex: 1.2,
+    // },
     {
       field: "complainant",
       headerName: "شاکی",
@@ -206,7 +200,7 @@ const AccountantAllHCases = (props: Props) => {
       align: "center",
       renderCell: ({ row }: { row: any }) => {
         if (row?.processStage === "SUPREME_CREATED")
-          return <Chip label={"اولیه"} color="info" />;
+          return <Chip label={"اولیه عالی"} color="info" />;
         if (row?.processStage === "SUPREME_METTING_REQUEST")
           return (
             <Chip label={"دعوتنامه"} icon={<HistoryEdu fontSize="small" />} />
@@ -231,7 +225,7 @@ const AccountantAllHCases = (props: Props) => {
         if (row?.processStage === "FINAL" || row?.processStage === " قطعی ")
           return (
             <Chip
-              label={"قطعی"}
+              label={"قطعی عالی"}
               color="secondary"
               icon={<Verified color="secondary" fontSize="small" />}
             />
@@ -241,7 +235,7 @@ const AccountantAllHCases = (props: Props) => {
     {
       field: "notificationStatus",
       headerName: "ابلاغ",
-      flex: 1,
+      flex: 0.5,
       align: "center",
       renderCell: ({ row }: { row: any }) => {
         if (row?.noticeDate) {
@@ -268,41 +262,41 @@ const AccountantAllHCases = (props: Props) => {
         } else return <Close color="disabled" />;
       },
     },
-    {
-      field: "seen",
-      headerName: "مشاهده شده",
-      flex: 1,
-      align: "center",
-      renderCell: ({ row }: { row: any }) => {
-        if (row?.seenDateFr) {
-          const [date, time] = row?.seenDateFr?.split(" ") ?? [null, null];
-          return (
-            <Box
-              display={"flex"}
-              flexDirection={"column"}
-              alignItems={"center"}
-            >
-              <DoneAll color="success" />
-              {row?.seenDate && (
-                <Tooltip title={row?.seenDateFr + " (تاریخ مشاهده)"}>
-                {/* <Tooltip
-                  title={moment(new Date(row?.seenDate)).format(
-                    "hh:mm jYYYY/jMM/jDD"
-                  )}
-                > */}
-                  <Typography variant="caption">
-                    {/* {moment(new Date(row?.seenDate)).format("jYYYY/jMM/jDD")} */}
-                    {date?.replaceAll("-", "/") ?? null}
-                  </Typography>
-                </Tooltip>
-              )}
-            </Box>
-          );
-        }
+    // {
+    //   field: "seen",
+    //   headerName: "مشاهده شده",
+    //   flex: 1,
+    //   align: "center",
+    //   renderCell: ({ row }: { row: any }) => {
+    //     if (row?.seenDateFr) {
+    //       const [date, time] = row?.seenDateFr?.split(" ") ?? [null, null];
+    //       return (
+    //         <Box
+    //           display={"flex"}
+    //           flexDirection={"column"}
+    //           alignItems={"center"}
+    //         >
+    //           <DoneAll color="success" />
+    //           {row?.seenDate && (
+    //             <Tooltip title={row?.seenDateFr + " (تاریخ مشاهده)"}>
+    //             {/* <Tooltip
+    //               title={moment(new Date(row?.seenDate)).format(
+    //                 "hh:mm jYYYY/jMM/jDD"
+    //               )}
+    //             > */}
+    //               <Typography variant="caption">
+    //                 {/* {moment(new Date(row?.seenDate)).format("jYYYY/jMM/jDD")} */}
+    //                 {date?.replaceAll("-", "/") ?? null}
+    //               </Typography>
+    //             </Tooltip>
+    //           )}
+    //         </Box>
+    //       );
+    //     }
 
-        return <Close color="disabled" />;
-      },
-    },
+    //     return <Close color="disabled" />;
+    //   },
+    // },
     {
       headerName: "عملیات",
       field: "action",
@@ -324,44 +318,44 @@ const AccountantAllHCases = (props: Props) => {
                 //   setEditeData(row);
                 //   setAddModalFlag(true);
                 // }}
-                onAdd={{
-                  function: () => {
-                    setEditable(true);
-                    setCaseData(row);
-                    setInvitationFlag(true);
-                  },
-                  title: "ثبت دعوتنامه",
-                  icon: (
-                    <HistoryEdu
-                      color={row.hasAttachment ? "success" : "primary"}
-                    />
-                  ),
-                }}
+                // onAdd={{
+                //   function: () => {
+                //     setEditable(true);
+                //     setCaseData(row);
+                //     setInvitationFlag(true);
+                //   },
+                //   title: "ثبت دعوتنامه",
+                //   icon: (
+                //     <HistoryEdu
+                //       color={row.hasAttachment ? "success" : "primary"}
+                //     />
+                //   ),
+                // }}
               />
             );
           else if (row?.processStage === "SUPREME_METTING_REQUEST")
             return (
               <TableActions
-                onManage={{
-                  function: () => {
-                    setEditable(true);
-                    setFirstOrderData(row);
-                    setFirstOrderFlag(true);
-                  },
-                  title: "ثبت حکم عالی",
-                  icon: (
-                    // <Badge badgeContent={1} color="primary">
-                    <Gavel color={"primary"} />
-                    // </Badge>
-                  ),
-                }}
+                // onManage={{
+                //   function: () => {
+                //     setEditable(true);
+                //     setFirstOrderData(row);
+                //     setFirstOrderFlag(true);
+                //   },
+                //   title: "ثبت حکم عالی",
+                //   icon: (
+                //     // <Badge badgeContent={1} color="primary">
+                //     <Gavel color={"primary"} />
+                //     // </Badge>
+                //   ),
+                // }}
                 onAdd={{
                   function: () => {
-                    setEditable(true);
+                    setEditable(false);
                     setCaseData(row);
                     setInvitationFlag(true);
                   },
-                  title: "ویرایش دعوتنامه",
+                  title: "مشاهده دعوتنامه",
                   icon: (
                     <HistoryEdu
                       color={row.hasAttachment ? "success" : "primary"}
@@ -375,11 +369,11 @@ const AccountantAllHCases = (props: Props) => {
               <TableActions
                 onManage={{
                   function: () => {
-                    setEditable(true);
+                    setEditable(false);
                     setFirstOrderData(row);
                     setFirstOrderFlag(true);
                   },
-                  title: "ویرایش حکم عالی",
+                  title: "مشاهده حکم عالی",
                   icon: (
                     // <Badge badgeContent={1} color="primary">
                     <Gavel color={"primary"} />
@@ -391,7 +385,19 @@ const AccountantAllHCases = (props: Props) => {
           else if (row?.processStage === "NOTIFIED")
             return (
               <TableActions
-                
+                onManage={{
+                  function: () => {
+                    setEditable(false);
+                    setFirstOrderData(row);
+                    setFirstOrderFlag(true);
+                  },
+                  title: "مشاهده حکم عالی",
+                  icon: (
+                    // <Badge badgeContent={1} color="primary">
+                    <Gavel color={"primary"} />
+                    // </Badge>
+                  ),
+                }}
               />
             );
           else if (
@@ -544,41 +550,13 @@ const AccountantAllHCases = (props: Props) => {
   }
   return (
     <Grid container justifyContent="center">
-      <Grid
-        item
-        md={11}
-        sm={11}
-        xs={12}
-        display={"flex"}
-        justifyContent={"space-between"}
-        m={2}
-        mb={0}
-      >
-        <Box display={"flex"}>
-          <Gavel fontSize="large" />
-          <Typography variant="h5">پرونده‌های انتظامی عالی</Typography>
-        </Box>
-        <Box display={"flex"} justifyContent={"space-between"} gap={1}>
-          {/* {authFunctions?.hasPermission("disciplinary-order-edit") && (
-            <CreateNewItem
-              title="پرونده انتظامی جدید"
-              onClick={() => {
-                setEditeData(null);
-                setEditable(true);
-                setAddModalFlag(true);
-              }}
-            />
-          )} */}
-
-          <BackButton onBack={() => navigate(-1)} />
+      <Grid py={2} item md={11} sm={11} xs={12}>
+        <Box display={"flex"} alignItems={"center"} gap={1}>
+          <Gavel fontSize="medium" />
+          <Typography variant="body1" fontWeight={"bold"}>پرونده‌های انتظامی عالی حسابدار رسمی</Typography>
         </Box>
       </Grid>
-      <NewSearchPannel<SearchData>
-        searchItems={searchItems}
-        searchData={searchData}
-        setSearchData={setSearchData}
-        setFilters={setFilters}
-      />
+      
       {/* {StatesData_status === "success" && (
         <Grid item md={11} sm={11} xs={12}>
           <Button
@@ -609,7 +587,7 @@ const AccountantAllHCases = (props: Props) => {
               filters={filters}
               setFilters={setFilters}
               rowCount={StatesData?.totalElements}
-              getRowHeight={() => "auto"}
+              // getRowHeight={() => "auto"}
               autoHeight
               hideToolbar
             />
