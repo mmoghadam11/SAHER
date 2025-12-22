@@ -194,17 +194,17 @@ const MENU_ITEMS: MenuItem[] = [
         url: "EDU",
         access: ["administrator", "city-showmenu", "allFirms_showmenu"],
       },
-      {
-        //ثابت و متغیر دارد
-        title: "حق عضویت موسسه",
-        url: "membership-fee",
-        access: ["administrator", "city-showmenu"],
-      },
-      {
-        title: "قرارداد های حسابرسی",
-        url: "contracts-concluded",
-        access: ["administrator", "city-showmenu"],
-      },
+      // {
+      //   //ثابت و متغیر دارد
+      //   title: "حق عضویت موسسه",
+      //   url: "membership-fee",
+      //   access: ["administrator", "city-showmenu"],
+      // },
+      // {
+      //   title: "قرارداد های حسابرسی",
+      //   url: "contracts-concluded",
+      //   access: ["administrator", "city-showmenu"],
+      // },
       {
         title: "گزارش  های حسابرسی",
         url: "reprts-by-institution",
@@ -269,17 +269,17 @@ const MENU_ITEMS: MenuItem[] = [
       //   url: "EDU",
       //   access: ["administrator", "city-showmenu","township-showmenu"],
       // },
-      {
-        //ثابت و متغیر دارد
-        title: "حق عضویت موسسه",
-        url: "membership-fee",
-        access: ["administrator", "city-showmenu", "township-showmenu"],
-      },
-      {
-        title: "قرارداد های حسابرسی",
-        url: "contracts-concluded-by-institution",
-        access: ["administrator", "city-showmenu"],
-      },
+      // {
+      //   //ثابت و متغیر دارد
+      //   title: "حق عضویت موسسه",
+      //   url: "membership-fee",
+      //   access: ["administrator", "city-showmenu", "township-showmenu"],
+      // },
+      // {
+      //   title: "قرارداد های حسابرسی",
+      //   url: "contracts-concluded-by-institution",
+      //   access: ["administrator", "city-showmenu"],
+      // },
       {
         title: "گزارش  های حسابرسی",
         url: "reprts-by-institution",

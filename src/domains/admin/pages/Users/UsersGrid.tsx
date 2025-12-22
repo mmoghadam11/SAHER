@@ -28,6 +28,7 @@ import SearchPannel from "components/form/SearchPannel";
 import { UseGetProfileImage } from "hooks/useGetProfileImage";
 import ProfileDialog from "components/ProfileDialog";
 import { FormItem } from "types/formItem";
+import NewSearchPannel from "components/form/NewSearchPannel";
 
 type Props = {};
 
@@ -190,8 +191,8 @@ const UsersGrid = (props: Props) => {
       label: "نقش",
       size: { md: 3 },
       options: roles?.map((item: any) => ({
-        id: item.persianName,
         value: item.persianName,
+        title: item.persianName,
       })) ?? [{ value: 0, title: "خالی" }],
       storeValueAs: "id",
     },
@@ -241,7 +242,7 @@ const UsersGrid = (props: Props) => {
           <BackButton onBack={() => navigate(-1)} />
         </Box>
       </Grid>
-      <SearchPannel<SearchData>
+      <NewSearchPannel<SearchData>
         searchItems={searchItems}
         searchData={searchData}
         setSearchData={setSearchData}
