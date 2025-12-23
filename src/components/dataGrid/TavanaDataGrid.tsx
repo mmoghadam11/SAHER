@@ -46,17 +46,25 @@ const TavanaDataGrid = (props: Props) => {
     },
   };
   const getActiveFiltersCount = (filters: any) => {
-  if (!filters) return 0;
-  // فیلدهایی که نباید شمرده شوند مثل Pagination
-  const excludedKeys = ['page', 'size', 'sortBy', 'sortDir', 'count', 'totalElements'];
-  
-  return Object.keys(filters).filter(key => 
-    !excludedKeys.includes(key) && 
-    filters[key] !== "" && 
-    filters[key] !== null && 
-    filters[key] !== undefined
-  ).length;
-};
+    if (!filters) return 0;
+    // فیلدهایی که نباید شمرده شوند مثل Pagination
+    const excludedKeys = [
+      "page",
+      "size",
+      "sortBy",
+      "sortDir",
+      "count",
+      "totalElements",
+    ];
+
+    return Object.keys(filters).filter(
+      (key) =>
+        !excludedKeys.includes(key) &&
+        filters[key] !== "" &&
+        filters[key] !== null &&
+        filters[key] !== undefined
+    ).length;
+  };
   const CustomToolbar = ({ filtersCount }: { filtersCount: number }) => {
     return (
       <GridToolbarContainer>
@@ -115,6 +123,11 @@ const TavanaDataGrid = (props: Props) => {
             filterOperatorIsEmpty: "تهی",
             filterOperatorIsNotEmpty: "ناتهی",
             filterOperatorIsAnyOf: "یکی از",
+
+            columnsPanelTextFieldLabel: "یافتن ستون",
+            columnsPanelTextFieldPlaceholder: "نام ستون",
+            columnsPanelShowAllButton: "نمایش همه",
+            columnsPanelHideAllButton: "مخفی کردن همه",
 
             MuiTablePagination: {
               labelRowsPerPage: "تعداد ردیف",
