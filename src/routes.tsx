@@ -78,6 +78,7 @@ import AccountantUserAllDOCases from "domains/accountantUser/disciplinaryOrder/n
 import renderRoutes, { MenuItem } from "components/routeHelper/renderRoutes";
 import { url } from "inspector";
 import AllHCases from "domains/Institute/disciplinaryOrder/newVersion/highOrder/AllHCases";
+import DirectorDisciplinayOrder from "domains/firmDirector/newVersion/DirectorDisciplinayOrder";
 
 const AppRoutes: React.FC = () => {
   const auth = useAuth();
@@ -86,12 +87,12 @@ const AppRoutes: React.FC = () => {
     {
       title: "احکام انتظامی(new)",
       url: "/IACPA-disciplinary-order",
-      access: ["administrator", "city-showmenu","operator-showmenu"],
+      access: ["administrator", "city-showmenu", "operator-showmenu"],
       menuChildren: [
         {
           title: "پرونده‌های انتظامی",
           url: "cases",
-          access: ["administrator", "city-showmenu","operator-showmenu"],
+          access: ["administrator", "city-showmenu", "operator-showmenu"],
           component: <AllDOGrid />,
           menuChildren: [
             {
@@ -103,8 +104,32 @@ const AppRoutes: React.FC = () => {
         {
           title: "احکام عالی انتظامی",
           url: "final",
-          access: ["administrator","city-showmenu","operator-showmenu"],
+          access: ["administrator", "city-showmenu", "operator-showmenu"],
           component: <AllHCases />,
+        },
+      ],
+    },
+    {
+      title: "احکام انتظامی مدیرعامل",
+      url: "/director",
+      access: ["director-showmenu"],
+      menuChildren: [
+        {
+          title: "پرونده‌های انتظامی",
+          url: "disciplinary-order",
+          access: ["director-showmenu"],
+          component: <DirectorDisciplinaryOrderDetails />,
+          menuChildren: [{
+            url:":id",
+            component:<AccountantDisciplinaryOrderDetaile />
+           }],
+        
+        },
+        {
+          title: "newVersion",
+          url: "disciplinary-order-new",
+          access: ["director-showmenu"],
+          component: <DirectorDisciplinayOrder />,
         },
       ],
     },
@@ -146,7 +171,7 @@ const AppRoutes: React.FC = () => {
           title: "شاغلین سازمان حسابرسی",
           url: "ca_organization",
           access: ["administrator", "city-showmenu"],
-          component:<CAOrganizationGrid />
+          component: <CAOrganizationGrid />,
         },
       ],
     },
@@ -192,7 +217,7 @@ const AppRoutes: React.FC = () => {
               />
             </Route>
           </Route>
-          <Route path="/director">
+          {/* <Route path="/director">
             <Route path="disciplinary-order">
               <Route index element={<DirectorDisciplinaryOrderDetails />} />
               <Route
@@ -200,7 +225,7 @@ const AppRoutes: React.FC = () => {
                 element={<AccountantDisciplinaryOrderDetaile />}
               />
             </Route>
-          </Route>
+          </Route> */}
           <Route path="accountant-user">
             <Route path="cartable">
               <Route index element={<AccountantOfficialUserGrid />} />
