@@ -9,13 +9,7 @@ import {
   PictureAsPdf,
   Verified,
 } from "@mui/icons-material";
-import {
-  Box,
-  Chip,
-  Grid,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Box, Chip, Grid, Tooltip, Typography } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import BackButton from "components/buttons/BackButton";
@@ -39,7 +33,6 @@ import AddHMeeting from "domains/Institute/disciplinaryOrder/newVersion/highOrde
 import AddHOrder from "domains/Institute/disciplinaryOrder/newVersion/highOrder/AddHOrder";
 import PrRequest from "domains/Institute/disciplinaryOrder/newVersion/protest/PrRequest";
 import PrResponse from "domains/Institute/disciplinaryOrder/newVersion/protest/PrResponse";
-
 
 type Props = {};
 
@@ -108,7 +101,8 @@ const AccountantAllHCases = (props: Props) => {
   } = useForm();
   const [filters, setFilters] = useState<any>({
     ...PAGINATION_DEFAULT_VALUE,
-    name: "",
+    accuserNationalCode: Auth?.userInfo?.nationalCode,
+    // disciplinaryCaseId: Auth?.userInfo?.nationalCode,
   });
   const {
     data: StatesData,
@@ -120,8 +114,14 @@ const AccountantAllHCases = (props: Props) => {
     select: (res: any) => {
       return res?.data;
     },
-    enabled: true,
+    enabled: !!Auth.userInfo.nationalCode&& !!filters?.accuserNationalCode,
   } as any);
+  useEffect(() => {
+      setFilters((prev: any) => ({
+        ...prev,
+        accuserNationalCode: Auth.userInfo.nationalCode,
+      }));
+    }, [Auth]);
   const columns: GridColDef[] = [
     // {
     //   field: "respondenType",
@@ -239,10 +239,7 @@ const AccountantAllHCases = (props: Props) => {
       align: "center",
       renderCell: ({ row }: { row: any }) => {
         if (row?.noticeDate) {
-          const [date, time] = row?.noticeDateFr?.split(" ") ?? [
-            null,
-            null,
-          ];
+          const [date, time] = row?.noticeDateFr?.split(" ") ?? [null, null];
           return (
             <Box
               display={"flex"}
@@ -251,11 +248,11 @@ const AccountantAllHCases = (props: Props) => {
             >
               <Verified color="secondary" />
               <Tooltip title={row?.noticeDateFr + " (تاریخ ابلاغ)"}>
-              {/* <Tooltip title={moment(new Date(row?.noticeDate)).format("hh:mm jYYYY/jMM/jDD")}> */}
-              <Typography variant="caption">
-                {/* {moment(new Date(row?.noticeDate)).format("jYYYY/jMM/jDD")} */}
-                {date?.replaceAll("-", "/") ?? null}
-              </Typography>
+                {/* <Tooltip title={moment(new Date(row?.noticeDate)).format("hh:mm jYYYY/jMM/jDD")}> */}
+                <Typography variant="caption">
+                  {/* {moment(new Date(row?.noticeDate)).format("jYYYY/jMM/jDD")} */}
+                  {date?.replaceAll("-", "/") ?? null}
+                </Typography>
               </Tooltip>
             </Box>
           );
@@ -308,29 +305,29 @@ const AccountantAllHCases = (props: Props) => {
           if (row?.processStage === "SUPREME_CREATED")
             return (
               <TableActions
-                // onEdit={() => {
-                //   setEditable(true);
-                //   setEditeData(row);
-                //   setAddModalFlag(true);
-                // }}
-                // onView={() => {
-                //   setEditable(false);
-                //   setEditeData(row);
-                //   setAddModalFlag(true);
-                // }}
-                // onAdd={{
-                //   function: () => {
-                //     setEditable(true);
-                //     setCaseData(row);
-                //     setInvitationFlag(true);
-                //   },
-                //   title: "ثبت دعوتنامه",
-                //   icon: (
-                //     <HistoryEdu
-                //       color={row.hasAttachment ? "success" : "primary"}
-                //     />
-                //   ),
-                // }}
+              // onEdit={() => {
+              //   setEditable(true);
+              //   setEditeData(row);
+              //   setAddModalFlag(true);
+              // }}
+              // onView={() => {
+              //   setEditable(false);
+              //   setEditeData(row);
+              //   setAddModalFlag(true);
+              // }}
+              // onAdd={{
+              //   function: () => {
+              //     setEditable(true);
+              //     setCaseData(row);
+              //     setInvitationFlag(true);
+              //   },
+              //   title: "ثبت دعوتنامه",
+              //   icon: (
+              //     <HistoryEdu
+              //       color={row.hasAttachment ? "success" : "primary"}
+              //     />
+              //   ),
+              // }}
               />
             );
           else if (row?.processStage === "SUPREME_METTING_REQUEST")
@@ -553,10 +550,12 @@ const AccountantAllHCases = (props: Props) => {
       <Grid py={2} item md={11} sm={11} xs={12}>
         <Box display={"flex"} alignItems={"center"} gap={1}>
           <Gavel fontSize="medium" />
-          <Typography variant="body1" fontWeight={"bold"}>پرونده‌های انتظامی عالی حسابدار رسمی</Typography>
+          <Typography variant="body1" fontWeight={"bold"}>
+            پرونده‌های انتظامی عالی حسابدار رسمی
+          </Typography>
         </Box>
       </Grid>
-      
+
       {/* {StatesData_status === "success" && (
         <Grid item md={11} sm={11} xs={12}>
           <Button
@@ -643,7 +642,6 @@ const AccountantAllHCases = (props: Props) => {
           setAddModalFlag={setProtestResponseFlag}
         />
       )}
-
     </Grid>
   );
 };

@@ -126,7 +126,7 @@ const AccountantUserAllDOCases = (props: Props) => {
   });
   const [supremeFilters, setSupremeFilters] = useState<any>({
     ...PAGINATION_DEFAULT_VALUE,
-    name: "",
+    accuserNationalCode:Auth?.userInfo?.nationalCode
     // disciplinaryCaseId: Auth?.userInfo?.nationalCode,
   });
   const {
@@ -141,22 +141,26 @@ const AccountantUserAllDOCases = (props: Props) => {
     },
     enabled: !!Auth?.userInfo?.nationalCode && !!filters?.accuserNationalCode,
   } as any);
-  const {
-    data: supremeData,
-    status: supremeData_status,
-    refetch: supremeData_refetch,
-  } = useQuery<any>({
-    queryKey: [
-      `disciplinary-supreme/search${paramsSerializer(supremeFilters)}`,
-    ],
-    queryFn: Auth?.getRequest,
-    select: (res: any) => {
-      return res?.data;
-    },
-    enabled: !!Auth?.userInfo?.nationalCode && !!filters?.accuserNationalCode,
-  } as any);
+  // const {
+  //   data: supremeData,
+  //   status: supremeData_status,
+  //   refetch: supremeData_refetch,
+  // } = useQuery<any>({
+  //   queryKey: [
+  //     `disciplinary-supreme/search${paramsSerializer(supremeFilters)}`,
+  //   ],
+  //   queryFn: Auth?.getRequest,
+  //   select: (res: any) => {
+  //     return res?.data;
+  //   },
+  //   enabled: !!Auth?.userInfo?.nationalCode && !!supremeFilters?.accuserNationalCode,
+  // } as any);
   useEffect(() => {
     setFilters((prev: any) => ({
+      ...prev,
+      accuserNationalCode: Auth.userInfo.nationalCode,
+    }));
+    setSupremeFilters((prev: any) => ({
       ...prev,
       accuserNationalCode: Auth.userInfo.nationalCode,
     }));
