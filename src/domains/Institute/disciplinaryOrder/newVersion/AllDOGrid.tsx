@@ -1,12 +1,13 @@
 import {
   BusinessCenter,
   Cached,
-  ChromeReaderModeRounded,
+  Draw,
   Close,
   DoneAll,
+  FileDownload,
   Gavel,
   GppGood,
-  HistoryEdu,
+  Mail,
   MarkEmailRead,
   MenuBook,
   PanTool,
@@ -14,8 +15,12 @@ import {
   PictureAsPdf,
   Undo,
   Verified,
+  LocalLibrary,
+  MailOutline,
+  Visibility,
+  AutoStories,
 } from "@mui/icons-material";
-import { Box, Chip, Grid, Tooltip, Typography } from "@mui/material";
+import { Box, Button, Chip, Grid, Tooltip, Typography } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import BackButton from "components/buttons/BackButton";
@@ -84,7 +89,7 @@ const AllDOGrid = (props: Props) => {
   function getExcel() {
     Download_mutate(
       {
-        entity: `disciplinary-order/export`,
+        entity: `disciplinary-case/export`,
         method: "get",
       },
       {
@@ -93,7 +98,7 @@ const AllDOGrid = (props: Props) => {
             const url = URL.createObjectURL(res);
             const a = document.createElement("a");
             a.href = url;
-            a.download = "گزارش_احکام_انتظامی.xlsx";
+            a.download = "گزارش_احکام_انتظامی_بدوی.xlsx";
             a.click();
             URL.revokeObjectURL(url);
           }
@@ -195,7 +200,7 @@ const AllDOGrid = (props: Props) => {
           return (
             <Chip
               label={"دعوتنامه"}
-              icon={<HistoryEdu sx={{ fontSize: "1rem" }} fontSize="small" />}
+              icon={<Mail sx={{ fontSize: "1rem" }} fontSize="small" />}
             />
           );
         if (row?.disciplinaryCaseStage === "PRIMARY_ORDER_DONE")
@@ -330,10 +335,13 @@ const AllDOGrid = (props: Props) => {
           if (row?.disciplinaryCaseStage === "CASE_REVIEW")
             return (
               <TableActions
-                onEdit={() => {
-                  setEditable(true);
-                  setEditeData(row);
-                  setAddModalFlag(true);
+                onEditF={{
+                  function: () => {
+                    setEditable(true);
+                    setEditeData(row);
+                    setAddModalFlag(true);
+                  },
+                  title: "ویرایش پرونده",
                 }}
                 onDelete={() => {
                   setDeleteData(row);
@@ -352,9 +360,7 @@ const AllDOGrid = (props: Props) => {
                   },
                   title: "دعوتنامه",
                   icon: (
-                    <HistoryEdu
-                      color={row.hasAttachment ? "success" : "primary"}
-                    />
+                    <Mail color={row.hasAttachment ? "success" : "primary"} />
                   ),
                 }}
               />
@@ -362,10 +368,13 @@ const AllDOGrid = (props: Props) => {
           else if (row?.disciplinaryCaseStage === "PRIMARY_MEETING_REQUESTED")
             return (
               <TableActions
-                onEdit={() => {
-                  setEditable(true);
-                  setEditeData(row);
-                  setAddModalFlag(true);
+                onEditF={{
+                  function: () => {
+                    setEditable(true);
+                    setEditeData(row);
+                    setAddModalFlag(true);
+                  },
+                  title: "ویرایش پرونده",
                 }}
                 onDelete={() => {
                   setDeleteData(row);
@@ -390,11 +399,9 @@ const AllDOGrid = (props: Props) => {
                     setCaseData(row);
                     setInvitationFlag(true);
                   },
-                  title: "دعوتنامه",
+                  title: "ویرایش دعوتنامه",
                   icon: (
-                    <HistoryEdu
-                      color={row.hasAttachment ? "success" : "primary"}
-                    />
+                    <Mail color={row.hasAttachment ? "success" : "primary"} />
                   ),
                 }}
               />
@@ -497,9 +504,9 @@ const AllDOGrid = (props: Props) => {
                   title: "پاسخ به اعتراض",
                   icon: (
                     // <Badge badgeContent={1} color="primary">
-                    <ChromeReaderModeRounded
+                    <Draw
                       color={"primary"}
-                      fontSize="small"
+                      // fontSize="small"
                     />
                     // </Badge>
                   ),
@@ -519,9 +526,9 @@ const AllDOGrid = (props: Props) => {
                     title: "پاسخ به اعتراض",
                     icon: (
                       // <Badge badgeContent={1} color="primary">
-                      <ChromeReaderModeRounded
+                      <Draw
                         color={"primary"}
-                        fontSize="small"
+                        // fontSize="small"
                       />
                       // </Badge>
                     ),
@@ -567,9 +574,9 @@ const AllDOGrid = (props: Props) => {
                     },
                     title: "مشاهده پاسخ به اعتراض",
                     icon: (
-                      <ChromeReaderModeRounded
-                        color={"primary"}
-                        fontSize="small"
+                      <LocalLibrary
+                        color={"info"}
+                        // fontSize="small"
                       />
                     ),
                   }}
@@ -578,10 +585,14 @@ const AllDOGrid = (props: Props) => {
           } else if (row?.disciplinaryCaseStage === "FINAL")
             return (
               <TableActions
-                onView={() => {
-                  setEditable(false);
-                  setEditeData(row);
-                  setAddModalFlag(true);
+                onViewF={{
+                  function: () => {
+                    setEditable(false);
+                    setEditeData(row);
+                    setAddModalFlag(true);
+                  },
+                  title: "مشاهده حکم بدوی",
+                  icon: <Visibility color={"info"} />,
                 }}
                 onManage={{
                   function: () => {
@@ -589,12 +600,21 @@ const AllDOGrid = (props: Props) => {
                     setFirstOrderData(row);
                     setFirstOrderFlag(true);
                   },
-                  title: "حکم بدوی",
+                  title: "مشاهده حکم بدوی",
                   icon: (
                     // <Badge badgeContent={1} color="primary">
-                    <Gavel color={"primary"} />
+                    <Gavel color={"info"} />
                     // </Badge>
                   ),
+                }}
+                onRead={{
+                  function: () => {
+                    setEditable(false);
+                    setCaseData(row);
+                    setInvitationFlag(true);
+                  },
+                  title: "مشاهده دعوتنامه",
+                  icon: <MailOutline color="info" />,
                 }}
                 onAdd={{
                   function: () => {
@@ -602,8 +622,8 @@ const AllDOGrid = (props: Props) => {
                     setEditeData(row);
                     setLogFlag(true);
                   },
-                  title: "'گزارشات",
-                  icon: <MenuBook color={"primary"} />,
+                  title: "گزارشات",
+                  icon: <AutoStories color={"info"} />,
                 }}
               />
             );
@@ -784,7 +804,7 @@ const AllDOGrid = (props: Props) => {
         setSearchData={setSearchData}
         setFilters={setFilters}
       />
-      {/* {StatesData_status === "success" && (
+      {StatesData_status === "success" && (
         <Grid item md={11} sm={11} xs={12}>
           <Button
             variant="outlined"
@@ -796,7 +816,7 @@ const AllDOGrid = (props: Props) => {
             دریافت خروجی اکسل
           </Button>
         </Grid>
-      )} */}
+      )}
       <Grid item md={11} sm={11} xs={12}>
         {StatesData_status === "success" ? (
           isMobile ? (
@@ -847,7 +867,7 @@ const AllDOGrid = (props: Props) => {
           refetch={StatesData_refetch}
           editeData={caseData}
           setEditeData={setCaseData}
-          editable={true}
+          editable={editable}
           addModalFlag={invitationFlag}
           setAddModalFlag={setInvitationFlag}
         />

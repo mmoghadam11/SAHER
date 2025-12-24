@@ -456,6 +456,7 @@ const AddFirstStepOrder = ({
             ))}
             <SubjectTable
             // editable={editable&&!PDFList?.content?.length}
+            editeData={editeData}
             editable={editable}
             selectedItems={selectedItems}
             setSelectedItems={setSelectedItems}

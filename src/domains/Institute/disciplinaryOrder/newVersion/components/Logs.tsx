@@ -10,6 +10,12 @@ import {
   MenuBook,
   People,
   BusinessCenter,
+  Gavel,
+  GppGood,
+  MarkEmailRead,
+  PanTool,
+  Verified,
+  GppBad,
 } from "@mui/icons-material";
 import {
   Dialog,
@@ -46,6 +52,8 @@ import VerticalTable from "components/dataGrid/VerticalTable";
 import { isMobile } from "react-device-detect";
 import { GridColDef } from "@mui/x-data-grid";
 import { PAGINATION_DEFAULT_VALUE } from "shared/paginationValue";
+import jalaliMoment  from "jalali-moment";
+import moment from "moment-timezone";
 
 // مسیر هوک را بر اساس ساختار پروژه خودتان تنظیم کنید
 
@@ -73,7 +81,7 @@ const Logs = ({
 
   const [filters, setFilters] = useState<any>({
     ...PAGINATION_DEFAULT_VALUE,
-    id: editeData?.id,
+    disciplinaryCaseId: editeData?.id,
   });
   const {
     data: StatesData,
@@ -110,36 +118,93 @@ const Logs = ({
 
   const columns: GridColDef[] = [
     {
-      field: "respondenType",
-      headerName: "نوع شخصیت حسابرس",
+      field: "actionName",
+      headerName: "وضعیت",
       flex: 1.2,
       align: "center",
       renderCell: ({ row }: { row: any }) => {
-        if (row?.cdRespondenTypeId === 397)
+        if (row?.actionName === "CASE_REVIEW")
+          return <Chip label={"اولیه بدوی"} color="info" />;
+        if (row?.actionName === "PRIMARY_MEETING_REQUESTED")
           return (
-            <Tooltip title="حسابدار رسمی">
-              <Chip
-                size="small"
-                label="حسابدار رسمی"
-                icon={<People fontSize="small" />}
-                color="info"
-              />
-            </Tooltip>
+            <Chip
+              label={"دعوتنامه"}
+              icon={<HistoryEdu sx={{ fontSize: "1rem" }} fontSize="small" />}
+            />
           );
-        if (row?.cdRespondenTypeId === 396)
+        if (row?.actionName === "PRIMARY_ORDER_DONE")
           return (
-            <Tooltip title="موسسه">
-              <Chip
-                size="small"
-                label="موسسه"
-                icon={<BusinessCenter fontSize="small" />}
-                color="warning"
-              />
-            </Tooltip>
+            <Chip
+              label={"بدوی"}
+              color="info"
+              icon={<Gavel sx={{ fontSize: "1rem" }} fontSize="small" />}
+            />
+          );
+        if (row?.actionName === "NOTIFIED")
+          return (
+            <Chip
+              label={"ابلاغ"}
+              color={row?.protestOverTime ? "error" : "secondary"}
+              icon={
+                <MarkEmailRead sx={{ fontSize: "1rem" }} fontSize="small" />
+              }
+            />
+          );
+
+        if (row?.actionName === "PROTEST_REVIEW")
+          return (
+            <Chip
+              label={"اعتراض"}
+              color="warning"
+              icon={<PanTool sx={{ fontSize: "1rem" }} fontSize="small" />}
+            />
+          );
+        if (row?.actionName === "PROTEST_ACCEPTED")
+          return (
+            <Chip
+              // label={"تایید اعتراض"}
+              label={"ارجاع‌به‌عالی"}
+              color="success"
+              icon={<GppGood sx={{ fontSize: "1rem" }} fontSize="small" />}
+            />
+          );
+        if (row?.actionName === "PROTEST_REJECTED")
+          return (
+            <Chip
+              // label={"تایید اعتراض"}
+              label={"رد اعتراض"}
+              color="warning"
+              icon={<GppBad sx={{ fontSize: "1rem" }} fontSize="small" />}
+            />
+          );
+        if (row?.actionName === "FINAL")
+          return (
+            <Chip
+              label={"قطعی بدوی"}
+              color="secondary"
+              icon={
+                <Verified
+                  color="secondary"
+                  sx={{ fontSize: "1rem" }}
+                  fontSize="small"
+                />
+              }
+            />
           );
       },
     },
-    { field: "subject", headerName: "نام شخصیت", flex: 1.2 },
+    { field: "comment", headerName: "توضیحات", flex: 1.2 },
+    { field: "actionDate", headerName: "تاریخ", flex: 1,
+      renderCell: ({ row }: { row: any }) => {
+        if(row?.actionDate)
+              return (
+                <Typography variant="caption">
+                  {/* {jalaliMoment(moment.tz(row?.actionDate, "Asia/Tehran").toDate()).format("HH:mm jYYYY/jMM/jDD")} */}
+                  {jalaliMoment(row?.actionDate).format("HH:mm jYYYY/jMM/jDD")}
+                </Typography>
+              );
+            },
+     },
   ];
   return (
     <Dialog
@@ -153,7 +218,7 @@ const Logs = ({
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Box display="flex" textAlign="center" alignItems="center" gap={1}>
             <MenuBook fontSize="large" />
-            <Typography variant="h6">گزارشات پرونده انتظامی</Typography>
+            <Typography variant="h6">گردش پرونده انتظامی</Typography>
           </Box>
           <IconButton onClick={handleClose} size="small">
             <Close />
@@ -163,33 +228,33 @@ const Logs = ({
 
       <DialogContent
         // sx={editable ? { overflowx: "visible", overflowY: "auto" } : {}}
-        sx={{ overflow: "visible", display: "flex", justifyContent: "center", }}
+        sx={{ overflow: "visible", display: "flex", justifyContent: "center" }}
       >
         {/* <Grid container  width={"lg"}>
           <Grid item md={11} sm={11} xs={12}> */}
-            {StatesData_status === "success" ? (
-              isMobile ? (
-                <VerticalTable
-                  rows={StatesData?.content}
-                  columns={columns}
-                  filters={filters}
-                  setFilters={setFilters}
-                  rowCount={StatesData?.totalElements}
-                />
-              ) : (
-                <TavanaDataGrid
-                  rows={StatesData?.content}
-                  columns={columns}
-                  filters={filters}
-                  setFilters={setFilters}
-                  rowCount={StatesData?.totalElements}
-                  getRowHeight={() => "auto"}
-                  autoHeight
-                  hideToolbar
-                />
-              )
-            ) : null}
-          {/* </Grid>
+        {StatesData_status === "success" ? (
+          isMobile ? (
+            <VerticalTable
+              rows={StatesData?.content}
+              columns={columns}
+              filters={filters}
+              setFilters={setFilters}
+              rowCount={StatesData?.totalElements}
+            />
+          ) : (
+            <TavanaDataGrid
+              rows={StatesData?.content}
+              columns={columns}
+              filters={filters}
+              setFilters={setFilters}
+              rowCount={StatesData?.totalElements}
+              getRowHeight={() => "auto"}
+              autoHeight
+              hideToolbar
+            />
+          )
+        ) : null}
+        {/* </Grid>
         </Grid> */}
       </DialogContent>
     </Dialog>

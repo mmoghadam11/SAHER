@@ -6,7 +6,7 @@ import {
   Add,
   Delete,
   Search,
-  HistoryEdu,
+  Mail,
 } from "@mui/icons-material";
 import {
   Dialog,
@@ -193,7 +193,7 @@ const AddMeeting = ({
       <DialogTitle>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Box display="flex" textAlign="center" alignItems="center" gap={1}>
-            <HistoryEdu fontSize="large" />
+            <Mail fontSize="large" />
             <Typography variant="h6">دعوتنامه</Typography>
           </Box>
           <IconButton onClick={handleClose} size="small">

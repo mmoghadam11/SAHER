@@ -2,20 +2,16 @@ import {
   BusinessCenter,
   Close,
   DoneAll,
+  FileDownload,
   Gavel,
   HistoryEdu,
   MarkEmailRead,
+  MenuBook,
   People,
   PictureAsPdf,
   Verified,
 } from "@mui/icons-material";
-import {
-  Box,
-  Chip,
-  Grid,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Chip, Grid, Tooltip, Typography } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import BackButton from "components/buttons/BackButton";
@@ -39,6 +35,7 @@ import PrRequest from "../protest/PrRequest";
 import PrResponse from "../protest/PrResponse";
 import AddHMeeting from "./AddHMeeting";
 import AddHOrder from "./AddHOrder";
+import Logs from "../components/Logs";
 
 type Props = {};
 
@@ -51,6 +48,8 @@ const AllHCases = (props: Props) => {
   const [basePDFData, setBasePDFData] = useState<any>(null);
   const [caseData, setCaseData] = useState<any>(null);
   const [firstOrderData, setFirstOrderData] = useState<any>(null);
+  const [logFlag, setLogFlag] = useState<boolean>(false);
+
   const [editable, setEditable] = useState<boolean>(
     authFunctions?.hasPermission("disciplinary-order-edit")
   );
@@ -80,7 +79,7 @@ const AllHCases = (props: Props) => {
   function getExcel() {
     Download_mutate(
       {
-        entity: `disciplinary-order/export`,
+        entity: `disciplinary-supreme/export`,
         method: "get",
       },
       {
@@ -89,7 +88,7 @@ const AllHCases = (props: Props) => {
             const url = URL.createObjectURL(res);
             const a = document.createElement("a");
             a.href = url;
-            a.download = "گزارش_احکام_انتظامی.xlsx";
+            a.download = "گزارش_احکام_انتظامی_عالی.xlsx";
             a.click();
             URL.revokeObjectURL(url);
           }
@@ -172,8 +171,14 @@ const AllHCases = (props: Props) => {
     },
     {
       field: "primaryOrderNumber",
-      headerName: "شماره حکم",
-      flex: 1,
+      headerName: "شماره حکم بدوی",
+      flex: 1.2,
+      cellClassName: () => "font-13",
+    },
+    {
+      field: "orderNumber",
+      headerName: "شماره حکم عالی ",
+      flex: 1.2,
       cellClassName: () => "font-13",
     },
     {
@@ -241,14 +246,11 @@ const AllHCases = (props: Props) => {
     {
       field: "notificationStatus",
       headerName: "ابلاغ",
-      flex: 1,
+      flex: 0.9,
       align: "center",
       renderCell: ({ row }: { row: any }) => {
         if (row?.noticeDate) {
-          const [date, time] = row?.noticeDateFr?.split(" ") ?? [
-            null,
-            null,
-          ];
+          const [date, time] = row?.noticeDateFr?.split(" ") ?? [null, null];
           return (
             <Box
               display={"flex"}
@@ -257,11 +259,11 @@ const AllHCases = (props: Props) => {
             >
               <Verified color="secondary" />
               <Tooltip title={row?.noticeDateFr + " (تاریخ ابلاغ)"}>
-              {/* <Tooltip title={moment(new Date(row?.noticeDate)).format("hh:mm jYYYY/jMM/jDD")}> */}
-              <Typography variant="caption">
-                {/* {moment(new Date(row?.noticeDate)).format("jYYYY/jMM/jDD")} */}
-                {date?.replaceAll("-", "/") ?? null}
-              </Typography>
+                {/* <Tooltip title={moment(new Date(row?.noticeDate)).format("hh:mm jYYYY/jMM/jDD")}> */}
+                <Typography variant="caption">
+                  {/* {moment(new Date(row?.noticeDate)).format("jYYYY/jMM/jDD")} */}
+                  {date?.replaceAll("-", "/") ?? null}
+                </Typography>
               </Tooltip>
             </Box>
           );
@@ -271,7 +273,7 @@ const AllHCases = (props: Props) => {
     {
       field: "seen",
       headerName: "مشاهده شده",
-      flex: 1,
+      flex: 0.9,
       align: "center",
       renderCell: ({ row }: { row: any }) => {
         if (row?.seenDateFr) {
@@ -285,7 +287,7 @@ const AllHCases = (props: Props) => {
               <DoneAll color="success" />
               {row?.seenDate && (
                 <Tooltip title={row?.seenDateFr + " (تاریخ مشاهده)"}>
-                {/* <Tooltip
+                  {/* <Tooltip
                   title={moment(new Date(row?.seenDate)).format(
                     "hh:mm jYYYY/jMM/jDD"
                   )}
@@ -446,6 +448,15 @@ const AllHCases = (props: Props) => {
                     // </Badge>
                   ),
                 }}
+                // onAdd={{
+                //   function: () => {
+                //     setEditable(false);
+                //     setEditeData(row);
+                //     setLogFlag(true);
+                //   },
+                //   title: "گزارشات",
+                //   icon: <MenuBook color={"primary"} />,
+                // }}
               />
             );
         } else if (authFunctions?.hasPermission("supervisor-pdf"))
@@ -516,22 +527,31 @@ const AllHCases = (props: Props) => {
       name: "disciplinaryCaseAccuserName",
       inputType: "text",
       label: "شخصیت",
-      size: { md: 4 },
+      size: { md: 3 },
+    },
+    {
+      name: "primaryOrderNumber",
+      inputType: "text",
+      label: "شماره حکم بدوی",
+      size: { md: 3 },
     },
     {
       name: "orderNumber",
       inputType: "text",
-      label: "شماره حکم",
-      size: { md: 4 },
+      label: "شماره حکم عالی",
+      size: { md: 3 },
     },
     {
-      name: "objectionTimeOver",
-      inputType: "select",
-      label: "مهلت اعتراض",
-      size: { md: 4 },
+      name: "processStage",
+      inputType: "autocomplete",
+      label: "وضعیت",
+      size: { md: 3 },
+      storeValueAs: "id",
       options: [
-        { value: "true", title: "گذشته" },
-        { value: "false", title: "نگذشته" },
+        { value: "SUPREME_CREATED", title: "اولیه" },
+        { value: "SUPREME_METTING_REQUEST", title: "دعوتنامه" },
+        { value: "SUPREME_DONE", title: "حکم عالی" },
+        { value: "FINAL", title: "قطعی" },
       ],
     },
   ];
@@ -607,7 +627,7 @@ const AllHCases = (props: Props) => {
         setSearchData={setSearchData}
         setFilters={setFilters}
       />
-      {/* {StatesData_status === "success" && (
+      {StatesData_status === "success" && (
         <Grid item md={11} sm={11} xs={12}>
           <Button
             variant="outlined"
@@ -619,7 +639,7 @@ const AllHCases = (props: Props) => {
             دریافت خروجی اکسل
           </Button>
         </Grid>
-      )} */}
+      )}
       <Grid item md={11} sm={11} xs={12}>
         {StatesData_status === "success" ? (
           isMobile ? (
@@ -653,18 +673,6 @@ const AllHCases = (props: Props) => {
         editeData={editeData}
         setEditeData={setEditeData}
       />
-      {/* )} */}
-      {/* {pdfFlag && (
-        <UploadPdfDialog
-          refetch={StatesData_refetch}
-          entityId={basePDFData?.id ?? ""}
-          notificationStatus={basePDFData?.notificationStatus ?? null}
-          onClose={() => {
-            setPdfFlag(false);
-          }}
-          open={pdfFlag}
-        />
-      )} */}
       {invitationFlag && (
         <AddHMeeting
           refetch={StatesData_refetch}
@@ -685,24 +693,16 @@ const AllHCases = (props: Props) => {
           setAddModalFlag={setFirstOrderFlag}
         />
       )}
-      {editeData && (
-        <PrRequest
+      
+      
+      {editeData && logFlag && (
+        <Logs
           refetch={StatesData_refetch}
           editeData={editeData}
           setEditeData={setEditeData}
-          editable={true}
-          addModalFlag={protestRequestFlag}
-          setAddModalFlag={setProtestRequestFlag}
-        />
-      )}
-      {editeData && (
-        <PrResponse
-          refetch={StatesData_refetch}
-          editeData={editeData}
-          setEditeData={setEditeData}
-          editable={true}
-          addModalFlag={protestResponseFlag}
-          setAddModalFlag={setProtestResponseFlag}
+          editable={editable}
+          addModalFlag={logFlag}
+          setAddModalFlag={setLogFlag}
         />
       )}
 
