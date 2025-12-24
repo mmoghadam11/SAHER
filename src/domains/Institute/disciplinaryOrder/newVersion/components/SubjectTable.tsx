@@ -40,9 +40,15 @@ type Props = {
   editable: boolean;
   selectedItems: any;
   setSelectedItems: React.Dispatch<React.SetStateAction<any>>;
+  editeData: any;
 };
 
-const SubjectTable = ({ selectedItems, setSelectedItems,editable }: Props) => {
+const SubjectTable = ({
+  editeData,
+  selectedItems,
+  setSelectedItems,
+  editable,
+}: Props) => {
   // دیگر نیازی به id از useParams در این کامپوننت نیست
   // const { id } = useParams();
   const Auth = useAuth();
@@ -75,14 +81,13 @@ const SubjectTable = ({ selectedItems, setSelectedItems,editable }: Props) => {
   };
   const handleAddItem = (item: any) => {
     // جلوگیری از تکراری بودن
-    const exists = selectedItems.find((i:any) => i.id === item.id);
+    const exists = selectedItems.find((i: any) => i.id === item.id);
     if (!exists) {
-      setSelectedItems((prev:any) => [...prev, item]);
-    }
-    else snackbar("این موضوع قبلا انتخاب شده","warning")
+      setSelectedItems((prev: any) => [...prev, item]);
+    } else snackbar("این موضوع قبلا انتخاب شده", "warning");
   };
   const handleRemoveItem = (id: any) => {
-    setSelectedItems((prev:any) => prev.filter((i:any) => i.id !== id));
+    setSelectedItems((prev: any) => prev.filter((i: any) => i.id !== id));
   };
 
   if (editable)
@@ -137,28 +142,37 @@ const SubjectTable = ({ selectedItems, setSelectedItems,editable }: Props) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {
-                  orderSubjectOptions ? (
+                  {orderSubjectOptions ? (
                     orderSubjectOptions?.map((row: any, index: number) => (
-                    <TableRow key={1} hover>
-                      <TableCell>
-                        <Tooltip title={row.subjectTitle}>
-                          <Typography variant="caption">
-                            {row.subjectTitle}
-                          </Typography>
-                        </Tooltip>
-                      </TableCell>
-                      <TableCell align="center">
-                        <IconButton
-                          color="primary"
-                          size="small"
-                          onClick={() => handleAddItem(row)}
-                        >
-                          <Add />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  ))): (
+                      <TableRow key={1} hover>
+                        <TableCell>
+                          <Tooltip title={row.subjectTitle}>
+                            <Typography variant="caption">
+                              {row.subjectTitle}
+                            </Typography>
+                          </Tooltip>
+                        </TableCell>
+                        <TableCell align="center">
+                          {(editeData?.cdPersonalityId === 397 &&
+                            row?.cerifiedAccountantUsed) ||
+                          (editeData?.cdPersonalityId === 396 &&
+                            row?.auditingFirmUsed) ? (
+                            <IconButton
+                              color="primary"
+                              size="small"
+                              onClick={() => handleAddItem(row)}
+                            >
+                              <Add />
+                            </IconButton>
+                          ) : (
+                            <Tooltip title="نامتناسب با این پرونده">
+                              <Close color="disabled" />
+                            </Tooltip>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
                     // ))
                     <TableRow>
                       <TableCell colSpan={3} align="center">
@@ -206,7 +220,9 @@ const SubjectTable = ({ selectedItems, setSelectedItems,editable }: Props) => {
                     selectedItems.map((row: any, index: number) => (
                       <TableRow key={index}>
                         <TableCell>
-                          <Tooltip title={row.subjectTitle}>{row.subjectTitle}</Tooltip>
+                          <Tooltip title={row.subjectTitle}>
+                            {row.subjectTitle}
+                          </Tooltip>
                         </TableCell>
                         <TableCell align="center">
                           <Tooltip title="حذف">
@@ -256,7 +272,11 @@ const SubjectTable = ({ selectedItems, setSelectedItems,editable }: Props) => {
             <Typography
               variant="subtitle1"
               gutterBottom
-              sx={{ fontWeight: "bold", color: "primary.main" ,textAlign:"center"}}
+              sx={{
+                fontWeight: "bold",
+                color: "primary.main",
+                textAlign: "center",
+              }}
             >
               لیست نهایی موضوعات تخلف
             </Typography>
@@ -276,7 +296,9 @@ const SubjectTable = ({ selectedItems, setSelectedItems,editable }: Props) => {
                       <TableRow key={index}>
                         <TableCell align="center">{row.code}</TableCell>
                         <TableCell align="center">
-                          <Tooltip title={row.subjectTitle}>{row.subjectTitle}</Tooltip>
+                          <Tooltip title={row.subjectTitle}>
+                            {row.subjectTitle}
+                          </Tooltip>
                         </TableCell>
                         {/* <TableCell align="center">
                                           <Tooltip title="حذف">
