@@ -7,6 +7,7 @@ import {
   TextField,
   Fab,
   Tooltip,
+  Box,
 } from "@mui/material";
 import RenderFormInput from "components/render/formInputs/RenderFormInput";
 import React, { useEffect } from "react";
@@ -35,23 +36,22 @@ function CustomFilterPanel<T extends Record<string, any>>({
   } = useForm();
 
   const handleReset = () => {
-    reset({})
+    reset({});
     // ایجاد فیلترها به صورت داینامیک بر اساس searchItems
     const resetData: any = {};
 
     searchItems.forEach((item) => {
-    //   if (searchData[item.name] !== undefined) {
-        resetData[item.name] = "";
+      //   if (searchData[item.name] !== undefined) {
+      resetData[item.name] = "";
 
-        // همچنین مقدار react-hook-form را هم reset کنید
-        if (item.inputType === "autocomplete") {
-          setValue(item.name, null); // برای autocomplete مقدار null قرار دهید
-        }else if(item.inputType === "rangeSlider")
-          setValue(item.name, []);
-         else {
-          setValue(item.name, ""); // برای سایر فیلدها string خالی
-        }
-    //   }
+      // همچنین مقدار react-hook-form را هم reset کنید
+      if (item.inputType === "autocomplete") {
+        setValue(item.name, null); // برای autocomplete مقدار null قرار دهید
+      } else if (item.inputType === "rangeSlider") setValue(item.name, []);
+      else {
+        setValue(item.name, ""); // برای سایر فیلدها string خالی
+      }
+      //   }
     });
 
     setFilters((prev: any) => ({
@@ -65,9 +65,9 @@ function CustomFilterPanel<T extends Record<string, any>>({
 
     searchItems.forEach((item) => {
       // if (item.inputType !== "autocomplete") {
-        
-          newFilters[item.name] = data[item.name]??"";
-        
+
+      newFilters[item.name] = data[item.name] ?? "";
+
       // } else if (searchData[item.name] !== undefined) {
       //   newFilters[item.name] = searchData[item.name];
       // }
@@ -83,86 +83,80 @@ function CustomFilterPanel<T extends Record<string, any>>({
       reset({
         ...filters,
       });
-    } else
-      reset({
-      });
+    } else reset({});
   }, [filters]);
   return (
-        <form name="SearchPanel" onSubmit={handleSubmit(handleSearch)} >
-          <Grid
-            item
-            container
-            md={12}
-            justifyContent={"space-between"}
-            spacing={3}
-            // position={"sticky"}
-            sx={{ p: 3, mb: 2, width: "100%"}}
-          >
-            <Grid item container md={9.5} spacing={2}>
-              {searchItems.map((item, itemKey) => (
-                <Grid
-                  item
-                  key={item.name + itemKey}
-                  xs={12}
-                  md={item?.size?.md || 3}
-                >
-                  <Controller
-                    name={item.name}
-                    control={control}
-                    render={({ field, fieldState }) => {
-                      // if (item.inputType !== "autocomplete")
-                        return (
-                          <RenderFormInput
-                            controllerField={field}
-                            errors={errors}
-                            {...item}
-                            onChange={(
-                              e: React.ChangeEvent<HTMLInputElement>
-                            ) => {
-                              // handleInputChange(item.name, e.target.value);
-                              field.onChange(e);
-                            }}
-                          />
-                          
-                        );
-                      
-                    }}
-                  />
-                </Grid>
-              ))}
-            </Grid>
+    <form
+      style={{ display: "flex", justifyContent: "center" }}
+      name="SearchPanel"
+      onSubmit={handleSubmit(handleSearch)}
+    >
+      <Grid
+        container
+        justifyContent={"space-between"}
+        spacing={3}
+        // position={"sticky"}
+        sx={{ p: 3, mb: 2, width: "100%" }}
+      >
+        <Grid item container md={9.5} spacing={2}>
+          {searchItems.map((item, itemKey) => (
             <Grid
               item
-              md={2.5}
-              display={"flex"}
-              justifyContent={"flex-end"}
-              alignItems={"center"}
+              key={item.name + itemKey}
+              xs={12}
+              md={item?.size?.md || 3}
             >
-             
-              <Tooltip title="بازنمایی">
-                <Fab
-                  size="small"
-                  sx={{ mr: 1,fontSize:"0.8rem"}}
-                  type="button"
-                  onClick={handleReset}
-                >
-                  <RestartAlt fontSize="small" />
-                </Fab>
-              </Tooltip>
-              <Tooltip title="جستجو">
-                <Fab
-                  color="primary"
-                  size="small"
-                  type="submit"
-                  onClick={handleSearch}
-                >
-                  <Search fontSize="small" />
-                </Fab>
-              </Tooltip>
+              <Controller
+                name={item.name}
+                control={control}
+                render={({ field, fieldState }) => {
+                  // if (item.inputType !== "autocomplete")
+                  return (
+                    <RenderFormInput
+                      controllerField={field}
+                      errors={errors}
+                      {...item}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                        // handleInputChange(item.name, e.target.value);
+                        field.onChange(e);
+                      }}
+                    />
+                  );
+                }}
+              />
             </Grid>
-          </Grid>
-        </form>
-  
+          ))}
+        </Grid>
+        <Grid
+          item
+          md={2.5}
+          display={"flex"}
+          justifyContent={"flex-end"}
+          alignItems={"center"}
+        >
+          <Tooltip title="بازنمایی">
+            <Fab
+              size="small"
+              sx={{ mr: 1, fontSize: "0.8rem" }}
+              type="button"
+              onClick={handleReset}
+            >
+              <RestartAlt fontSize="small" />
+            </Fab>
+          </Tooltip>
+          <Tooltip title="جستجو">
+            <Fab
+              color="primary"
+              size="small"
+              type="submit"
+              onClick={handleSearch}
+            >
+              <Search fontSize="small" />
+            </Fab>
+          </Tooltip>
+        </Grid>
+      </Grid>
+    </form>
   );
 }
 
