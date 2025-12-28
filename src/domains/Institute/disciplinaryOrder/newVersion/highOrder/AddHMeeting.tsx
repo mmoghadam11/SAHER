@@ -92,6 +92,8 @@ const AddHMeeting = ({
   };
   const onSubmit = (data: any) => {
     const {
+      accuserMeetingNumber,
+      accuserMeetingDate,
       boardSupremeMeetingNumber,
       boardSupremeMeetingDate,
       meetingDate,
@@ -102,6 +104,8 @@ const AddHMeeting = ({
     //   return 0;
     // }
     const submissionData = {
+      accuserMeetingNumber,
+      accuserMeetingDate,
       boardSupremeMeetingNumber,
       boardSupremeMeetingDate,
       meetingDate,
@@ -119,16 +123,33 @@ const AddHMeeting = ({
   const formItems: FormItem[] = useMemo(
     () => [
       {
+        name: "accuserMeetingNumber",
+        inputType: "text",
+        label: "شماره دعوتنامه(متهم)",
+        size: { md: 6 },
+        rules: { required: "شماره دعوتنامه الزامی است" },
+      },
+      {
+        name: "accuserMeetingDate",
+        inputType: "date",
+        label: "تاریخ دعوتنامه(متهم)",
+        size: { md: 6 },
+        elementProps: {
+          setDay: (value: any) => setValue("accuserMeetingDate", value),
+        },
+        rules: { required: "تاریخ دعوتنامه الزامی است" },
+      },
+      {
         name: "boardSupremeMeetingNumber",
         inputType: "text",
-        label: "شماره دعوتنامه",
+        label: "شماره دعوتنامه هیئت‌عالی‌انتظامی",
         size: { md: 6 },
         rules: { required: "شماره دعوتنامه الزامی است" },
       },
       {
         name: "boardSupremeMeetingDate",
         inputType: "date",
-        label: "تاریخ دعوتنامه",
+        label: "تاریخ دعوتنامه هیئت‌عالی‌انتظامی",
         size: { md: 6 },
         elementProps: {
           setDay: (value: any) => setValue("boardSupremeMeetingDate", value),
