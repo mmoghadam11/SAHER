@@ -336,7 +336,7 @@ const AddFirstStepOrder = ({
           PDFList_refetch();
           handleClearSelection();
           //   uploadedPDF_refetch();
-          //   onClose(); // بستن دیالوگ
+          // handleClose();
         },
         onError: () => {
           snackbar("خطا در ابلاغ حکم", "error");
@@ -392,7 +392,7 @@ const AddFirstStepOrder = ({
           PDFList_refetch();
           handleClearSelection();
           //   uploadedPDF_refetch();
-          //   onClose(); // بستن دیالوگ
+          handleClose();
         },
         onError: () => {
           snackbar("خطا در ثبت حکم", "error");

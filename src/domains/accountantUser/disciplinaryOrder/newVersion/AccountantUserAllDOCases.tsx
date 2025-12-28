@@ -240,6 +240,14 @@ const AccountantUserAllDOCases = (props: Props) => {
               icon={<HistoryEdu sx={{ fontSize: "1rem" }} fontSize="small" />}
             />
           );
+        if (row?.disciplinaryCaseStage === "CASE_MINISTRY_CONFIRM")
+          return (
+            <Chip
+              label={"در انتظار وزیر"}
+              color="warning"
+              // icon={<Gavel sx={{ fontSize: "1rem" }} fontSize="small" />}
+            />
+          );
         if (row?.disciplinaryCaseStage === "PRIMARY_ORDER_DONE")
           return (
             <Chip

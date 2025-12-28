@@ -19,6 +19,8 @@ import {
   MailOutline,
   Visibility,
   AutoStories,
+  PendingActions,
+  CheckCircle,
 } from "@mui/icons-material";
 import { Box, Button, Chip, Grid, Tooltip, Typography } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
@@ -201,6 +203,14 @@ const AllDOGrid = (props: Props) => {
             <Chip
               label={"دعوتنامه"}
               icon={<Mail sx={{ fontSize: "1rem" }} fontSize="small" />}
+            />
+          );
+        if (row?.disciplinaryCaseStage === "CASE_MINISTRY_CONFIRM")
+          return (
+            <Chip
+              label={"در انتظار وزیر"}
+              color="warning"
+              // icon={<PendingActions sx={{ fontSize: "1rem" }} fontSize="small" />}
             />
           );
         if (row?.disciplinaryCaseStage === "PRIMARY_ORDER_DONE")
@@ -406,6 +416,46 @@ const AllDOGrid = (props: Props) => {
                 }}
               />
             );
+          else if (row?.disciplinaryCaseStage === "CASE_MINISTRY_CONFIRM")
+            return (
+              <TableActions
+                // onDelete={() => {
+                //   setDeleteData(row);
+                //   setDeleteFlag(true);
+                // }}
+                onManage={{
+                  function: () => {
+                    mutate(
+                        {
+                          entity: `disciplinary-case/confirm-ministry?id=${row.id}`,
+                          method: "put",
+                          //   data:
+                        },
+                        {
+                          onSuccess: (res: any) => {
+                            if (res?.status == 200 && res?.data) {
+                              snackbar(
+                                "تایید وزیر ثبت شد",
+                                "success"
+                              );
+                              StatesData_refetch();
+                            } else snackbar("خطا در تغیر وضعیت پرونده", "error");
+                          },
+                          onError: (err) => {
+                            snackbar("خطا در تغیر وضعیت پرونده", "error");
+                          },
+                        }
+                      );
+                  },
+                  title: "تایید حکم",
+                  icon: (
+                    // <Badge badgeContent={1} color="primary">
+                    <CheckCircle color={"primary"} />
+                    // </Badge>
+                  ),
+                }}
+              />
+            );
           else if (row?.disciplinaryCaseStage === "PRIMARY_ORDER_DONE")
             return (
               <TableActions
@@ -580,6 +630,28 @@ const AllDOGrid = (props: Props) => {
                       />
                     ),
                   }}
+                  onManage={{
+                  function: () => {
+                    setEditable(false);
+                    setEditeData(row);
+                    setProtestRequestFlag(true);
+                  },
+                  title: "مشاهده اعتراض",
+                  icon: (
+                    // <Badge badgeContent={1} color="primary">
+                    <PanTool color={"info"} fontSize="small" />
+                    // </Badge>
+                  ),
+                }}
+                onRead={{
+                  function: () => {
+                    setEditable(false);
+                    setEditeData(row);
+                    setLogFlag(true);
+                  },
+                  title: "گزارشات",
+                  icon: <AutoStories color={"info"} />,
+                }}
                 />
               );
           } else if (row?.disciplinaryCaseStage === "FINAL")
@@ -887,7 +959,7 @@ const AllDOGrid = (props: Props) => {
           refetch={StatesData_refetch}
           editeData={editeData}
           setEditeData={setEditeData}
-          editable={true}
+          editable={editable}
           addModalFlag={protestRequestFlag}
           setAddModalFlag={setProtestRequestFlag}
         />

@@ -399,7 +399,7 @@ const AddHOrder = ({
           PDFList_refetch();
           handleClearSelection();
           //   uploadedPDF_refetch();
-          //   onClose(); // بستن دیالوگ
+          handleClose();
         },
         onError: () => {
           snackbar("خطا در ثبت حکم", "error");

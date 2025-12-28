@@ -1,5 +1,7 @@
 import {
+  AutoStories,
   BusinessCenter,
+  CheckCircle,
   Close,
   DoneAll,
   FileDownload,
@@ -216,6 +218,14 @@ const AllHCases = (props: Props) => {
           return (
             <Chip label={"دعوتنامه"} icon={<HistoryEdu fontSize="small" />} />
           );
+        if (row?.processStage === "CASE_MINISTRY_CONFIRM")
+          return (
+            <Chip
+              label={"در انتظار وزیر"}
+              color="warning"
+              icon={<Gavel fontSize="small" />}
+            />
+          );
         if (row?.processStage === "SUPREME_DONE")
           return (
             <Chip
@@ -390,6 +400,35 @@ const AllHCases = (props: Props) => {
                 }}
               />
             );
+          else if (row?.processStage === "CASE_MINISTRY_CONFIRM")
+            return (
+              <TableActions
+                onManage={{
+                  function: () => {
+                    mutate(
+                      {
+                        entity: `disciplinary-supreme/confirm-ministry?id=${row.id}`,
+                        method: "put",
+                        //   data:
+                      },
+                      {
+                        onSuccess: (res: any) => {
+                          if (res?.status == 200 && res?.data) {
+                            snackbar("تایید وزیر ثبت شد", "success");
+                            StatesData_refetch();
+                          } else snackbar("خطا در تغیر وضعیت پرونده", "error");
+                        },
+                        onError: (err) => {
+                          snackbar("خطا در تغیر وضعیت پرونده", "error");
+                        },
+                      }
+                    );
+                  },
+                  title: "تایید حکم",
+                  icon: <CheckCircle color={"primary"} />,
+                }}
+              />
+            );
           else if (row?.processStage === "NOTIFIED")
             return (
               <TableActions
@@ -444,18 +483,18 @@ const AllHCases = (props: Props) => {
                   title: "مشاهده حکم عالی",
                   icon: (
                     // <Badge badgeContent={1} color="primary">
-                    <Gavel color={"primary"} />
+                    <Gavel color={"info"} />
                     // </Badge>
                   ),
                 }}
-                // onAdd={{
+                // onRead={{
                 //   function: () => {
                 //     setEditable(false);
                 //     setEditeData(row);
                 //     setLogFlag(true);
                 //   },
                 //   title: "گزارشات",
-                //   icon: <MenuBook color={"primary"} />,
+                //   icon: <AutoStories color={"info"} />,
                 // }}
               />
             );
@@ -693,8 +732,7 @@ const AllHCases = (props: Props) => {
           setAddModalFlag={setFirstOrderFlag}
         />
       )}
-      
-      
+
       {editeData && logFlag && (
         <Logs
           refetch={StatesData_refetch}

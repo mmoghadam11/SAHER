@@ -191,6 +191,14 @@ const Hcases = ({filters,setFilters}: Props) => {
           return (
             <Chip label={"دعوتنامه"} icon={<HistoryEdu fontSize="small" />} />
           );
+        if (row?.processStage === "CASE_MINISTRY_CONFIRM")
+          return (
+            <Chip
+              label={"در انتظار وزیر"}
+              color="warning"
+              // icon={<Gavel fontSize="small" />}
+            />
+          );
         if (row?.processStage === "SUPREME_DONE")
           return (
             <Chip

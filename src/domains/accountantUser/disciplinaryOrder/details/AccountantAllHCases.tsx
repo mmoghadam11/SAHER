@@ -114,14 +114,14 @@ const AccountantAllHCases = (props: Props) => {
     select: (res: any) => {
       return res?.data;
     },
-    enabled: !!Auth.userInfo.nationalCode&& !!filters?.accuserNationalCode,
+    enabled: !!Auth.userInfo.nationalCode && !!filters?.accuserNationalCode,
   } as any);
   useEffect(() => {
-      setFilters((prev: any) => ({
-        ...prev,
-        accuserNationalCode: Auth.userInfo.nationalCode,
-      }));
-    }, [Auth]);
+    setFilters((prev: any) => ({
+      ...prev,
+      accuserNationalCode: Auth.userInfo.nationalCode,
+    }));
+  }, [Auth]);
   const columns: GridColDef[] = [
     // {
     //   field: "respondenType",
@@ -204,6 +204,14 @@ const AccountantAllHCases = (props: Props) => {
         if (row?.processStage === "SUPREME_METTING_REQUEST")
           return (
             <Chip label={"دعوتنامه"} icon={<HistoryEdu fontSize="small" />} />
+          );
+        if (row?.processStage === "CASE_MINISTRY_CONFIRM")
+          return (
+            <Chip
+              label={"در انتظار وزیر"}
+              color="warning"
+              // icon={<Gavel fontSize="small" />}
+            />
           );
         if (row?.processStage === "SUPREME_DONE")
           return (
