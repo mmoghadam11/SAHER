@@ -312,7 +312,7 @@ const InstititeGrid = (props: Props) => {
                 setFilters={setFilters}
               />
             }
-            // hideToolbar
+            hideToolbar
             // filterMode="server"
             // filterModel={filterModel}
             // onFilterModelChange={handleFilterChange}
