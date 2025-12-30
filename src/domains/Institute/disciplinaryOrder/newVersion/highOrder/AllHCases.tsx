@@ -667,7 +667,7 @@ const AllHCases = (props: Props) => {
         setFilters={setFilters}
       />
       {StatesData_status === "success" && (
-        <Grid item md={11} sm={11} xs={12}>
+        <Grid item md={11} sm={11} xs={12} display={"flex"} justifyContent={"space-between"}>
           <Button
             variant="outlined"
             // size="small"
@@ -677,6 +677,44 @@ const AllHCases = (props: Props) => {
           >
             دریافت خروجی اکسل
           </Button>
+          <Box sx={{ width: 120, height: 40, position: "relative" }}>
+            <svg
+              viewBox="0 0 220 80"
+              width="100%"
+              height="100%"
+              preserveAspectRatio="none"
+            >
+              <path
+                d="
+                    M30 0
+                    H190
+                    Q200 0 205 10
+                    L220 80
+                    H0
+                    L15 10
+                    Q20 0 30 0
+                    Z
+                  "
+                fill="none"
+                stroke="lightGray"
+                strokeWidth="2"
+              />
+            </svg>
+
+            <Typography
+              sx={{
+                position: "absolute",
+                inset: 0,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontWeight: "bold",
+                pointerEvents: "none",
+              }}
+            >
+              تعداد کل: {StatesData?.totalElements}
+            </Typography>
+          </Box>
         </Grid>
       )}
       <Grid item md={11} sm={11} xs={12}>
