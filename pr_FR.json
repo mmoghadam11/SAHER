@@ -1,0 +1,109 @@
+{
+  "attachment": {
+    "clickToDownload": "برای دانلود کلیک کنید",
+    "noAttachment": "فایلی پیوست نشده است"
+  },
+  "bookmark": {
+    "noBookmark": "هیچ نشانکی وجود ندارد"
+  },
+  "core": {
+    "askingPassword": {
+      "requirePasswordToOpen": "این سند برای باز شدن نیاز به رمز عبور دارد",
+      "submit": "تایید"
+    },
+    "wrongPassword": {
+      "submit": "تایید",
+      "tryAgain": "رمز عبور اشتباه است. لطفاً دوباره تلاش کنید"
+    },
+    "pageLabel": "صفحه {{pageIndex}}"
+  },
+  "defaultLayout": {
+    "attachment": "پیوست‌ها",
+    "bookmark": "نشانک‌ها",
+    "thumbnail": "تصاویر بندانگشتی"
+  },
+  "download": {
+    "download": "دانلود"
+  },
+  "drop": {
+    "dragDropFile": "فایل PDF را اینجا بکشید و رها کنید"
+  },
+  "fullScreen": {
+    "enterFullScreen": "تمام صفحه",
+    "exitFullScreen": "خروج از تمام صفحه"
+  },
+  "localeSwitcher": {
+    "switchLocale": "تغییر زبان"
+  },
+  "open": {
+    "openFile": "باز کردن فایل"
+  },
+  "pageNavigation": {
+    "enterPageNumber": "شماره صفحه را وارد کنید",
+    "goToFirstPage": "رفتن به اولین صفحه",
+    "goToLastPage": "رفتن به آخرین صفحه",
+    "goToNextPage": "صفحه بعد",
+    "goToPreviousPage": "صفحه قبل"
+  },
+  "print": {
+    "cancel": "لغو",
+    "preparingDocument": "در حال آماده‌سازی سند ...",
+    "print": "چاپ"
+  },
+  "properties": {
+    "author": "نویسنده",
+    "close": "بستن",
+    "creationDate": "تاریخ ایجاد",
+    "creator": "ایجاد کننده",
+    "fileName": "نام فایل",
+    "fileSize": "حجم فایل",
+    "keywords": "کلمات کلیدی",
+    "modificationDate": "تاریخ اصلاح",
+    "pageCount": "تعداد صفحات",
+    "pdfProducer": "تولیدکننده PDF",
+    "pdfVersion": "نسخه PDF",
+    "showProperties": "نمایش خصوصیات",
+    "subject": "موضوع",
+    "title": "عنوان"
+  },
+  "rotate": {
+    "rotateBackward": "چرخش پادساعتگرد",
+    "rotateForward": "چرخش ساعتگرد"
+  },
+  "scrollMode": {
+    "horizontalScrolling": "اسکرول افقی",
+    "verticalScrolling": "اسکرول عمودی",
+    "wrappedScrolling": "اسکرول صفحه‌بندی شده"
+  },
+  "search": {
+    "close": "بستن",
+    "enterToSearch": "برای جستجو Enter را بزنید",
+    "matchCase": "تطابق حروف کوچک و بزرگ",
+    "nextMatch": "جستجوی بعدی",
+    "previousMatch": "جستجوی قبلی",
+    "search": "جستجو",
+    "wholeWords": "جستجوی کلمه کامل"
+  },
+  "selectionMode": {
+    "handTool": "ابزار دستی",
+    "textSelectionTool": "انتخاب متن"
+  },
+  "theme": {
+    "switchDarkTheme": "تغییر به تم تیره",
+    "switchLightTheme": "تغییر به تم روشن"
+  },
+  "thumbnail": {
+    "thumbnailLabel": "تصویر بندانگشتی صفحه {{pageIndex}}"
+  },
+  "toolbar": {
+    "moreActions": "عملیات بیشتر"
+  },
+  "zoom": {
+    "actualSize": "اندازه واقعی",
+    "pageFit": "تناسب با صفحه",
+    "pageWidth": "تناسب با عرض",
+    "zoomDocument": "بزرگ‌نمایی سند",
+    "zoomIn": "بزرگ‌نمایی",
+    "zoomOut": "کوچک‌نمایی"
+  }
+}
