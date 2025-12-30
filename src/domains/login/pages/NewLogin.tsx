@@ -618,7 +618,7 @@ const NewLogin = () => {
         >
           <Grid item xs={12} textAlign="center">
             <Typography variant="h6" fontSize={"large"}>
-              سامانه اطلاعات
+              سامانه احکام انتظامی
             </Typography>
             <Typography
               variant="h5"
