@@ -8,6 +8,7 @@ import {
   People,
   PictureAsPdf,
   Verified,
+  Visibility,
 } from "@mui/icons-material";
 import { Box, Chip, Grid, Tooltip, Typography } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
@@ -309,7 +310,6 @@ const AccountantAllHCases = (props: Props) => {
       headerAlign: "center",
       align: "center",
       renderCell: ({ row }: { row: any }) => {
-        if (authFunctions?.hasPermission("disciplinary-order-edit")) {
           if (row?.processStage === "SUPREME_CREATED")
             return (
               <TableActions
@@ -354,37 +354,37 @@ const AccountantAllHCases = (props: Props) => {
                 //     // </Badge>
                 //   ),
                 // }}
-                onAdd={{
-                  function: () => {
-                    setEditable(false);
-                    setCaseData(row);
-                    setInvitationFlag(true);
-                  },
-                  title: "مشاهده دعوتنامه",
-                  icon: (
-                    <HistoryEdu
-                      color={row.hasAttachment ? "success" : "primary"}
-                    />
-                  ),
-                }}
+                // onAdd={{
+                //   function: () => {
+                //     setEditable(false);
+                //     setCaseData(row);
+                //     setInvitationFlag(true);
+                //   },
+                //   title: "مشاهده دعوتنامه",
+                //   icon: (
+                //     <HistoryEdu
+                //       color={row.hasAttachment ? "success" : "primary"}
+                //     />
+                //   ),
+                // }}
               />
             );
           else if (row?.processStage === "SUPREME_DONE")
             return (
               <TableActions
-                onManage={{
-                  function: () => {
-                    setEditable(false);
-                    setFirstOrderData(row);
-                    setFirstOrderFlag(true);
-                  },
-                  title: "مشاهده حکم عالی",
-                  icon: (
-                    // <Badge badgeContent={1} color="primary">
-                    <Gavel color={"primary"} />
-                    // </Badge>
-                  ),
-                }}
+                // onManage={{
+                //   function: () => {
+                //     setEditable(false);
+                //     setFirstOrderData(row);
+                //     setFirstOrderFlag(true);
+                //   },
+                //   title: "مشاهده حکم عالی",
+                //   icon: (
+                //     // <Badge badgeContent={1} color="primary">
+                //     <Gavel color={"primary"} />
+                //     // </Badge>
+                //   ),
+                // }}
               />
             );
           else if (row?.processStage === "NOTIFIED")
@@ -399,7 +399,7 @@ const AccountantAllHCases = (props: Props) => {
                   title: "مشاهده حکم عالی",
                   icon: (
                     // <Badge badgeContent={1} color="primary">
-                    <Gavel color={"primary"} />
+                    <Visibility color={"primary"} />
                     // </Badge>
                   ),
                 }}
@@ -425,42 +425,13 @@ const AccountantAllHCases = (props: Props) => {
                   title: "مشاهده حکم عالی",
                   icon: (
                     // <Badge badgeContent={1} color="primary">
-                    <Gavel color={"primary"} />
+                    <Visibility color={"primary"} />
                     // </Badge>
                   ),
                 }}
               />
             );
-        } else if (authFunctions?.hasPermission("supervisor-pdf"))
-          return (
-            <TableActions
-              onView={() => {
-                setEditeData(row);
-                setAddModalFlag(true);
-              }}
-              onAdd={{
-                function: () => {
-                  setBasePDFData(row);
-                  setPdfFlag(true);
-                },
-                title: "پی دی اف",
-                icon: (
-                  <PictureAsPdf
-                    color={row.hasAttachment ? "success" : "primary"}
-                  />
-                ),
-              }}
-            />
-          );
-        else
-          return (
-            <TableActions
-              onView={() => {
-                setEditeData(row);
-                setAddModalFlag(true);
-              }}
-            />
-          );
+        
       },
     },
   ];

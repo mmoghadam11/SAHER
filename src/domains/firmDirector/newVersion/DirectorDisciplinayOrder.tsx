@@ -75,6 +75,18 @@ const DirectorDisciplinayOrder = (props: Props) => {
       ...PAGINATION_DEFAULT_VALUE,
       auditingFirmId:localStorage?.getItem("director"),
     });
+    const {
+    data: StatesData,
+    status: StatesData_status,
+    refetch: StatesData_refetch,
+  } = useQuery<any>({
+    queryKey: [`firm/search-all?id=${filters.auditingFirmId}`],
+    queryFn: Auth?.getRequest,
+    select: (res: any) => {
+      return res?.data;
+    },
+    enabled: !!Auth?.userInfo?.nationalCode && !!filters?.auditingFirmId,
+  } as any);
   useEffect(() => {
     reset(Auth.userInfo);
   }, [Auth.userInfo]);

@@ -9,6 +9,7 @@ import {
   PanTool,
   PictureAsPdf,
   Verified,
+  Visibility,
 } from "@mui/icons-material";
 import {
   Box,
@@ -346,42 +347,42 @@ const Pcases = ({filters,setFilters}: Props) => {
           else if (row?.disciplinaryCaseStage === "PRIMARY_MEETING_REQUESTED")
             return (
               <TableActions
-                onAdd={{
-                  function: () => {
-                    setEditable(false);
-                    setCaseData(row);
-                    setInvitationFlag(true);
-                  },
-                  title: "دعوتنامه",
-                  icon: (
-                    <HistoryEdu
-                      color={row.hasAttachment ? "success" : "primary"}
-                    />
-                  ),
-                }}
-                onView={() => {
-                  setEditable(false);
-                  setEditeData(row);
-                  setAddModalFlag(true);
-                }}
+                // onAdd={{
+                //   function: () => {
+                //     setEditable(false);
+                //     setCaseData(row);
+                //     setInvitationFlag(true);
+                //   },
+                //   title: "دعوتنامه",
+                //   icon: (
+                //     <HistoryEdu
+                //       color={row.hasAttachment ? "success" : "primary"}
+                //     />
+                //   ),
+                // }}
+                // onView={() => {
+                //   setEditable(false);
+                //   setEditeData(row);
+                //   setAddModalFlag(true);
+                // }}
               />
             );
           else if (row?.disciplinaryCaseStage === "PRIMARY_ORDER_DONE")
             return (
               <TableActions
-                onManage={{
-                  function: () => {
-                    setEditable(false);
-                    setFirstOrderData(row);
-                    setFirstOrderFlag(true);
-                  },
-                  title: "حکم بدوی",
-                  icon: (
-                    // <Badge badgeContent={1} color="primary">
-                    <Gavel color={"primary"} />
-                    // </Badge>
-                  ),
-                }}
+                // onManage={{
+                //   function: () => {
+                //     setEditable(false);
+                //     setFirstOrderData(row);
+                //     setFirstOrderFlag(true);
+                //   },
+                //   title: "حکم بدوی",
+                //   icon: (
+                //     // <Badge badgeContent={1} color="primary">
+                //     <Visibility color={"primary"} />
+                //     // </Badge>
+                //   ),
+                // }}
               />
             );
           else if (row?.disciplinaryCaseStage === "NOTIFIED")
@@ -396,7 +397,7 @@ const Pcases = ({filters,setFilters}: Props) => {
                   title: "حکم بدوی",
                   icon: (
                     // <Badge badgeContent={1} color="primary">
-                    <Gavel color={"primary"} />
+                    <Visibility color={"primary"} />
                     // </Badge>
                   ),
                 }}
@@ -405,16 +406,29 @@ const Pcases = ({filters,setFilters}: Props) => {
           else if (row?.disciplinaryCaseStage === "PROTEST_REVIEW")
             return (
               <TableActions
+                // onManage={{
+                //   function: () => {
+                //     setEditable(false);
+                //     setEditeData(row);
+                //     setProtestRequestFlag(true);
+                //   },
+                //   title: "اعتراض به حکم بدوی",
+                //   icon: (
+                //     // <Badge badgeContent={1} color="primary">
+                //     <PanTool color={"primary"} fontSize="small" />
+                //     // </Badge>
+                //   ),
+                // }}
                 onManage={{
                   function: () => {
                     setEditable(false);
-                    setEditeData(row);
-                    setProtestRequestFlag(true);
+                    setFirstOrderData(row);
+                    setFirstOrderFlag(true);
                   },
-                  title: "اعتراض به حکم بدوی",
+                  title: "حکم بدوی",
                   icon: (
                     // <Badge badgeContent={1} color="primary">
-                    <PanTool color={"primary"} fontSize="small" />
+                    <Visibility color={"primary"} />
                     // </Badge>
                   ),
                 }}
@@ -448,7 +462,7 @@ const Pcases = ({filters,setFilters}: Props) => {
                   title: "حکم بدوی",
                   icon: (
                     // <Badge badgeContent={1} color="primary">
-                    <Gavel color={"primary"} />
+                    <Visibility color={"primary"} />
                     // </Badge>
                   ),
                 }}
@@ -466,7 +480,7 @@ const Pcases = ({filters,setFilters}: Props) => {
                   title: "حکم بدوی",
                   icon: (
                     // <Badge badgeContent={1} color="primary">
-                    <Gavel color={"primary"} />
+                    <Visibility color={"primary"} />
                     // </Badge>
                   ),
                 }}

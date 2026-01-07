@@ -108,7 +108,8 @@ const Drawer = styled(MuiDrawer, {
 const MENU_ITEMS: MenuItem[] = [
   {
     icon: <Gavel />,
-    title: "احکام انتظامی(new)",
+    // title: "احکام انتظامی(new)",
+    title: "احکام انتظامی",
     url: "IACPA-disciplinary-order",
     access: ["administrator", "city-showmenu","operator-showmenu"],
     menuChildren: [
@@ -130,11 +131,11 @@ const MENU_ITEMS: MenuItem[] = [
     url: "/IACPA",
     access: ["city-showmenu", "operator-showmenu"],
     menuChildren: [
-      {
-        title: "احکام انتظامی",
-        url: "disciplinary-order",
-        access: ["administrator", "city-showmenu", "operator-showmenu"],
-      },
+      // {
+      //   title: "احکام انتظامی",
+      //   url: "disciplinary-order",
+      //   access: ["administrator", "city-showmenu", "operator-showmenu"],
+      // },
       {
         title: "کارگروه",
         url: "workgroup",
@@ -293,15 +294,15 @@ const MENU_ITEMS: MenuItem[] = [
     url: "/director",
     access: ["director-showmenu"],
     menuChildren: [
+      // {
+      //   title: "احکام انتظامی",
+      //   url: "disciplinary-order",
+      //   access: ["director-showmenu"],
+      // },
       {
         title: "احکام انتظامی",
-        url: "disciplinary-order",
-        access: ["director-showmenu"],
-      },
-      {
-        title: "احکام انتظامی(new)",
         url: "disciplinary-order-new",
-        access: ["administrator", "city-showmenu"],
+        access: ["director-showmenu"],
       },
     ],
   },
@@ -378,18 +379,18 @@ const MENU_ITEMS: MenuItem[] = [
       //   url: "individualLicense",
       //   access: ["administrator","city-showmenu","township-showmenu"],
       // },
+      // {
+      //   title: "احکام انتظامی",
+      //   url: "disciplinary-order",
+      //   access: [
+      //     "administrator",
+      //     "city-showmenu",
+      //     "township-showmenu",
+      //     "accountant-showmenu",
+      //   ],
+      // },
       {
         title: "احکام انتظامی",
-        url: "disciplinary-order",
-        access: [
-          "administrator",
-          "city-showmenu",
-          "township-showmenu",
-          "accountant-showmenu",
-        ],
-      },
-      {
-        title: "احکام انتظامی(new)",
         url: "disciplinary-order-new",
         access: [
           "administrator",

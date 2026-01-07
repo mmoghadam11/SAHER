@@ -690,9 +690,9 @@ const NewLogin = () => {
                         <Button onClick={() => setFormMode("FORGOT_PASSWORD")}>
                           رمز عبور خود را فراموش کرده اید؟
                         </Button>
-                        {/* <Button onClick={() => setFormMode("LOGIN")}>
+                        <Button onClick={() => setFormMode("LOGIN")}>
                           ورود با روش قدیمی
-                        </Button> */}
+                        </Button>
                       </Box>
                     )}
                   </Grid>

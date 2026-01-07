@@ -14,6 +14,7 @@ import {
   PictureAsPdf,
   ReceiptLong,
   Verified,
+  Visibility,
 } from "@mui/icons-material";
 import {
   Badge,
@@ -384,7 +385,6 @@ const AccountantUserAllDOCases = (props: Props) => {
       headerAlign: "center",
       align: "center",
       renderCell: ({ row }: { row: any }) => {
-        if (authFunctions?.hasPermission("disciplinary-order-edit")) {
           if (row?.disciplinaryCaseStage === "CASE_REVIEW")
             return (
               <TableActions
@@ -398,42 +398,42 @@ const AccountantUserAllDOCases = (props: Props) => {
           else if (row?.disciplinaryCaseStage === "PRIMARY_MEETING_REQUESTED")
             return (
               <TableActions
-                onAdd={{
-                  function: () => {
-                    setEditable(false);
-                    setCaseData(row);
-                    setInvitationFlag(true);
-                  },
-                  title: "دعوتنامه",
-                  icon: (
-                    <HistoryEdu
-                      color={row.hasAttachment ? "success" : "primary"}
-                    />
-                  ),
-                }}
-                onView={() => {
-                  setEditable(false);
-                  setEditeData(row);
-                  setAddModalFlag(true);
-                }}
+                // onAdd={{
+                //   function: () => {
+                //     setEditable(false);
+                //     setCaseData(row);
+                //     setInvitationFlag(true);
+                //   },
+                //   title: "دعوتنامه",
+                //   icon: (
+                //     <HistoryEdu
+                //       color={row.hasAttachment ? "success" : "primary"}
+                //     />
+                //   ),
+                // }}
+                // onView={() => {
+                //   setEditable(false);
+                //   setEditeData(row);
+                //   setAddModalFlag(true);
+                // }}
               />
             );
           else if (row?.disciplinaryCaseStage === "PRIMARY_ORDER_DONE")
             return (
               <TableActions
-                onManage={{
-                  function: () => {
-                    setEditable(false);
-                    setFirstOrderData(row);
-                    setFirstOrderFlag(true);
-                  },
-                  title: "حکم بدوی",
-                  icon: (
-                    // <Badge badgeContent={1} color="primary">
-                    <Gavel color={"primary"} />
-                    // </Badge>
-                  ),
-                }}
+                // onManage={{
+                //   function: () => {
+                //     setEditable(false);
+                //     setFirstOrderData(row);
+                //     setFirstOrderFlag(true);
+                //   },
+                //   title: "حکم بدوی",
+                //   icon: (
+                //     // <Badge badgeContent={1} color="primary">
+                //     <Gavel color={"primary"} />
+                //     // </Badge>
+                //   ),
+                // }}
               />
             );
           else if (row?.disciplinaryCaseStage === "NOTIFIED")
@@ -448,7 +448,7 @@ const AccountantUserAllDOCases = (props: Props) => {
                   title: "حکم بدوی",
                   icon: (
                     // <Badge badgeContent={1} color="primary">
-                    <Gavel color={"primary"} />
+                    <Visibility color={"primary"} />
                     // </Badge>
                   ),
                 }}
@@ -457,19 +457,19 @@ const AccountantUserAllDOCases = (props: Props) => {
           else if (row?.disciplinaryCaseStage === "PROTEST_REVIEW")
             return (
               <TableActions
-                onManage={{
-                  function: () => {
-                    setEditable(false);
-                    setEditeData(row);
-                    setProtestRequestFlag(true);
-                  },
-                  title: "اعتراض به حکم بدوی",
-                  icon: (
-                    // <Badge badgeContent={1} color="primary">
-                    <PanTool color={"primary"} fontSize="small" />
-                    // </Badge>
-                  ),
-                }}
+                // onManage={{
+                //   function: () => {
+                //     setEditable(false);
+                //     setEditeData(row);
+                //     setProtestRequestFlag(true);
+                //   },
+                //   title: "اعتراض به حکم بدوی",
+                //   icon: (
+                //     // <Badge badgeContent={1} color="primary">
+                //     <PanTool color={"primary"} fontSize="small" />
+                //     // </Badge>
+                //   ),
+                // }}
               />
             );
           else if (row?.disciplinaryCaseStage === "PROTEST_ACCEPTED")
@@ -500,7 +500,7 @@ const AccountantUserAllDOCases = (props: Props) => {
                   title: "حکم بدوی",
                   icon: (
                     // <Badge badgeContent={1} color="primary">
-                    <Gavel color={"primary"} />
+                    <Visibility color={"primary"} />
                     // </Badge>
                   ),
                 }}
@@ -518,42 +518,12 @@ const AccountantUserAllDOCases = (props: Props) => {
                   title: "حکم بدوی",
                   icon: (
                     // <Badge badgeContent={1} color="primary">
-                    <Gavel color={"primary"} />
+                    <Visibility color={"primary"} />
                     // </Badge>
                   ),
                 }}
               />
             );
-        } else if (authFunctions?.hasPermission("supervisor-pdf"))
-          return (
-            <TableActions
-              onView={() => {
-                setEditeData(row);
-                setAddModalFlag(true);
-              }}
-              onAdd={{
-                function: () => {
-                  setBasePDFData(row);
-                  setPdfFlag(true);
-                },
-                title: "پی دی اف",
-                icon: (
-                  <PictureAsPdf
-                    color={row.hasAttachment ? "success" : "primary"}
-                  />
-                ),
-              }}
-            />
-          );
-        else
-          return (
-            <TableActions
-              onView={() => {
-                setEditeData(row);
-                setAddModalFlag(true);
-              }}
-            />
-          );
       },
     },
   ];

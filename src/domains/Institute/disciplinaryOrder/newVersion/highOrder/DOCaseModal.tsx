@@ -17,6 +17,7 @@ import {
   Verified,
   GppBad,
   CheckCircle,
+  DoneAll,
 } from "@mui/icons-material";
 import {
   Dialog,
@@ -67,7 +68,7 @@ type Props = {
   setEditeData: React.Dispatch<React.SetStateAction<any>>;
 };
 
-const Logs = ({
+const DOCaseModal = ({
   editable,
   addModalFlag,
   setAddModalFlag,
@@ -82,19 +83,19 @@ const Logs = ({
 
   const [filters, setFilters] = useState<any>({
     ...PAGINATION_DEFAULT_VALUE,
-    disciplinaryCaseId: editeData?.id,
+    id: editeData?.disciplinaryCaseId,
   });
   const {
     data: StatesData,
     status: StatesData_status,
     refetch: StatesData_refetch,
   } = useQuery<any>({
-    queryKey: [`disciplinary-log/search${paramsSerializer(filters)}`],
+    queryKey: [`disciplinary-case/search${paramsSerializer(filters)}`],
     queryFn: Auth?.getRequest,
     select: (res: any) => {
       return res?.data;
     },
-    enabled: !!editeData && addModalFlag,
+    enabled: true,
   } as any);
   const { mutate, isLoading } = useMutation({
     mutationFn: Auth?.serverCall,
@@ -118,112 +119,134 @@ const Logs = ({
   };
 
   const columns: GridColDef[] = [
-    {
-      field: "actionName",
-      headerName: "وضعیت",
-      flex: 1.2,
-      align: "center",
-      renderCell: ({ row }: { row: any }) => {
-        if (row?.actionName === "CASE_REVIEW")
-          return <Chip label={"اولیه بدوی"} color="info" />;
-        if (row?.actionName === "SUPREME_CREATED")
-          return <Chip label={"ایجاد پرونده عالی"} color="info" />;
-        if (row?.actionName === "PRIMARY_MEETING_REQUESTED")
-          return (
-            <Chip
-              label={"دعوتنامه"}
-              icon={<HistoryEdu sx={{ fontSize: "1rem" }} fontSize="small" />}
-            />
-          );
-        if (row?.actionName === "SUPREME_METTING_REQUEST")
-          return (
-            <Chip
-              label={"دعوتنامه عالی"}
-              icon={<HistoryEdu sx={{ fontSize: "1rem" }} fontSize="small" />}
-            />
-          );
-        if (row?.actionName === "CASE_MINISTRY_CONFIRM")
-          return (
-            <Chip
-              label={"تایید وزیر"}
-              color="secondary"
-              icon={<CheckCircle sx={{ fontSize: "1rem" }} fontSize="small" />}
-            />
-          );
-        if (row?.actionName === "PRIMARY_ORDER_DONE")
-          return (
-            <Chip
-              label={"بدوی"}
-              color="info"
-              icon={<Gavel sx={{ fontSize: "1rem" }} fontSize="small" />}
-            />
-          );
-        if (row?.actionName === "NOTIFIED")
-          return (
-            <Chip
-              label={"ابلاغ"}
-              color={row?.protestOverTime ? "error" : "secondary"}
-              icon={
-                <MarkEmailRead sx={{ fontSize: "1rem" }} fontSize="small" />
-              }
-            />
-          );
-
-        if (row?.actionName === "PROTEST_REVIEW")
-          return (
-            <Chip
-              label={"اعتراض"}
-              color="warning"
-              icon={<PanTool sx={{ fontSize: "1rem" }} fontSize="small" />}
-            />
-          );
-        if (row?.actionName === "PROTEST_ACCEPTED")
-          return (
-            <Chip
-              // label={"تایید اعتراض"}
-              label={"ارجاع‌به‌عالی"}
-              color="success"
-              icon={<GppGood sx={{ fontSize: "1rem" }} fontSize="small" />}
-            />
-          );
-        if (row?.actionName === "PROTEST_REJECTED")
-          return (
-            <Chip
-              // label={"تایید اعتراض"}
-              label={"رد اعتراض"}
-              color="warning"
-              icon={<GppBad sx={{ fontSize: "1rem" }} fontSize="small" />}
-            />
-          );
-        if (row?.actionName === "FINAL")
-          return (
-            <Chip
-              label={"قطعی بدوی"}
-              color="secondary"
-              icon={
-                <Verified
-                  color="secondary"
-                  sx={{ fontSize: "1rem" }}
-                  fontSize="small"
+      {
+        field: "respondenType",
+        headerName: "نوع شخصیت حسابرس",
+        flex: 1.2,
+        align: "center",
+        renderCell: ({ row }: { row: any }) => {
+          if (row?.cdPersonalityId === 397)
+            return (
+              <Tooltip title="حسابدار رسمی">
+                <Chip
+                  size="small"
+                  label="حسابدار رسمی"
+                  icon={<People fontSize="small" />}
+                  color="info"
                 />
-              }
-            />
-          );
+              </Tooltip>
+            );
+          if (row?.cdPersonalityId === 396)
+            return (
+              <Tooltip title="موسسه">
+                <Chip
+                  size="small"
+                  label="موسسه"
+                  icon={<BusinessCenter fontSize="small" />}
+                  color="warning"
+                />
+              </Tooltip>
+            );
+        },
       },
-    },
-    { field: "comment", headerName: "توضیحات", flex: 1.2 },
-    { field: "actionDate", headerName: "تاریخ", flex: 1,
-      renderCell: ({ row }: { row: any }) => {
-        if(row?.actionDate)
-              return (
-                <Typography variant="caption">
-                  {/* {jalaliMoment(moment.tz(row?.actionDate, "Asia/Tehran").toDate()).format("HH:mm jYYYY/jMM/jDD")} */}
-                  {jalaliMoment(row?.actionDate).format("HH:mm jYYYY/jMM/jDD")}
-                </Typography>
-              );
-            },
-     },
-  ];
+      { field: "accuserName", headerName: "نام شخصیت", flex: 1.2 },
+      {
+        field: "complainant",
+        headerName: "شاکی",
+        flex: 1,
+        cellClassName: () => "font-13",
+      },
+      {
+        field: "referralNumber",
+        headerName: "شماره ارجاع",
+        flex: 1,
+        cellClassName: () => "font-13",
+      },
+      {
+        field: "referralDate",
+        headerName: "تاریخ ارجاع",
+        flex: 1,
+        renderCell: ({ row }: { row: any }) => {
+          if (!!row?.referralDate)
+            return (
+              <Typography variant="caption">
+                {moment(new Date(row?.referralDate)).format("jYYYY/jMM/jDD")}
+              </Typography>
+            );
+        },
+      },
+      
+      {
+        field: "referralName",
+        headerName: "نام ارجاع دهنده",
+        flex: 1,
+        align: "center",
+        cellClassName: () => "font-13",
+      },
+      {
+        field: "noticeDate",
+        headerName: "ابلاغ",
+        flex: 1,
+        align: "center",
+        renderCell: ({ row }: { row: any }) => {
+          if (row?.noticeDate) {
+            const [date, time] = row?.noticeDateFr?.split(" ") ?? [null, null];
+            return (
+              <Box
+                display={"flex"}
+                flexDirection={"column"}
+                alignItems={"center"}
+              >
+                <Verified color="secondary" />
+                <Tooltip title={row?.noticeDateFr + " (تاریخ ابلاغ)"}>
+                  {/* <Tooltip title={moment(new Date(row?.noticeDate)).format("hh:mm jYYYY/jMM/jDD")}> */}
+                  <Typography variant="caption">
+                    {/* {moment(new Date(row?.noticeDate)).format("hh:mm a jYYYY/jMM/jDD")} */}
+                    {date?.replaceAll("-", "/") ?? null}
+                  </Typography>
+                </Tooltip>
+              </Box>
+            );
+          } else return <Close color="disabled" />;
+        },
+      },
+      {
+        field: "seenDate",
+        headerName: "مشاهده شده",
+        flex: 1,
+        align: "center",
+        renderCell: ({ row }: { row: any }) => {
+          if (row?.seen) {
+            const [date, time] = row?.seenDateFr?.split(" ") ?? [null, null];
+            return (
+              <Box
+                display={"flex"}
+                flexDirection={"column"}
+                alignItems={"center"}
+              >
+                <DoneAll color="success" />
+                {row?.seenDate && (
+                  <Tooltip title={row?.seenDateFr + " (تاریخ مشاهده)"}>
+                    {/* <Tooltip
+                    title={moment(new Date(row?.seenDate)).format(
+                      "hh:mm jYYYY/jMM/jDD"
+                    )}
+                  > */}
+                    <Typography variant="caption">
+                      {/* {moment(new Date(row?.seenDate)).format("jYYYY/jMM/jDD")} */}
+                      {date?.replaceAll("-", "/") ?? null}
+                    </Typography>
+                  </Tooltip>
+                )}
+              </Box>
+            );
+          }
+  
+          return <Close color="disabled" />;
+        },
+      },
+      
+    ];
   return (
     <Dialog
       open={addModalFlag}
@@ -235,8 +258,9 @@ const Logs = ({
       <DialogTitle>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Box display="flex" textAlign="center" alignItems="center" gap={1}>
-            <MenuBook fontSize="large" />
-            <Typography variant="h6">گردش پرونده انتظامی</Typography>
+            {/* <MenuBook fontSize="large" /> */}
+            <Gavel  />
+            <Typography variant="h6">حکم بدوی پرونده</Typography>
           </Box>
           <IconButton onClick={handleClose} size="small">
             <Close />
@@ -279,4 +303,5 @@ const Logs = ({
   );
 };
 
-export default Logs;
+
+export default DOCaseModal;

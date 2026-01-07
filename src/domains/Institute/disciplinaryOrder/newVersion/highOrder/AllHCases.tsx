@@ -12,6 +12,7 @@ import {
   People,
   PictureAsPdf,
   Verified,
+  Visibility,
 } from "@mui/icons-material";
 import { Box, Button, Chip, Grid, Tooltip, Typography } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
@@ -38,6 +39,7 @@ import PrResponse from "../protest/PrResponse";
 import AddHMeeting from "./AddHMeeting";
 import AddHOrder from "./AddHOrder";
 import Logs from "../components/Logs";
+import DOCaseModal from "./DOCaseModal";
 
 type Props = {};
 
@@ -51,6 +53,7 @@ const AllHCases = (props: Props) => {
   const [caseData, setCaseData] = useState<any>(null);
   const [firstOrderData, setFirstOrderData] = useState<any>(null);
   const [logFlag, setLogFlag] = useState<boolean>(false);
+  const [DOCaseModalFlag, setDOCaseModalFlag] = useState<boolean>(false);
 
   const [editable, setEditable] = useState<boolean>(
     authFunctions?.hasPermission("disciplinary-order-edit")
@@ -234,8 +237,15 @@ const AllHCases = (props: Props) => {
               icon={<Gavel fontSize="small" />}
             />
           );
-
-        if (row?.processStage === "NOTIFIED")
+        if (row?.disciplinaryCaseStage === "CASE_MINISTRY_CONFIRM")
+          return (
+            <Chip
+              label={"در انتظار وزیر"}
+              color="warning"
+              // icon={<PendingActions sx={{ fontSize: "1rem" }} fontSize="small" />}
+            />
+          );
+        if (row?.processStage === "SUPREME_NOTIFIED")
           return (
             <Chip
               label={"ابلاغ"}
@@ -254,7 +264,7 @@ const AllHCases = (props: Props) => {
       },
     },
     {
-      field: "notificationStatus",
+      field: "noticeDate",
       headerName: "ابلاغ",
       flex: 0.9,
       align: "center",
@@ -281,7 +291,7 @@ const AllHCases = (props: Props) => {
       },
     },
     {
-      field: "seen",
+      field: "seenDate",
       headerName: "مشاهده شده",
       flex: 0.9,
       align: "center",
@@ -427,9 +437,72 @@ const AllHCases = (props: Props) => {
                   title: "تایید حکم",
                   icon: <CheckCircle color={"primary"} />,
                 }}
+                onAdd={{
+                  function: () => {
+                    setEditable(false);
+                    setEditeData(row);
+                    setDOCaseModalFlag(true);
+                  },
+                  title: "مشاهده حکم بدوی",
+                  icon: (
+                    // <Badge badgeContent={1} color="primary">
+                    <Visibility color={"info"} />
+                    // </Badge>
+                  ),
+                }}
               />
             );
-          else if (row?.processStage === "NOTIFIED")
+          else if (row?.disciplinaryCaseStage === "CASE_MINISTRY_CONFIRM")
+            return (
+              <TableActions
+                // onDelete={() => {
+                //   setDeleteData(row);
+                //   setDeleteFlag(true);
+                // }}
+                onAdd={{
+                  function: () => {
+                    setEditable(false);
+                    setEditeData(row);
+                    setDOCaseModalFlag(true);
+                  },
+                  title: "مشاهده حکم بدوی",
+                  icon: (
+                    // <Badge badgeContent={1} color="primary">
+                    <Visibility color={"info"} />
+                    // </Badge>
+                  ),
+                }}
+                onManage={{
+                  function: () => {
+                    mutate(
+                      {
+                        entity: `disciplinary-case/confirm-ministry?id=${row.id}`,
+                        method: "put",
+                        //   data:
+                      },
+                      {
+                        onSuccess: (res: any) => {
+                          if (res?.status == 200 && res?.data) {
+                            snackbar("تایید وزیر ثبت شد", "success");
+                            StatesData_refetch();
+                          } else snackbar("خطا در تغیر وضعیت پرونده", "error");
+                        },
+                        onError: (err) => {
+                          snackbar("خطا در تغیر وضعیت پرونده", "error");
+                        },
+                      }
+                    );
+                  },
+                  title: "تایید حکم",
+                  icon: (
+                    // <Badge badgeContent={1} color="primary">
+                    <CheckCircle color={"primary"} />
+                    // </Badge>
+                  ),
+                }}
+              />
+            );
+          else if (row?.processStage === "SUPREME_NOTIFIED")
             return (
               <TableActions
                 onManage={{
@@ -461,6 +534,19 @@ const AllHCases = (props: Props) => {
                     // </Badge>
                   ),
                 }}
+                onAdd={{
+                  function: () => {
+                    setEditable(false);
+                    setEditeData(row);
+                    setDOCaseModalFlag(true);
+                  },
+                  title: "مشاهده حکم بدوی",
+                  icon: (
+                    // <Badge badgeContent={1} color="primary">
+                    <Visibility color={"info"} />
+                    // </Badge>
+                  ),
+                }}
               />
             );
           else if (
@@ -477,7 +563,7 @@ const AllHCases = (props: Props) => {
                 onManage={{
                   function: () => {
                     setEditable(false);
-                    setFirstOrderData(row);
+                    setEditeData(row);
                     setFirstOrderFlag(true);
                   },
                   title: "مشاهده حکم عالی",
@@ -487,15 +573,28 @@ const AllHCases = (props: Props) => {
                     // </Badge>
                   ),
                 }}
-                // onRead={{
-                //   function: () => {
-                //     setEditable(false);
-                //     setEditeData(row);
-                //     setLogFlag(true);
-                //   },
-                //   title: "گزارشات",
-                //   icon: <AutoStories color={"info"} />,
-                // }}
+                onAdd={{
+                  function: () => {
+                    setEditable(false);
+                    setEditeData(row);
+                    setDOCaseModalFlag(true);
+                  },
+                  title: "مشاهده حکم بدوی",
+                  icon: (
+                    // <Badge badgeContent={1} color="primary">
+                    <Visibility color={"info"} />
+                    // </Badge>
+                  ),
+                }}
+                onRead={{
+                  function: () => {
+                    setEditable(false);
+                    setEditeData(row);
+                    setLogFlag(true);
+                  },
+                  title: "گزارشات",
+                  icon: <AutoStories color={"info"} />,
+                }}
               />
             );
         } else if (authFunctions?.hasPermission("supervisor-pdf"))
@@ -590,6 +689,7 @@ const AllHCases = (props: Props) => {
         { value: "SUPREME_CREATED", title: "اولیه" },
         { value: "SUPREME_METTING_REQUEST", title: "دعوتنامه" },
         { value: "SUPREME_DONE", title: "حکم عالی" },
+        { value: "CASE_MINISTRY_CONFIRM", title: "در انتظار وزیر" },
         { value: "FINAL", title: "قطعی" },
       ],
     },
@@ -667,7 +767,14 @@ const AllHCases = (props: Props) => {
         setFilters={setFilters}
       />
       {StatesData_status === "success" && (
-        <Grid item md={11} sm={11} xs={12} display={"flex"} justifyContent={"space-between"}>
+        <Grid
+          item
+          md={11}
+          sm={11}
+          xs={12}
+          display={"flex"}
+          justifyContent={"space-between"}
+        >
           <Button
             variant="outlined"
             // size="small"
@@ -779,6 +886,16 @@ const AllHCases = (props: Props) => {
           editable={editable}
           addModalFlag={logFlag}
           setAddModalFlag={setLogFlag}
+        />
+      )}
+      {editeData && DOCaseModalFlag && (
+        <DOCaseModal
+          refetch={StatesData_refetch}
+          editeData={editeData}
+          setEditeData={setEditeData}
+          editable={editable}
+          addModalFlag={DOCaseModalFlag}
+          setAddModalFlag={setDOCaseModalFlag}
         />
       )}
 

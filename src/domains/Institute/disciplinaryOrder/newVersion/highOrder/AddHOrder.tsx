@@ -101,7 +101,7 @@ const AddHOrder = ({
     },
     enabled: !!selectedPDF,
   } as any);
-  const { mutate:noticeMutate, isLoading:isLoadingNotice } = useMutation({
+  const { mutate: noticeMutate, isLoading: isLoadingNotice } = useMutation({
     mutationFn: Auth.serverCall, // استفاده از تابع آپلود سراسری
   });
   const { mutate, isLoading } = useMutation({
@@ -115,8 +115,8 @@ const AddHOrder = ({
       PDFList_refetch();
       refetch?.();
       setShowPDFFlag(false);
-      setSelectedPDF(null)
-      setSelectedFile(null)
+      setSelectedPDF(null);
+      setSelectedFile(null);
     },
     onError: () => {
       snackbar("خطا در حذف فایل", "error");
@@ -128,11 +128,10 @@ const AddHOrder = ({
     reset({});
   };
   useEffect(() => {
-    if(!!PDFList)
-      setSelectedPDF(PDFList?.content?.[0]?.id)
-    setValue("fileDescription",PDFList?.content?.[0]?.description)
-  }, [PDFList])
-  
+    if (!!PDFList) setSelectedPDF(PDFList?.content?.[0]?.id);
+    setValue("fileDescription", PDFList?.content?.[0]?.description);
+  }, [PDFList]);
+
   useEffect(() => {
     let objectUrl: string | null = null;
 
@@ -144,8 +143,7 @@ const AddHOrder = ({
     ) {
       const file = new File(
         [uploadedPDF],
-        PDFList?.content?.[0]?.originalFileName ??
-          "primaryOrder.pdf",
+        PDFList?.content?.[0]?.originalFileName ?? "primaryOrder.pdf",
         {
           type: uploadedPDF.type,
           lastModified: Date.now(),
@@ -154,7 +152,7 @@ const AddHOrder = ({
       setSelectedFile(file);
       objectUrl = URL.createObjectURL(uploadedPDF);
       setPdfUrl(objectUrl);
-      refetch()
+      refetch();
     } else setPdfUrl("");
     //   if (uploadedPDF && uploadedPDF instanceof Blob&&!uploadedPDF.type.startsWith("image/")) {
     //     objectUrl = "";
@@ -182,8 +180,8 @@ const AddHOrder = ({
       renderCell: ({ row }: { row: any }) => {
         if (
           (!hasPermission("supervisor-pdf") ||
-          hasPermission("disciplinary-order-edit"))
-          &&editable
+            hasPermission("disciplinary-order-edit")) &&
+          editable
         )
           return (
             <TableActions
@@ -249,7 +247,7 @@ const AddHOrder = ({
         },
       },
       {
-        name: "orderDeadline",
+        name: "orderDuration",
         inputType: "text",
         label: "مدت حکم",
         size: { md: 6 },
@@ -328,27 +326,28 @@ const AddHOrder = ({
   // --- تابع اصلی ارسال ---
 
   const handleUploadSubmit = (data: any) => {
-    if(!!PdfUrl && showPDFFlag){
+    if (!!PdfUrl && showPDFFlag) {
       noticeMutate(
-      {
-        entity: `disciplinary-supreme/notice-order?id=${editeData.id}`,
-        method: "put",
-      },
-      {
-        onSuccess: (res: any) => {
-          snackbar("حکم بدوی با موفقیت ابلاغ شد", "success");
-          refetch?.(); // اجرای Callback
-          PDFList_refetch();
-          handleClearSelection();
-          //   uploadedPDF_refetch();
-          //   onClose(); // بستن دیالوگ
+        {
+          entity: `disciplinary-supreme/notice-order?id=${editeData.id}`,
+          method: "put",
         },
-        onError: () => {
-          snackbar("خطا در ابلاغ حکم", "error");
-        },
-      }
-    );
-    return;
+        {
+          onSuccess: (res: any) => {
+            snackbar("حکم بدوی با موفقیت ابلاغ شد", "success");
+            refetch?.(); // اجرای Callback
+            PDFList_refetch();
+            handleClearSelection();
+            //   uploadedPDF_refetch();
+            //   onClose(); // بستن دیالوگ
+            handleClose();
+          },
+          onError: () => {
+            snackbar("خطا در ابلاغ حکم", "error");
+          },
+        }
+      );
+      return;
     }
     if (!selectedFile) {
       snackbar("ابتدا یک فایل PDF انتخاب کنید", "warning");
@@ -359,7 +358,7 @@ const AddHOrder = ({
       orderDate,
       startDate,
       endDate,
-      orderDeadline,
+      orderDuration,
       fileDescription,
       supremeOrderId,
       ...restOfData
@@ -369,7 +368,7 @@ const AddHOrder = ({
       orderDate,
       startDate,
       endDate,
-      orderDeadline,
+      orderDuration,
       supremeOrderId,
       fileDescription,
       supremeId: editeData?.id ?? null,
@@ -462,12 +461,13 @@ const AddHOrder = ({
               </Grid>
             ))}
 
-            <Grid item md={12}><TicketDivider/></Grid>
-            
+            <Grid item md={12}>
+              <TicketDivider />
+            </Grid>
+
             <Grid container item md={12} justifyContent={"center"}>
               {hasPermission("disciplinary-order-edit") &&
-                !PDFList?.content?.length && 
-                (
+                !PDFList?.content?.length && (
                   <Grid item md={12} sm={12} xs={12}>
                     <input
                       ref={fileInputRef}
@@ -486,14 +486,18 @@ const AddHOrder = ({
                       }}
                     >
                       <Stack spacing={2} direction="row" alignItems="center">
-                        <Button
-                          variant="outlined"
-                          onClick={handleChooseClick}
-                          startIcon={<PictureAsPdf />}
-                          disabled={isLoading}
-                        >
-                          انتخاب فایل PDF
-                        </Button>
+                        {editable ? (
+                          <Button
+                            variant="outlined"
+                            onClick={handleChooseClick}
+                            startIcon={<PictureAsPdf />}
+                            disabled={isLoading}
+                          >
+                            انتخاب فایل PDF
+                          </Button>
+                        ) : (
+                          <Typography>PDF حکم عالی</Typography>
+                        )}
 
                         {selectedFile && (
                           <Typography
@@ -573,7 +577,11 @@ const AddHOrder = ({
                   type="submit"
                   disabled={isLoading}
                 >
-                  {(!!PdfUrl && showPDFFlag)?"ابلاغ":isLoading ? "در حال ثبت..." : "ثبت"}
+                  {!!PdfUrl && showPDFFlag
+                    ? "ابلاغ"
+                    : isLoading
+                    ? "در حال ثبت..."
+                    : "ثبت"}
                 </Button>
               )}
             </Grid>
