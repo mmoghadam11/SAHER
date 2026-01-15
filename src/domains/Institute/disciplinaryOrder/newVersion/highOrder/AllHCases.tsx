@@ -563,7 +563,8 @@ const AllHCases = (props: Props) => {
                 onManage={{
                   function: () => {
                     setEditable(false);
-                    setEditeData(row);
+                    // setEditeData(row);
+                    setFirstOrderData(row);
                     setFirstOrderFlag(true);
                   },
                   title: "مشاهده حکم عالی",

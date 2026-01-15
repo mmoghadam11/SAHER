@@ -9,6 +9,7 @@ import {
   IconButton,
   Box,
   Stack,
+  CircularProgress,
 } from "@mui/material";
 import RenderFormInput from "components/render/formInputs/RenderFormInput";
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -91,7 +92,7 @@ const AddHOrder = ({
   } as any);
   const {
     data: uploadedPDF,
-    status: uploadedPDF_status,
+    isFetching: isPdfFetching,
     refetch: uploadedPDF_refetch,
   } = useQuery<any>({
     queryKey: [`disciplinary-supreme/download-order-file?id=${selectedPDF}`],
@@ -152,22 +153,15 @@ const AddHOrder = ({
       setSelectedFile(file);
       objectUrl = URL.createObjectURL(uploadedPDF);
       setPdfUrl(objectUrl);
-      refetch();
     } else setPdfUrl("");
-    //   if (uploadedPDF && uploadedPDF instanceof Blob&&!uploadedPDF.type.startsWith("image/")) {
-    //     objectUrl = "";
-    //     setPdfUrl(objectUrl);
-    //   }
 
-    // 4. (مهم) تابع پاک‌سازی:
-    // این تابع زمانی اجرا می‌شود که کامپوننت unmount شود یا 'uploadedPDF' تغییر کند
     return () => {
       if (objectUrl) {
         // URL موقت قبلی را از حافظه مرورگر پاک می‌کند
         URL.revokeObjectURL(objectUrl);
       }
     };
-  }, [uploadedPDF]);
+  }, [uploadedPDF, selectedPDF, showPDFFlag]);
   const columns: GridColDef[] = [
     { field: "originalFileName", headerName: "نام فایل", flex: 1 },
     { field: "description", headerName: "توضیحات", flex: 2 },
@@ -560,9 +554,22 @@ const AddHOrder = ({
                 )}
               </Grid>
               <Grid item md={12} sm={12} xs={12}>
-                {!!PdfUrl && showPDFFlag && (
-                  <MyPdfViewer PdfUrl={PdfUrl ?? ""} sx={{ width: "100%" }} />
-                )}
+                {
+                  showPDFFlag &&
+                  (isPdfFetching ? (
+                    // حالت ۱: در حال دانلود فایل از سرور
+                    <Stack direction="column" alignItems="center" gap={2}>
+                      <CircularProgress size={40} />
+                      <Typography variant="caption">
+                        در حال دریافت فایل...
+                      </Typography>
+                    </Stack>
+                  ) : (
+                    // حالت ۲: دانلود تمام شده و لینک ساخته شده است
+                    !!PdfUrl && (
+                      <MyPdfViewer PdfUrl={PdfUrl} sx={{ width: "100%" }} />
+                    )
+                  ))}
               </Grid>
             </Grid>
 

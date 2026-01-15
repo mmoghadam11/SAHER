@@ -333,7 +333,6 @@ const Pcases = ({filters,setFilters}: Props) => {
       headerAlign: "center",
       align: "center",
       renderCell: ({ row }: { row: any }) => {
-        if (authFunctions?.hasPermission("disciplinary-order-edit")) {
           if (row?.disciplinaryCaseStage === "CASE_REVIEW")
             return (
               <TableActions
@@ -486,36 +485,7 @@ const Pcases = ({filters,setFilters}: Props) => {
                 }}
               />
             );
-        } else if (authFunctions?.hasPermission("supervisor-pdf"))
-          return (
-            <TableActions
-              onView={() => {
-                setEditeData(row);
-                setAddModalFlag(true);
-              }}
-              onAdd={{
-                function: () => {
-                  setBasePDFData(row);
-                  setPdfFlag(true);
-                },
-                title: "پی دی اف",
-                icon: (
-                  <PictureAsPdf
-                    color={row.hasAttachment ? "success" : "primary"}
-                  />
-                ),
-              }}
-            />
-          );
-        else
-          return (
-            <TableActions
-              onView={() => {
-                setEditeData(row);
-                setAddModalFlag(true);
-              }}
-            />
-          );
+        
       },
     },
   ];

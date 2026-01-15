@@ -171,7 +171,7 @@ const AddFirstStepOrder = ({
         URL.revokeObjectURL(objectUrl);
       }
     };
-  }, [uploadedPDF]);
+  }, [uploadedPDF, selectedPDF, PDFList]);
   const columns: GridColDef[] = [
     { field: "originalFileName", headerName: "نام فایل", flex: 1 },
     { field: "description", headerName: "توضیحات", flex: 2 },
