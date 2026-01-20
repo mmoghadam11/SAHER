@@ -42,7 +42,8 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
   });
   // const [userAccess, setUserAccess] = useLocalStorage<any>("userAccess", []);
 
-  const [isRefreshingToken, setIsRefreshingToken] = useState(false);
+  // const [isRefreshingToken, setIsRefreshingToken] = useState(false);
+  let isRefreshingToken = false;
   const { setNotification } = useErrorHandler();
 
   function storeToken(t: string) {
@@ -59,7 +60,9 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
 
   function refreshToken() {
     let ref = localStorage.getItem("refreshToken");
-    if (!!ref) {
+    if (!!ref && !isRefreshingToken) {
+      // setIsRefreshingToken(true)
+      isRefreshingToken = true;
       axios
         .post(
           process.env.REACT_APP_API_URL + `auth/refresh-token`,
@@ -67,13 +70,17 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
           {
             headers: {
               "Content-Type": "application/json",
-              Accept: "application/json",
+              // Accept: "application/json",
             },
           }
         )
-        .then((res) => res.data)
         .then((res) => {
-          storeToken(res?.token);
+          // console.log("res1",res)
+          return res.data.data;
+        })
+        .then((res) => {
+          // console.log("res2",res)
+          storeToken(res?.access_token);
           storeRefreshToken(res?.refresh_token);
           // setContract(
           //   "",
@@ -82,9 +89,13 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
           //   "",
           //   "",
           // );
-          window.location.pathname = "/";
+          // window.location.pathname = "/";
+          const timer = setInterval(() => {
+            // setIsRefreshingToken(false)
+            isRefreshingToken = false;
+          }, 300);
         })
-        .catch(() => {
+        .catch((e) => {
           logout();
         });
     }
@@ -103,20 +114,24 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
       //TODO: stop multiple refresh token request
       const onRefresh = async () => {
         if (!isRefreshingToken) {
-          setIsRefreshingToken(true);
+          // setIsRefreshingToken(true);
+          isRefreshingToken = true;
           let tempRefreshToken = localStorage.getItem("refreshToken");
           try {
             let requestOptions = {
-              url: `${BASE_URL}user/refresh_token`,
-              method: "GET",
+              url: process.env.REACT_APP_API_URL + `auth/refresh-token`,
+              method: "post",
+              data: { refreshToken: tempRefreshToken },
               headers: {
-                Authorization: "Bearer " + tempRefreshToken,
+                "Content-Type": "application/json",
               },
-              redirect: "follow",
             };
             let response = await axios({ ...requestOptions });
             if (response.status === 200) {
-              return response.data.result;
+              // return response.data.result;
+              let res = response.data.data;
+              storeToken(res?.access_token);
+              storeRefreshToken(res?.refresh_token);
             } else {
               clearUserInfo();
               throw new Error(`خطا در انجام عملیات - ${response?.statusText}`);
@@ -125,7 +140,8 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
             clearUserInfo();
             throw new Error(JSON.stringify(e) || `خطا در انجام عملیات`);
           } finally {
-            setIsRefreshingToken(false);
+            // setIsRefreshingToken(false);
+            isRefreshingToken = false;
           }
         }
       };
@@ -152,20 +168,25 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
   //TODO: stop multiple refresh token request
   const onRefresh = async () => {
     if (!isRefreshingToken) {
-      setIsRefreshingToken(true);
+      // setIsRefreshingToken(true);
+      isRefreshingToken = true;
+
       let tempRefreshToken = localStorage.getItem("refreshToken");
       try {
         let requestOptions = {
-          url: `${BASE_URL}user/refresh_token`,
-          method: "GET",
+          url: process.env.REACT_APP_API_URL + `auth/refresh-token`,
+          method: "post",
+          data: { refreshToken: tempRefreshToken },
           headers: {
-            Authorization: "Bearer " + tempRefreshToken,
+            "Content-Type": "application/json",
           },
-          redirect: "follow",
         };
         let response = await axios({ ...requestOptions });
         if (response.status === 200) {
-          return response.data.result;
+          // return response.data.result;
+          let res = response.data.data;
+          storeToken(res?.access_token);
+          storeRefreshToken(res?.refresh_token);
         } else {
           clearUserInfo();
           throw new Error(`خطا در انجام عملیات - ${response?.statusText}`);
@@ -174,7 +195,8 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
         clearUserInfo();
         throw new Error(JSON.stringify(e) || `خطا در انجام عملیات`);
       } finally {
-        setIsRefreshingToken(false);
+        // setIsRefreshingToken(false);
+        isRefreshingToken = false;
       }
     }
   };
@@ -208,7 +230,7 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
         throw new Error(`خطا در انجام عملیات - ${response?.statusText}`);
       }
     } catch (e: any) {
-      if (e?.response?.status === 401) {
+      if (e?.response?.status === 401 && !isRefreshingToken) {
         refreshToken();
         // clearUserInfo();
       }
