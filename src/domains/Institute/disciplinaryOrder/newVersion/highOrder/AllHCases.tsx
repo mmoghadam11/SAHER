@@ -84,7 +84,7 @@ const AllHCases = (props: Props) => {
   function getExcel() {
     Download_mutate(
       {
-        entity: `disciplinary-supreme/export`,
+        entity: `disciplinary-supreme/export${paramsSerializer(searchData)}`,
         method: "get",
       },
       {
@@ -114,6 +114,12 @@ const AllHCases = (props: Props) => {
     ...PAGINATION_DEFAULT_VALUE,
     name: "",
   });
+  useEffect(() => {
+      setSearchData(()=>{
+        const {page,size,...otherData}=filters;
+        return otherData
+      })
+    }, [filters])
   const {
     data: StatesData,
     status: StatesData_status,
