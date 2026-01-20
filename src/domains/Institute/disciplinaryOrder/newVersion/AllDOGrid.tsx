@@ -91,7 +91,7 @@ const AllDOGrid = (props: Props) => {
   function getExcel() {
     Download_mutate(
       {
-        entity: `disciplinary-case/export`,
+        entity: `disciplinary-case/export${paramsSerializer(searchData)}`,
         method: "get",
       },
       {
@@ -121,6 +121,13 @@ const AllDOGrid = (props: Props) => {
     ...PAGINATION_DEFAULT_VALUE,
     name: "",
   });
+  useEffect(() => {
+    setSearchData(() => {
+      const { page, size, ...otherData } = filters;
+      return otherData;
+    });
+  }, [filters]);
+
   const {
     data: StatesData,
     status: StatesData_status,
@@ -423,6 +430,28 @@ const AllDOGrid = (props: Props) => {
                 //   setDeleteData(row);
                 //   setDeleteFlag(true);
                 // }}
+                onViewF={{
+                  function: () => {
+                    setEditable(false);
+                    setEditeData(row);
+                    setAddModalFlag(true);
+                  },
+                  title: "مشاهده پرونده بدوی",
+                  icon: <Visibility color={"info"} />,
+                }}
+                onAdd={{
+                  function: () => {
+                    setEditable(false);
+                    setFirstOrderData(row);
+                    setFirstOrderFlag(true);
+                  },
+                  title: "مشاهده حکم بدوی",
+                  icon: (
+                    // <Badge badgeContent={1} color="primary">
+                    <Gavel color={"info"} />
+                    // </Badge>
+                  ),
+                }}
                 onManage={{
                   function: () => {
                     mutate(
@@ -506,12 +535,34 @@ const AllDOGrid = (props: Props) => {
                     title: "تبدیل به قطعی",
                     icon: <Cached color={"primary"} />,
                   }}
+                  onViewF={{
+                    function: () => {
+                      setEditable(false);
+                      setEditeData(row);
+                      setAddModalFlag(true);
+                    },
+                    title: "مشاهده پرونده بدوی",
+                    icon: <Visibility color={"info"} />,
+                  }}
+                  onManage={{
+                    function: () => {
+                      setEditable(false);
+                      setFirstOrderData(row);
+                      setFirstOrderFlag(true);
+                    },
+                    title: "مشاهده حکم بدوی",
+                    icon: (
+                      // <Badge badgeContent={1} color="primary">
+                      <Gavel color={"info"} />
+                      // </Badge>
+                    ),
+                  }}
                 />
               );
             else
               return (
                 <TableActions
-                  onManage={{
+                  onAdd={{
                     function: () => {
                       setEditable(true);
                       setEditeData(row);
@@ -521,6 +572,28 @@ const AllDOGrid = (props: Props) => {
                     icon: (
                       // <Badge badgeContent={1} color="primary">
                       <PanTool color={"primary"} fontSize="small" />
+                      // </Badge>
+                    ),
+                  }}
+                  onViewF={{
+                    function: () => {
+                      setEditable(false);
+                      setEditeData(row);
+                      setAddModalFlag(true);
+                    },
+                    title: "مشاهده پرونده بدوی",
+                    icon: <Visibility color={"info"} />,
+                  }}
+                  onManage={{
+                    function: () => {
+                      setEditable(false);
+                      setFirstOrderData(row);
+                      setFirstOrderFlag(true);
+                    },
+                    title: "مشاهده حکم بدوی",
+                    icon: (
+                      // <Badge badgeContent={1} color="primary">
+                      <Gavel color={"info"} />
                       // </Badge>
                     ),
                   }}
@@ -555,6 +628,28 @@ const AllDOGrid = (props: Props) => {
                       color={"primary"}
                       // fontSize="small"
                     />
+                    // </Badge>
+                  ),
+                }}
+                onViewF={{
+                  function: () => {
+                    setEditable(false);
+                    setEditeData(row);
+                    setAddModalFlag(true);
+                  },
+                  title: "مشاهده پرونده بدوی",
+                  icon: <Visibility color={"info"} />,
+                }}
+                onEditF={{
+                  function: () => {
+                    setEditable(false);
+                    setFirstOrderData(row);
+                    setFirstOrderFlag(true);
+                  },
+                  title: "مشاهده حکم بدوی",
+                  icon: (
+                    // <Badge badgeContent={1} color="primary">
+                    <Gavel color={"info"} />
                     // </Badge>
                   ),
                 }}
@@ -627,19 +722,19 @@ const AllDOGrid = (props: Props) => {
                       />
                     ),
                   }}
-                  onManage={{
-                    function: () => {
-                      setEditable(false);
-                      setEditeData(row);
-                      setProtestRequestFlag(true);
-                    },
-                    title: "مشاهده اعتراض",
-                    icon: (
-                      // <Badge badgeContent={1} color="primary">
-                      <PanTool color={"info"} fontSize="small" />
-                      // </Badge>
-                    ),
-                  }}
+                  // onManage={{
+                  //   function: () => {
+                  //     setEditable(false);
+                  //     setEditeData(row);
+                  //     setProtestRequestFlag(true);
+                  //   },
+                  //   title: "مشاهده اعتراض",
+                  //   icon: (
+                  //     // <Badge badgeContent={1} color="primary">
+                  //     <PanTool color={"info"} fontSize="small" />
+                  //     // </Badge>
+                  //   ),
+                  // }}
                   onRead={{
                     function: () => {
                       setEditable(false);
@@ -648,6 +743,28 @@ const AllDOGrid = (props: Props) => {
                     },
                     title: "گزارشات",
                     icon: <AutoStories color={"info"} />,
+                  }}
+                  onViewF={{
+                    function: () => {
+                      setEditable(false);
+                      setEditeData(row);
+                      setAddModalFlag(true);
+                    },
+                    title: "مشاهده پرونده بدوی",
+                    icon: <Visibility color={"info"} />,
+                  }}
+                  onManage={{
+                    function: () => {
+                      setEditable(false);
+                      setFirstOrderData(row);
+                      setFirstOrderFlag(true);
+                    },
+                    title: "مشاهده حکم بدوی",
+                    icon: (
+                      // <Badge badgeContent={1} color="primary">
+                      <Gavel color={"info"} />
+                      // </Badge>
+                    ),
                   }}
                 />
               );
@@ -660,7 +777,7 @@ const AllDOGrid = (props: Props) => {
                     setEditeData(row);
                     setAddModalFlag(true);
                   },
-                  title: "مشاهده حکم بدوی",
+                  title: "مشاهده پرونده بدوی",
                   icon: <Visibility color={"info"} />,
                 }}
                 onManage={{
