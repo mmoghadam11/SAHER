@@ -79,7 +79,7 @@ const PersonGrid = (props: Props) => {
     },
     {
       field: "nationalCode",
-      headerName: "وضعیت",
+      headerName: "کد ملی",
       flex: 1.5,
     },
     {
@@ -225,7 +225,7 @@ const PersonGrid = (props: Props) => {
       >
         <Box display={"flex"}>
           <Article fontSize="large" />
-          <Typography variant="h5">اشخاص</Typography>
+          <Typography variant="h5">اطلاعات پایه اعضا و کارکنان</Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"}>
           <CreateNewItem

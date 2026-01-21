@@ -129,7 +129,7 @@ const MENU_ITEMS: MenuItem[] = [
     icon: <AccountBalance />,
     title: "جامعه",
     url: "/IACPA",
-    access: ["city-showmenu", "operator-showmenu"],
+    access: ["city-showmenu"],
     menuChildren: [
       // {
       //   title: "احکام انتظامی",
@@ -441,7 +441,7 @@ const MENU_ITEMS: MenuItem[] = [
         access: ["administrator", "city-showmenu"],
       },
       {
-        title: "اطلاعات پایه کارکنان",
+        title: "اطلاعات پایه اعضا و کارکنان",
         url: "persons",
         access: ["administrator", "city-showmenu"],
       },
