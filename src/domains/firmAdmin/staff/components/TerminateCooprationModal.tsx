@@ -139,7 +139,11 @@ const TerminateCooprationModal = ({
   };
 
   return (
-    <Dialog open={addModalFlag} onClose={handleClose} maxWidth={"sm"}>
+    <Dialog PaperProps={{
+        sx: {
+          overflow: "visible", // اجازه به محتوای Dialog برای بیرون زدن
+        },
+      }} open={addModalFlag} onClose={handleClose} maxWidth={"sm"}>
       <DialogTitle>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Box display={"flex"} textAlign={"center"} alignItems={"center"}>
@@ -156,7 +160,7 @@ const TerminateCooprationModal = ({
         </Box>
       </DialogTitle>
 
-      <DialogContent>
+      <DialogContent sx={{overflow:"visible"}}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={3} mt={1} justifyContent={"center"}>
             {formItems.map((item) => (
