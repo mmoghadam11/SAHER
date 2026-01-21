@@ -78,6 +78,11 @@ const PersonGrid = (props: Props) => {
       },
     },
     {
+      field: "nationalCode",
+      headerName: "وضعیت",
+      flex: 1.5,
+    },
+    {
       field: "cdMembershipTypeName",
       headerName: "وضعیت",
       flex: 1.5,
@@ -155,6 +160,12 @@ const PersonGrid = (props: Props) => {
       name: "lastName",
       inputType: "text",
       label: "نام خانوادگی",
+      size: { md: 4 },
+    },
+    {
+      name: "nationalCode",
+      inputType: "text",
+      label: "کد ملی",
       size: { md: 4 },
     },
   ];
