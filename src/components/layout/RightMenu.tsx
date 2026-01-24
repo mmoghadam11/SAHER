@@ -433,7 +433,7 @@ const MENU_ITEMS: MenuItem[] = [
     icon: <Article />,
     title: "اطلاعات پایه",
     url: "/basic-data",
-    access: ["city-showmenu"],
+    access: ["city-showmenu","basicData-showmenu","personnel_info_showmenu"],
     menuChildren: [
       {
         title: "احکام انتظامی",
@@ -443,7 +443,7 @@ const MENU_ITEMS: MenuItem[] = [
       {
         title: "اطلاعات پایه اعضا و کارکنان",
         url: "persons",
-        access: ["administrator", "city-showmenu"],
+        access: ["administrator", "city-showmenu","basicData-showmenu","personnel_info_showmenu"],
       },
       {
         title: "شهرستان",
