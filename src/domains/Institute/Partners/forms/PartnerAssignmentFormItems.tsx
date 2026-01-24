@@ -43,12 +43,12 @@ export const PartnerAssignmentFormItems = (
       },
       min: {
         value: 0,
-        message: "درصد نمی‌تواند منفی باشد"
+        message: "سهم‌الشرکه نمی‌تواند منفی باشد"
       },
-      max: {
-        value: 100,
-        message: "درصد نمی‌تواند بیشتر از ۱۰۰ باشد"
-      }
+      // max: {
+      //   value: 100,
+      //   message: "درصد نمی‌تواند بیشتر از ۱۰۰ باشد"
+      // }
     },
   },
   // {

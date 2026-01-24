@@ -52,6 +52,13 @@ export default function PartnerDataModal(): JSX.Element {
     // cdPersonnelTypeId: 112,
     // code: "",
   });
+  const [CAFilters, setCAFilters] = useState<any>({
+    nationalCode:
+      staffId !== "new" ? state?.staffData?.personnelNationalCode : "",
+    // id: staffId === "new" ? "" : staffId,
+    // cdPersonnelTypeId: 112,
+    // code: "",
+  });
   const searchItems: FormItem[] = [
     {
       name: "nationalCode",
@@ -87,12 +94,13 @@ export default function PartnerDataModal(): JSX.Element {
     status: searchResponse_status,
     refetch: searchResponse_refetch,
   } = useQuery<any>({
-    queryKey: [`certified-accountant/search-all${paramsSerializer(filters)}`],
+    queryKey: [`certified-accountant/search-all${paramsSerializer(CAFilters)}`],
     queryFn: Auth?.getRequest,
     select: (res: any) => {
       return res?.data;
     },
-    enabled: !!filters?.nationalCode || !!filters?.personnelId,
+    // enabled: !!filters?.nationalCode || !!filters?.personnelId,
+    enabled: !!CAFilters?.nationalCode || !!CAFilters?.personnelId,
   } as any);
   const {
     data: editeData,
@@ -275,7 +283,7 @@ export default function PartnerDataModal(): JSX.Element {
                 searchItems={searchItems}
                 searchData={searchData}
                 setSearchData={setSearchData}
-                setFilters={setFilters}
+                setFilters={setCAFilters}
                 md={12}
               />
             )}
