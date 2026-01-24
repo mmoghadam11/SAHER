@@ -305,7 +305,9 @@ const FirmAccountantGrid = ({all}: Props) => {
           >
             افزودن کارکنان حرفه ای
           </Button> */}
-          {!all&&<CreateNewItem
+          {
+          // !all&& دسترسی به کاربر جامعه برای افزودن
+          <CreateNewItem
             sx={{ mr: 2 }}
             title="افزودن حسابدار رسمی"
             onClick={() => navigate("new", { state: { editable: true } })}
