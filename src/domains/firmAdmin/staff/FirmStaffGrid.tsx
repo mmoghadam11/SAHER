@@ -142,7 +142,7 @@ const FirmStaffGrid = (props: Props) => {
         if (row?.endDate)
           return (
             <Typography variant="caption">
-              moment(row?.endDate).format("jYYYY/jMM/jDD")
+              {moment(row?.endDate).format("jYYYY/jMM/jDD")}
             </Typography>
           );
         else return null;
