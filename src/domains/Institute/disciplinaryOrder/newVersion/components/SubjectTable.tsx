@@ -155,6 +155,9 @@ const SubjectTable = ({
                         <TableCell align="center">
                           {(editeData?.cdPersonalityId === 397 &&
                             row?.cerifiedAccountantUsed) ||
+                            (editeData?.cdPersonalityId === 397 &&
+                            row?.auditingFirmUsed&&
+                            editeData?.currentCdMembershipTypeId===88) ||
                           (editeData?.cdPersonalityId === 396 &&
                             row?.auditingFirmUsed) ? (
                             <IconButton
