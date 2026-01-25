@@ -43,6 +43,26 @@ export const ContactFormItems = (
     },
   },
   {
+    name: "address",
+    inputType: "text",
+    label: "آدرس منزل",
+    size: { md: 9 },
+    rules: { 
+    },
+  },
+  {
+    name: "postalCode",
+    inputType: "text",
+    label: "کد پستی",
+    size: { md: 3 },
+    rules: { 
+      pattern: {
+        value: /^[0-9]{10}$/,
+        message: "شماره تلفن باید بین 10 رقم باشد"
+      }
+    },
+  },
+  {
     name: "personEmail",
     inputType: "text",
     label: "ایمیل شخصی",
