@@ -21,6 +21,7 @@ import {
   AutoStories,
   PendingActions,
   CheckCircle,
+  HistoryEdu,
 } from "@mui/icons-material";
 import { Box, Button, Chip, Grid, Tooltip, Typography } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
@@ -62,7 +63,7 @@ const AllDOGrid = (props: Props) => {
   const [caseData, setCaseData] = useState<any>(null);
   const [firstOrderData, setFirstOrderData] = useState<any>(null);
   const [editable, setEditable] = useState<boolean>(
-    authFunctions?.hasPermission("disciplinary-order-edit")
+    authFunctions?.hasPermission("disciplinary-order-edit"),
   );
   const [addModalFlag, setAddModalFlag] = useState(false);
   const [protestRequestFlag, setProtestRequestFlag] = useState(false);
@@ -109,7 +110,7 @@ const AllDOGrid = (props: Props) => {
         onError: () => {
           snackbar("خطا در دریافت اکسل ", "error");
         },
-      }
+      },
     );
   }
   const {
@@ -177,6 +178,25 @@ const AllDOGrid = (props: Props) => {
       headerName: "شاکی",
       flex: 1,
       cellClassName: () => "font-13",
+    },
+    {
+      field: "orderNumber",
+      headerName: "شماره حکم",
+      flex: 1,
+      cellClassName: () => "font-13",
+    },
+    {
+      field: "orderDate",
+      headerName: "تاریخ حکم",
+      flex: 1,
+      renderCell: ({ row }: { row: any }) => {
+        if (!!row?.orderDate)
+          return (
+            <Typography variant="caption">
+              {moment(new Date(row?.orderDate)).format("jYYYY/jMM/jDD")}
+            </Typography>
+          );
+      },
     },
     {
       field: "referralNumber",
@@ -380,6 +400,19 @@ const AllDOGrid = (props: Props) => {
                     <Mail color={row.hasAttachment ? "success" : "primary"} />
                   ),
                 }}
+                onManage={{
+                  function: () => {
+                    setEditable(false);
+                    setFirstOrderData(row);
+                    setFirstOrderFlag(true);
+                  },
+                  title: "مشاهده حکم بدوی",
+                  icon: (
+                    // <Badge badgeContent={1} color="primary">
+                    <Gavel color={"info"} />
+                    // </Badge>
+                  ),
+                }}
               />
             );
           else if (row?.disciplinaryCaseStage === "PRIMARY_MEETING_REQUESTED")
@@ -470,7 +503,7 @@ const AllDOGrid = (props: Props) => {
                         onError: (err) => {
                           snackbar("خطا در تغیر وضعیت پرونده", "error");
                         },
-                      }
+                      },
                     );
                   },
                   title: "تایید حکم",
@@ -502,6 +535,15 @@ const AllDOGrid = (props: Props) => {
                     // </Badge>
                   ),
                 }}
+                onViewF={{
+                  function: () => {
+                    setEditable(false);
+                    setEditeData(row);
+                    setAddModalFlag(true);
+                  },
+                  title: "مشاهده پرونده بدوی",
+                  icon: <Visibility color={"info"} />,
+                }}
               />
             );
           else if (row?.disciplinaryCaseStage === "NOTIFIED") {
@@ -521,7 +563,7 @@ const AllDOGrid = (props: Props) => {
                             if (res?.status == 200 && res?.data) {
                               snackbar(
                                 "پرونده به حالت قطعی تغیر یافت",
-                                "success"
+                                "success",
                               );
                               StatesData_refetch();
                             } else snackbar("خطا در تغیر پرونده", "error");
@@ -529,7 +571,7 @@ const AllDOGrid = (props: Props) => {
                           onError: (err) => {
                             snackbar("خطا در تغیر پرونده", "error");
                           },
-                        }
+                        },
                       );
                     },
                     title: "تبدیل به قطعی",
@@ -688,7 +730,7 @@ const AllDOGrid = (props: Props) => {
                             if (res?.status == 200 && res?.data) {
                               snackbar(
                                 "پرونده به حالت اعتراض تغیر یافت",
-                                "success"
+                                "success",
                               );
                               StatesData_refetch();
                             } else
@@ -697,7 +739,7 @@ const AllDOGrid = (props: Props) => {
                           onError: (err) => {
                             snackbar("خطا در تغیر وضعیت پرونده", "error");
                           },
-                        }
+                        },
                       );
                     },
                     title: "بازگشت به وضعیت اعتراض",
@@ -768,7 +810,8 @@ const AllDOGrid = (props: Props) => {
                   }}
                 />
               );
-          } else if (row?.disciplinaryCaseStage === "FINAL")
+          // } else if (row?.disciplinaryCaseStage === "FINAL")
+          } else 
             return (
               <TableActions
                 onViewF={{
@@ -813,34 +856,300 @@ const AllDOGrid = (props: Props) => {
                 }}
               />
             );
-        } else if (authFunctions?.hasPermission("supervisor-pdf"))
+        } else if (authFunctions?.hasPermission("supervisor-pdf")) {
+          if (row?.disciplinaryCaseStage === "CASE_REVIEW")
+            return (
+              <TableActions
+                onViewF={{
+                  function: () => {
+                    setEditable(false);
+                    setEditeData(row);
+                    setAddModalFlag(true);
+                  },
+                  title: "مشاهده پرونده بدوی",
+                  icon: <Visibility color={"info"} />,
+                }}
+              />
+            );
+          else if (row?.disciplinaryCaseStage === "PRIMARY_MEETING_REQUESTED")
+            return (
+              <TableActions
+                onViewF={{
+                  function: () => {
+                    setEditable(false);
+                    setEditeData(row);
+                    setAddModalFlag(true);
+                  },
+                  title: "مشاهده پرونده بدوی",
+                  icon: <Visibility color={"info"} />,
+                }}
+                onAdd={{
+                  function: () => {
+                    setEditable(false);
+                    setCaseData(row);
+                    setInvitationFlag(true);
+                  },
+                  title: "مشاهده دعوتنامه",
+                  icon: <Mail color={row.hasAttachment ? "success" : "info"} />,
+                }}
+              />
+            );
+          else if (row?.disciplinaryCaseStage === "CASE_MINISTRY_CONFIRM")
+            return (
+              <TableActions
+                onViewF={{
+                  function: () => {
+                    setEditable(false);
+                    setEditeData(row);
+                    setAddModalFlag(true);
+                  },
+                  title: "مشاهده پرونده بدوی",
+                  icon: <Visibility color={"info"} />,
+                }}
+                onAdd={{
+                  function: () => {
+                    setEditable(false);
+                    setFirstOrderData(row);
+                    setFirstOrderFlag(true);
+                  },
+                  title: "مشاهده حکم بدوی",
+                  icon: <Gavel color={"info"} />,
+                }}
+                onRead={{
+                  function: () => {
+                    setEditable(false);
+                    setCaseData(row);
+                    setInvitationFlag(true);
+                  },
+                  title: "مشاهده دعوتنامه",
+                  icon: <Mail color={row.hasAttachment ? "success" : "info"} />,
+                }}
+              />
+            );
+          else if (row?.disciplinaryCaseStage === "PRIMARY_ORDER_DONE")
+            return (
+              <TableActions
+                onViewF={{
+                  function: () => {
+                    setEditable(false);
+                    setEditeData(row);
+                    setAddModalFlag(true);
+                  },
+                  title: "مشاهده پرونده بدوی",
+                  icon: <Visibility color={"info"} />,
+                }}
+                onManage={{
+                  function: () => {
+                    setEditable(false);
+                    setFirstOrderData(row);
+                    setFirstOrderFlag(true);
+                  },
+                  title: "مشاهده حکم بدوی",
+                  icon: <Gavel color={"info"} />,
+                }}
+              />
+            );
+          else if (row?.disciplinaryCaseStage === "NOTIFIED") {
+              return (
+                <TableActions
+                  onViewF={{
+                    function: () => {
+                      setEditable(false);
+                      setEditeData(row);
+                      setAddModalFlag(true);
+                    },
+                    title: "مشاهده پرونده بدوی",
+                    icon: <Visibility color={"info"} />,
+                  }}
+                  onManage={{
+                    function: () => {
+                      setEditable(false);
+                      setFirstOrderData(row);
+                      setFirstOrderFlag(true);
+                    },
+                    title: "مشاهده حکم بدوی",
+                    icon: <Gavel color={"info"} />,
+                  }}
+                  onAdd={{
+                  function: () => {
+                    setEditable(false);
+                    setEditeData(row);
+                    setLogFlag(true);
+                  },
+                  title: "گزارشات",
+                  icon: <AutoStories color={"info"} />,
+                }}
+                />
+              );
+          } else if (row?.disciplinaryCaseStage === "PROTEST_REVIEW")
+            return (
+              <TableActions
+                onViewF={{
+                  function: () => {
+                    setEditable(false);
+                    setEditeData(row);
+                    setAddModalFlag(true);
+                  },
+                  title: "مشاهده پرونده بدوی",
+                  icon: <Visibility color={"info"} />,
+                }}
+                onEditF={{
+                  function: () => {
+                    setEditable(false);
+                    setFirstOrderData(row);
+                    setFirstOrderFlag(true);
+                  },
+                  title: "مشاهده حکم بدوی",
+                  icon: <Gavel color={"info"} />,
+                }}
+                onManage={{
+                  function: () => {
+                    setEditable(false);
+                    setEditeData(row);
+                    setProtestRequestFlag(true);
+                  },
+                  title: "مشاهده اعتراض",
+                  icon: (
+                    <PanTool color={"info"} fontSize="small" />
+                  ),
+                }}
+                onAdd={{
+                  function: () => {
+                    setEditable(false);
+                    setEditeData(row);
+                    setLogFlag(true);
+                  },
+                  title: "گزارشات",
+                  icon: <AutoStories color={"info"} />,
+                }}
+              />
+            );
+          else if (row?.disciplinaryCaseStage === "PROTEST_ACCEPTED") {
+              return (
+                <TableActions
+                  onAdd={{
+                    function: () => {
+                      setEditable(false);
+                      setEditeData(row);
+                      setProtestResponseFlag(true);
+                    },
+                    title: "مشاهده پاسخ به اعتراض",
+                    icon: (
+                      <LocalLibrary
+                        color={"info"}
+                        // fontSize="small"
+                      />
+                    ),
+                  }}
+                  onRead={{
+                    function: () => {
+                      setEditable(false);
+                      setEditeData(row);
+                      setLogFlag(true);
+                    },
+                    title: "گزارشات",
+                    icon: <AutoStories color={"info"} />,
+                  }}
+                  onViewF={{
+                    function: () => {
+                      setEditable(false);
+                      setEditeData(row);
+                      setAddModalFlag(true);
+                    },
+                    title: "مشاهده پرونده بدوی",
+                    icon: <Visibility color={"info"} />,
+                  }}
+                  onManage={{
+                    function: () => {
+                      setEditable(false);
+                      setFirstOrderData(row);
+                      setFirstOrderFlag(true);
+                    },
+                    title: "مشاهده حکم بدوی",
+                    icon: <Gavel color={"info"} />,
+                  }}
+                />
+              );
+          } else if (row?.disciplinaryCaseStage === "FINAL")
+            return (
+              <TableActions
+                onViewF={{
+                  function: () => {
+                    setEditable(false);
+                    setEditeData(row);
+                    setAddModalFlag(true);
+                  },
+                  title: "مشاهده پرونده بدوی",
+                  icon: <Visibility color={"info"} />,
+                }}
+                onManage={{
+                  function: () => {
+                    setEditable(false);
+                    setFirstOrderData(row);
+                    setFirstOrderFlag(true);
+                  },
+                  title: "مشاهده حکم بدوی",
+                  icon: <Gavel color={"info"} />,
+                }}
+                onRead={{
+                  function: () => {
+                    setEditable(false);
+                    setCaseData(row);
+                    setInvitationFlag(true);
+                  },
+                  title: "مشاهده دعوتنامه",
+                  icon: <MailOutline color="info" />,
+                }}
+                onAdd={{
+                  function: () => {
+                    setEditable(false);
+                    setEditeData(row);
+                    setLogFlag(true);
+                  },
+                  title: "گزارشات",
+                  icon: <AutoStories color={"info"} />,
+                }}
+              />
+            );
+        } else
           return (
             <TableActions
-              onView={() => {
-                setEditeData(row);
-                setAddModalFlag(true);
-              }}
-              onAdd={{
-                function: () => {
-                  setBasePDFData(row);
-                  setPdfFlag(true);
-                },
-                title: "پی دی اف",
-                icon: (
-                  <PictureAsPdf
-                    color={row.hasAttachment ? "success" : "primary"}
-                  />
-                ),
-              }}
-            />
-          );
-        else
-          return (
-            <TableActions
-              onView={() => {
-                setEditeData(row);
-                setAddModalFlag(true);
-              }}
+              onViewF={{
+                  function: () => {
+                    setEditable(false);
+                    setEditeData(row);
+                    setAddModalFlag(true);
+                  },
+                  title: "مشاهده پرونده بدوی",
+                  icon: <Visibility color={"info"} />,
+                }}
+                onManage={{
+                  function: () => {
+                    setEditable(false);
+                    setFirstOrderData(row);
+                    setFirstOrderFlag(true);
+                  },
+                  title: "مشاهده حکم بدوی",
+                  icon: <Gavel color={"info"} />,
+                }}
+                onRead={{
+                  function: () => {
+                    setEditable(false);
+                    setCaseData(row);
+                    setInvitationFlag(true);
+                  },
+                  title: "مشاهده دعوتنامه",
+                  icon: <MailOutline color="info" />,
+                }}
+                onAdd={{
+                  function: () => {
+                    setEditable(false);
+                    setEditeData(row);
+                    setLogFlag(true);
+                  },
+                  title: "گزارشات",
+                  icon: <AutoStories color={"info"} />,
+                }}
             />
           );
       },
@@ -883,10 +1192,16 @@ const AllDOGrid = (props: Props) => {
       label: "شخصیت",
       size: { md: 4 },
     },
+    // {
+    //   name: "referralNumber",
+    //   inputType: "text",
+    //   label: "شماره ارجاع",
+    //   size: { md: 4 },
+    // },
     {
-      name: "referralNumber",
+      name: "orderNumber",
       inputType: "text",
-      label: "شماره ارجاع",
+      label: "شماره حکم",
       size: { md: 4 },
     },
     {
@@ -954,7 +1269,7 @@ const AllDOGrid = (props: Props) => {
           if (res?.status == 200 && res?.data) {
             snackbar(
               "واحد های انتخابی با موفقیت به لیست شما افزوده شد.",
-              "success"
+              "success",
             );
             // navigate('/unitselection', { state: {from: "add-unit", noBack: noBack} })
           } else snackbar("خطا در افزودن واحد ها به لیست", "error");
@@ -962,7 +1277,7 @@ const AllDOGrid = (props: Props) => {
         onError: (err) => {
           snackbar("خطا در افزودن واحد ها به لیست", "error");
         },
-      }
+      },
     );
   }
   return (
@@ -1173,7 +1488,7 @@ const AllDOGrid = (props: Props) => {
               onSuccess: (res: any) => {
                 snackbar(
                   `پرونده انتظامی انتخاب شده با موفقیت حذف شد`,
-                  "success"
+                  "success",
                 );
                 StatesData_refetch();
                 setDeleteFlag(false);
@@ -1181,7 +1496,7 @@ const AllDOGrid = (props: Props) => {
               onError: () => {
                 snackbar("خطا در حذف ", "error");
               },
-            }
+            },
           )
         }
         message={`آیا از حذف پرونده انتظامی مورد نظر مطمعین میباشید؟`}

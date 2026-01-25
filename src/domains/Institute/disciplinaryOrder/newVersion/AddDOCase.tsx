@@ -467,7 +467,7 @@ const AddDOCase = ({
               </Grid>
             ))}
             <Grid container item md={12} justifyContent={"center"}>
-              {hasPermission("disciplinary-order-edit") && (
+              {(hasPermission("disciplinary-order-edit")||hasPermission("supervisor-pdf")) && (
                 // PDFList?.length !== 2 &&
                 <Grid
                   item

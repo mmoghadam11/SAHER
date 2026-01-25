@@ -323,6 +323,28 @@ const AddFirstStepOrder = ({
   // --- تابع اصلی ارسال ---
 
   const handleUploadSubmit = (data: any) => {
+    if(!editable){
+      noticeMutate(
+      {
+        entity: `disciplinary-case/re-notice-order?id=${editeData.id}`,
+        method: "post",
+      },
+      {
+        onSuccess: (res: any) => {
+          snackbar("حکم بدوی با موفقیت ابلاغ مجدد شد", "success");
+          refetch?.(); // اجرای Callback
+          PDFList_refetch();
+          handleClearSelection();
+          //   uploadedPDF_refetch();
+          // handleClose();
+        },
+        onError: () => {
+          snackbar("خطا در ابلاغ مجدد حکم", "error");
+        },
+      }
+    );
+    return;
+    }
     if(!!PdfUrl && showPDFFlag){
       noticeMutate(
       {
@@ -349,7 +371,6 @@ const AddFirstStepOrder = ({
       snackbar("ابتدا یک فایل PDF انتخاب کنید", "warning");
       return;
     }
-    console.log("selectedItems",selectedItems)
     const {
       orderDate,
       orderDuration,
@@ -574,6 +595,16 @@ const AddFirstStepOrder = ({
                   disabled={isLoading}
                 >
                   {(!!PdfUrl && showPDFFlag)?"ابلاغ":isLoading ? "در حال ثبت..." : "ثبت"}
+                </Button>
+              )}
+              {(!editable&&hasPermission("disciplinary-order-edit")) && (
+                <Button
+                  variant="contained"
+                  startIcon={<AddCircle />}
+                  type="submit"
+                  disabled={isLoading}
+                >
+                  ابلاغ مجدد
                 </Button>
               )}
             </Grid>
