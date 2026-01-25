@@ -8,7 +8,7 @@ export const AccountantAssignmentFormItems = (
     name: "cooperationStartDate",
     inputType: "date",
     label: "تاریخ شروع",
-    size: { md: 6 },
+    size: { md: 12 },
     rules: { required: "تاریخ شروع الزامی است" },
     elementProps: {
       setDay: (value: any) => {
@@ -17,19 +17,19 @@ export const AccountantAssignmentFormItems = (
       value: "",
     },
   },
-  {
-    name: "lastMembershipCardIssuanceDate",
-    inputType: "date",
-    label: "تاریخ صدور کارت",
-    size: { md: 6 },
-    rules: { required: "تاریخ صدور کارت الزامی است" },
-    elementProps: {
-      setDay: (value: any) => {
-        setValue("lastMembershipCardIssuanceDate", value);
-      },
-      value: "",
-    },
-  },
+  // {
+  //   name: "lastMembershipCardIssuanceDate",
+  //   inputType: "date",
+  //   label: "تاریخ صدور کارت",
+  //   size: { md: 6 },
+  //   rules: { required: "تاریخ صدور کارت الزامی است" },
+  //   elementProps: {
+  //     setDay: (value: any) => {
+  //       setValue("lastMembershipCardIssuanceDate", value);
+  //     },
+  //     value: "",
+  //   },
+  // },
   // {
   //   name: "officePhone",
   //   inputType: "text",

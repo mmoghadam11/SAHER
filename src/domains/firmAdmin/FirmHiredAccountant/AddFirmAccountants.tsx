@@ -262,7 +262,7 @@ export default function AddFirmAccountant(): JSX.Element {
           // همه پیام‌ها رو یکی کن
           const finalMessage = [...errors].join(" - ");
           // enqueueSnackbar(finalMessage, { variant: "error" });
-          snackbar(mainMessage + ": ", "error");
+          // snackbar(mainMessage + ": ", "error");
           //   snackbar(finalMessage, "error");
           // snackbar(err.data.message, "error");
           // snackbar(res.data.errors, "error");

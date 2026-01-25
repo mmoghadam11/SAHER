@@ -202,6 +202,7 @@ const RolesGrid = (props: Props) => {
               rowCount={StatesData?.totalElements}
               autoHeight
               hideToolbar
+              getRowHeight={() => "auto"}
             />
           )
         ) : null}
