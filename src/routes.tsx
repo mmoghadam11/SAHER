@@ -79,6 +79,7 @@ import renderRoutes, { MenuItem } from "components/routeHelper/renderRoutes";
 import { url } from "inspector";
 import AllHCases from "domains/Institute/disciplinaryOrder/newVersion/highOrder/AllHCases";
 import DirectorDisciplinayOrder from "domains/firmDirector/newVersion/DirectorDisciplinayOrder";
+import NewAccountantDisciplinayOrder from "domains/accountant/disciplinaryOrder/newVersion/NewAccountantDisciplinayOrder";
 
 const AppRoutes: React.FC = () => {
   const auth = useAuth();
@@ -213,7 +214,7 @@ const AppRoutes: React.FC = () => {
               <Route index element={<AccountantDisciplinaryOrderGrid />} />
               <Route
                 path=":id"
-                element={<AccountantDisciplinaryOrderDetaile />}
+                element={<NewAccountantDisciplinayOrder />}
               />
             </Route>
           </Route>
