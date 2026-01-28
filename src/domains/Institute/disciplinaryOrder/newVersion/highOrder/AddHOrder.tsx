@@ -320,6 +320,28 @@ const AddHOrder = ({
   // --- تابع اصلی ارسال ---
 
   const handleUploadSubmit = (data: any) => {
+    if (!editable) {
+      noticeMutate(
+        {
+          entity: `disciplinary-case/re-notice-order?id=${editeData.id}`,
+          method: "post",
+        },
+        {
+          onSuccess: (res: any) => {
+            snackbar("حکم بدوی با موفقیت ابلاغ مجدد شد", "success");
+            refetch?.(); // اجرای Callback
+            PDFList_refetch();
+            handleClearSelection();
+            //   uploadedPDF_refetch();
+            // handleClose();
+          },
+          onError: () => {
+            snackbar("خطا در ابلاغ مجدد حکم", "error");
+          },
+        }
+      );
+      return;
+    }
     if (!!PdfUrl && showPDFFlag) {
       noticeMutate(
         {
@@ -554,8 +576,7 @@ const AddHOrder = ({
                 )}
               </Grid>
               <Grid item md={12} sm={12} xs={12}>
-                {
-                  showPDFFlag &&
+                {showPDFFlag &&
                   (isPdfFetching ? (
                     // حالت ۱: در حال دانلود فایل از سرور
                     <Stack direction="column" alignItems="center" gap={2}>
@@ -591,6 +612,16 @@ const AddHOrder = ({
                     : "ثبت"}
                 </Button>
               )}
+              {/* {!editable && (
+                <Button
+                  variant="contained"
+                  startIcon={<AddCircle />}
+                  type="submit"
+                  disabled={isLoading}
+                >
+                  ابلاغ مجدد
+                </Button>
+              )} */}
             </Grid>
           </Grid>
         </form>
