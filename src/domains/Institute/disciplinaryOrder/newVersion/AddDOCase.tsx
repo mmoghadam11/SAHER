@@ -51,6 +51,7 @@ import TableActions from "components/table/TableActions";
 
 type Props = {
   editable: boolean;
+  temporary?: boolean;
   refetch: () => void;
   addModalFlag: boolean;
   setAddModalFlag: React.Dispatch<React.SetStateAction<boolean>>;
@@ -60,6 +61,7 @@ type Props = {
 
 const AddDOCase = ({
   editable,
+  temporary=false,
   addModalFlag,
   setAddModalFlag,
   refetch,
@@ -353,7 +355,7 @@ const AddDOCase = ({
     );
     console.log("submissionData", submissionData);
     mutate({
-      entity: `disciplinary-case/${!!editeData ? "update" : "save"}`,
+      entity: `disciplinary-case/${!!editeData ? temporary?"temporary-update":  "update" : "save"}`,
       method: !!editeData ? "put" : "post",
       data: formData,
     });
