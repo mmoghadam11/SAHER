@@ -281,13 +281,13 @@ export default function AddOfficialUser(): JSX.Element {
               state?.accountantData?.profileImageUrl
             }
             sx={{
-              width: 50,
-              height: 50,
+              width: 100,
+              height: 100,
               border: "2px solid",
               borderColor: "divider",
             }}
           >
-            <AccountCircle sx={{ width: 50, height: 50 }} color="inherit" />
+            <AccountCircle sx={{ width: 100, height: 100 }} color="inherit" />
           </Avatar>
         </IconButton>
       ),
@@ -477,7 +477,7 @@ export default function AddOfficialUser(): JSX.Element {
                           display={"flex"}
                           justifyContent={"space-between"}
                         >
-                          <Typography variant="h6" fontSize={"large"}>
+                          <Typography alignContent={"center"} variant={stepItem?.profile?"h5":"body1"} fontWeight={"bold"}>
                             {stepItem?.name}
                           </Typography>
                           {stepItem?.profile ? stepItem.profile : null}
@@ -520,8 +520,8 @@ export default function AddOfficialUser(): JSX.Element {
                         display={"flex"}
                         justifyContent={"space-between"}
                       >
-                        <Typography variant="h6" fontSize={"large"}>
-                          {stepItem?.name}
+                        <Typography alignContent={"center"} variant={stepItem?.profile?"h5":"body1"} fontWeight={"bold"}>
+                          {stepItem?.name} 
                         </Typography>
                         {stepItem?.profile ? stepItem.profile : null}
                       </Grid>
