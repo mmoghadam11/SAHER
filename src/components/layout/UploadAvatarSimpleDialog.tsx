@@ -29,6 +29,7 @@ type Props = {
   refetch: () => void;
   currentAvatarUrl?: string | null;
   onUploaded?: (payload: any) => void; // مثلا دریافت URL جدید
+  username?: string;
 };
 
 const MAX_SIZE_MB = 2;
@@ -39,11 +40,12 @@ const UploadAvatarSimpleDialog: React.FC<Props> = ({
   currentAvatarUrl,
   onUploaded,
   refetch,
+  username,
 }) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(
-    currentAvatarUrl ?? null
+    currentAvatarUrl ?? null,
   );
 
   const Auth = useAuth();
@@ -56,17 +58,20 @@ const UploadAvatarSimpleDialog: React.FC<Props> = ({
     mutationFn: Auth?.serverCallUpload,
   });
   const attachmentFileDto = {
-    username: localStorage.getItem("username") ?? "",
+    username: username ?? localStorage.getItem("username") ?? "",
     description: "Avatar Upload", // می‌توانید یک توضیح بگذارید
   };
 
   useEffect(() => {
     if (open) {
       setFile(null);
-      setPreview(currentAvatarUrl ?? null);
+      if (!!username && !!currentAvatarUrl)
+        setPreview(process.env.REACT_APP_Image_URL + currentAvatarUrl);
+      else setPreview(currentAvatarUrl ?? null);
     } else {
       // پاک کردن URLهای موقتی برای جلوگیری از نشت حافظه
-      if (!currentAvatarUrl&&preview?.startsWith("blob:")) URL.revokeObjectURL(preview);
+      if (!currentAvatarUrl && preview?.startsWith("blob:"))
+        URL.revokeObjectURL(preview);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
@@ -119,7 +124,7 @@ const UploadAvatarSimpleDialog: React.FC<Props> = ({
           onError: () => {
             snackbar("خطا در حذف عکس پروفایل.", "error");
           },
-        }
+        },
       );
     setFile(null);
     setPreview(null);
@@ -142,7 +147,7 @@ const UploadAvatarSimpleDialog: React.FC<Props> = ({
       {
         // مسیر API را متناسب با بک‌اند خودتان تغییر دهید
         entity: `user/upload-profile-image${paramsSerializer(
-          attachmentFileDto
+          attachmentFileDto,
         )}`,
         method: "post",
         data: formData,
@@ -157,7 +162,7 @@ const UploadAvatarSimpleDialog: React.FC<Props> = ({
         onError: () => {
           snackbar("خطا در آپلود عکس پروفایل.", "error");
         },
-      }
+      },
     );
   };
 
@@ -170,7 +175,9 @@ const UploadAvatarSimpleDialog: React.FC<Props> = ({
           justifyContent: "space-between",
         }}
       >
-        <Typography variant="h6">آپلود عکس پروفایل</Typography>
+        <Typography variant="h6">
+          {username ? "مدیریت عکس پروفایل کاربر" : "آپلود عکس پروفایل"}
+        </Typography>
         <IconButton onClick={onClose} size="small">
           <Close />
         </IconButton>
@@ -181,8 +188,8 @@ const UploadAvatarSimpleDialog: React.FC<Props> = ({
           <Avatar
             src={preview ?? undefined}
             sx={{
-              width: 112,
-              height: 112,
+              width: 250,
+              height: 250,
               border: "2px solid",
               borderColor: "divider",
             }}

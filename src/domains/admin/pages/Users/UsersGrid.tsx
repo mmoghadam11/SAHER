@@ -29,6 +29,7 @@ import { UseGetProfileImage } from "hooks/useGetProfileImage";
 import ProfileDialog from "components/ProfileDialog";
 import { FormItem } from "types/formItem";
 import NewSearchPannel from "components/form/NewSearchPannel";
+import UploadAvatarSimpleDialog from "components/layout/UploadAvatarSimpleDialog";
 
 type Props = {};
 
@@ -44,6 +45,7 @@ const UsersGrid = (props: Props) => {
     formState: { errors },
     control,
   } = useForm();
+  const [userName, setUserName] = useState<string>("")
   const [currentAvatarUrl, setCurrentAvatarUrl] = useState<string>("")
   const [openProfile, setOpenProfile] = useState<boolean>(false)
   const [filters, setFilters] = useState<any>({
@@ -93,6 +95,7 @@ const UsersGrid = (props: Props) => {
           onClick={()=>{
             setCurrentAvatarUrl(row?.imageUrl)
             setOpenProfile(true)
+            setUserName(row?.username)
           }}
           >
             <Avatar
@@ -279,11 +282,22 @@ const UsersGrid = (props: Props) => {
           )
         ) : null}
       </Grid>
-      <ProfileDialog
+      {/* <ProfileDialog
       open={openProfile}
       onClose={()=>setOpenProfile(false)}
       currentAvatarUrl={currentAvatarUrl}
-      />
+      /> */}
+      <UploadAvatarSimpleDialog
+              refetch={StatesData_refetch}
+              open={openProfile}
+              onClose={()=>setOpenProfile(false)}
+              currentAvatarUrl={currentAvatarUrl}
+              // onUploaded={(data) => {
+              //   // بسته به پاسخ سرور آدرس نهایی را ست کنید
+              //   setAvatarUrl(data?.url ?? data?.avatarUrl);
+              // }}
+              username={userName}
+            />
       <AppendRole
         refetch={StatesData_refetch}
         appendRoleFlag={appendRoleFlag}
