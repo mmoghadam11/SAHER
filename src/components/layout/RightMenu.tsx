@@ -355,12 +355,12 @@ const MENU_ITEMS: MenuItem[] = [
   },
   {
     icon: <People />,
-    title: "حسابدار رسمی",
+    title: "کارتابل حسابدار رسمی",
     url: "/accountant-user",
     access: ["city-showmenu", "accountant-showmenu"],
     menuChildren: [
       {
-        title: "کارتابل",
+        title: "اطلاعات کلی",
         url: "cartable",
         access: [
           "administrator",

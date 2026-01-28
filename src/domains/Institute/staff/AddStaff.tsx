@@ -36,6 +36,7 @@ import RenderFormDisplay from "components/render/formInputs/RenderFormDisplay";
 import SearchPannel from "components/form/SearchPannel";
 import paramsSerializer from "services/paramsSerializer";
 import { PersonnelAssignmentFormItems } from "domains/firmAdmin/staff/forms/PersonnelAssignmentFormItems";
+import NewSearchPannel from "components/form/NewSearchPannel";
 
 export default function AddStaff(): JSX.Element {
   const { staffId } = useParams();
@@ -86,7 +87,7 @@ export default function AddStaff(): JSX.Element {
       inputType: "autocomplete",
       label: "موسسه",
       size: { md: 6 },
-      options: firmOptions?.map((item:any)=>({id:item.id,value:item.name})) ?? [{ value: 0, title: "خالی" }],
+      options: firmOptions?.map((item:any)=>({value:item.id,title:item.name})) ?? [{ value: 0, title: "خالی" }],
       storeValueAs:"id"
     },
   ];
@@ -113,7 +114,19 @@ export default function AddStaff(): JSX.Element {
     status: searchResponse_status,
     refetch: searchResponse_refetch,
   } = useQuery<any>({
-    queryKey: [`personnel-info/search-all?nationalCode=${filters?.nationalCode}&&cdPersonnelTypeId=112`],
+    queryKey: [`personnel-info/search-all?nationalCode=${filters?.nationalCode}`],
+    queryFn: Auth?.getRequest,
+    select: (res: any) => {
+      return res?.data;
+    },
+    enabled: !!filters?.nationalCode,
+  } as any);
+  const {
+    data: checking,
+    status: checking_status,
+    refetch: checking_refetch,
+  } = useQuery<any>({
+    queryKey: [`personnel-info/membership-status?nationalCode=${filters?.nationalCode}`],
     queryFn: Auth?.getRequest,
     select: (res: any) => {
       return res?.data;
@@ -266,7 +279,10 @@ export default function AddStaff(): JSX.Element {
   const navigate = useNavigate();
   
   useEffect(() => {
-    setEditeDataFilters((prev:any)=>({...prev,auditingFirmId:filters?.auditingFirmId??staffId}))
+    setEditeDataFilters((prev:any)=>({...prev
+      ,auditingFirmId:filters?.auditingFirmId??staffId,
+    personnelNationalCode:filters?.nationalCode
+    }))
     console.log("filters", filters);
   }, [filters]);
   useEffect(() => {
@@ -296,7 +312,7 @@ export default function AddStaff(): JSX.Element {
               <BackButton onBack={() => navigate(-1)} />
             </Grid>
             {staffId === "new" && (
-              <SearchPannel<any>
+              <NewSearchPannel<any>
                 searchItems={searchItems}
                 searchData={searchData}
                 setSearchData={setSearchData}
@@ -330,18 +346,29 @@ export default function AddStaff(): JSX.Element {
                       label="اطلاعاتی یافت نشد"
                       icon={<CrisisAlert />}
                     />
-                  ) : !searchResponse?.[0]?.previousFirmName ? (
+                  ) : !searchResponse?.[0]?.auditingFirmId ? (
                     <Chip color="success" label="مجاز" icon={<Verified />} />
-                  ) : (
+                  ) : (searchResponse?.[0]?.auditingFirmId!==staffId&&searchResponse?.[0]?.cdPersonnelTypeId===112)?(
                     <Chip
                       color="warning"
-                      label={`این شخص جزو کارکنان حرفه ای ${searchResponse?.[0]?.previousFirmName} است`}
+                      label={`این شخص جزو کارکنان حرفه ای ${searchResponse?.[0]?.auditingFirmName} است`}
                       icon={<CrisisAlert />}
                     />
-                  ))}
+                  ) : (searchResponse?.[0]?.auditingFirmId===staffId&&searchResponse?.[0]?.cdPersonnelTypeId===112)?(
+                    <Chip
+                      color="warning"
+                      label={`این شخص جزو کارکنان حرفه ای شما است`}
+                      icon={<CrisisAlert />}
+                    />
+                  ):<Chip
+                      color="error"
+                      label={`این شخص جزو حسابداران رسمی است`}
+                      icon={<CrisisAlert />}
+                    />
+                )}
               </Grid>
             )}
-            {(!!searchResponse?.length || !!editeData?.length) && (
+            {(!searchResponse?.[0]?.auditingFirmId || !!editeData?.length) && (
               <Grid item md={12} sm={12} xs={12}>
                 <form name="myForm" onSubmit={handleSubmit(onSubmit)}>
                   <Grid
@@ -423,7 +450,7 @@ export default function AddStaff(): JSX.Element {
                       ))}
 
                     {state?.editable &&
-                      (searchResponse?.[0]?.previousFirmId === filters.auditingFirmId ||
+                      (searchResponse?.[0]?.auditingFirmId === filters.auditingFirmId ||
                         staffId === "new") &&
                       !!searchResponse?.length && (
                         <Grid

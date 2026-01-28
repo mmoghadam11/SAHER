@@ -1,4 +1,10 @@
-import { Article, CheckCircle, Search, Settings } from "@mui/icons-material";
+import {
+  Article,
+  CheckCircle,
+  PersonRemove,
+  Search,
+  Settings,
+} from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -28,6 +34,8 @@ import { PAGINATION_DEFAULT_VALUE } from "shared/paginationValue";
 import ConfirmBox from "components/confirmBox/ConfirmBox";
 import moment from "jalali-moment";
 import { FormItem } from "types/formItem";
+import TerminateCooprationModal from "domains/firmAdmin/staff/components/TerminateCooprationModal";
+import NewSearchPannel from "components/form/NewSearchPannel";
 
 type Props = {};
 
@@ -93,7 +101,11 @@ const StaffGrid = (props: Props) => {
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
         if (row?.rankDate)
-          return <Typography variant="caption">{moment(row?.rankDate).format("jYYYY/jMM/jDD")}</Typography> ;
+          return (
+            <Typography variant="caption">
+              {moment(row?.rankDate).format("jYYYY/jMM/jDD")}
+            </Typography>
+          );
         else return null;
       },
     },
@@ -107,7 +119,12 @@ const StaffGrid = (props: Props) => {
       headerName: "شروع همکاری",
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
-        if (row?.startDate) return<Typography variant="caption">{ moment(row?.startDate).format("jYYYY/jMM/jDD")}</Typography>;
+        if (row?.startDate)
+          return (
+            <Typography variant="caption">
+              {moment(row?.startDate).format("jYYYY/jMM/jDD")}
+            </Typography>
+          );
       },
     },
     {
@@ -115,7 +132,12 @@ const StaffGrid = (props: Props) => {
       headerName: "پایان همکاری",
       flex: 1,
       renderCell: ({ row }: { row: any }) => {
-        if (row?.endDate) return <Typography variant="caption">{moment(row?.endDate).format("jYYYY/jMM/jDD")}</Typography>;
+        if (row?.endDate)
+          return (
+            <Typography variant="caption">
+              {moment(row?.endDate).format("jYYYY/jMM/jDD")}
+            </Typography>
+          );
         else return null;
       },
     },
@@ -136,6 +158,7 @@ const StaffGrid = (props: Props) => {
       headerAlign: "center",
       align: "center",
       renderCell: ({ row }: { row: any }) => {
+        if(row?.cooperationStatus)
         return (
           <TableActions
             onView={() => {
@@ -152,13 +175,34 @@ const StaffGrid = (props: Props) => {
                 state: { staffData: row, editable: true },
               });
             }}
-            // onManage={{
-            //   title: "جزئیات شخص",
-            //   function: () => {
-            //     navigate(`details/${row.id}`, { state: { firmData: row } });
-            //   },
-            //   icon: <Settings />,
+            onManage={{
+              title: "پایان همکاری",
+              function: () => {
+                setDeleteData(row);
+                setDeleteFlag(true);
+              },
+              icon: <PersonRemove color="error" />,
+            }}
+          />
+        );
+        else
+          return (
+          <TableActions
+            onView={() => {
+              setEditeData(row);
+              setAddModalFlag(true);
+              navigate(`${row.auditingFirmId + "/" + row.id}`, {
+                state: { staffData: row, editable: false },
+              });
+            }}
+            // onEdit={() => {
+            //   setEditeData(row);
+            //   setAddModalFlag(true);
+            //   navigate(`${row.auditingFirmId + "/" + row.id}`, {
+            //     state: { staffData: row, editable: true },
+            //   });
             // }}
+            
           />
         );
       },
@@ -198,19 +242,19 @@ const StaffGrid = (props: Props) => {
       name: "personnelLastName",
       inputType: "text",
       label: "نام خانوادگی",
-      size: { md: 3 },
+      size: { md: 2.2 },
     },
-    // {
-    //   name: "personnelNationalCode",
-    //   inputType: "text",
-    //   label: "کدملی شخص",
-    //   size: { md: 3 },
-    // },
+    {
+      name: "personnelNationalCode",
+      inputType: "text",
+      label: "کدملی شخص",
+      size: { md: 2.2 },
+    },
     {
       name: "cooperationStatus",
       inputType: "select",
       label: "وضعیت",
-      size: { md: 3 },
+      size: { md: 2.2 },
       options: [
         { value: "", title: "همه" },
         { value: "true", title: "فعال" },
@@ -221,22 +265,22 @@ const StaffGrid = (props: Props) => {
       name: "auditingFirmId",
       inputType: "autocomplete",
       label: "موسسه",
-      size: { md: 3 },
+      size: { md: 2.2 },
       options: firmOptions?.map((item: any) => ({
-        id: item.id,
-        value: item.name,
-      })) ?? [{ id: 0, name: "خالی" }],
+        value: item.id,
+        title: item.name,
+      })) ?? [{ value: 0, title: "خالی" }],
       storeValueAs: "id",
     },
     {
       name: "cdProfessionalRankId",
       inputType: "autocomplete",
       label: "رده حرفه‌ای",
-      size: { md: 3 },
+      size: { md: 2.2 },
       options: rankOptions?.map((item: any) => ({
-        id: item.id,
-        value: item.value,
-      })) ?? [{ id: 0, value: "خالی" }],
+        value: item.id,
+        title: item.value,
+      })) ?? [{ value: 0, title: "خالی" }],
       storeValueAs: "id",
     },
 
@@ -259,7 +303,7 @@ const StaffGrid = (props: Props) => {
     typeId: number;
     typeName: string;
   };
-  const [editeData, setEditeData] = useState<editeObjectType | null>(null);
+  const [editeData, setEditeData] = useState<any | null>(null);
   const [addModalFlag, setAddModalFlag] = useState(false);
   const [deleteData, setDeleteData] = useState<any>(null);
   const [deleteFlag, setDeleteFlag] = useState(false);
@@ -284,7 +328,7 @@ const StaffGrid = (props: Props) => {
           if (res?.status == 200 && res?.data) {
             snackbar(
               "واحد های انتخابی با موفقیت به لیست شما افزوده شد.",
-              "success"
+              "success",
             );
             // navigate('/unitselection', { state: {from: "add-unit", noBack: noBack} })
           } else snackbar("خطا در افزودن واحد ها به لیست", "error");
@@ -292,7 +336,7 @@ const StaffGrid = (props: Props) => {
         onError: (err) => {
           snackbar("خطا در افزودن واحد ها به لیست", "error");
         },
-      }
+      },
     );
   }
   return (
@@ -312,15 +356,15 @@ const StaffGrid = (props: Props) => {
           <Typography variant="h5">کارکنان حرفه‌ای موسسات</Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"}>
-          {/* <CreateNewItem
+          <CreateNewItem
             sx={{ mr: 2 }}
             name="شخص"
             onClick={() => navigate("new", { state: { editable: true } })}
-          /> */}
+          />
           <BackButton onBack={() => navigate(-1)} />
         </Box>
       </Grid>
-      <SearchPannel<any>
+      <NewSearchPannel<any>
         searchItems={searchItems}
         searchData={searchData}
         setSearchData={setSearchData}
@@ -341,7 +385,14 @@ const StaffGrid = (props: Props) => {
         ) : null}
       </Grid>
 
-      <ConfirmBox
+        <TerminateCooprationModal
+        addModalFlag={deleteFlag}
+        editeData={deleteData}
+        refetch={StatesData_refetch}
+        setAddModalFlag={setDeleteFlag}
+        setEditeData={setDeleteData}
+        />
+      {/* <ConfirmBox
         open={deleteFlag}
         handleClose={() => {
           setDeleteFlag(false);
@@ -350,8 +401,15 @@ const StaffGrid = (props: Props) => {
         handleSubmit={() =>
           mutate(
             {
-              entity: `membership/remove/${deleteData?.id}`,
-              method: "delete",
+              entity: `professional-staff/terminate-cooperation`,
+              // entity: `firm-director/save`,
+              method: "put",
+              // method:  "post",
+              data: {
+                ...deleteData,
+                personnelId: deleteData?.id,
+                auditingFirmId: deleteData?.auditingFirmId,
+              },
             },
             {
               onSuccess: (res: any) => {
@@ -361,12 +419,12 @@ const StaffGrid = (props: Props) => {
               onError: () => {
                 snackbar("خطا در حذف ", "error");
               },
-            }
+            },
           )
         }
-        message={`آیا از حذف ${deleteData?.firstName}  ${deleteData?.lastName} مطمعین میباشید؟`}
+        message={`آیا از حذف ${deleteData?.personnelFirstName}  ${deleteData?.personnelLastName} مطمعین میباشید؟`}
         title={"درخواست حذف!"}
-      />
+      /> */}
     </Grid>
   );
 };

@@ -30,12 +30,12 @@ import { TerminateFormItem } from "./TerminateFormItem";
 
 interface FormData {
   id?: any;
-  termName: string;
+  termName?: string;
   auditingFirmId: string;
-  applicatorName: string;
-  hour_count: string;
-  request_year: string;
-  request_month: string;
+  applicatorName?: string;
+  hour_count?: string;
+  request_year?: string;
+  request_month?: string;
 }
 
 interface FormItem {
@@ -116,17 +116,19 @@ const TerminateCooprationModal = ({
         data: {
           ...data,
           personnelId: editeData?.personnelId,
-          auditingFirmId: id,
+          auditingFirmId: id??editeData?.auditingFirmId,
         },
       },
       {
         onSuccess: (res: any) => {
           console.log("res=>", res);
-          if (!!editeData)
+          if (!!editeData){
             snackbar(
-              `به روز رسانی موسسه انتخاب شده با موفقیت انجام شد`,
+              `به روز رسانی همکاری شخص با موسسه انتخاب شده با موفقیت انجام شد`,
               "success"
             );
+            handleClose();
+          }
           else snackbar(`اطلاعات آموزشی جدید با موفقیت افزوده شد`, "success");
           refetch();
           //   handleClose();

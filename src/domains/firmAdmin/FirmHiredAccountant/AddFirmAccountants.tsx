@@ -50,7 +50,7 @@ export default function AddFirmAccountant(): JSX.Element {
     nationalCode:
       staffId !== "new" ? state?.staffData?.nationalCode : "",
     // personnelId:staffId==="new"?"":staffId
-    cdPersonnelTypeId: 111,
+    // cdPersonnelTypeId: 111,
     // code: "",
   });
   const [editeDatafilters, setEditeDataFilters] = useState<any>({
@@ -96,6 +96,19 @@ export default function AddFirmAccountant(): JSX.Element {
   } = useQuery<any>({
     // queryKey: [`personnel-info/search-all${paramsSerializer(filters)}`],
     queryKey: [`personnel-info/search-all${paramsSerializer(filters)}`],
+    queryFn: Auth?.getRequest,
+    select: (res: any) => {
+      return res?.data;
+    },
+    enabled: !!filters?.nationalCode,
+  } as any);
+  const {
+    data: checking,
+    status: checking_status,
+    refetch: checking_refetch,
+  } = useQuery<any>({
+    // queryKey: [`personnel-info/search-all${paramsSerializer(filters)}`],
+    queryKey: [`personnel-info/membership-status${paramsSerializer({nationalCode: filters.nationalCode})}`],
     queryFn: Auth?.getRequest,
     select: (res: any) => {
       return res?.data;
@@ -272,13 +285,14 @@ export default function AddFirmAccountant(): JSX.Element {
   };
   const navigate = useNavigate();
   function userNotFound() {
-      if (othersideUser_status === "success" && !!othersideUser.length)
+      // if (othersideUser_status === "success" && !!othersideUser.length)
+      if (checking_status === "success" && checking?.key==="STAFF")
         return <Chip
               color="error"
               label= "این شخص جزو کارکنان حرفه‌ای میباشد"
               icon={<CrisisAlert />}
             />
-      else if (othersideUser_status === "success")
+      else if (checking_status === "success" && checking?.key==="NOT-EXISTS")
         return (
           <Box display={"flex"} gap={1}>
             <Chip
@@ -286,7 +300,7 @@ export default function AddFirmAccountant(): JSX.Element {
               label="اطلاعاتی یافت نشد"
               icon={<CrisisAlert />}
             />
-            <Chip
+            {/* <Chip
               color="info"
               icon={<AddCircle />}
               label="ایجاد شخص جدید"
@@ -295,7 +309,7 @@ export default function AddFirmAccountant(): JSX.Element {
                   state: { editable: true, cdPersonnelTypeId: 111,nationalCode:filters?.nationalCode},
                 });
               }}
-            />
+            /> */}
           </Box>
         );
     }
@@ -361,12 +375,19 @@ export default function AddFirmAccountant(): JSX.Element {
                 {searchResponse_status === "success" &&
                   (!searchResponse?.length ? (
                     userNotFound()
-                  ) : !searchResponse?.[0]?.previousFirmName ? (
+                  // ) : !searchResponse?.[0]?.previousFirmName ? (
+                  ) : checking?.isValid ? (
                     <Chip color="success" label="مجاز" icon={<Verified />} />
-                  ) : searchResponse?.[0]?.previousFirmId === id ? (
+                  ) : (checking?.firmId === id&&checking?.key==="CA") ? (
                     <Chip
                       color="warning"
                       label="این شخص جزو حسابداران رسمی شماست"
+                      icon={<CrisisAlert />}
+                    />
+                  ) : (checking?.firmId === id&&checking?.key==="STAFF") ? (
+                    <Chip
+                      color="warning"
+                      label="این شخص جزو کارکنان حرفه‌ای شماست"
                       icon={<CrisisAlert />}
                     />
                   ) : (
@@ -378,7 +399,8 @@ export default function AddFirmAccountant(): JSX.Element {
                   ))}
               </Grid>
             )}
-            {(!!searchResponse?.length || !!editeData?.length) && (
+            {/* {(!!searchResponse?.length || !!editeData?.length) && ( */}
+            {(!!checking?.isValid || !!editeData?.length) && (
               <Grid item md={12} sm={12} xs={12}>
                 <form name="myForm" onSubmit={handleSubmit(onSubmit)}>
                   <Grid
@@ -461,8 +483,10 @@ export default function AddFirmAccountant(): JSX.Element {
 
                     {state?.editable &&
                       (searchResponse?.[0]?.previousFirmId === id ||
+                      !searchResponse?.[0]?.previousFirmId  ||
                         staffId === "new") &&
-                      !!searchResponse?.length && (
+                      // !!searchResponse?.length && 
+                      (
                         <Grid
                           item
                           xs={12}
