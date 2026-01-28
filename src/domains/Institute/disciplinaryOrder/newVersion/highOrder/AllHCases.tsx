@@ -56,7 +56,7 @@ const AllHCases = (props: Props) => {
   const [DOCaseModalFlag, setDOCaseModalFlag] = useState<boolean>(false);
 
   const [editable, setEditable] = useState<boolean>(
-    authFunctions?.hasPermission("disciplinary-order-edit")
+    authFunctions?.hasPermission("disciplinary-order-edit"),
   );
   const [addModalFlag, setAddModalFlag] = useState(false);
   const [protestRequestFlag, setProtestRequestFlag] = useState(false);
@@ -102,7 +102,7 @@ const AllHCases = (props: Props) => {
         onError: () => {
           snackbar("خطا در دریافت اکسل ", "error");
         },
-      }
+      },
     );
   }
   const {
@@ -115,11 +115,11 @@ const AllHCases = (props: Props) => {
     name: "",
   });
   useEffect(() => {
-      setSearchData(()=>{
-        const {page,size,...otherData}=filters;
-        return otherData
-      })
-    }, [filters])
+    setSearchData(() => {
+      const { page, size, ...otherData } = filters;
+      return otherData;
+    });
+  }, [filters]);
   const {
     data: StatesData,
     status: StatesData_status,
@@ -365,6 +365,19 @@ const AllHCases = (props: Props) => {
                     />
                   ),
                 }}
+                onManage={{
+                  function: () => {
+                    setEditable(false);
+                    setEditeData(row);
+                    setDOCaseModalFlag(true);
+                  },
+                  title: "مشاهده حکم بدوی",
+                  icon: (
+                    // <Badge badgeContent={1} color="primary">
+                    <Visibility color={"info"} />
+                    // </Badge>
+                  ),
+                }}
               />
             );
           else if (row?.processStage === "SUPREME_METTING_REQUEST")
@@ -396,6 +409,19 @@ const AllHCases = (props: Props) => {
                     />
                   ),
                 }}
+                onEditF={{
+                  function: () => {
+                    setEditable(false);
+                    setEditeData(row);
+                    setDOCaseModalFlag(true);
+                  },
+                  title: "مشاهده حکم بدوی",
+                  icon: (
+                    // <Badge badgeContent={1} color="primary">
+                    <Visibility color={"info"} />
+                    // </Badge>
+                  ),
+                }}
               />
             );
           else if (row?.processStage === "SUPREME_DONE")
@@ -411,6 +437,19 @@ const AllHCases = (props: Props) => {
                   icon: (
                     // <Badge badgeContent={1} color="primary">
                     <Gavel color={"primary"} />
+                    // </Badge>
+                  ),
+                }}
+                onAdd={{
+                  function: () => {
+                    setEditable(false);
+                    setEditeData(row);
+                    setDOCaseModalFlag(true);
+                  },
+                  title: "مشاهده حکم بدوی",
+                  icon: (
+                    // <Badge badgeContent={1} color="primary">
+                    <Visibility color={"info"} />
                     // </Badge>
                   ),
                 }}
@@ -437,7 +476,7 @@ const AllHCases = (props: Props) => {
                         onError: (err) => {
                           snackbar("خطا در تغیر وضعیت پرونده", "error");
                         },
-                      }
+                      },
                     );
                   },
                   title: "تایید حکم",
@@ -496,7 +535,7 @@ const AllHCases = (props: Props) => {
                         onError: (err) => {
                           snackbar("خطا در تغیر وضعیت پرونده", "error");
                         },
-                      }
+                      },
                     );
                   },
                   title: "تایید حکم",
@@ -522,7 +561,7 @@ const AllHCases = (props: Props) => {
                         onSuccess: (res: any) => {
                           snackbar(
                             `پرونده انتظامی انتخاب شده با موفقیت تایید شد`,
-                            "success"
+                            "success",
                           );
                           StatesData_refetch();
                           setDeleteFlag(false);
@@ -530,7 +569,7 @@ const AllHCases = (props: Props) => {
                         onError: () => {
                           snackbar("خطا در تایید نهایی ", "error");
                         },
-                      }
+                      },
                     );
                   },
                   title: "تایید نهایی",
@@ -604,28 +643,176 @@ const AllHCases = (props: Props) => {
                 }}
               />
             );
-        } else if (authFunctions?.hasPermission("supervisor-pdf"))
-          return (
-            <TableActions
-              onView={() => {
-                setEditeData(row);
-                setAddModalFlag(true);
-              }}
-              onAdd={{
-                function: () => {
-                  setBasePDFData(row);
-                  setPdfFlag(true);
-                },
-                title: "پی دی اف",
-                icon: (
-                  <PictureAsPdf
-                    color={row.hasAttachment ? "success" : "primary"}
-                  />
-                ),
-              }}
-            />
-          );
-        else
+        } else if (authFunctions?.hasPermission("supervisor-pdf")) {
+          if (row?.processStage === "SUPREME_CREATED")
+            return (
+              <TableActions
+                onManage={{
+                  function: () => {
+                    setEditable(false);
+                    setEditeData(row);
+                    setDOCaseModalFlag(true);
+                  },
+                  title: "مشاهده حکم بدوی",
+                  icon: (
+                    <Visibility color={"info"} />
+                  ),
+                }}
+              />
+            );
+          else if (row?.processStage === "SUPREME_METTING_REQUEST")
+            return (
+              <TableActions
+                onAdd={{
+                  function: () => {
+                    setEditable(false);
+                    setCaseData(row);
+                    setInvitationFlag(true);
+                  },
+                  title: "مشاهده دعوتنامه",
+                  icon: (
+                    <HistoryEdu
+                      color={"info"}
+                    />
+                  ),
+                }}
+                onEditF={{
+                  function: () => {
+                    setEditable(false);
+                    setEditeData(row);
+                    setDOCaseModalFlag(true);
+                  },
+                  title: "مشاهده حکم بدوی",
+                  icon: (
+                    <Visibility color={"info"} />
+                  ),
+                }}
+              />
+            );
+          else if (row?.processStage === "SUPREME_DONE")
+            return (
+              <TableActions
+                onManage={{
+                  function: () => {
+                    setEditable(false);
+                    setFirstOrderData(row);
+                    setFirstOrderFlag(true);
+                  },
+                  title: "مشاهده حکم عالی",
+                  icon: (
+                    <Gavel color={"info"} />
+                  ),
+                }}
+                onAdd={{
+                  function: () => {
+                    setEditable(false);
+                    setEditeData(row);
+                    setDOCaseModalFlag(true);
+                  },
+                  title: "مشاهده حکم بدوی",
+                  icon: (
+                    <Visibility color={"info"} />
+                  ),
+                }}
+              />
+            );
+          else if (row?.processStage === "CASE_MINISTRY_CONFIRM")
+            return (
+              <TableActions
+                onManage={{
+                  function: () => {
+                    mutate(
+                      {
+                        entity: `disciplinary-supreme/confirm-ministry?id=${row.id}`,
+                        method: "put",
+                        //   data:
+                      },
+                      {
+                        onSuccess: (res: any) => {
+                          if (res?.status == 200 && res?.data) {
+                            snackbar("تایید وزیر ثبت شد", "success");
+                            StatesData_refetch();
+                          } else snackbar("خطا در تغیر وضعیت پرونده", "error");
+                        },
+                        onError: (err) => {
+                          snackbar("خطا در تغیر وضعیت پرونده", "error");
+                        },
+                      },
+                    );
+                  },
+                  title: "تایید حکم",
+                  icon: <CheckCircle color={"primary"} />,
+                }}
+                onAdd={{
+                  function: () => {
+                    setEditable(false);
+                    setEditeData(row);
+                    setDOCaseModalFlag(true);
+                  },
+                  title: "مشاهده حکم بدوی",
+                  icon: (
+                    <Visibility color={"info"} />
+                  ),
+                }}
+                onEditF={{
+                  function: () => {
+                    setEditable(false);
+                    setFirstOrderData(row);
+                    setFirstOrderFlag(true);
+                  },
+                  title: "مشاهده حکم عالی",
+                  icon: (
+                    <Gavel color={"info"} />
+                  ),
+                }}
+              />
+            );
+          else if (
+            row?.processStage === "FINAL" ||
+            row?.processStage === " قطعی "
+          )
+            return (
+              <TableActions
+                // onView={() => {
+                //   setEditable(false);
+                //   setEditeData(row);
+                //   setAddModalFlag(true);
+                // }}
+                onManage={{
+                  function: () => {
+                    setEditable(false);
+                    // setEditeData(row);
+                    setFirstOrderData(row);
+                    setFirstOrderFlag(true);
+                  },
+                  title: "مشاهده حکم عالی",
+                  icon: (
+                    <Gavel color={"info"} />
+                  ),
+                }}
+                onAdd={{
+                  function: () => {
+                    setEditable(false);
+                    setEditeData(row);
+                    setDOCaseModalFlag(true);
+                  },
+                  title: "مشاهده حکم بدوی",
+                  icon: (
+                    <Visibility color={"info"} />
+                  ),
+                }}
+                // onRead={{
+                //   function: () => {
+                //     setEditable(false);
+                //     setEditeData(row);
+                //     setLogFlag(true);
+                //   },
+                //   title: "گزارشات",
+                //   icon: <AutoStories color={"info"} />,
+                // }}
+              />
+            );
+        } else
           return (
             <TableActions
               onView={() => {
@@ -725,7 +912,7 @@ const AllHCases = (props: Props) => {
           if (res?.status == 200 && res?.data) {
             snackbar(
               "واحد های انتخابی با موفقیت به لیست شما افزوده شد.",
-              "success"
+              "success",
             );
             // navigate('/unitselection', { state: {from: "add-unit", noBack: noBack} })
           } else snackbar("خطا در افزودن واحد ها به لیست", "error");
@@ -733,7 +920,7 @@ const AllHCases = (props: Props) => {
         onError: (err) => {
           snackbar("خطا در افزودن واحد ها به لیست", "error");
         },
-      }
+      },
     );
   }
   return (
@@ -869,7 +1056,7 @@ const AllHCases = (props: Props) => {
           refetch={StatesData_refetch}
           editeData={caseData}
           setEditeData={setCaseData}
-          editable={true}
+          editable={editable}
           addModalFlag={invitationFlag}
           setAddModalFlag={setInvitationFlag}
         />
@@ -922,7 +1109,7 @@ const AllHCases = (props: Props) => {
               onSuccess: (res: any) => {
                 snackbar(
                   `پرونده انتظامی انتخاب شده با موفقیت حذف شد`,
-                  "success"
+                  "success",
                 );
                 StatesData_refetch();
                 setDeleteFlag(false);
@@ -930,7 +1117,7 @@ const AllHCases = (props: Props) => {
               onError: () => {
                 snackbar("خطا در حذف ", "error");
               },
-            }
+            },
           )
         }
         message={`آیا از حذف پرونده انتظامی مورد نظر مطمعین میباشید؟`}
