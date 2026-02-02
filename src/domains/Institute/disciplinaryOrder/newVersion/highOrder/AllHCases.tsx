@@ -227,7 +227,7 @@ const AllHCases = (props: Props) => {
           return (
             <Chip label={"دعوتنامه"} icon={<HistoryEdu fontSize="small" />} />
           );
-        if (row?.processStage === "CASE_MINISTRY_CONFIRM")
+        if (row?.processStage === "SUPREME_MINISTRY_CONFIRM")
           return (
             <Chip
               label={"در انتظار وزیر"}
@@ -243,7 +243,7 @@ const AllHCases = (props: Props) => {
               icon={<Gavel fontSize="small" />}
             />
           );
-        if (row?.disciplinaryCaseStage === "CASE_MINISTRY_CONFIRM")
+        if (row?.disciplinaryCaseStage === "SUPREME_MINISTRY_CONFIRM")
           return (
             <Chip
               label={"در انتظار وزیر"}
@@ -259,7 +259,7 @@ const AllHCases = (props: Props) => {
               icon={<MarkEmailRead fontSize="small" />}
             />
           );
-        if (row?.processStage === "FINAL" || row?.processStage === " قطعی ")
+        if (row?.processStage === "FINAL" || row?.processStage === "SUPREME_FINAL")
           return (
             <Chip
               label={"قطعی عالی"}
@@ -455,7 +455,7 @@ const AllHCases = (props: Props) => {
                 }}
               />
             );
-          else if (row?.processStage === "CASE_MINISTRY_CONFIRM")
+          else if (row?.processStage === "SUPREME_MINISTRY_CONFIRM")
             return (
               <TableActions
                 onManage={{
@@ -497,7 +497,7 @@ const AllHCases = (props: Props) => {
                 }}
               />
             );
-          else if (row?.disciplinaryCaseStage === "CASE_MINISTRY_CONFIRM")
+          else if (row?.disciplinaryCaseStage === "SUPREME_MINISTRY_CONFIRM")
             return (
               <TableActions
                 // onDelete={() => {
@@ -596,7 +596,7 @@ const AllHCases = (props: Props) => {
             );
           else if (
             row?.processStage === "FINAL" ||
-            row?.processStage === " قطعی "
+            row?.processStage === "SUPREME_FINAL"
           )
             return (
               <TableActions
@@ -716,7 +716,7 @@ const AllHCases = (props: Props) => {
                 }}
               />
             );
-          else if (row?.processStage === "CASE_MINISTRY_CONFIRM")
+          else if (row?.processStage === "SUPREME_MINISTRY_CONFIRM")
             return (
               <TableActions
                 onManage={{
@@ -769,7 +769,7 @@ const AllHCases = (props: Props) => {
             );
           else if (
             row?.processStage === "FINAL" ||
-            row?.processStage === " قطعی "
+            row?.processStage === "SUPREME_FINAL"
           )
             return (
               <TableActions
@@ -883,8 +883,8 @@ const AllHCases = (props: Props) => {
         { value: "SUPREME_CREATED", title: "اولیه" },
         { value: "SUPREME_METTING_REQUEST", title: "دعوتنامه" },
         { value: "SUPREME_DONE", title: "حکم عالی" },
-        { value: "CASE_MINISTRY_CONFIRM", title: "در انتظار وزیر" },
-        { value: "FINAL", title: "قطعی" },
+        { value: "SUPREME_MINISTRY_CONFIRM", title: "در انتظار وزیر" },
+        { value: "SUPREME_FINAL", title: "قطعی" },
       ],
     },
   ];

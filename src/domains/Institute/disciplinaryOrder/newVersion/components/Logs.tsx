@@ -53,7 +53,7 @@ import VerticalTable from "components/dataGrid/VerticalTable";
 import { isMobile } from "react-device-detect";
 import { GridColDef } from "@mui/x-data-grid";
 import { PAGINATION_DEFAULT_VALUE } from "shared/paginationValue";
-import jalaliMoment  from "jalali-moment";
+import jalaliMoment from "jalali-moment";
 import moment from "moment-timezone";
 
 // مسیر هوک را بر اساس ساختار پروژه خودتان تنظیم کنید
@@ -103,7 +103,7 @@ const Logs = ({
         !!editeData
           ? `گزارشات با موفقیت به‌روزرسانی شد`
           : `گزارشات جدید با موفقیت افزوده شد`,
-        "success"
+        "success",
       );
       refetch();
       handleClose();
@@ -209,20 +209,71 @@ const Logs = ({
               }
             />
           );
+        if (row?.processStage === "SUPREME_CREATED")
+          return <Chip label={"اولیه عالی"} color="info" />;
+        if (row?.processStage === "SUPREME_METTING_REQUEST")
+          return (
+            <Chip label={"دعوتنامه"} icon={<HistoryEdu fontSize="small" />} />
+          );
+        if (row?.processStage === "SUPREME_MINISTRY_CONFIRM")
+          return (
+            <Chip
+              label={"در انتظار وزیر"}
+              color="warning"
+              icon={<Gavel fontSize="small" />}
+            />
+          );
+        if (row?.processStage === "SUPREME_DONE")
+          return (
+            <Chip
+              label={"عالی"}
+              color="info"
+              icon={<Gavel fontSize="small" />}
+            />
+          );
+        if (row?.disciplinaryCaseStage === "SUPREME_MINISTRY_CONFIRM")
+          return (
+            <Chip
+              label={"در انتظار وزیر"}
+              color="warning"
+              // icon={<PendingActions sx={{ fontSize: "1rem" }} fontSize="small" />}
+            />
+          );
+        if (row?.processStage === "SUPREME_NOTIFIED")
+          return (
+            <Chip
+              label={"ابلاغ"}
+              color="secondary"
+              icon={<MarkEmailRead fontSize="small" />}
+            />
+          );
+        if (
+          row?.processStage === "SUPREME_FINAL"
+        )
+          return (
+            <Chip
+              label={"قطعی عالی"}
+              color="secondary"
+              icon={<Verified color="secondary" fontSize="small" />}
+            />
+          );
       },
     },
     { field: "comment", headerName: "توضیحات", flex: 1.2 },
-    { field: "actionDate", headerName: "تاریخ", flex: 1,
+    {
+      field: "actionDate",
+      headerName: "تاریخ",
+      flex: 1,
       renderCell: ({ row }: { row: any }) => {
-        if(row?.actionDate)
-              return (
-                <Typography variant="caption">
-                  {/* {jalaliMoment(moment.tz(row?.actionDate, "Asia/Tehran").toDate()).format("HH:mm jYYYY/jMM/jDD")} */}
-                  {jalaliMoment(row?.actionDate).format("HH:mm jYYYY/jMM/jDD")}
-                </Typography>
-              );
-            },
-     },
+        if (row?.actionDate)
+          return (
+            <Typography variant="caption">
+              {/* {jalaliMoment(moment.tz(row?.actionDate, "Asia/Tehran").toDate()).format("HH:mm jYYYY/jMM/jDD")} */}
+              {jalaliMoment(row?.actionDate).format("HH:mm jYYYY/jMM/jDD")}
+            </Typography>
+          );
+      },
+    },
   ];
   return (
     <Dialog

@@ -206,7 +206,7 @@ const AccountantAllHCases = (props: Props) => {
           return (
             <Chip label={"دعوتنامه"} icon={<HistoryEdu fontSize="small" />} />
           );
-        if (row?.processStage === "CASE_MINISTRY_CONFIRM")
+        if (row?.processStage === "SUPREME_MINISTRY_CONFIRM")
           return (
             <Chip
               label={"در انتظار وزیر"}
@@ -231,7 +231,7 @@ const AccountantAllHCases = (props: Props) => {
               icon={<MarkEmailRead fontSize="small" />}
             />
           );
-        if (row?.processStage === "FINAL" || row?.processStage === " قطعی ")
+        if (row?.processStage === "FINAL" || row?.processStage === "SUPREME_FINAL")
           return (
             <Chip
               label={"قطعی عالی"}
@@ -407,7 +407,7 @@ const AccountantAllHCases = (props: Props) => {
             );
           else if (
             row?.processStage === "FINAL" ||
-            row?.processStage === " قطعی "
+            row?.processStage === "SUPREME_FINAL"
           )
             return (
               <TableActions

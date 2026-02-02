@@ -69,7 +69,7 @@ const AccountantUserAllDOCases = (props: Props) => {
   const [caseData, setCaseData] = useState<any>(null);
   const [firstOrderData, setFirstOrderData] = useState<any>(null);
   const [editable, setEditable] = useState<boolean>(
-    authFunctions?.hasPermission("disciplinary-order-edit")
+    authFunctions?.hasPermission("disciplinary-order-edit"),
   );
   const [addModalFlag, setAddModalFlag] = useState(false);
   const [protestRequestFlag, setProtestRequestFlag] = useState(false);
@@ -112,7 +112,7 @@ const AccountantUserAllDOCases = (props: Props) => {
         onError: () => {
           snackbar("خطا در دریافت اکسل ", "error");
         },
-      }
+      },
     );
   }
   const {
@@ -127,7 +127,7 @@ const AccountantUserAllDOCases = (props: Props) => {
   });
   const [supremeFilters, setSupremeFilters] = useState<any>({
     ...PAGINATION_DEFAULT_VALUE,
-    accuserNationalCode:Auth?.userInfo?.nationalCode
+    accuserNationalCode: Auth?.userInfo?.nationalCode,
     // disciplinaryCaseId: Auth?.userInfo?.nationalCode,
   });
   const {
@@ -305,6 +305,47 @@ const AccountantUserAllDOCases = (props: Props) => {
               }
             />
           );
+        if (row?.disciplinaryCaseStage === "SUPREME_CREATED")
+          return <Chip label={"اولیه عالی"} color="info" />;
+        if (row?.disciplinaryCaseStage === "SUPREME_METTING_REQUEST")
+          return (
+            <Chip
+              label={"دعوتنامه عالی"}
+              icon={<HistoryEdu fontSize="small" />}
+            />
+          );
+        if (row?.disciplinaryCaseStage === "SUPREME_MINISTRY_CONFIRM")
+          return (
+            <Chip
+              label={"در انتظار وزیر عالی"}
+              color="warning"
+              icon={<Gavel fontSize="small" />}
+            />
+          );
+        if (row?.disciplinaryCaseStage === "SUPREME_DONE")
+          return (
+            <Chip
+              label={"حکم عالی"}
+              color="info"
+              icon={<Gavel fontSize="small" />}
+            />
+          );
+        if (row?.disciplinaryCaseStage === "SUPREME_NOTIFIED")
+          return (
+            <Chip
+              label={"ابلاغ عالی"}
+              color="secondary"
+              icon={<MarkEmailRead fontSize="small" />}
+            />
+          );
+        if (row?.disciplinaryCaseStage === "SUPREME_FINAL")
+          return (
+            <Chip
+              label={"قطعی عالی"}
+              color="secondary"
+              icon={<Verified color="secondary" fontSize="small" />}
+            />
+          );
       },
     },
     {
@@ -321,10 +362,7 @@ const AccountantUserAllDOCases = (props: Props) => {
       align: "center",
       renderCell: ({ row }: { row: any }) => {
         if (row?.noticeDate) {
-          const [date, time] = row?.noticeDateFr?.split(" ") ?? [
-            null,
-            null,
-          ];
+          const [date, time] = row?.noticeDateFr?.split(" ") ?? [null, null];
           return (
             <Box
               display={"flex"}
@@ -332,7 +370,7 @@ const AccountantUserAllDOCases = (props: Props) => {
               alignItems={"center"}
             >
               <Verified color="secondary" />
-              <Tooltip title={row?.noticeDateFr }>
+              <Tooltip title={row?.noticeDateFr}>
                 <Typography variant="caption">
                   {/* {moment(new Date(row?.noticeDate)).format("jYYYY/jMM/jDD")} */}
                   {date?.replaceAll("-", "/") ?? null}
@@ -385,145 +423,143 @@ const AccountantUserAllDOCases = (props: Props) => {
       headerAlign: "center",
       align: "center",
       renderCell: ({ row }: { row: any }) => {
-          if (row?.disciplinaryCaseStage === "CASE_REVIEW")
-            return (
-              <TableActions
-              // onView={() => {
-              //   setEditable(false);
-              //   setEditeData(row);
-              //   setAddModalFlag(true);
-              // }}
-              />
-            );
-          else if (row?.disciplinaryCaseStage === "PRIMARY_MEETING_REQUESTED")
-            return (
-              <TableActions
-                // onAdd={{
-                //   function: () => {
-                //     setEditable(false);
-                //     setCaseData(row);
-                //     setInvitationFlag(true);
-                //   },
-                //   title: "دعوتنامه",
-                //   icon: (
-                //     <HistoryEdu
-                //       color={row.hasAttachment ? "success" : "primary"}
-                //     />
-                //   ),
-                // }}
-                // onView={() => {
-                //   setEditable(false);
-                //   setEditeData(row);
-                //   setAddModalFlag(true);
-                // }}
-              />
-            );
-          else if (row?.disciplinaryCaseStage === "PRIMARY_ORDER_DONE")
-            return (
-              <TableActions
-                // onManage={{
-                //   function: () => {
-                //     setEditable(false);
-                //     setFirstOrderData(row);
-                //     setFirstOrderFlag(true);
-                //   },
-                //   title: "حکم بدوی",
-                //   icon: (
-                //     // <Badge badgeContent={1} color="primary">
-                //     <Gavel color={"primary"} />
-                //     // </Badge>
-                //   ),
-                // }}
-              />
-            );
-          else if (row?.disciplinaryCaseStage === "NOTIFIED")
-            return (
-              <TableActions
-                onManage={{
-                  function: () => {
-                    setEditable(false);
-                    setFirstOrderData(row);
-                    setFirstOrderFlag(true);
-                  },
-                  title: "حکم بدوی",
-                  icon: (
-                    // <Badge badgeContent={1} color="primary">
-                    <Visibility color={"primary"} />
-                    // </Badge>
-                  ),
-                }}
-              />
-            );
-          else if (row?.disciplinaryCaseStage === "PROTEST_REVIEW")
-            return (
-              <TableActions
-                // onManage={{
-                //   function: () => {
-                //     setEditable(false);
-                //     setEditeData(row);
-                //     setProtestRequestFlag(true);
-                //   },
-                //   title: "اعتراض به حکم بدوی",
-                //   icon: (
-                //     // <Badge badgeContent={1} color="primary">
-                //     <PanTool color={"primary"} fontSize="small" />
-                //     // </Badge>
-                //   ),
-                // }}
-              />
-            );
-          else if (row?.disciplinaryCaseStage === "PROTEST_ACCEPTED")
-            return (
-              <TableActions
-                onAdd={{
-                  function: () => {
-                    setEditeData(row);
-                    setProtestResponseFlag(true);
-                    setEditable(false);
-                  },
-                  title: "مشاهده پاسخ اعتراض",
-                  icon: (
-                    // <Badge badgeContent={1} color="primary">
-                    <ChromeReaderModeRounded
-                      color={"primary"}
-                      fontSize="small"
-                    />
-                    // </Badge>
-                  ),
-                }}
-                onManage={{
-                  function: () => {
-                    setEditable(false);
-                    setFirstOrderData(row);
-                    setFirstOrderFlag(true);
-                  },
-                  title: "حکم بدوی",
-                  icon: (
-                    // <Badge badgeContent={1} color="primary">
-                    <Visibility color={"primary"} />
-                    // </Badge>
-                  ),
-                }}
-              />
-            );
-          else if (row?.disciplinaryCaseStage === "FINAL")
-            return (
-              <TableActions
-                onManage={{
-                  function: () => {
-                    setEditable(false);
-                    setFirstOrderData(row);
-                    setFirstOrderFlag(true);
-                  },
-                  title: "حکم بدوی",
-                  icon: (
-                    // <Badge badgeContent={1} color="primary">
-                    <Visibility color={"primary"} />
-                    // </Badge>
-                  ),
-                }}
-              />
-            );
+        if (row?.disciplinaryCaseStage === "CASE_REVIEW")
+          return (
+            <TableActions
+            // onView={() => {
+            //   setEditable(false);
+            //   setEditeData(row);
+            //   setAddModalFlag(true);
+            // }}
+            />
+          );
+        else if (row?.disciplinaryCaseStage === "PRIMARY_MEETING_REQUESTED")
+          return (
+            <TableActions
+            // onAdd={{
+            //   function: () => {
+            //     setEditable(false);
+            //     setCaseData(row);
+            //     setInvitationFlag(true);
+            //   },
+            //   title: "دعوتنامه",
+            //   icon: (
+            //     <HistoryEdu
+            //       color={row.hasAttachment ? "success" : "primary"}
+            //     />
+            //   ),
+            // }}
+            // onView={() => {
+            //   setEditable(false);
+            //   setEditeData(row);
+            //   setAddModalFlag(true);
+            // }}
+            />
+          );
+        else if (row?.disciplinaryCaseStage === "PRIMARY_ORDER_DONE")
+          return (
+            <TableActions
+            // onManage={{
+            //   function: () => {
+            //     setEditable(false);
+            //     setFirstOrderData(row);
+            //     setFirstOrderFlag(true);
+            //   },
+            //   title: "حکم بدوی",
+            //   icon: (
+            //     // <Badge badgeContent={1} color="primary">
+            //     <Gavel color={"primary"} />
+            //     // </Badge>
+            //   ),
+            // }}
+            />
+          );
+        else if (row?.disciplinaryCaseStage === "NOTIFIED")
+          return (
+            <TableActions
+              onManage={{
+                function: () => {
+                  setEditable(false);
+                  setFirstOrderData(row);
+                  setFirstOrderFlag(true);
+                },
+                title: "حکم بدوی",
+                icon: (
+                  // <Badge badgeContent={1} color="primary">
+                  <Visibility color={"primary"} />
+                  // </Badge>
+                ),
+              }}
+            />
+          );
+        else if (row?.disciplinaryCaseStage === "PROTEST_REVIEW")
+          return (
+            <TableActions
+            // onManage={{
+            //   function: () => {
+            //     setEditable(false);
+            //     setEditeData(row);
+            //     setProtestRequestFlag(true);
+            //   },
+            //   title: "اعتراض به حکم بدوی",
+            //   icon: (
+            //     // <Badge badgeContent={1} color="primary">
+            //     <PanTool color={"primary"} fontSize="small" />
+            //     // </Badge>
+            //   ),
+            // }}
+            />
+          );
+        else if (row?.disciplinaryCaseStage === "PROTEST_ACCEPTED")
+          return (
+            <TableActions
+              onAdd={{
+                function: () => {
+                  setEditeData(row);
+                  setProtestResponseFlag(true);
+                  setEditable(false);
+                },
+                title: "مشاهده پاسخ اعتراض",
+                icon: (
+                  // <Badge badgeContent={1} color="primary">
+                  <ChromeReaderModeRounded color={"primary"} fontSize="small" />
+                  // </Badge>
+                ),
+              }}
+              onManage={{
+                function: () => {
+                  setEditable(false);
+                  setFirstOrderData(row);
+                  setFirstOrderFlag(true);
+                },
+                title: "حکم بدوی",
+                icon: (
+                  // <Badge badgeContent={1} color="primary">
+                  <Visibility color={"primary"} />
+                  // </Badge>
+                ),
+              }}
+            />
+          );
+        // else if (row?.disciplinaryCaseStage === "FINAL")
+        else 
+          return (
+            <TableActions
+              onManage={{
+                function: () => {
+                  setEditable(false);
+                  setFirstOrderData(row);
+                  setFirstOrderFlag(true);
+                },
+                title: "حکم بدوی",
+                icon: (
+                  // <Badge badgeContent={1} color="primary">
+                  <Visibility color={"primary"} />
+                  // </Badge>
+                ),
+              }}
+            />
+          );
       },
     },
   ];
@@ -581,7 +617,7 @@ const AccountantUserAllDOCases = (props: Props) => {
           if (res?.status == 200 && res?.data) {
             snackbar(
               "واحد های انتخابی با موفقیت به لیست شما افزوده شد.",
-              "success"
+              "success",
             );
             // navigate('/unitselection', { state: {from: "add-unit", noBack: noBack} })
           } else snackbar("خطا در افزودن واحد ها به لیست", "error");
@@ -589,7 +625,7 @@ const AccountantUserAllDOCases = (props: Props) => {
         onError: (err) => {
           snackbar("خطا در افزودن واحد ها به لیست", "error");
         },
-      }
+      },
     );
   }
   const { reset, getValues } = useForm<any>();
@@ -626,7 +662,7 @@ const AccountantUserAllDOCases = (props: Props) => {
         },
       },
     ],
-    [getValues, Auth.userInfo]
+    [getValues, Auth.userInfo],
   );
   return (
     <Grid container justifyContent="center">
@@ -696,7 +732,9 @@ const AccountantUserAllDOCases = (props: Props) => {
       >
         <Box display={"flex"} alignItems={"center"} gap={1}>
           <Gavel fontSize="medium" />
-          <Typography variant="body1" fontWeight={"bold"}>پرونده‌های انتظامی بدوی حسابدار رسمی</Typography>
+          <Typography variant="body1" fontWeight={"bold"}>
+            پرونده‌های انتظامی بدوی حسابدار رسمی
+          </Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"} gap={1}>
           {/* <BackButton onBack={() => navigate(-1)} /> */}
@@ -739,7 +777,7 @@ const AccountantUserAllDOCases = (props: Props) => {
           )
         ) : null}
       </Grid>
-      <AccountantAllHCases/>
+      <AccountantAllHCases />
       <AddDOCase
         editable={editable}
         refetch={StatesData_refetch}
