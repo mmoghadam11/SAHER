@@ -47,7 +47,7 @@ const AccountantAllHCases = (props: Props) => {
   const [caseData, setCaseData] = useState<any>(null);
   const [firstOrderData, setFirstOrderData] = useState<any>(null);
   const [editable, setEditable] = useState<boolean>(
-    authFunctions?.hasPermission("disciplinary-order-edit")
+    authFunctions?.hasPermission("disciplinary-order-edit"),
   );
   const [addModalFlag, setAddModalFlag] = useState(false);
   const [protestRequestFlag, setProtestRequestFlag] = useState(false);
@@ -92,7 +92,7 @@ const AccountantAllHCases = (props: Props) => {
         onError: () => {
           snackbar("خطا در دریافت اکسل ", "error");
         },
-      }
+      },
     );
   }
   const {
@@ -226,12 +226,16 @@ const AccountantAllHCases = (props: Props) => {
         if (row?.processStage === "NOTIFIED")
           return (
             <Chip
-              label={"ابلاغ"}
+              sx={{ fontSize: ".75rem" }}
+              label={"مهلت قانونی"}
               color="secondary"
               icon={<MarkEmailRead fontSize="small" />}
             />
           );
-        if (row?.processStage === "FINAL" || row?.processStage === "SUPREME_FINAL")
+        if (
+          row?.processStage === "FINAL" ||
+          row?.processStage === "SUPREME_FINAL"
+        )
           return (
             <Chip
               label={"قطعی عالی"}
@@ -310,128 +314,127 @@ const AccountantAllHCases = (props: Props) => {
       headerAlign: "center",
       align: "center",
       renderCell: ({ row }: { row: any }) => {
-          if (row?.processStage === "SUPREME_CREATED")
-            return (
-              <TableActions
-              // onEdit={() => {
-              //   setEditable(true);
-              //   setEditeData(row);
-              //   setAddModalFlag(true);
-              // }}
+        if (row?.processStage === "SUPREME_CREATED")
+          return (
+            <TableActions
+            // onEdit={() => {
+            //   setEditable(true);
+            //   setEditeData(row);
+            //   setAddModalFlag(true);
+            // }}
+            // onView={() => {
+            //   setEditable(false);
+            //   setEditeData(row);
+            //   setAddModalFlag(true);
+            // }}
+            // onAdd={{
+            //   function: () => {
+            //     setEditable(true);
+            //     setCaseData(row);
+            //     setInvitationFlag(true);
+            //   },
+            //   title: "ثبت دعوتنامه",
+            //   icon: (
+            //     <HistoryEdu
+            //       color={row.hasAttachment ? "success" : "primary"}
+            //     />
+            //   ),
+            // }}
+            />
+          );
+        else if (row?.processStage === "SUPREME_METTING_REQUEST")
+          return (
+            <TableActions
+            // onManage={{
+            //   function: () => {
+            //     setEditable(true);
+            //     setFirstOrderData(row);
+            //     setFirstOrderFlag(true);
+            //   },
+            //   title: "ثبت حکم عالی",
+            //   icon: (
+            //     // <Badge badgeContent={1} color="primary">
+            //     <Gavel color={"primary"} />
+            //     // </Badge>
+            //   ),
+            // }}
+            // onAdd={{
+            //   function: () => {
+            //     setEditable(false);
+            //     setCaseData(row);
+            //     setInvitationFlag(true);
+            //   },
+            //   title: "مشاهده دعوتنامه",
+            //   icon: (
+            //     <HistoryEdu
+            //       color={row.hasAttachment ? "success" : "primary"}
+            //     />
+            //   ),
+            // }}
+            />
+          );
+        else if (row?.processStage === "SUPREME_DONE")
+          return (
+            <TableActions
+            // onManage={{
+            //   function: () => {
+            //     setEditable(false);
+            //     setFirstOrderData(row);
+            //     setFirstOrderFlag(true);
+            //   },
+            //   title: "مشاهده حکم عالی",
+            //   icon: (
+            //     // <Badge badgeContent={1} color="primary">
+            //     <Gavel color={"primary"} />
+            //     // </Badge>
+            //   ),
+            // }}
+            />
+          );
+        else if (row?.processStage === "NOTIFIED")
+          return (
+            <TableActions
+              onManage={{
+                function: () => {
+                  setEditable(false);
+                  setFirstOrderData(row);
+                  setFirstOrderFlag(true);
+                },
+                title: "مشاهده حکم عالی",
+                icon: (
+                  // <Badge badgeContent={1} color="primary">
+                  <Visibility color={"primary"} />
+                  // </Badge>
+                ),
+              }}
+            />
+          );
+        else if (
+          row?.processStage === "FINAL" ||
+          row?.processStage === "SUPREME_FINAL"
+        )
+          return (
+            <TableActions
               // onView={() => {
               //   setEditable(false);
               //   setEditeData(row);
               //   setAddModalFlag(true);
               // }}
-              // onAdd={{
-              //   function: () => {
-              //     setEditable(true);
-              //     setCaseData(row);
-              //     setInvitationFlag(true);
-              //   },
-              //   title: "ثبت دعوتنامه",
-              //   icon: (
-              //     <HistoryEdu
-              //       color={row.hasAttachment ? "success" : "primary"}
-              //     />
-              //   ),
-              // }}
-              />
-            );
-          else if (row?.processStage === "SUPREME_METTING_REQUEST")
-            return (
-              <TableActions
-                // onManage={{
-                //   function: () => {
-                //     setEditable(true);
-                //     setFirstOrderData(row);
-                //     setFirstOrderFlag(true);
-                //   },
-                //   title: "ثبت حکم عالی",
-                //   icon: (
-                //     // <Badge badgeContent={1} color="primary">
-                //     <Gavel color={"primary"} />
-                //     // </Badge>
-                //   ),
-                // }}
-                // onAdd={{
-                //   function: () => {
-                //     setEditable(false);
-                //     setCaseData(row);
-                //     setInvitationFlag(true);
-                //   },
-                //   title: "مشاهده دعوتنامه",
-                //   icon: (
-                //     <HistoryEdu
-                //       color={row.hasAttachment ? "success" : "primary"}
-                //     />
-                //   ),
-                // }}
-              />
-            );
-          else if (row?.processStage === "SUPREME_DONE")
-            return (
-              <TableActions
-                // onManage={{
-                //   function: () => {
-                //     setEditable(false);
-                //     setFirstOrderData(row);
-                //     setFirstOrderFlag(true);
-                //   },
-                //   title: "مشاهده حکم عالی",
-                //   icon: (
-                //     // <Badge badgeContent={1} color="primary">
-                //     <Gavel color={"primary"} />
-                //     // </Badge>
-                //   ),
-                // }}
-              />
-            );
-          else if (row?.processStage === "NOTIFIED")
-            return (
-              <TableActions
-                onManage={{
-                  function: () => {
-                    setEditable(false);
-                    setFirstOrderData(row);
-                    setFirstOrderFlag(true);
-                  },
-                  title: "مشاهده حکم عالی",
-                  icon: (
-                    // <Badge badgeContent={1} color="primary">
-                    <Visibility color={"primary"} />
-                    // </Badge>
-                  ),
-                }}
-              />
-            );
-          else if (
-            row?.processStage === "FINAL" ||
-            row?.processStage === "SUPREME_FINAL"
-          )
-            return (
-              <TableActions
-                // onView={() => {
-                //   setEditable(false);
-                //   setEditeData(row);
-                //   setAddModalFlag(true);
-                // }}
-                onManage={{
-                  function: () => {
-                    setEditable(false);
-                    setFirstOrderData(row);
-                    setFirstOrderFlag(true);
-                  },
-                  title: "مشاهده حکم عالی",
-                  icon: (
-                    // <Badge badgeContent={1} color="primary">
-                    <Visibility color={"primary"} />
-                    // </Badge>
-                  ),
-                }}
-              />
-            );
-        
+              onManage={{
+                function: () => {
+                  setEditable(false);
+                  setFirstOrderData(row);
+                  setFirstOrderFlag(true);
+                },
+                title: "مشاهده حکم عالی",
+                icon: (
+                  // <Badge badgeContent={1} color="primary">
+                  <Visibility color={"primary"} />
+                  // </Badge>
+                ),
+              }}
+            />
+          );
       },
     },
   ];
@@ -513,7 +516,7 @@ const AccountantAllHCases = (props: Props) => {
           if (res?.status == 200 && res?.data) {
             snackbar(
               "واحد های انتخابی با موفقیت به لیست شما افزوده شد.",
-              "success"
+              "success",
             );
             // navigate('/unitselection', { state: {from: "add-unit", noBack: noBack} })
           } else snackbar("خطا در افزودن واحد ها به لیست", "error");
@@ -521,7 +524,7 @@ const AccountantAllHCases = (props: Props) => {
         onError: (err) => {
           snackbar("خطا در افزودن واحد ها به لیست", "error");
         },
-      }
+      },
     );
   }
   return (

@@ -37,9 +37,11 @@ type Props = {
   setAddModalFlag: React.Dispatch<React.SetStateAction<boolean>>;
   editeData: any;
   setEditeData: React.Dispatch<React.SetStateAction<any>>;
+  temporary?:boolean;
 };
 
 const AddFirstStepOrder = ({
+  temporary=false,
   editable,
   addModalFlag,
   setAddModalFlag,
@@ -402,7 +404,7 @@ const AddFirstStepOrder = ({
     // 4. فراخوانی Mutate
     mutate(
       {
-        entity: `disciplinary-case/register-order`,
+        entity: `disciplinary-case/${temporary?"temporary-update":"register-order"}`,
         method: "put",
         data: formData,
       },

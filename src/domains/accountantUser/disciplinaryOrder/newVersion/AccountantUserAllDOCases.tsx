@@ -260,7 +260,8 @@ const AccountantUserAllDOCases = (props: Props) => {
         if (row?.disciplinaryCaseStage === "NOTIFIED")
           return (
             <Chip
-              label={"ابلاغ"}
+              sx={{fontSize:".75rem"}}
+              label={"مهلت قانونی"}
               color="secondary"
               icon={
                 <MarkEmailRead sx={{ fontSize: "1rem" }} fontSize="small" />
@@ -333,7 +334,8 @@ const AccountantUserAllDOCases = (props: Props) => {
         if (row?.disciplinaryCaseStage === "SUPREME_NOTIFIED")
           return (
             <Chip
-              label={"ابلاغ عالی"}
+              sx={{fontSize:".75rem"}}
+              label={"مهلت قانونی عالی"}
               color="secondary"
               icon={<MarkEmailRead fontSize="small" />}
             />

@@ -355,7 +355,8 @@ const AddDOCase = ({
     );
     console.log("submissionData", submissionData);
     mutate({
-      entity: `disciplinary-case/${!!editeData ? temporary?"temporary-update":  "update" : "save"}`,
+      // entity: `disciplinary-case/${!!editeData ? temporary?"temporary-update":  "update" : "save"}`,
+      entity: `disciplinary-case/${!!editeData ? "update" : "save"}`,
       method: !!editeData ? "put" : "post",
       data: formData,
     });
