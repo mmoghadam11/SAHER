@@ -251,15 +251,15 @@ const OfficialUserGrid = (props: Props) => {
                   },
                 });
               }}
-              // onManage={{
-              //   title: "جزئیات حسابدار رسمی",
-              //   function: () => {
-              //     navigate(`details/${row.id}`, {
-              //       state: { accountantData: row, searchFilters: filters },
-              //     });
-              //   },
-              //   icon: <Toc />,
-              // }}
+              onManage={{
+                title: "جزئیات حسابدار رسمی",
+                function: () => {
+                  navigate(`details/${row.id}`, {
+                    state: { accountantData: row, searchFilters: filters },
+                  });
+                },
+                icon: <Toc />,
+              }}
             />
           );
       },
@@ -471,7 +471,7 @@ const OfficialUserGrid = (props: Props) => {
               filters={filters}
               setFilters={setFilters}
               rowCount={StatesData?.totalElements}
-              getRowHeight={() => (hasPermission("supervisor") ? null : "auto")}
+              getRowHeight={() => "auto"}
               autoHeight
               hideToolbar
             />

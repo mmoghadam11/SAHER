@@ -23,6 +23,7 @@ import {
   CheckCircle,
   HistoryEdu,
   Edit,
+  Schedule,
 } from "@mui/icons-material";
 import { Box, Button, Chip, Grid, Tooltip, Typography } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
@@ -145,6 +146,43 @@ const AllDOGrid = (props: Props) => {
   } as any);
   const columns: GridColDef[] = [
     {
+      field: "optional",
+      headerName: "موقتی",
+      flex: 1,
+      align: "center",
+      renderCell: ({ row }: { row: any }) => {
+        // if (row?.cdPersonalityId === 397)
+        return (
+          <TableActions
+            onEditF={{
+              function: () => {
+                setEditable(true);
+                setTemporary(true);
+                setEditeData(row);
+                setAddModalFlag(true);
+              },
+              title: "ویرایش مجدد پرونده",
+              icon: <Edit color={"primary"} />,
+            }}
+            onManage={{
+              function: () => {
+                setEditable(true);
+                setTemporary(true);
+                setFirstOrderData(row);
+                setFirstOrderFlag(true);
+              },
+              title: "ویرایش مجدد حکم بدوی",
+              icon: <Gavel color={"primary"} />,
+            }}
+            onDelete={() => {
+              setDeleteData(row);
+              setDeleteFlag(true);
+            }}
+          />
+        );
+      },
+    },
+    {
       field: "respondenType",
       headerName: "نوع شخصیت حسابرس",
       flex: 1.2,
@@ -175,11 +213,30 @@ const AllDOGrid = (props: Props) => {
       },
     },
     { field: "accuserName", headerName: "نام شخصیت", flex: 1.2 },
+    // {
+    //   field: "complainant",
+    //   headerName: "شاکی",
+    //   flex: 1,
+    //   cellClassName: () => "font-13",
+    // },
     {
-      field: "complainant",
-      headerName: "شاکی",
-      flex: 1,
+      field: "disciplinaryOrderName",
+      headerName: "نوع تنبیه",
+      flex: 2,
       cellClassName: () => "font-13",
+    },
+    {
+      field: "orderDuration",
+      headerName: "مدت حکم",
+      flex: 0.7,
+      renderCell: ({ row }: { row: any }) => {
+        if (!!row?.orderDuration)
+          return (
+            <Typography variant="caption">
+              {row?.orderDuration} ماه
+            </Typography>
+          );
+      },
     },
     {
       field: "orderNumber",
@@ -200,25 +257,25 @@ const AllDOGrid = (props: Props) => {
           );
       },
     },
-    {
-      field: "referralNumber",
-      headerName: "شماره ارجاع",
-      flex: 1,
-      cellClassName: () => "font-13",
-    },
-    {
-      field: "referralDate",
-      headerName: "تاریخ ارجاع",
-      flex: 1,
-      renderCell: ({ row }: { row: any }) => {
-        if (!!row?.referralDate)
-          return (
-            <Typography variant="caption">
-              {moment(new Date(row?.referralDate)).format("jYYYY/jMM/jDD")}
-            </Typography>
-          );
-      },
-    },
+    // {
+    //   field: "referralNumber",
+    //   headerName: "شماره ارجاع",
+    //   flex: 1,
+    //   cellClassName: () => "font-13",
+    // },
+    // {
+    //   field: "referralDate",
+    //   headerName: "تاریخ ارجاع",
+    //   flex: 1,
+    //   renderCell: ({ row }: { row: any }) => {
+    //     if (!!row?.referralDate)
+    //       return (
+    //         <Typography variant="caption">
+    //           {moment(new Date(row?.referralDate)).format("jYYYY/jMM/jDD")}
+    //         </Typography>
+    //       );
+    //   },
+    // },
     {
       field: "disciplinaryCaseStage",
       headerName: "وضعیت پرونده",
@@ -253,11 +310,10 @@ const AllDOGrid = (props: Props) => {
         if (row?.disciplinaryCaseStage === "NOTIFIED")
           return (
             <Chip
-              label={"ابلاغ"}
+              sx={{ fontSize: ".75rem" }}
+              label={"مهلت قانونی"}
               color={row?.protestOverTime ? "error" : "secondary"}
-              icon={
-                <MarkEmailRead sx={{ fontSize: "1rem" }} fontSize="small" />
-              }
+              icon={<Schedule sx={{ fontSize: "1rem" }} fontSize="small" />}
             />
           );
 
@@ -320,9 +376,10 @@ const AllDOGrid = (props: Props) => {
         if (row?.disciplinaryCaseStage === "SUPREME_NOTIFIED")
           return (
             <Chip
-              label={"ابلاغ عالی"}
+              sx={{ fontSize: ".75rem" }}
+              label={"مهلت قانونی عالی"}
               color="secondary"
-              icon={<MarkEmailRead fontSize="small" />}
+              icon={<Schedule fontSize="small" />}
             />
           );
         if (row?.disciplinaryCaseStage === "SUPREME_FINAL")
@@ -1446,7 +1503,7 @@ const AllDOGrid = (props: Props) => {
         { value: "PRIMARY_MEETING_REQUESTED", title: "دعوتنامه" },
         { value: "PRIMARY_ORDER_DONE", title: "حکم بدوی" },
         { value: "CASE_MINISTRY_CONFIRM", title: "در انتظار وزیر" },
-        { value: "NOTIFIED", title: "ابلاغ شده" },
+        { value: "NOTIFIED", title: "مهلت قانونی" },
         { value: "PROTEST_REVIEW", title: "اعتراض شده" },
         { value: "PROTEST_ACCEPTED", title: "ارجاع‌ به‌ عالی" },
         // { value: "PROTEST_REJECTED", title: "نگذشته" },
@@ -1648,6 +1705,7 @@ const AllDOGrid = (props: Props) => {
       )}
       {firstOrderData && (
         <AddFirstStepOrder
+          temporary={temporary}
           refetch={StatesData_refetch}
           editeData={firstOrderData}
           setEditeData={setFirstOrderData}

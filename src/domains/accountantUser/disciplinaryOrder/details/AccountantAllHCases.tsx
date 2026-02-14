@@ -7,6 +7,7 @@ import {
   MarkEmailRead,
   People,
   PictureAsPdf,
+  Schedule,
   Verified,
   Visibility,
 } from "@mui/icons-material";
@@ -229,7 +230,7 @@ const AccountantAllHCases = (props: Props) => {
               sx={{ fontSize: ".75rem" }}
               label={"مهلت قانونی"}
               color="secondary"
-              icon={<MarkEmailRead fontSize="small" />}
+              icon={<Schedule fontSize="small" />}
             />
           );
         if (

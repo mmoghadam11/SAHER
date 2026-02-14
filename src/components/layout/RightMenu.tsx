@@ -349,7 +349,7 @@ const MENU_ITEMS: MenuItem[] = [
       {
         title: "احکام انتظامی",
         url: "disciplinary-order",
-        access: ["administrator", "city-showmenu", "allAccountants_showmenu"],
+        access: ["administrator", "city-showmenu"],
       },
     ],
   },

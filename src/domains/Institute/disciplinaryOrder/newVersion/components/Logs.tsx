@@ -247,9 +247,9 @@ const Logs = ({
               icon={<MarkEmailRead fontSize="small" />}
             />
           );
-        if (
-          row?.processStage === "SUPREME_FINAL"
-        )
+        // if (
+        //   row?.processStage === "SUPREME_FINAL"
+        // )
           return (
             <Chip
               label={"قطعی عالی"}

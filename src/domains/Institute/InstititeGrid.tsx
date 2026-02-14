@@ -71,6 +71,11 @@ const InstititeGrid = (props: Props) => {
       headerName: "وضعیت فعالیت",
       flex: 0.7,
     },
+    {
+      field: "disciplinaryBaseOrderName",
+      headerName: "وضعیت انتظامی",
+      flex: 1,
+    },
     // {
     //   field: "director",
     //   headerName: "مدیرعامل",

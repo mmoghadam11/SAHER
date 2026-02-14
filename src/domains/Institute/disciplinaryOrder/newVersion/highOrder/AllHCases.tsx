@@ -181,6 +181,23 @@ const AllHCases = (props: Props) => {
       cellClassName: () => "font-13",
     },
     {
+      field: "supremeOrderName",
+      headerName: "نوع تنبیه",
+      flex: 2,
+      cellClassName: () => "font-13",
+    },
+    {
+      field: "orderDuration",
+      headerName: "مدت حکم",
+      flex: 0.7,
+      renderCell: ({ row }: { row: any }) => {
+        if (!!row?.orderDuration)
+          return (
+            <Typography variant="caption">{row?.orderDuration} ماه</Typography>
+          );
+      },
+    },
+    {
       field: "primaryOrderNumber",
       headerName: "شماره حکم بدوی",
       flex: 1.2,
@@ -259,7 +276,10 @@ const AllHCases = (props: Props) => {
               icon={<MarkEmailRead fontSize="small" />}
             />
           );
-        if (row?.processStage === "FINAL" || row?.processStage === "SUPREME_FINAL")
+        if (
+          row?.processStage === "FINAL" ||
+          row?.processStage === "SUPREME_FINAL"
+        )
           return (
             <Chip
               label={"قطعی عالی"}
@@ -654,9 +674,7 @@ const AllHCases = (props: Props) => {
                     setDOCaseModalFlag(true);
                   },
                   title: "مشاهده حکم بدوی",
-                  icon: (
-                    <Visibility color={"info"} />
-                  ),
+                  icon: <Visibility color={"info"} />,
                 }}
               />
             );
@@ -670,11 +688,7 @@ const AllHCases = (props: Props) => {
                     setInvitationFlag(true);
                   },
                   title: "مشاهده دعوتنامه",
-                  icon: (
-                    <HistoryEdu
-                      color={"info"}
-                    />
-                  ),
+                  icon: <HistoryEdu color={"info"} />,
                 }}
                 onEditF={{
                   function: () => {
@@ -683,9 +697,7 @@ const AllHCases = (props: Props) => {
                     setDOCaseModalFlag(true);
                   },
                   title: "مشاهده حکم بدوی",
-                  icon: (
-                    <Visibility color={"info"} />
-                  ),
+                  icon: <Visibility color={"info"} />,
                 }}
               />
             );
@@ -699,9 +711,7 @@ const AllHCases = (props: Props) => {
                     setFirstOrderFlag(true);
                   },
                   title: "مشاهده حکم عالی",
-                  icon: (
-                    <Gavel color={"info"} />
-                  ),
+                  icon: <Gavel color={"info"} />,
                 }}
                 onAdd={{
                   function: () => {
@@ -710,9 +720,7 @@ const AllHCases = (props: Props) => {
                     setDOCaseModalFlag(true);
                   },
                   title: "مشاهده حکم بدوی",
-                  icon: (
-                    <Visibility color={"info"} />
-                  ),
+                  icon: <Visibility color={"info"} />,
                 }}
               />
             );
@@ -750,9 +758,7 @@ const AllHCases = (props: Props) => {
                     setDOCaseModalFlag(true);
                   },
                   title: "مشاهده حکم بدوی",
-                  icon: (
-                    <Visibility color={"info"} />
-                  ),
+                  icon: <Visibility color={"info"} />,
                 }}
                 onEditF={{
                   function: () => {
@@ -761,9 +767,7 @@ const AllHCases = (props: Props) => {
                     setFirstOrderFlag(true);
                   },
                   title: "مشاهده حکم عالی",
-                  icon: (
-                    <Gavel color={"info"} />
-                  ),
+                  icon: <Gavel color={"info"} />,
                 }}
               />
             );
@@ -786,9 +790,7 @@ const AllHCases = (props: Props) => {
                     setFirstOrderFlag(true);
                   },
                   title: "مشاهده حکم عالی",
-                  icon: (
-                    <Gavel color={"info"} />
-                  ),
+                  icon: <Gavel color={"info"} />,
                 }}
                 onAdd={{
                   function: () => {
@@ -797,9 +799,7 @@ const AllHCases = (props: Props) => {
                     setDOCaseModalFlag(true);
                   },
                   title: "مشاهده حکم بدوی",
-                  icon: (
-                    <Visibility color={"info"} />
-                  ),
+                  icon: <Visibility color={"info"} />,
                 }}
                 // onRead={{
                 //   function: () => {

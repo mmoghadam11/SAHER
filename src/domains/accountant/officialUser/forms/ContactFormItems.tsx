@@ -1,6 +1,5 @@
 import { FormItem } from "types/formItem";
 
-
 export const ContactFormItems = (
   setValue: (name: any, val: any) => void,
 ): FormItem[] => [
@@ -9,12 +8,12 @@ export const ContactFormItems = (
     inputType: "text",
     label: "شماره تلفن",
     size: { md: 4 },
-    rules: { 
+    rules: {
       required: "شماره تلفن الزامی است",
       pattern: {
         value: /^[0-9]{8,11}$/,
-        message: "شماره تلفن باید بین 8 تا 11 رقم باشد"
-      }
+        message: "شماره تلفن باید بین 8 تا 11 رقم باشد",
+      },
     },
   },
   {
@@ -22,12 +21,12 @@ export const ContactFormItems = (
     inputType: "text",
     label: "شماره موبایل",
     size: { md: 4 },
-    rules: { 
+    rules: {
       required: "شماره موبایل الزامی است",
       pattern: {
         value: /^09[0-9]{9}$/,
-        message: "شماره موبایل باید با 09 شروع شده و 11 رقم باشد"
-      }
+        message: "شماره موبایل باید با 09 شروع شده و 11 رقم باشد",
+      },
     },
   },
   {
@@ -35,11 +34,11 @@ export const ContactFormItems = (
     inputType: "text",
     label: "تلفن محل کار",
     size: { md: 4 },
-    rules: { 
+    rules: {
       pattern: {
         value: /^[0-9]{8,11}$/,
-        message: "شماره تلفن باید بین 8 تا 11 رقم باشد"
-      }
+        message: "شماره تلفن باید بین 8 تا 11 رقم باشد",
+      },
     },
   },
   {
@@ -47,12 +46,19 @@ export const ContactFormItems = (
     inputType: "text",
     label: "ایمیل شخصی",
     size: { md: 4 },
-    rules: { 
+    rules: {
       required: "ایمیل شخصی الزامی است",
       pattern: {
         value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-        message: "فرمت ایمیل نامعتبر است"
-      }
+        message: "فرمت ایمیل نامعتبر است",
+      },
     },
+  },
+  {
+    name: "address",
+    inputType: "text",
+    label: "آدرس",
+    size: { md: 8 },
+    elementProps:{disabled:true}
   },
 ];

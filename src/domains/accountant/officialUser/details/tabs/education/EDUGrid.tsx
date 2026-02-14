@@ -18,6 +18,7 @@ import { isMobile } from "react-device-detect";
 import moment from "jalali-moment";
 import ConfirmBox from "components/confirmBox/ConfirmBox";
 import AddEDU from "./AddEDU";
+import { useAuthorization } from "hooks/useAutorization";
 
 type Props = {
   isUserAccountant: boolean;
@@ -28,6 +29,7 @@ const EDUGrid = ({ isUserAccountant }: Props) => {
   const Auth = useAuth();
   const snackbar = useSnackbar();
   const navigate = useNavigate();
+  const { hasPermission } = useAuthorization();
   const { isLoading, mutate, error } = useMutation({
     mutationFn: Auth?.serverCall,
   });
@@ -76,7 +78,7 @@ const EDUGrid = ({ isUserAccountant }: Props) => {
       headerAlign: "center",
       align: "center",
       renderCell: ({ row }: { row: any }) => {
-        if (!isUserAccountant)
+        if (!isUserAccountant&&!hasPermission("supervisor"))
           return (
             <TableActions
               onEdit={() => {
@@ -131,7 +133,7 @@ const EDUGrid = ({ isUserAccountant }: Props) => {
           <Typography variant="h5">سوابق تحصیلی</Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"}>
-          {!isUserAccountant && (
+          {(!isUserAccountant && !hasPermission("supervisor"))&& (
             <CreateNewItem
               sx={{ mr: 2 }}
               title="سابقه تحصیلی جدید"

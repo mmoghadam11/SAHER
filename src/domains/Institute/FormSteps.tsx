@@ -33,6 +33,8 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { AddressFormItems } from "./setting/forms/AddressFormItems";
 import { AddressFormItemsDTO } from "./setting/forms/AddressFormItemsDTO";
 import RenderFormDisplay from "components/render/formInputs/RenderFormDisplay";
+import paramsSerializer from "services/paramsSerializer";
+import { PAGINATION_DEFAULT_VALUE } from "shared/paginationValue";
 
 export default function FormSteps(): JSX.Element {
   const { id } = useParams();
@@ -102,6 +104,18 @@ export default function FormSteps(): JSX.Element {
         return res?.data;
       },
     } as any);
+    const {
+    data: StatesData,
+    status: StatesData_status,
+    refetch: StatesData_refetch,
+  } = useQuery<any>({
+    queryKey: [`firm/search${paramsSerializer(PAGINATION_DEFAULT_VALUE)}&id=${state?.firmData?.id}`],
+    queryFn: Auth?.getRequest,
+    select: (res: any) => {
+      return res?.data?.content;
+    },
+    enabled: !!state?.firmData?.id,
+  } as any);
   // const [formData, setFormData] = useState<{
   //   [K in keyof FullInstituteType]: string;
   // }>({} as { [K in keyof FullInstituteType]: string });
@@ -170,7 +184,7 @@ export default function FormSteps(): JSX.Element {
         formItems: specialInfoItems(setValue, {relOptions,personnelOptions}),
       },
     ],
-    [isTemporarySave, cityOptions,personnelOptions,relOptions]
+    [isTemporarySave, cityOptions,personnelOptions,relOptions,reset,getValues,StatesData]
   );
   // آرایه مراحل و آیتم‌های فرم
   // const formSteps: FormStep[] =
@@ -312,15 +326,24 @@ export default function FormSteps(): JSX.Element {
     );
   };
   const navigate = useNavigate();
+  
   useEffect(() => {
-    if (state?.firmData) {
+    if (
+    !StatesData?.length ||
+    !cityOptions?.length ||
+    !relOptions?.content?.length
+  ) {
+    return;
+  }
+    
+      console.log("StatesData",StatesData)
       const registerPlaceObject = cityOptions?.find(
-        (city: any) => city.id === state.firmData.cdRegisterPlaceId
+        (city: any) => city.id === StatesData[0].cdRegisterPlaceId
       );
 
       // پیدا کردن آبجکت کامل نوع ارتباط بر اساس ID
       const relationshipTypeObject = relOptions?.content?.find(
-        (rel: any) => rel.id === state.firmData.cdRelationshipTypeId
+        (rel: any) => rel.id === StatesData[0].cdRelationshipTypeId
       );
       console.log("registerPlaceObject", {
         value: registerPlaceObject?.id,
@@ -333,7 +356,7 @@ export default function FormSteps(): JSX.Element {
 
       // ساختن کپی اصلاح شده
       const cleanedFirmData = Object.fromEntries(
-        Object.entries(state.firmData).map(([key, value]) => {
+        Object.entries(StatesData[0]).map(([key, value]) => {
           if (value === false) {
             return [key, "false"]; // تغییر false به استرینگ
           }
@@ -344,16 +367,16 @@ export default function FormSteps(): JSX.Element {
       reset({
         ...cleanedFirmData,
         cdRegisterPlaceId: {
-          value: registerPlaceObject?.id,
-          title: registerPlaceObject?.name,
+          value: registerPlaceObject?.id??"",
+          title: registerPlaceObject?.name??"",
         },
-        cdRelationshipTypeId: {
-          value: relationshipTypeObject?.id,
-          title: relationshipTypeObject?.value,
-        },
+        cdRelationshipTypeId: relationshipTypeObject?{
+          value: relationshipTypeObject?.id??"",
+          title: relationshipTypeObject?.value??"",
+        }:null,
       });
-    }
-  }, [state, cityOptions, relOptions, reset]);
+    
+  }, [StatesData, cityOptions, relOptions, reset]);
   // useEffect(() => {
   //   snackbar("1","error")
   //   snackbar("2","error")
@@ -403,7 +426,7 @@ export default function FormSteps(): JSX.Element {
                               controllerField={field}
                               errors={errors}
                               {...item}
-                              value={getValues()[item.name] ?? ""}
+                              // value={getValues()[item.name] ?? ""}
                               onBlur={() => trigger()}
                               onChange={(
                                 e: React.ChangeEvent<HTMLInputElement>

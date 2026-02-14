@@ -13,6 +13,7 @@ import {
   People,
   PictureAsPdf,
   ReceiptLong,
+  Schedule,
   Verified,
   Visibility,
 } from "@mui/icons-material";
@@ -264,7 +265,7 @@ const AccountantUserAllDOCases = (props: Props) => {
               label={"مهلت قانونی"}
               color="secondary"
               icon={
-                <MarkEmailRead sx={{ fontSize: "1rem" }} fontSize="small" />
+                <Schedule sx={{ fontSize: "1rem" }} fontSize="small" />
               }
             />
           );
@@ -337,7 +338,7 @@ const AccountantUserAllDOCases = (props: Props) => {
               sx={{fontSize:".75rem"}}
               label={"مهلت قانونی عالی"}
               color="secondary"
-              icon={<MarkEmailRead fontSize="small" />}
+              icon={<Schedule fontSize="small" />}
             />
           );
         if (row?.disciplinaryCaseStage === "SUPREME_FINAL")

@@ -18,6 +18,7 @@ import { isMobile } from "react-device-detect";
 import moment from "jalali-moment";
 import ConfirmBox from "components/confirmBox/ConfirmBox";
 import AddMembershipType from "./AddMembershipType";
+import { useAuthorization } from "hooks/useAutorization";
 
 type Props = {
   isUserAccountant: boolean;
@@ -26,6 +27,7 @@ type Props = {
 const MembershipTypeGrid = ({ isUserAccountant }: Props) => {
   const { id } = useParams();
   const Auth = useAuth();
+  const { hasPermission } = useAuthorization();
   const snackbar = useSnackbar();
   const navigate = useNavigate();
   const { isLoading, mutate, error } = useMutation({
@@ -76,7 +78,7 @@ const MembershipTypeGrid = ({ isUserAccountant }: Props) => {
       headerAlign: "center",
       align: "center",
       renderCell: ({ row }: { row: any }) => {
-        if (!isUserAccountant)
+        if (!isUserAccountant&&!hasPermission("supervisor"))
           return (
             <TableActions
               onEdit={() => {
@@ -131,7 +133,7 @@ const MembershipTypeGrid = ({ isUserAccountant }: Props) => {
           <Typography variant="h5">سوابق تغییر عضویت</Typography>
         </Box>
         <Box display={"flex"} justifyContent={"space-between"}>
-          {!isUserAccountant && (
+          {(!isUserAccountant &&!hasPermission("supervisor"))&& (
             <CreateNewItem
               sx={{ mr: 2 }}
               title="تغییر عضویت"

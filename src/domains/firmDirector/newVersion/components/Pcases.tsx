@@ -8,6 +8,7 @@ import {
   MarkEmailRead,
   PanTool,
   PictureAsPdf,
+  Schedule,
   Verified,
   Visibility,
 } from "@mui/icons-material";
@@ -278,7 +279,7 @@ const Pcases = ({ filters, setFilters }: Props) => {
               sx={{ fontSize: ".75rem" }}
               label={"مهلت قانونی عالی"}
               color="secondary"
-              icon={<MarkEmailRead fontSize="small" />}
+              icon={<Schedule fontSize="small" />}
             />
           );
         if (row?.disciplinaryCaseStage === "SUPREME_FINAL")
